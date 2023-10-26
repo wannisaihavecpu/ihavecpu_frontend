@@ -1,0 +1,91 @@
+.card {
+  transition: opacity 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.card.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.imageContainer {
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.extraIcons {
+  z-index: 2;
+  top: 0.75rem;
+  display: block;
+  right: 0.75rem;
+  cursor: pointer;
+  position: absolute;
+  opacity: 0; /* Initially set opacity to 0 to hide the icons */
+
+  transition: opacity 0.3s ease;
+}
+.imageContainer:hover {
+  .extraIcons {
+    opacity: 1;
+  }
+}
+
+.productTitleSpec {
+  color: red;
+  font-weight: 700;
+  justify-items: center;
+}
+.productDetailSpec {
+  padding: 0.5rem 0rem;
+  border-bottom: 1px solid;
+  border-color: rgb(223, 227, 232);
+  justify-items: center;
+}
+.beforePrice {
+  text-decoration: line-through;
+}
+.productMainTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fadeIn {
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.myContainer::-webkit-scrollbar {
+  border-radius: 8px;
+  width: 5px;
+}
+
+.myContainer::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 8px;
+}
+
+.myContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.icon {
+  transition: color 0.8s ease;
+}
+.icon:hover {
+  color: #d4001a;
+}

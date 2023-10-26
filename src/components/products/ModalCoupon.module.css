@@ -1,0 +1,78 @@
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  overflow-y: auto; /* Add vertical scrolling when content overflows */
+}
+
+/* Modal content styles */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+  max-height: 100%; /* Set a maximum height for the modal content */
+  overflow-y: auto; /* Add vertical scrolling for content overflow */
+}
+
+.modal-open {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1000;
+}
+
+.modal-open .modal-content {
+  transform: scale(1);
+}
+.swiper {
+  max-width: 100%;
+  max-height: 300px;
+}
+
+/* Ensure only 3 slides are visible at a time */
+.myswiper .swiper-wrapper {
+  display: flex;
+}
+
+/* Define a fixed height for the coupon items */
+.customcouponitem {
+  height: 100%; /* You can adjust the height as needed */
+}
+.card {
+  width: 100%;
+  max-width: 1000px;
+  position: relative;
+  padding: 2rem;
+}
+
+/* @media (max-width: 767px) {
+  .modal-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+  }
+
+  
+  .modal-container.modal-open {
+    align-items: center; 
+  }
+  .modal-container {
+    border-radius: 0px;
+  }
+  .card {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+  }
+} */
