@@ -26,7 +26,7 @@ Mock.onGet("/api/users/order-ids").reply(async () => {
 
 Mock.onGet("/api/users/order").reply(async (config) => {
   try {
-    if (config?.params?.id) {
+    if (config && config.params && config.params.id) {
       const order = orders.find((item) => item.id === config.params.id);
       return [200, order];
     }

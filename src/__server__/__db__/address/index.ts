@@ -29,7 +29,7 @@ Mock.onGet("/api/address/address-ids").reply(async () => {
 // get single user
 Mock.onGet("/api/address/user/1").reply(async (config) => {
   try {
-    if (config?.params?.id) {
+    if (config && config.params && config.params.id) {
       const address = addressList.find((item) => item.id === config.params.id);
       return [200, address];
     }
