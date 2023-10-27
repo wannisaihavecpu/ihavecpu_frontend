@@ -2,7 +2,7 @@
 sudo apt-get install -y nodejs
 node -v
 
-cd /home/ubuntu/ihavecpu_frontend
+cd /home/ec2-user/ihavecpu_frontend
 git pull origin main
 node -v
 sudo npm install -g yarn
