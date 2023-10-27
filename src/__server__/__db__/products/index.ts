@@ -33,7 +33,7 @@ Mock.onGet("/api/products").reply(async (config) => {
 // single product based on slug
 Mock.onGet("/api/products/slug").reply(async (config) => {
   try {
-    if (config?.params?.slug) {
+    if (config && config.params && config.params.slug) {
       const product = uniqueProudcts.find(
         (item) => item.slug === config.params.slug
       );
