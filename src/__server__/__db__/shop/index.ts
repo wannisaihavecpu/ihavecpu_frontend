@@ -24,7 +24,7 @@ Mock.onGet("/api/shops").reply(async () => {
 
 Mock.onGet("/api/shops/single").reply(async (config) => {
   try {
-    if (config?.params?.slug) {
+    if (config && config.params && config.params.slug) {
       const shop: Shop = shops.find((item) => item.slug === config.params.slug);
       shop.products = getProducts(config.params.slug) as Product[];
       return [200, shop];

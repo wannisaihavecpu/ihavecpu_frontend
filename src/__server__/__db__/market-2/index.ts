@@ -5,7 +5,7 @@ import * as db from "./data";
 // get all products
 Mock.onGet("/api/market-2/products").reply((config) => {
   try {
-    if (config?.params?.type) {
+    if (config && config.params && config.params.type) {
       return [200, shuffle(db.products)];
     }
     return [200, db.products];
@@ -46,21 +46,26 @@ Mock.onGet("/api/market-2/main-carousel").reply(async () => {
 });
 
 // electronics category products
-Mock.onGet("/api/market-2/category-based-product?tag=electronics").reply(async () => {
-  try {
-    return [200, { category: db.singleCategory, products: db.products }];
-  } catch (err) {
-    console.error(err);
-    return [500, { message: "Internal server error" }];
+Mock.onGet("/api/market-2/category-based-product?tag=electronics").reply(
+  async () => {
+    try {
+      return [200, { category: db.singleCategory, products: db.products }];
+    } catch (err) {
+      console.error(err);
+      return [500, { message: "Internal server error" }];
+    }
   }
-});
+);
 
 // men's fashion category products
 Mock.onGet("/api/market-2/category-based-product?tag=men").reply(async () => {
   try {
     const data = {
       products: db.products.slice(2),
-      category: { title: "Men's Fashion", children: db.singleCategory.children },
+      category: {
+        title: "Men's Fashion",
+        children: db.singleCategory.children,
+      },
     };
 
     return [200, data];
@@ -75,7 +80,10 @@ Mock.onGet("/api/market-2/category-based-product?tag=women").reply(async () => {
   try {
     const data = {
       products: db.products.slice(3),
-      category: { title: "Women's Fashion", children: db.singleCategory.children },
+      category: {
+        title: "Women's Fashion",
+        children: db.singleCategory.children,
+      },
     };
 
     return [200, data];
