@@ -36,9 +36,12 @@ const getSameBrandProducts = async (): Promise<Products[]> => {
 };
 
 const getCompareProducts = async (product_id: any): Promise<Products[]> => {
-  const response = await axios.get("http://localhost:8000/api/compare", {
-    params: { product_id },
-  });
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_PATH}/api/compare}`,
+    {
+      params: { product_id },
+    }
+  );
   return response.data;
 };
 

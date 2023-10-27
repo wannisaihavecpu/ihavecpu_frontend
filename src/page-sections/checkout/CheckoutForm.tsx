@@ -68,7 +68,7 @@ const CheckoutForm: FC = () => {
     };
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/shippinglist")
+    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/shippinglist`)
       .then((response) => response.json())
       .then((data) => {
         if (data && data.data) {

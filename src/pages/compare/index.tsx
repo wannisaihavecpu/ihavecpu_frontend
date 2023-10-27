@@ -60,9 +60,9 @@ const ComparePage = () => {
       // New API request with the updated productIds
       const productIds = updatedCompareList.map((product) => product.id);
 
-      const apiUrl = `http://localhost:8000/api/compare?product_ids=${productIds.join(
-        ","
-      )}`;
+      const apiUrl = `${
+        process.env.NEXT_PUBLIC_API_PATH
+      }/compare?product_ids=${productIds.join(",")}`;
 
       if (productIds.length > 0) {
         axios
@@ -103,9 +103,9 @@ const ComparePage = () => {
 
     const productIds = updatedCompareList.map((p) => p.id);
 
-    const apiUrl = `http://localhost:8000/api/compare?product_ids=${productIds.join(
-      ","
-    )}`;
+    const apiUrl = `${
+      process.env.NEXT_PUBLIC_API_PATH
+    }/compare?product_ids=${productIds.join(",")}`;
 
     if (productIds.length > 0) {
       axios
@@ -136,8 +136,7 @@ const ComparePage = () => {
     });
 
     const uniqueCategoryIds = Array.from(uniqueCategoryIdsSet);
-
-    const apiUrl = `http://localhost:8000/api/productlist?category_id=${uniqueCategoryIds}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/productlist?category_id=${uniqueCategoryIds}`;
     axios
       .get(apiUrl)
       .then((response) => {
@@ -160,10 +159,9 @@ const ComparePage = () => {
     setCompareList(storedCompareList);
 
     const productIds = storedCompareList.map((product) => product.id);
-
-    const apiUrl = `http://localhost:8000/api/compare?product_ids=${productIds.join(
-      ","
-    )}`;
+    const apiUrl = `${
+      process.env.NEXT_PUBLIC_API_PATH
+    }/compare?product_ids=${productIds.join(",")}`;
     if (productIds.length > 0) {
       axios
         .get(apiUrl)

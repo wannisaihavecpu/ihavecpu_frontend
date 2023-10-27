@@ -381,7 +381,7 @@ const ModalCouponPurchase: FC<Props> = (props) => {
       product_id: ["A4", "A1", "A2", "A3"],
     };
 
-    fetch("http://localhost:8000/api/myCouponAvaliable", {
+    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/myCouponAvaliable`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -403,15 +403,18 @@ const ModalCouponPurchase: FC<Props> = (props) => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:8000/api/collectCoupon", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code: formik.values.code_coupon,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PATH}/api/collectCoupon}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: formik.values.code_coupon,
+          }),
+        }
+      );
 
       if (response.status === 200) {
         // Parse the response data as JSON

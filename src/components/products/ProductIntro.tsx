@@ -46,7 +46,7 @@ const ProductIntro: FC<ProductIntroProps> = ({
 }) => {
   const router = useRouter();
   const { state, dispatch } = useAppContext();
-  const base = "http://localhost:3000";
+  const base = `${process.env.NEXT_PUBLIC_BASE_PATH}`;
   const links = base + router.asPath;
 
   const [selectedImage, setSelectedImage] = useState(0);
