@@ -1,4 +1,5 @@
 #!/bin/bash
+node -v
 cd /home/ubuntu/ihavecpu_frontend
 git pull origin main
 sudo npm install -g yarn
