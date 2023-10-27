@@ -8,8 +8,8 @@ import { uniqueProudcts, slugs, Product } from "./data";
 
 Mock.onGet("/api/products").reply(async (config) => {
   try {
-    const page = config.params ? config.params.page || 1 : 1;
-    const pageSize = config.params ? config.params.pageSize || 28 : 28;
+    const page = config.params?.page || 1;
+    const pageSize = config.params?.pageSize || 28;
     const reversedOrder = uniqueProudcts.reverse();
     const products = reversedOrder.slice(
       (page - 1) * pageSize,
