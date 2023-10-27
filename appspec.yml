@@ -3,4 +3,4 @@ os: linux
 hooks:
   ApplicationStart:
     - location: deploy.sh
-      runas: ubuntu
+      runas: ubuntu 
