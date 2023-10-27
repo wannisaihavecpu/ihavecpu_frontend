@@ -53,7 +53,7 @@ Mock.onGet("/api/admin/orders").reply(() => {
 
 Mock.onGet("/api/admin/orders/1").reply((config) => {
   try {
-    if (config?.params?.id) {
+    if (config && config.params && config.params.id) {
       const order = orders.find((item) => item.id === config.params.id);
       return [200, order];
     }
