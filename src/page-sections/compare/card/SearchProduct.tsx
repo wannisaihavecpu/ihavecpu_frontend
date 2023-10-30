@@ -44,7 +44,6 @@ const SearchProduct: FC<SearchProductProps> = ({
           placeholder="ค้นหาสินค้า"
           value={searchTerm}
         />
-        {resultList}
       </SearchBoxStyle>
     </Box>
   );
