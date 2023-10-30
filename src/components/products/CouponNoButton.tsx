@@ -1,20 +1,22 @@
 import React, { FC } from "react";
 import Grid from "@component/grid/Grid";
-import { ButtonCoupon } from "@component/buttons";
+import { ButtonCoupon, IconButton } from "@component/buttons";
 import Box from "@component/Box";
 import styled from "styled-components"; // Import css from styled-components
+import Icon from "@component/icon/Icon";
 
-interface CouponProps {
+interface CouponNoButtonProps {
   topic?: string;
   color?: string;
   code?: string;
   description?: string;
   dateExpired?: string;
   onClick?: () => void;
+  onClear?: () => void;
   checked?: boolean;
 }
 
-export const CouponStyle = styled.div<CouponProps>`
+export const CouponStyle = styled.div<CouponNoButtonProps>`
   /* coupon */
   .coupon {
     display: flex;
@@ -203,7 +205,7 @@ export const CouponStyle = styled.div<CouponProps>`
   }
 `;
 
-const Coupon: FC<CouponProps> = ({
+const CouponNoButton: FC<CouponNoButtonProps> = ({
   topic,
   description,
   dateExpired,
@@ -211,6 +213,7 @@ const Coupon: FC<CouponProps> = ({
   checked,
   onClick,
   color,
+  onClear,
 }) => {
   const formatDate = (dateExpired) => {
     const months = [
@@ -249,7 +252,7 @@ const Coupon: FC<CouponProps> = ({
               </div>
             </div>
             <div className="couponright">
-              <Grid item lg={6} md={6} xs={6}>
+              <Grid item lg={10} md={10} xs={10}>
                 <div className="couponRightContainer">
                   <div className="couponTitle">คูปองส่วนลด</div>
                   <div className="couponTopic">{topic}</div>
@@ -259,20 +262,15 @@ const Coupon: FC<CouponProps> = ({
                   </div>
                 </div>
               </Grid>
-              <Grid item lg={4} xs={6}>
-                <div className="couponButtonContainer">
-                  <ButtonCoupon
-                    size="small"
-                    fontSize="10"
-                    color="ihavecpu"
-                    variant={checked ? "border" : null}
-                    bg={checked ? null : "primary.light"}
-                    onClick={onClick}
-                    style={{ width: "50px" }}
-                  >
-                    {checked ? "เก็บแล้ว" : "เก็บคูปอง"}
-                  </ButtonCoupon>
-                </div>
+              <Grid item lg={2} md={2} xs={2} container justify="flex-end">
+                <IconButton
+                  p="3px 6px 3px"
+                  style={{ width: "25px", height: "25px" }}
+                >
+                  <Icon size="12px" onClick={onClear}>
+                    close
+                  </Icon>
+                </IconButton>
               </Grid>
             </div>
           </div>
@@ -282,4 +280,4 @@ const Coupon: FC<CouponProps> = ({
   );
 };
 
-export default Coupon;
+export default CouponNoButton;

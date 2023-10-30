@@ -15,6 +15,8 @@ import Divider from "@component/Divider";
 import Radio from "@component/radio";
 import Icon from "@component/icon/Icon";
 import ModalCouponPurchase from "@component/products/ModalCouponPurchase";
+import CouponForUse from "@component/products/CouponForUse";
+import CouponNoButton from "@component/products/CouponNoButton";
 
 const CheckoutForm: FC = () => {
   const router = useRouter();
@@ -23,7 +25,12 @@ const CheckoutForm: FC = () => {
   const [shippingOptions, setShippingOptions] = useState([]);
 
   const [open, setOpen] = useState(false);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
+
+  const handleSelectCoupon = (coupon) => {
+    setSelectedCoupon(coupon);
+  };
 
   const [buttonClicked, setButtonClicked] = useState(null);
 
@@ -32,6 +39,9 @@ const CheckoutForm: FC = () => {
       console.log(values);
       router.push("/payment");
     }
+  };
+  const clearSelectedCoupon = () => {
+    setSelectedCoupon(null);
   };
   // const formik = useFormik({
   //   initialValues,
@@ -672,30 +682,45 @@ const CheckoutForm: FC = () => {
 
                   <Grid item xl={12} md={12} xs={12}>
                     <Card1 style={{ border: "2px solid #f1f1f1" }}>
-                      <FlexBox alignItems="center">
-                        <Icon
-                          mr="1rem"
-                          size="30px"
-                          variant="medium"
-                          defaultcolor="currentColor"
-                        >
-                          coupon
-                        </Icon>
-                        <H6>ใช้รหัสคูปองส่วนลด?</H6>
-                      </FlexBox>
-                      <FlexBox>
-                        <Link href="#" onClick={toggleDialog}>
-                          <Button
-                            onClick={toggleDialog}
-                            mt="1rem"
-                            variant="outlined"
-                            color="ihavecpu"
-                            style={{ width: "100%" }}
-                          >
-                            ใช้รหัสคูปองส่วนลด
-                          </Button>
-                        </Link>
-                      </FlexBox>
+                      {selectedCoupon ? (
+                        <>
+                          <CouponNoButton
+                            topic={selectedCoupon.code}
+                            code={selectedCoupon.code}
+                            description={selectedCoupon.description}
+                            color="white"
+                            dateExpired={selectedCoupon.endDate}
+                            onClear={clearSelectedCoupon}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <FlexBox alignItems="center">
+                            <Icon
+                              mr="1rem"
+                              size="30px"
+                              variant="medium"
+                              defaultcolor="currentColor"
+                            >
+                              coupon
+                            </Icon>
+                            <H6>ใช้รหัสคูปองส่วนลด?</H6>
+                          </FlexBox>
+                          <FlexBox>
+                            <Link href="#">
+                              <Button
+                                onClick={toggleDialog}
+                                mt="1rem"
+                                variant="outlined"
+                                color="ihavecpu"
+                                style={{ width: "100%" }}
+                              >
+                                ใช้รหัสคูปองส่วนลด
+                              </Button>
+                            </Link>
+                          </FlexBox>
+                        </>
+                      )}
                     </Card1>
                   </Grid>
                   <Grid item xl={12} md={12} xs={12}>
@@ -709,7 +734,12 @@ const CheckoutForm: FC = () => {
                     >
                       ดำเนินการชำระเงิน
                     </Button>
-                    <ModalCouponPurchase open={open} onClose={toggleDialog} />
+                    <ModalCouponPurchase
+                      open={open}
+                      onClose={toggleDialog}
+                      selectedCoupon={selectedCoupon}
+                      setSelectedCoupon={setSelectedCoupon}
+                    />
                   </Grid>
                 </Card1>
               </Grid>

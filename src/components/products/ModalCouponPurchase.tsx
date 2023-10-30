@@ -12,6 +12,7 @@ import { Button } from "@component/buttons";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import Coupon from "./Coupon";
+import CouponForUse from "./CouponForUse";
 import { notify } from "@component/toast";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
@@ -24,6 +25,8 @@ import styled from "styled-components";
 type Props = {
   open: boolean;
   onClose: () => void;
+  selectedCoupon: string | null;
+  setSelectedCoupon: (coupon: string | null) => void;
 };
 
 const ModalContainer = styled.div`
@@ -347,9 +350,11 @@ const ModalContainer = styled.div`
 // ];
 
 const ModalCouponPurchase: FC<Props> = (props) => {
-  const { open, onClose } = props;
+  const { open, onClose, selectedCoupon, setSelectedCoupon } = props;
+  const [showModal, setShowModal] = useState(false);
   const [myCoupon, setMyCoupon] = useState({ data: { items: [] } });
   const [swiperSlidesPerView, setSwiperSlidesPerView] = useState(1);
+  const [checkedCoupons, setCheckedCoupons] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -433,189 +438,32 @@ const ModalCouponPurchase: FC<Props> = (props) => {
       console.error("An error occurred while collecting the coupon:", error);
     }
   };
+  const handleCouponClick = (coupon) => {
+    const isCouponChecked = checkedCoupons.includes(coupon);
+
+    if (isCouponChecked) {
+      setCheckedCoupons(checkedCoupons.filter((c) => c !== coupon));
+    } else {
+      // if the coupon is not checked, check it
+      setCheckedCoupons([...checkedCoupons, coupon]);
+      setSelectedCoupon(coupon); // Update the selectedCoupon state
+    }
+  };
 
   useEffect(() => {
-    // Load available coupons when the component mounts
+    // load available coupons when the component mounts
     fetchMyCouponAvailable();
   }, []);
+  useEffect(() => {
+    if (!open) {
+      setCheckedCoupons([]);
+    }
+  }, [open]);
   return (
-    // <div
-    //   className={`${styles["modal-container"]} ${
-    //     open ? styles["modal-open"] : ""
-    //   }`}
-    //   onClick={onClose}
-    // >
-    //   <Modal open={open} onClose={onClose}>
-    //     <Card className={styles.card}>
-    //       <Box mb="2rem">
-    //         <FlexBox alignItems="center">
-    //           <Icon size="50px" mr="0.5rem">
-    //             coupon
-    //           </Icon>
-    //           <H4 fontWeight={800}>คูปองส่วนลด</H4>
-    //         </FlexBox>
-    //         <SemiSpan ml="0.5rem">ใช้คูปองส่วนลด หรือ โค้ดส่วด</SemiSpan>
-    //       </Box>
-    //       <Grid container justifyContent="center" spacing={16}>
-    //         <Grid item lg={6} md={6} xs={12} alignItems="center">
-    //           <Grid container justifyContent="center">
-    //             <Grid item xs={12}>
-    //               <form onSubmit={formik.handleSubmit}>
-    //                 <StyledSearchBox>
-    //                   <Icon className="search-icon" size="18px">
-    //                     coupon
-    //                   </Icon>
-    //                   <TextField
-    //                     fullwidth
-    //                     name="code_coupon"
-    //                     className="search-field"
-    //                     placeholder="กรอกโค้ดส่วนลด"
-    //                     onBlur={formik.handleBlur}
-    //                     onChange={formik.handleChange}
-    //                     value={formik.values.code_coupon}
-    //                   />
-    //                   <Button
-    //                     className="search-button"
-    //                     variant="contained"
-    //                     color="ihavecpu"
-    //                     type="submit"
-    //                     onClick={handleCodeCouponSubmit}
-    //                   >
-    //                     ใช้โค้ด
-    //                   </Button>
-    //                 </StyledSearchBox>
-    //               </form>
-    //               {formik.touched.code_coupon && formik.errors.code_coupon && (
-    //                 <SemiSpan fontSize="11px" style={{ color: "red" }}>
-    //                   {formik.errors.code_coupon}
-    //                 </SemiSpan>
-    //               )}
-    //             </Grid>
-    //           </Grid>
-    //         </Grid>
-    //       </Grid>
-    //       <Grid container justifyContent="center" spacing={16}>
-    //         <Grid item md={12} xs={12} alignItems="center">
-    //           <Grid container spacing={3}>
-    //             <Swiper
-    //               pagination={{
-    //                 dynamicBullets: true,
-    //                 el: ".swiper-pagination",
-    //               }}
-    //             >
-    //               {Array.isArray(myCoupon.data.items) &&
-    //                 myCoupon.data.items
-    //                   .reduce((chunks, item, i) => {
-    //                     if (i % 3 === 0) {
-    //                       chunks.push([]);
-    //                     }
-    //                     chunks[chunks.length - 1].push(item);
-    //                     return chunks;
-    //                   }, [])
-    //                   .map((couponGroup, index) => (
-    //                     <SwiperSlide key={index}>
-    //                       <Grid container spacing={3}>
-    //                         {couponGroup.map((coupon, innerIndex) => (
-    //                           <Grid item key={innerIndex} md={4} xs={12}>
-    //                             <CouponPurchase
-    //                               key={innerIndex}
-    //                               topic={coupon.title}
-    //                               description={coupon.description}
-    //                               dateExpired={coupon.endDate}
-    //                             />
-    //                           </Grid>
-    //                         ))}
-    //                       </Grid>
-    //                     </SwiperSlide>
-    //                   ))}
-    //             </Swiper>
-    //           </Grid>
-    //         </Grid>
-    //       </Grid>
-    //       <Box mt="2.5rem">
-    //         <Grid container justifyContent="center" spacing={16}>
-    //           <Grid
-    //             item
-    //             md={12}
-    //             xs={12}
-    //             alignItems="center"
-    //             style={{
-    //               backgroundColor: "#f8f8f8",
-    //               borderTop: "1px solid #f0f0f0",
-    //               borderBottomLeftRadius: "8px",
-    //               borderBottomRightRadius: "8px",
-    //             }}
-    //           >
-    //             <Box>
-    //               <FlexBox alignItems="center">
-    //                 <H4 fontWeight={800}>คูปองส่วนลดที่เก็บได้</H4>
-    //               </FlexBox>
-    //             </Box>
-    //             <Box mt="2rem">
-    //               <Grid item md={12} xs={12} alignItems="center">
-    //                 <Grid container spacing={3}>
-    //                   <Swiper
-    //                     pagination={{
-    //                       dynamicBullets: true,
-    //                       el: ".swiper-pagination",
-    //                     }}
-    //                   >
-    //                     {Array.isArray(myCoupon.data.items) &&
-    //                       myCoupon.data.items
-    //                         .reduce((chunks, item, i) => {
-    //                           if (i % 1 === 0) {
-    //                             chunks.push([]);
-    //                           }
-    //                           chunks[chunks.length - 1].push(item);
-    //                           return chunks;
-    //                         }, [])
-    //                         .map((couponGroup, index) => (
-    //                           <SwiperSlide key={index}>
-    //                             <Grid container spacing={3}>
-    //                               {couponGroup.map((coupon, innerIndex) => (
-    //                                 <Grid item key={innerIndex} md={4} xs={6}>
-    //                                   <CouponPurchase
-    //                                     key={innerIndex}
-    //                                     topic={coupon.title}
-    //                                     description={coupon.description}
-    //                                     dateExpired={coupon.endDate}
-    //                                   />
-    //                                 </Grid>
-    //                               ))}
-    //                             </Grid>
-    //                           </SwiperSlide>
-    //                         ))}
-    //                   </Swiper>
-    //                 </Grid>
-    //               </Grid>
-    //             </Box>
-    //           </Grid>
-    //         </Grid>
-    //       </Box>
-
-    //       <Box
-    //         position="absolute"
-    //         top="0.75rem"
-    //         right="0.75rem"
-    //         cursor="pointer"
-    //       >
-    //         <Icon
-    //           className="close"
-    //           color="primary"
-    //           variant="small"
-    //           onClick={onClose}
-    //         >
-    //           close
-    //         </Icon>
-    //       </Box>
-    //     </Card>
-    //   </Modal>
-    // </div>
     <Box
       className={`${styles["modal-container"]} ${
         open ? styles["modal-open"] : ""
       }`}
-      onClick={onClose}
     >
       <ModalContainer>
         <div className="modal">
@@ -638,12 +486,9 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                 </SemiSpan>
               </span>
               <button className="icon-button">
-                <svg
-                  height="24"
-                  width="24"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                ></svg>
+                <Icon size="24px" onClick={onClose}>
+                  close
+                </Icon>
               </button>
             </header>
             <section className="modal-container-search">
@@ -698,15 +543,17 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                     <SwiperSlide key={index}>
                       <Grid container spacing={3}>
                         <Grid item md={12} sm={12} xs={12}>
-                          <Coupon
-                            topic={coupon.id}
+                          <CouponForUse
+                            topic={coupon.code}
+                            code={coupon.code}
                             description={coupon.description}
                             color="white"
                             dateExpired={coupon.endDate}
                             onClick={() => {
-                              // Your click handler logic here
+                              handleCouponClick(coupon);
+                              onClose();
                             }}
-                            checked={true}
+                            checked={checkedCoupons.includes(coupon)}
                           />
                         </Grid>
                       </Grid>
@@ -768,11 +615,9 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                                     topic={coupon.id}
                                     description={coupon.description}
                                     color="#f9f9f9"
+                                    code={coupon.code}
                                     dateExpired={coupon.endDate}
-                                    onClick={() => {
-                                      // Your click handler logic here
-                                    }}
-                                    checked={true}
+                                    onClick={() => {}}
                                   />
                                 </Grid>
                               </Grid>

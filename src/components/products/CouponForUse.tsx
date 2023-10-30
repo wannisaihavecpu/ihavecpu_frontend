@@ -4,7 +4,7 @@ import { ButtonCoupon } from "@component/buttons";
 import Box from "@component/Box";
 import styled from "styled-components"; // Import css from styled-components
 
-interface CouponProps {
+interface CouponForUseProps {
   topic?: string;
   color?: string;
   code?: string;
@@ -14,7 +14,7 @@ interface CouponProps {
   checked?: boolean;
 }
 
-export const CouponStyle = styled.div<CouponProps>`
+export const CouponStyle = styled.div<CouponForUseProps>`
   /* coupon */
   .coupon {
     display: flex;
@@ -203,7 +203,7 @@ export const CouponStyle = styled.div<CouponProps>`
   }
 `;
 
-const Coupon: FC<CouponProps> = ({
+const CouponForUse: FC<CouponForUseProps> = ({
   topic,
   description,
   dateExpired,
@@ -268,9 +268,9 @@ const Coupon: FC<CouponProps> = ({
                     variant={checked ? "border" : null}
                     bg={checked ? null : "primary.light"}
                     onClick={onClick}
-                    style={{ width: "50px" }}
+                    style={{ width: "70px" }}
                   >
-                    {checked ? "เก็บแล้ว" : "เก็บคูปอง"}
+                    {checked ? "กำลังใช้คูปอง" : "ใช้คูปอง"}
                   </ButtonCoupon>
                 </div>
               </Grid>
@@ -282,4 +282,4 @@ const Coupon: FC<CouponProps> = ({
   );
 };
 
-export default Coupon;
+export default CouponForUse;
