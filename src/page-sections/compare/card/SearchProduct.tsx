@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import Box from "@component/Box";
 import Icon from "@component/icon/Icon";
 import TextField from "@component/text-field";
@@ -13,7 +13,7 @@ const SearchProduct: FC<SearchProductProps> = ({
   productDetail,
   onSearchResultChange,
 }) => {
-  const [resultList, setResultList] = useState([]);
+  // const [resultList, setResultList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (event) => {
@@ -24,12 +24,12 @@ const SearchProduct: FC<SearchProductProps> = ({
       product.name_th.toLowerCase().includes(value.toLowerCase())
     );
 
-    setResultList(filteredProducts);
+    // setResultList(filteredProducts);
     onSearchResultChange(filteredProducts, value);
   };
-  useEffect(() => {
-    setResultList([]);
-  }, [productDetail]);
+  // useEffect(() => {
+  //   setResultList([]);
+  // }, [productDetail]);
 
   return (
     <Box position="relative" flex="1 1 0" maxWidth="670px" mx="auto">
