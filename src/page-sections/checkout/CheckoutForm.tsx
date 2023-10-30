@@ -25,9 +25,13 @@ const CheckoutForm: FC = () => {
   const [open, setOpen] = useState(false);
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
+  const [buttonClicked, setButtonClicked] = useState(null);
+
   const handleFormSubmit = async (values) => {
-    console.log(values);
-    router.push("/payment");
+    if (buttonClicked === "submitPayment") {
+      console.log(values);
+      router.push("/payment");
+    }
   };
   // const formik = useFormik({
   //   initialValues,
@@ -302,7 +306,6 @@ const CheckoutForm: FC = () => {
                           <TextField
                             fullwidth
                             mb="1rem"
-                            type="email"
                             onBlur={handleBlur}
                             label="ชื่อบริษัท"
                             name="bill_companyname"
@@ -681,20 +684,23 @@ const CheckoutForm: FC = () => {
                         <H6>ใช้รหัสคูปองส่วนลด?</H6>
                       </FlexBox>
                       <FlexBox>
-                        <Button
-                          onClick={toggleDialog}
-                          mt="1rem"
-                          variant="outlined"
-                          color="ihavecpu"
-                          style={{ width: "100%" }}
-                        >
-                          ใช้รหัสคูปองส่วนลด
-                        </Button>
+                        <Link href="#" onClick={toggleDialog}>
+                          <Button
+                            onClick={toggleDialog}
+                            mt="1rem"
+                            variant="outlined"
+                            color="ihavecpu"
+                            style={{ width: "100%" }}
+                          >
+                            ใช้รหัสคูปองส่วนลด
+                          </Button>
+                        </Link>
                       </FlexBox>
                     </Card1>
                   </Grid>
                   <Grid item xl={12} md={12} xs={12}>
                     <Button
+                      onClick={() => setButtonClicked("submitPayment")}
                       mt="1rem"
                       variant="contained"
                       color="ihavecpu"
