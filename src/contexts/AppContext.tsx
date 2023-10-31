@@ -1,4 +1,11 @@
-import { createContext, FC, ReactNode, useContext, useMemo, useReducer } from "react";
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useMemo,
+  useReducer,
+} from "react";
 
 // =================================================================================
 type InitialState = { cart: CartItem[]; isHeaderFixed: boolean };
@@ -18,34 +25,18 @@ type ActionType = CartActionType | LayoutActionType;
 
 // =================================================================================
 
-const INITIAL_CART = [
-  // {
-  //   qty: 1,
-  //   price: 210,
-  //   slug: "silver-high-neck-sweater",
-  //   name: "Silver High Neck Sweater",
-  //   id: "6e8f151b-277b-4465-97b6-547f6a72e5c9",
-  //   imgUrl: "/assets/images/products/Fashion/Clothes/1.SilverHighNeckSweater.png",
-  // },
-  // {
-  //   qty: 1,
-  //   price: 190,
-  //   slug: "yellow-casual-sweater",
-  //   name: "Yellow Casual Sweater",
-  //   id: "76d14d65-21d0-4b41-8ee1-eef4c2232793",
-  //   imgUrl: "/assets/images/products/Fashion/Clothes/21.YellowCasualSweater.png",
-  // },
-  // {
-  //   qty: 1,
-  //   price: 140,
-  //   slug: "denim-blue-jeans",
-  //   name: "Denim Blue Jeans",
-  //   id: "0fffb188-98d8-47f7-8189-254f06cad488",
-  //   imgUrl: "/assets/images/products/Fashion/Clothes/4.DenimBlueJeans.png",
-  // },
-];
+const getInitialCart = () => {
+  if (typeof window !== "undefined") {
+    // check if window (browser) is defined, indicating it's running on the client side
+    const cartJSON = localStorage.getItem("cart");
+    return cartJSON ? JSON.parse(cartJSON) : [];
+  } else {
+    // if running on the server side (server-side rendering) return an empty array
+    return [];
+  }
+};
 
-const INITIAL_STATE = { cart: INITIAL_CART, isHeaderFixed: false };
+const INITIAL_STATE = { cart: getInitialCart(), isHeaderFixed: false };
 
 interface ContextProps {
   state: InitialState;
@@ -65,27 +56,35 @@ const reducer = (state: InitialState, action: ActionType) => {
     case "CHANGE_CART_AMOUNT":
       let cartList = state.cart;
       let cartItem = action.payload;
-      let exist = cartList.find((item) => item.id === cartItem.id);
+      let existIndex = cartList.findIndex((item) => item.id === cartItem.id);
 
       if (cartItem.qty < 1) {
-        const filteredCart = cartList.filter((item) => item.id !== cartItem.id);
-        return { ...state, cart: filteredCart };
+        // If quantity is less than 1, remove the item from the cart
+        if (existIndex !== -1) {
+          cartList.splice(existIndex, 1);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("cart", JSON.stringify(cartList));
+          }
+        }
+        return { ...state, cart: [...cartList] };
       }
 
-      // IF PRODUCT ALREADY EXITS IN CART
-      if (exist) {
-        const newCart = cartList.map((item) =>
-          item.id === cartItem.id ? { ...item, qty: cartItem.qty } : item
-        );
-
-        return { ...state, cart: newCart };
+      if (existIndex !== -1) {
+        // If the item exists in the cart, update the quantity
+        cartList[existIndex].qty = cartItem.qty;
+      } else {
+        // If the item doesn't exist, add it to the cart
+        cartList.push(cartItem);
       }
 
-      return { ...state, cart: [...cartList, cartItem] };
+      if (typeof window !== "undefined") {
+        localStorage.setItem("cart", JSON.stringify(cartList));
+      }
 
-    default: {
+      return { ...state, cart: [...cartList] };
+
+    default:
       return state;
-    }
   }
 };
 
@@ -96,7 +95,9 @@ type AppProviderProps = { children: ReactNode };
 export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
-  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
+  );
 };
 
 export const useAppContext = () => useContext<ContextProps>(AppContext);

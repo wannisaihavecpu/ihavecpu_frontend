@@ -1,18 +1,15 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import Box from "@component/Box";
-import Select from "@component/Select";
 import Grid from "@component/grid/Grid";
 import { Card1 } from "@component/Card1";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
-import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import Typography from "@component/Typography";
 import { ProductCard7 } from "@component/product-cards";
 import CheckoutNavLayout from "@component/layout/CheckoutNavLayout";
 import { useAppContext } from "@context/AppContext";
-import { currency } from "@utils/utils";
 import PriceFormat from "@component/PriceFormat";
 import Radio from "@component/radio";
 const Cart = () => {

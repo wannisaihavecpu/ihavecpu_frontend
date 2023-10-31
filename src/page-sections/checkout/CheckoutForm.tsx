@@ -16,10 +16,17 @@ import Radio from "@component/radio";
 import Icon from "@component/icon/Icon";
 import ModalCouponPurchase from "@component/products/ModalCouponPurchase";
 import CouponNoButton from "@component/products/CouponNoButton";
+import { useAppContext } from "@context/AppContext";
+import PriceFormat from "@component/PriceFormat";
+import StyledSearchBox from "@component/search-box/styled";
+import Box from "@component/Box";
+
 // import { useFormik } from "formik";
 
 const CheckoutForm: FC = () => {
   const router = useRouter();
+  const { state } = useAppContext();
+
   const [sameAsShipping, setSameAsShipping] = useState(false);
   const [taxInvoice, setTaxInvoice] = useState(false);
   const [shippingOptions, setShippingOptions] = useState([]);
@@ -76,6 +83,21 @@ const CheckoutForm: FC = () => {
       setFieldValue("same_as_shipping", checked);
       setFieldValue("billing_name", checked ? values.ship_firstname : "");
     };
+
+  function calculatePointsFromTotalPrice(totalPrice) {
+    const conversionRate = 25;
+    const points = Math.floor((totalPrice / 2500) * conversionRate);
+
+    return points;
+  }
+  const getTotalPrice = () => {
+    return (
+      state.cart.reduce(
+        (accumulator, item) => accumulator + item.price * item.qty,
+        0
+      ) || 0
+    );
+  };
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_PATH}/shippinglist`)
@@ -453,6 +475,56 @@ const CheckoutForm: FC = () => {
               {/* RIGHT */}
               <Grid item lg={4} md={4} xs={12}>
                 <Card1>
+                  {state.cart.map((item) => {
+                    const totalQty = item.qty;
+                    const totalPrice = item.price * totalQty;
+
+                    return (
+                      <FlexBox
+                        key={item.id}
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mb="0.5rem"
+                      >
+                        <div>
+                          <Typography
+                            fontSize="14px"
+                            color="text.hint"
+                            style={{
+                              flex: "1",
+                              width: "120px",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {item.name}
+                          </Typography>
+                        </div>
+
+                        <Typography
+                          fontSize="14px"
+                          color="text.hint"
+                          style={{ flex: "1", textAlign: "center" }}
+                        >
+                          {item.qty}
+                        </Typography>
+
+                        <div style={{ flex: "1", textAlign: "right" }}>
+                          <Typography
+                            fontSize="14px"
+                            fontWeight="600"
+                            lineHeight="1"
+                          >
+                            <PriceFormat price={totalPrice} />
+                          </Typography>
+                        </div>
+                      </FlexBox>
+                    );
+                  })}
+
+                  <Divider mb="1rem" />
+
                   <FlexBox
                     justifyContent="space-between"
                     alignItems="center"
@@ -462,19 +534,11 @@ const CheckoutForm: FC = () => {
 
                     <FlexBox alignItems="flex-end">
                       <Typography
-                        fontSize="18px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        ฿2610.
-                      </Typography>
-
-                      <Typography
-                        fontWeight="600"
                         fontSize="14px"
+                        fontWeight="600"
                         lineHeight="1"
                       >
-                        00
+                        <PriceFormat price={0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -484,15 +548,15 @@ const CheckoutForm: FC = () => {
                     alignItems="center"
                     mb="0.5rem"
                   >
-                    <Typography color="text.hint">ค่าจัดส่ง:</Typography>
+                    <Typography color="text.hint">ค่าส่วนลด:</Typography>
 
                     <FlexBox alignItems="flex-end">
                       <Typography
-                        fontSize="18px"
+                        fontSize="14px"
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        -
+                        <PriceFormat price={0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -506,19 +570,11 @@ const CheckoutForm: FC = () => {
 
                     <FlexBox alignItems="flex-end">
                       <Typography
-                        fontSize="18px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        ฿40.
-                      </Typography>
-
-                      <Typography
-                        fontWeight="600"
                         fontSize="14px"
+                        fontWeight="600"
                         lineHeight="1"
                       >
-                        00
+                        <PriceFormat price={0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -532,19 +588,11 @@ const CheckoutForm: FC = () => {
 
                     <FlexBox alignItems="flex-end">
                       <Typography
-                        fontSize="18px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        ฿40.
-                      </Typography>
-
-                      <Typography
-                        fontWeight="600"
                         fontSize="14px"
+                        fontWeight="600"
                         lineHeight="1"
                       >
-                        00
+                        <PriceFormat price={0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -557,19 +605,11 @@ const CheckoutForm: FC = () => {
 
                     <FlexBox alignItems="flex-end">
                       <Typography
-                        fontSize="18px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        ฿40.
-                      </Typography>
-
-                      <Typography
-                        fontWeight="600"
                         fontSize="14px"
+                        fontWeight="600"
                         lineHeight="1"
                       >
-                        00
+                        <PriceFormat price={0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -582,19 +622,11 @@ const CheckoutForm: FC = () => {
 
                     <FlexBox alignItems="flex-end">
                       <Typography
-                        fontSize="18px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        ฿40.
-                      </Typography>
-
-                      <Typography
-                        fontWeight="600"
                         fontSize="14px"
+                        fontWeight="600"
                         lineHeight="1"
                       >
-                        00
+                        <PriceFormat price={0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -610,11 +642,11 @@ const CheckoutForm: FC = () => {
 
                     <FlexBox alignItems="flex-end">
                       <Typography
-                        fontSize="18px"
+                        fontSize="14px"
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        -
+                        <PriceFormat price={0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -665,16 +697,67 @@ const CheckoutForm: FC = () => {
                   </FlexBox>
 
                   <Divider mb="1rem" />
-
-                  <Typography
-                    fontSize="25px"
-                    fontWeight="600"
-                    lineHeight="1"
-                    textAlign="right"
-                    mb="1.5rem"
+                  <FlexBox
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="1rem"
                   >
-                    ฿26100.00
-                  </Typography>
+                    <Typography fontWeight="600" fontSize="16px">
+                      ยอดรวมสุทธิ:
+                    </Typography>
+
+                    <FlexBox alignItems="flex-end">
+                      <Typography
+                        fontSize="18px"
+                        fontWeight="600"
+                        lineHeight="1"
+                        textAlign="right"
+                      >
+                        <PriceFormat price={getTotalPrice()} />
+                      </Typography>
+                    </FlexBox>
+                  </FlexBox>
+                  <FlexBox
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="1rem"
+                  >
+                    <Typography
+                      color="#d4001a"
+                      fontWeight="600"
+                      fontSize="15px"
+                    >
+                      สมาชิก รับคะแนนสะสม{" "}
+                      {calculatePointsFromTotalPrice(getTotalPrice())} คะแนน
+                    </Typography>
+                  </FlexBox>
+
+                  <Grid item xl={12} md={12} xs={12}>
+                    <Box mb="1rem">
+                      <FlexBox alignItems="center" mb="0.5rem">
+                        <H6>ใช้คะแนนสะสม</H6>
+                      </FlexBox>
+                      <StyledSearchBox>
+                        <Icon className="search-icon" size="18px">
+                          coupon
+                        </Icon>
+                        <TextField
+                          fullwidth
+                          name="code_coupon"
+                          className="search-field"
+                          placeholder="กรอกคะแนนสะสม"
+                        />
+                        <Button
+                          className="search-button"
+                          variant="contained"
+                          color="ihavecpu"
+                          type="button"
+                        >
+                          กดใช้
+                        </Button>
+                      </StyledSearchBox>
+                    </Box>
+                  </Grid>
 
                   <Grid item xl={12} md={12} xs={12}>
                     <Card1 style={{ border: "2px solid #f1f1f1" }}>
@@ -718,6 +801,7 @@ const CheckoutForm: FC = () => {
                       )}
                     </Card1>
                   </Grid>
+
                   <Grid item xl={12} md={12} xs={12}>
                     <Button
                       onClick={() => setButtonClicked("submitPayment")}

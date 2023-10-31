@@ -45,7 +45,7 @@ const ProductCard1List: FC<Props> = ({
         {filteredProducts.map((item) => (
           <Grid item lg={3} sm={6} xs={12} key={item.product_id}>
             <ProductCard1
-              id={item.product_id}
+              id={item.product_code}
               slug={item.product_code}
               price={parseFloat(item.market_price)}
               title={item.name_th}

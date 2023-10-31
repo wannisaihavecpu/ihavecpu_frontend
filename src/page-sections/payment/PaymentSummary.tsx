@@ -2,61 +2,166 @@ import { FC } from "react";
 import { Card1 } from "../../components/Card1";
 import Divider from "../../components/Divider";
 import FlexBox from "../../components/FlexBox";
-import Typography from "../../components/Typography";
+import { useAppContext } from "@context/AppContext";
+import PriceFormat from "@component/PriceFormat";
+import Typography from "@component/Typography";
 
 const CheckoutSummary: FC = () => {
+  const { state } = useAppContext();
+  const getTotalPrice = () => {
+    return (
+      state.cart.reduce(
+        (accumulator, item) => accumulator + item.price * item.qty,
+        0
+      ) || 0
+    );
+  };
+  function calculatePointsFromTotalPrice(totalPrice) {
+    const conversionRate = 25;
+    const points = Math.floor((totalPrice / 2500) * conversionRate);
+
+    return points;
+  }
   return (
     <Card1>
+      {state.cart.map((item) => {
+        const totalQty = item.qty;
+        const totalPrice = item.price * totalQty;
+
+        return (
+          <FlexBox
+            key={item.id}
+            justifyContent="space-between"
+            alignItems="center"
+            mb="0.5rem"
+          >
+            <div>
+              <Typography
+                fontSize="14px"
+                color="text.hint"
+                style={{
+                  flex: "1",
+                  width: "120px",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {item.name}
+              </Typography>
+            </div>
+
+            <Typography
+              fontSize="14px"
+              color="text.hint"
+              style={{ flex: "1", textAlign: "center" }}
+            >
+              {item.qty}
+            </Typography>
+
+            <div style={{ flex: "1", textAlign: "right" }}>
+              <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+                <PriceFormat price={totalPrice} />
+              </Typography>
+            </div>
+          </FlexBox>
+        );
+      })}
+
+      <Divider mb="1rem" />
+
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Subtotal:</Typography>
+        <Typography color="text.hint">ค่าจัดส่ง:</Typography>
 
         <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            $2610.
-          </Typography>
-          <Typography fontWeight="600" fontSize="14px" lineHeight="1">
-            00
+          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+            <PriceFormat price={0} />
           </Typography>
         </FlexBox>
       </FlexBox>
 
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Shipping:</Typography>
+        <Typography color="text.hint">ค่าส่วนลด:</Typography>
 
         <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            -
+          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+            <PriceFormat price={0} />
           </Typography>
         </FlexBox>
       </FlexBox>
 
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Tax:</Typography>
+        <Typography color="text.hint">ส่วนลดคูปอง:</Typography>
 
         <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            $40.
+          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+            <PriceFormat price={0} />
           </Typography>
-          <Typography fontWeight="600" fontSize="14px" lineHeight="1">
-            00
+        </FlexBox>
+      </FlexBox>
+
+      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
+        <Typography color="text.hint">ส่วนลดคะแนนสะสม:</Typography>
+
+        <FlexBox alignItems="flex-end">
+          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+            <PriceFormat price={0} />
+          </Typography>
+        </FlexBox>
+      </FlexBox>
+      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
+        <Typography color="text.hint">ราคาก่อนภาษี:</Typography>
+
+        <FlexBox alignItems="flex-end">
+          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+            <PriceFormat price={0} />
+          </Typography>
+        </FlexBox>
+      </FlexBox>
+      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
+        <Typography color="text.hint">ภาษี VAT 7%:</Typography>
+
+        <FlexBox alignItems="flex-end">
+          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+            <PriceFormat price={0} />
           </Typography>
         </FlexBox>
       </FlexBox>
 
       <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
-        <Typography color="text.hint">Discount:</Typography>
+        <Typography color="text.hint">ดอกเบี้ยผ่อนชําระ:</Typography>
+
         <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            -
+          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+            <PriceFormat price={0} />
           </Typography>
         </FlexBox>
       </FlexBox>
 
       <Divider mb="1rem" />
 
-      <Typography fontSize="25px" fontWeight="600" lineHeight="1" textAlign="right">
-        $2610.00
-      </Typography>
+      <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
+        <Typography fontWeight="600" fontSize="16px">
+          ยอดรวมสุทธิ:
+        </Typography>
+
+        <FlexBox alignItems="flex-end">
+          <Typography
+            fontSize="18px"
+            fontWeight="600"
+            lineHeight="1"
+            textAlign="right"
+          >
+            <PriceFormat price={getTotalPrice()} />
+          </Typography>
+        </FlexBox>
+      </FlexBox>
+      <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
+        <Typography color="#d4001a" fontWeight="600" fontSize="15px">
+          สมาชิก รับคะแนนสะสม {calculatePointsFromTotalPrice(getTotalPrice())}{" "}
+          คะแนน
+        </Typography>
+      </FlexBox>
     </Card1>
   );
 };

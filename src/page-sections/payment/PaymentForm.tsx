@@ -1,33 +1,24 @@
-import { FC, Fragment, useState, useEffect } from "react";
+import { FC, Fragment, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { Formik } from "formik";
-import * as yup from "yup";
-import Box from "@component/Box";
+// import { Formik } from "formik";
+// import * as yup from "yup";
+// import Box from "@component/Box";
 import Radio from "@component/radio";
 import Grid from "@component/grid/Grid";
 import { Card1 } from "@component/Card1";
-import FlexBox from "@component/FlexBox";
 import Divider from "@component/Divider";
 import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
 import Typography from "@component/Typography";
-import useWindowSize from "@hook/useWindowSize";
-import PaymentMethod from "@models/paymentMethod.model";
 
 type Props = { paymentMethods };
 const PaymentForm: FC<Props> = ({ paymentMethods }) => {
-  const router = useRouter();
-  const width = useWindowSize();
+  // const width = useWindowSize();
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
-  const [paymentOptions, setPaymentOptions] = useState([]);
 
-  const isMobile = width < 769;
-
-  const handleFormSubmit = async (values) => {
-    console.log(values);
-    router.push("/payment");
-  };
+  // const handleFormSubmit = async (values) => {
+  //   console.log(values);
+  //   router.push("/payment");
+  // };
 
   const handlePaymentMethodChange = ({ target: { name } }) => {
     setPaymentMethod(name);
@@ -80,40 +71,40 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
   );
 };
 
-const initialValues = {
-  card_no: "",
-  name: "",
-  exp_date: "",
-  cvc: "",
-  shipping_zip: "",
-  shipping_country: "",
-  shipping_address1: "",
-  shipping_address2: "",
+// const initialValues = {
+//   card_no: "",
+//   name: "",
+//   exp_date: "",
+//   cvc: "",
+//   shipping_zip: "",
+//   shipping_country: "",
+//   shipping_address1: "",
+//   shipping_address2: "",
 
-  billing_name: "",
-  billing_email: "",
-  billing_contact: "",
-  billing_company: "",
-  billing_zip: "",
-  billing_country: "",
-  billing_address1: "",
-  billing_address2: "",
-};
+//   billing_name: "",
+//   billing_email: "",
+//   billing_contact: "",
+//   billing_company: "",
+//   billing_zip: "",
+//   billing_country: "",
+//   billing_address1: "",
+//   billing_address2: "",
+// };
 
-const checkoutSchema = yup.object().shape({
-  card_no: yup.string().required("required"),
-  name: yup.string().required("required"),
-  exp_date: yup.string().required("required"),
-  cvc: yup.string().required("required"),
-  // shipping_zip: yup.string().required("required"),
-  // shipping_country: yup.object().required("required"),
-  // shipping_address1: yup.string().required("required"),
-  // billing_name: yup.string().required("required"),
-  // billing_email: yup.string().required("required"),
-  // billing_contact: yup.string().required("required"),
-  // billing_zip: yup.string().required("required"),
-  // billing_country: yup.string().required("required"),
-  // billing_address1: yup.string().required("required"),
-});
+// const checkoutSchema = yup.object().shape({
+//   card_no: yup.string().required("required"),
+//   name: yup.string().required("required"),
+//   exp_date: yup.string().required("required"),
+//   cvc: yup.string().required("required"),
+//   // shipping_zip: yup.string().required("required"),
+//   // shipping_country: yup.object().required("required"),
+//   // shipping_address1: yup.string().required("required"),
+//   // billing_name: yup.string().required("required"),
+//   // billing_email: yup.string().required("required"),
+//   // billing_contact: yup.string().required("required"),
+//   // billing_zip: yup.string().required("required"),
+//   // billing_country: yup.string().required("required"),
+//   // billing_address1: yup.string().required("required"),
+// });
 
 export default PaymentForm;
