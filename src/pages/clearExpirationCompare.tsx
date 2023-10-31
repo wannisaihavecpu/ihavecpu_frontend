@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 const clearExpirationCompare = () => {
   useEffect(() => {
-    console.log("thissss");
+    console.log("clearExpirationCompare");
     const setTimestamp = () => {
       localStorage.setItem(
         "compareListTimestamp",

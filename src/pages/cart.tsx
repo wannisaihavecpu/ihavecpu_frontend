@@ -13,7 +13,8 @@ import { ProductCard7 } from "@component/product-cards";
 import CheckoutNavLayout from "@component/layout/CheckoutNavLayout";
 import { useAppContext } from "@context/AppContext";
 import { currency } from "@utils/utils";
-
+import PriceFormat from "@component/PriceFormat";
+import Radio from "@component/radio";
 const Cart = () => {
   const { state } = useAppContext();
 
@@ -51,36 +52,42 @@ const Cart = () => {
               alignItems="center"
               mb="1rem"
             >
-              <Typography color="gray.600">รวม :</Typography>
+              <Typography>ยอดรวม :</Typography>
 
-              <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-                {currency(getTotalPrice())}
+              <Typography fontSize="15px" fontWeight="600" lineHeight="1">
+                <PriceFormat price={getTotalPrice()} />
+              </Typography>
+            </FlexBox>
+            <FlexBox
+              justifyContent="space-between"
+              alignItems="center"
+              mb="1rem"
+            >
+              <Typography color="#d4001a">ส่วนลด :</Typography>
+
+              <Typography
+                color="#d4001a"
+                fontSize="15px"
+                fontWeight="600"
+                lineHeight="1"
+              >
+                -<PriceFormat price={0} />
               </Typography>
             </FlexBox>
 
             <Divider mb="1rem" />
 
-            <FlexBox alignItems="center" mb="1rem">
-              <Typography fontWeight="600" mr="10px">
-                รายละเอียดเพิ่มเติม
+            <FlexBox
+              justifyContent="space-between"
+              alignItems="center"
+              mb="1rem"
+            >
+              <Typography fontWeight={600}>ยอดรวมสุทธิ :</Typography>
+
+              <Typography fontSize="15px" fontWeight="600" lineHeight="1">
+                <PriceFormat price={0} />
               </Typography>
-
-              <Box p="3px 10px" bg="primary.light" borderRadius="3px">
-                <Typography fontSize="12px" color="primary.main">
-                  หมายเหตุ
-                </Typography>
-              </Box>
             </FlexBox>
-
-            <TextArea rows={6} fullwidth mb="1rem" />
-
-            {/* <Divider mb="1rem" />
-
-            <TextField placeholder="โค๊ตส่วนลด" fullwidth />
-
-            <Button variant="outlined" color="primary" mt="1rem" mb="30px" fullwidth>
-              ใช้คูปองส่วนลด
-            </Button> */}
 
             <Divider mb="1.5rem" />
 
@@ -91,18 +98,27 @@ const Cart = () => {
             {/* <Select
               mb="1rem"
               label="ต้องการให้ iHAVECPU ประกอบให้หรือไม่"
-              options={countryList}
-              placeholder="เลือกสั่งประกอบ"
-              onChange={(e) => console.log(e)}
-            /> */}
-
-            <Select
-              mb="1rem"
-              label="ต้องการให้ iHAVECPU ประกอบให้หรือไม่"
               options={optionList}
               placeholder="เลือกสั่งประกอบ"
               onChange={(e) => console.log(e)}
-            />
+            /> */}
+            <FlexBox flexDirection="column">
+              {optionList.map((option) => (
+                <Radio
+                  mb="1rem"
+                  color="secondary"
+                  name="option"
+                  value={option.value}
+                  width={18}
+                  height={18}
+                  label={
+                    <Typography ml="6px" fontWeight="600" fontSize="13px">
+                      {option.value}
+                    </Typography>
+                  }
+                />
+              ))}
+            </FlexBox>
 
             <Box my="1rem">
               <Link href="/checkout">
