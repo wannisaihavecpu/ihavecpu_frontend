@@ -207,7 +207,6 @@ const CouponForUse: FC<CouponForUseProps> = ({
   topic,
   description,
   dateExpired,
-  code,
   checked,
   onClick,
   color,
@@ -269,6 +268,7 @@ const CouponForUse: FC<CouponForUseProps> = ({
                     bg={checked ? null : "primary.light"}
                     onClick={onClick}
                     style={{ width: "70px" }}
+                    type="button"
                   >
                     {checked ? "กำลังใช้คูปอง" : "ใช้คูปอง"}
                   </ButtonCoupon>

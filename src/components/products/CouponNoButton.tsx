@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import Grid from "@component/grid/Grid";
-import { ButtonCoupon, IconButton } from "@component/buttons";
+import { IconButton } from "@component/buttons";
 import Box from "@component/Box";
-import styled from "styled-components"; // Import css from styled-components
+import styled from "styled-components";
 import Icon from "@component/icon/Icon";
 
 interface CouponNoButtonProps {
@@ -209,9 +209,6 @@ const CouponNoButton: FC<CouponNoButtonProps> = ({
   topic,
   description,
   dateExpired,
-  code,
-  checked,
-  onClick,
   color,
   onClear,
 }) => {
@@ -264,6 +261,7 @@ const CouponNoButton: FC<CouponNoButtonProps> = ({
               </Grid>
               <Grid item lg={2} md={2} xs={2} container justify="flex-end">
                 <IconButton
+                  type="button"
                   p="3px 6px 3px"
                   style={{ width: "25px", height: "25px" }}
                 >

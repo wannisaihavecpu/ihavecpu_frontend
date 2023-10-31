@@ -25,8 +25,8 @@ import styled from "styled-components";
 type Props = {
   open: boolean;
   onClose: () => void;
-  selectedCoupon: string | null;
-  setSelectedCoupon: (coupon: string | null) => void;
+  selectedCoupon?: string | null;
+  setSelectedCoupon?: (coupon: string | null) => void;
 };
 
 const ModalContainer = styled.div`
@@ -350,8 +350,7 @@ const ModalContainer = styled.div`
 // ];
 
 const ModalCouponPurchase: FC<Props> = (props) => {
-  const { open, onClose, selectedCoupon, setSelectedCoupon } = props;
-  const [showModal, setShowModal] = useState(false);
+  const { open, onClose, setSelectedCoupon } = props;
   const [myCoupon, setMyCoupon] = useState({ data: { items: [] } });
   const [swiperSlidesPerView, setSwiperSlidesPerView] = useState(1);
   const [checkedCoupons, setCheckedCoupons] = useState([]);
@@ -409,7 +408,7 @@ const ModalCouponPurchase: FC<Props> = (props) => {
     }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_PATH}/api/collectCoupon}`,
+        `${process.env.NEXT_PUBLIC_API_PATH}/collectCoupon`,
         {
           method: "POST",
           headers: {
@@ -485,11 +484,12 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                   ใช้คูปองส่วนลด หรือ โค้ดส่วนลด
                 </SemiSpan>
               </span>
-              <button className="icon-button">
+
+              <Button type="button" className="icon-button">
                 <Icon size="24px" onClick={onClose}>
                   close
                 </Icon>
-              </button>
+              </Button>
             </header>
             <section className="modal-container-search">
               <Grid container justifyContent="center" spacing={16}>
@@ -514,8 +514,8 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                             className="search-button"
                             variant="contained"
                             color="ihavecpu"
-                            type="submit"
                             onClick={handleCodeCouponSubmit}
+                            type="button"
                           >
                             ใช้โค้ด
                           </Button>

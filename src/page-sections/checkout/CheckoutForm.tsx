@@ -15,8 +15,8 @@ import Divider from "@component/Divider";
 import Radio from "@component/radio";
 import Icon from "@component/icon/Icon";
 import ModalCouponPurchase from "@component/products/ModalCouponPurchase";
-import CouponForUse from "@component/products/CouponForUse";
 import CouponNoButton from "@component/products/CouponNoButton";
+// import { useFormik } from "formik";
 
 const CheckoutForm: FC = () => {
   const router = useRouter();
@@ -27,10 +27,6 @@ const CheckoutForm: FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
-
-  const handleSelectCoupon = (coupon) => {
-    setSelectedCoupon(coupon);
-  };
 
   const [buttonClicked, setButtonClicked] = useState(null);
 
@@ -707,17 +703,16 @@ const CheckoutForm: FC = () => {
                             <H6>ใช้รหัสคูปองส่วนลด?</H6>
                           </FlexBox>
                           <FlexBox>
-                            <Link href="#">
-                              <Button
-                                onClick={toggleDialog}
-                                mt="1rem"
-                                variant="outlined"
-                                color="ihavecpu"
-                                style={{ width: "100%" }}
-                              >
-                                ใช้รหัสคูปองส่วนลด
-                              </Button>
-                            </Link>
+                            <Button
+                              onClick={toggleDialog}
+                              mt="1rem"
+                              variant="outlined"
+                              color="ihavecpu"
+                              style={{ width: "100%" }}
+                              type="button"
+                            >
+                              ใช้รหัสคูปองส่วนลด
+                            </Button>
                           </FlexBox>
                         </>
                       )}

@@ -207,7 +207,6 @@ const Coupon: FC<CouponProps> = ({
   topic,
   description,
   dateExpired,
-  code,
   checked,
   onClick,
   color,
