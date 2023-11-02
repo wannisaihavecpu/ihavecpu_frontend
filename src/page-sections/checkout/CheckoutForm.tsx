@@ -20,12 +20,14 @@ import { useAppContext } from "@context/AppContext";
 import PriceFormat from "@component/PriceFormat";
 import StyledSearchBox from "@component/search-box/styled";
 import Box from "@component/Box";
+import Select from "@component/Select";
 
 // import { useFormik } from "formik";
+type Props = { branchList; shippingList };
 
-const CheckoutForm: FC = () => {
+const CheckoutForm: FC<Props> = ({ shippingList }) => {
   const router = useRouter();
-  const { state } = useAppContext();
+  const { state, updateCustomerDetailsPurchase } = useAppContext();
 
   const [sameAsShipping, setSameAsShipping] = useState(false);
   const [taxInvoice, setTaxInvoice] = useState(false);
@@ -40,6 +42,9 @@ const CheckoutForm: FC = () => {
   const handleFormSubmit = async (values) => {
     if (buttonClicked === "submitPayment") {
       console.log(values);
+      console.log("update");
+      updateCustomerDetailsPurchase(values);
+
       router.push("/payment");
     }
   };
@@ -52,6 +57,15 @@ const CheckoutForm: FC = () => {
   //   validationSchema: checkoutSchema,
   // });
 
+  const updateCustomerDetails = (values) => {
+    const { dispatch } = useAppContext();
+
+    dispatch({
+      type: "UPDATE_CUSTOMER_DETAILS_PURCHASE",
+      payload: values,
+    });
+  };
+
   const handleCheckboxChange =
     (values, setFieldValue) =>
     ({ target: { checked } }) => {
@@ -59,14 +73,14 @@ const CheckoutForm: FC = () => {
       setFieldValue("same_as_shipping", checked);
 
       if (!checked) {
-        // Clear the billing address fields when unchecked
+        // clear the billing address fields when unchecked
         setFieldValue("bill_address1", "");
         setFieldValue("bill_subdistrict", "");
         setFieldValue("bill_state", "");
         setFieldValue("bill_city", "");
         setFieldValue("bill_postcode", "");
       } else {
-        // Populate billing address fields with shipping address if checked
+        // opulate billing address fields with shipping address if checked
         setFieldValue("bill_address1", values.ship_address1);
         setFieldValue("bill_subdistrict", values.ship_subdistrict);
         setFieldValue("bill_state", values.ship_state);
@@ -98,24 +112,12 @@ const CheckoutForm: FC = () => {
       ) || 0
     );
   };
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/shippinglist`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.data) {
-          setShippingOptions(data.data);
-        }
-      })
-      .catch((error) => {
-        console.error("error fetching", error);
-      });
-  }, []);
+  console.log(state.customerDetail);
 
   return (
     <Fragment>
       <Formik
-        initialValues={initialValues}
+        initialValues={state.customerDetail[0] || initialValues}
         validationSchema={checkoutSchema}
         onSubmit={handleFormSubmit}
       >
@@ -566,41 +568,6 @@ const CheckoutForm: FC = () => {
                     alignItems="center"
                     mb="0.5rem"
                   >
-                    <Typography color="text.hint">ส่วนลดคูปอง:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
-                    <Typography color="text.hint">ส่วนลดคะแนนสะสม:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
                     <Typography color="text.hint">ราคาก่อนภาษี:</Typography>
 
                     <FlexBox alignItems="flex-end">
@@ -631,26 +598,6 @@ const CheckoutForm: FC = () => {
                     </FlexBox>
                   </FlexBox>
 
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="1rem"
-                  >
-                    <Typography color="text.hint">
-                      ดอกเบี้ยผ่อนชําระ:
-                    </Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-
                   <Divider mb="1rem" />
                   <FlexBox
                     justifyContent="space-between"
@@ -659,30 +606,36 @@ const CheckoutForm: FC = () => {
                   >
                     <Typography color="text.hint">วิธีการจัดส่ง:</Typography>
                     <FlexBox flexDirection="column">
-                      {shippingOptions.map((option) => (
-                        <Radio
-                          key={option.shipping_id}
-                          mb="0.5rem"
-                          color="secondary"
-                          name="shippingOption"
-                          value={option.shipping_id}
-                          width={15}
-                          height={15}
-                          checked={values.shippingOption === option.shipping_id}
-                          onChange={() => {
-                            setFieldValue("shippingOption", option.shipping_id);
-                          }}
-                          label={
-                            <Typography
-                              ml="6px"
-                              fontWeight="600"
-                              fontSize="13px"
-                            >
-                              {option.title}
-                            </Typography>
-                          }
-                        />
-                      ))}
+                      {shippingList &&
+                        shippingList.map((option) => (
+                          <Radio
+                            key={option.shipping_id}
+                            mb="0.5rem"
+                            color="secondary"
+                            name="shippingOption"
+                            value={option.shipping_id}
+                            width={15}
+                            height={15}
+                            checked={
+                              values.shippingOption === option.shipping_id
+                            }
+                            onChange={() => {
+                              setFieldValue(
+                                "shippingOption",
+                                option.shipping_id
+                              );
+                            }}
+                            label={
+                              <Typography
+                                ml="6px"
+                                fontWeight="600"
+                                fontSize="13px"
+                              >
+                                {option.title}
+                              </Typography>
+                            }
+                          />
+                        ))}
                       {touched.shippingOption && errors.shippingOption && (
                         <H6
                           fontWeight={300}
@@ -694,6 +647,18 @@ const CheckoutForm: FC = () => {
                         </H6>
                       )}
                     </FlexBox>
+                  </FlexBox>
+                  <FlexBox>
+                    <Grid item sm={12} xs={12}>
+                      {/* <Select
+                        label="สาขาที่ต้องการรับ"
+                        options={branchList.map((branch) => ({
+                          value: branch.branch_id,
+                          label: branch.branch_name_th,
+                        }))}
+                        value={values.selectedBranch}
+                      /> */}
+                    </Grid>
                   </FlexBox>
 
                   <Divider mb="1rem" />
@@ -831,6 +796,7 @@ const CheckoutForm: FC = () => {
 };
 
 const initialValues = {
+  selectedBranch: "",
   ship_firstname: "",
   ship_lastname: "",
   ship_email: "",

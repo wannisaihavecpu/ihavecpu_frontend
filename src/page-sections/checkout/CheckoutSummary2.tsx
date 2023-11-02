@@ -3,23 +3,35 @@ import Box from "@component/Box";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import Typography, { Span } from "@component/Typography";
+import { useAppContext } from "@context/AppContext";
+import PriceFormat from "@component/PriceFormat";
+import { Card1 } from "@component/Card1";
 
 const CheckoutSummary2: FC = () => {
+  const { state } = useAppContext();
+
   return (
-    <Box>
+    <Card1>
       <Typography color="secondary.900" fontWeight="700" mb="1.5rem">
         คำสั่งซื้อของคุณ
       </Typography>
 
-      {cartList.map((item) => (
-        <FlexBox justifyContent="space-between" alignItems="center" mb="1.5rem" key={item.name}>
+      {state.cart.map((item) => (
+        <FlexBox
+          justifyContent="space-between"
+          alignItems="center"
+          mb="1.5rem"
+          key={item.id}
+        >
           <Typography>
             <Span fontWeight="700" fontSize="14px">
-              {item.quantity}
+              {item.qty}
             </Span>{" "}
             x {item.name}
           </Typography>
-          <Typography>${item.price.toFixed(2)}</Typography>
+          <Typography>
+            <PriceFormat price={item.price} />
+          </Typography>
         </FlexBox>
       ))}
 
@@ -47,11 +59,16 @@ const CheckoutSummary2: FC = () => {
 
       <Divider bg="gray.300" mb="0.5rem" />
 
-      <FlexBox fontWeight="700" justifyContent="space-between" alignItems="center" mb="0.5rem">
+      <FlexBox
+        fontWeight="700"
+        justifyContent="space-between"
+        alignItems="center"
+        mb="0.5rem"
+      >
         <Typography>ราคารวมทั้งหมด:</Typography>
         <Typography fontWeight="700">฿{(2610).toFixed(2)}</Typography>
       </FlexBox>
-    </Box>
+    </Card1>
   );
 };
 

@@ -29,7 +29,7 @@ const CheckoutNavLayout: FC<Props> = ({ children }) => {
         router.push("/payment");
         break;
       case 3:
-        router.push("/orders");
+        router.push("/checkout-alternative");
         break;
       default:
         break;
@@ -47,6 +47,8 @@ const CheckoutNavLayout: FC<Props> = ({ children }) => {
       case "/payment":
         setSelectedStep(3);
         break;
+      case "/checkout-alternative":
+        setSelectedStep(4);
       default:
         break;
     }
@@ -76,7 +78,7 @@ const stepperList = [
   { title: "ตะกร้าสินค้า", disabled: false },
   { title: "รายละเอียด", disabled: false },
   { title: "ชำระเงิน", disabled: false },
-  { title: "ตรวจสอบรายละเอียด", disabled: true },
+  { title: "ตรวจสอบรายละเอียด", disabled: false },
 ];
 
 export default CheckoutNavLayout;

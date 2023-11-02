@@ -8,7 +8,11 @@ import {
 } from "react";
 
 // =================================================================================
-type InitialState = { cart: CartItem[]; isHeaderFixed: boolean };
+type InitialState = {
+  cart: CartItem[];
+  isHeaderFixed: boolean;
+  customerDetail: CustomerDetails[];
+};
 
 export type CartItem = {
   qty: number;
@@ -19,9 +23,71 @@ export type CartItem = {
   id: string | number;
 };
 
+export type CustomerDetails = {
+  ship_firstname?: string;
+  ship_lastname?: string;
+  ship_email?: string;
+  ship_mobile?: string;
+  ship_address1?: string;
+  ship_subdistrict?: string;
+  ship_state?: string;
+  ship_city?: string;
+  ship_postcode?: string;
+  bill_firstname?: string;
+  bill_lastname?: string;
+  bill_companyname?: string;
+  bill_tax_id?: string;
+  bill_mobile?: string;
+  bill_address1?: string;
+  bill_subdistrict?: string;
+  bill_state?: string;
+  bill_city?: string;
+  bill_postcode?: string;
+  paymentMethod?: string;
+  deliveryOption?: string;
+  request_tax?: boolean;
+  shippingOption?: number;
+  paymentOption?: number;
+};
+
 type CartActionType = { type: "CHANGE_CART_AMOUNT"; payload: CartItem };
+type UpdateCustomerDetailsPurchaseActionType = {
+  type: "UPDATE_CUSTOMER_DETAILS_PURCHASE";
+  payload: CustomerDetails;
+};
 type LayoutActionType = { type: "TOGGLE_HEADER"; payload: boolean };
-type ActionType = CartActionType | LayoutActionType;
+type ActionType =
+  | CartActionType
+  | LayoutActionType
+  | UpdateCustomerDetailsPurchaseActionType;
+
+const INITIAL_CUSTOMER_DETAILS: CustomerDetails = {
+  ship_firstname: "",
+  ship_lastname: "",
+  ship_email: "",
+  ship_mobile: "",
+  ship_address1: "",
+  ship_subdistrict: "",
+  ship_state: "",
+  ship_city: "",
+  ship_postcode: "",
+
+  bill_firstname: "",
+  bill_lastname: "",
+  bill_companyname: "",
+  bill_tax_id: "",
+  bill_mobile: "",
+  bill_address1: "",
+  bill_subdistrict: "",
+  bill_state: "",
+  bill_city: "",
+  bill_postcode: "",
+  request_tax: false,
+  paymentMethod: "",
+  deliveryOption: "",
+  shippingOption: null,
+  paymentOption: null,
+};
 
 // =================================================================================
 
@@ -36,22 +102,33 @@ const getInitialCart = () => {
   }
 };
 
-const INITIAL_STATE = { cart: getInitialCart(), isHeaderFixed: false };
+const INITIAL_CART = getInitialCart();
+
+const INITIAL_STATE: InitialState = {
+  cart: INITIAL_CART,
+  isHeaderFixed: false,
+  customerDetail: [INITIAL_CUSTOMER_DETAILS],
+};
 
 interface ContextProps {
   state: InitialState;
   dispatch: (args: ActionType) => void;
+  updateCustomerDetailsPurchase: (details: CustomerDetails) => void;
 }
 
 const AppContext = createContext<ContextProps>({
   state: INITIAL_STATE,
   dispatch: () => {},
+  updateCustomerDetailsPurchase: () => {},
 });
 
 const reducer = (state: InitialState, action: ActionType) => {
   switch (action.type) {
     case "TOGGLE_HEADER":
       return { ...state, isHeaderFixed: action.payload };
+
+    case "UPDATE_CUSTOMER_DETAILS_PURCHASE":
+      return { ...state, customerDetail: [action.payload] };
 
     case "CHANGE_CART_AMOUNT":
       let cartList = state.cart;
@@ -94,7 +171,14 @@ type AppProviderProps = { children: ReactNode };
 
 export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
-  const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
+  const updateCustomerDetailsPurchase = (details: CustomerDetails) => {
+    dispatch({ type: "UPDATE_CUSTOMER_DETAILS_PURCHASE", payload: details });
+  };
+  const contextValue = useMemo(
+    () => ({ state, dispatch, updateCustomerDetailsPurchase }),
+    [state, dispatch]
+  );
+
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   );
