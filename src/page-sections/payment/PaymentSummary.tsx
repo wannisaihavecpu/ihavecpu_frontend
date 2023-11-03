@@ -22,9 +22,6 @@ const CheckoutSummary: FC = () => {
 
     return points;
   }
-  console.log("payment page");
-
-  console.log(state.customerDetail);
 
   return (
     <Card1>

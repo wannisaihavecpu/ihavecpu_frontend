@@ -903,7 +903,7 @@ const checkoutSchema = yup.object().shape({
     then: yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
     otherwise: yup.string(),
   }),
-  shippingOption: yup.string().required("กรุณาเลือกวิธีการจัดส่ง"),
+  shippingOption: yup.string().nullable().required("กรุณาเลือกวิธีการจัดส่ง"),
 });
 
 export default CheckoutForm;

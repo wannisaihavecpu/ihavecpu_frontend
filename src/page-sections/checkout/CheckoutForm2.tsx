@@ -15,10 +15,11 @@ import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
 import Typography, { H6, Paragraph } from "@component/Typography";
 import { useAppContext } from "@context/AppContext";
+import shippingl from "@models/shippingList.model";
+import paymentl from "@models/paymentList";
+type Props = { shippingList; paymentList };
 
-type Props = { shippingList };
-
-const CheckoutForm2: FC<Props> = ({ shippingList }) => {
+const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
   const router = useRouter();
   const { state } = useAppContext();
 
@@ -28,6 +29,11 @@ const CheckoutForm2: FC<Props> = ({ shippingList }) => {
   const selectedShippingOption = shippingList.find(
     (option) => option.shipping_id === state.customerDetail[0].shippingOption
   );
+
+  const selectedPaymentOption = paymentList.find(
+    (option) => option.gateway_id === state.customerDetail[0].paymentOption
+  );
+  console.log("Selected Payment Option:", selectedPaymentOption);
 
   const handleFormSubmit = async (values) => {
     console.log(values);
@@ -54,8 +60,8 @@ const CheckoutForm2: FC<Props> = ({ shippingList }) => {
 
     setDateList(list);
   }, []);
-
-  console.log(state.customerDetail[0].request_tax);
+  console.log("Checkout alternative");
+  console.log(state);
 
   return (
     <Formik
@@ -278,7 +284,7 @@ const CheckoutForm2: FC<Props> = ({ shippingList }) => {
 
             <Typography mb="0.75rem">วิธีการชำระเงินที่เลือกไว้</Typography>
             <Grid container spacing={6}>
-              {paymentMethodList.map((item) => (
+              {/* {paymentMethodList.map((item) => (
                 <Grid item md={6} sm={6} xs={12} key={item.last4Digits}>
                   <Card
                     bg="gray.100"
@@ -313,7 +319,54 @@ const CheckoutForm2: FC<Props> = ({ shippingList }) => {
                     <Paragraph color="gray.700">{item.name}</Paragraph>
                   </Card>
                 </Grid>
-              ))}
+              ))} */}
+              {state.customerDetail[0].paymentOption ? (
+                <Grid item md={7} sm={6} xs={12}>
+                  <Card
+                    bg="gray.100"
+                    p="1rem"
+                    boxShadow="none"
+                    border="1px solid"
+                    cursor="pointer"
+                    borderColor="primary.main"
+                    // onClick={handleFieldValueChange(
+                    //   item.last4Digits,
+                    //   "card",
+                    //   setFieldValue
+                    // )}
+                  >
+                    <Box
+                      height="24px"
+                      width="36px"
+                      position="relative"
+                      mb="0.5rem"
+                    >
+                      <NextImage
+                        src={`/assets/images/payment-methods/${selectedPaymentOption.icon}.svg`}
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </Box>
+
+                    <Box mt="1rem">
+                      <Paragraph color="gray.800" fontWeight={600}>
+                        {selectedPaymentOption.method_name_th}
+                      </Paragraph>
+                    </Box>
+                    <Box mt="0.3rem">
+                      <Paragraph color="gray.600" fontSize="12px">
+                        {selectedPaymentOption.method_desc_th ? (
+                          <>({selectedPaymentOption.method_desc_th})</>
+                        ) : (
+                          <></>
+                        )}
+                      </Paragraph>
+                    </Box>
+                  </Card>
+                </Grid>
+              ) : (
+                <></>
+              )}
             </Grid>
 
             {/* <Paragraph

@@ -39,7 +39,7 @@ const SyledRadio = styled.input<
       height: `${props.height}px`,
       borderRadius: 20,
       border: "2px solid",
-      borderColor: "text.hint",
+      borderColor: `${props.color}.main`,
       position: "relative",
 
       "&:checked": {

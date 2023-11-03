@@ -9,15 +9,7 @@ import PaymentMethod from "@models/paymentMethod.model";
 type Props = { payment: PaymentMethod };
 
 const Payment = (props: Props) => {
-  return (
-    <Grid container flexWrap="wrap-reverse" spacing={6}>
-      <PaymentForm paymentMethods={props.payment} />
-
-      <Grid item lg={4} md={4} xs={12}>
-        <PaymentSummary />
-      </Grid>
-    </Grid>
-  );
+  return <PaymentForm paymentMethods={props.payment} />;
 };
 
 Payment.layout = CheckoutNavLayout;
