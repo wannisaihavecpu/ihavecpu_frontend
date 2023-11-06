@@ -48,6 +48,8 @@ export type CustomerDetails = {
   request_tax?: boolean;
   shippingOption?: number;
   paymentOption?: number;
+  bankOption?: number;
+  termOption?: number;
 };
 
 type CartActionType = { type: "CHANGE_CART_AMOUNT"; payload: CartItem };
@@ -86,7 +88,10 @@ const INITIAL_CUSTOMER_DETAILS: CustomerDetails = {
   paymentMethod: "",
   deliveryOption: "",
   shippingOption: null,
+
   paymentOption: null,
+  bankOption: null,
+  termOption: null,
 };
 
 // =================================================================================

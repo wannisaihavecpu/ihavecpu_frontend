@@ -1,4 +1,4 @@
-import { FC, Fragment, useState,useEffect } from "react";
+import { FC, Fragment, useState, useEffect } from "react";
 import Link from "next/link";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -16,17 +16,60 @@ import { useAppContext } from "@context/AppContext";
 import PriceFormat from "@component/PriceFormat";
 import Box from "@component/Box";
 
-type Props = { paymentMethods };
-const PaymentForm: FC<Props> = ({ paymentMethods }) => {
+interface SelectedValue {
+  label: string;
+  value: string;
+}
+
+type Props = { paymentMethods; installmentList; shippingList };
+
+const calculateSubtotal = (cart) => {
+  if (!cart || !Array.isArray(cart)) {
+    return 0;
+  }
+
+  return cart.reduce((accumulator, item) => accumulator + (item.price || 0), 0);
+};
+
+const calculateShippingCost = (customerDetail, shippingList) => {
+  const selectedShipping = shippingList.find(
+    (shipping) => shipping.shipping_id === customerDetail[0].shippingOption
+  );
+  return selectedShipping ? parseFloat(selectedShipping.shipping_rate) : 0;
+};
+
+const calculateVat = (subtotal) => {
+  return subtotal * (7 / 107);
+};
+
+const calculatePriceBeforeVat = (subtotal) => {
+  return subtotal * (100 / 107);
+};
+
+const calculateTotalPrice = (subtotal, shippingCost, vat) => {
+  return subtotal + shippingCost + vat;
+};
+
+const PaymentForm: FC<Props> = ({
+  paymentMethods,
+  installmentList,
+  shippingList,
+}) => {
   // const width = useWindowSize();
   const router = useRouter();
   const { state, updateCustomerDetailsPurchase, dispatch } = useAppContext();
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
+  const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedTerm, setSelectedTerm] = useState(null);
+
+  const [termOptions, setTermOptions] = useState([]);
 
   const handleFormSubmit = async (values) => {
     const updatedCustomerDetail = {
       ...state.customerDetail[0],
       paymentOption: values.paymentOption,
+      bankOption: values.bankOption,
+      termOption: values.termOption,
     };
 
     updateCustomerDetailsPurchase(updatedCustomerDetail);
@@ -55,6 +98,48 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
   }
   console.log("paymentMethod", paymentMethod);
 
+  const optionsBankList = installmentList.map((installment) => ({
+    label: installment.bank_name,
+    value: installment.bank_id.toString(),
+  }));
+
+  const handleBankSelectChange = (
+    selectedValue,
+    setFieldValue,
+    setFieldTouched
+  ) => {
+    setSelectedTerm(null);
+    setFieldValue("termOption", "");
+    setFieldTouched("termOption", false);
+    setFieldTouched("bankOption", false);
+
+    const selectedBankData = installmentList.find(
+      (installment) => installment.bank_id.toString() === selectedValue.value
+    );
+    if (selectedBankData) {
+      setTermOptions(selectedBankData.installment_terms);
+    } else {
+      console.log("this null");
+      setTermOptions(null);
+    }
+  };
+
+  // calculate
+  const subtotal = state.cart.reduce((accumulator, item) => {
+    const totalQty = item.qty;
+    const totalPrice = item.price * totalQty;
+    return accumulator + totalPrice;
+  }, 0);
+  console.log("subtotal", subtotal);
+  const shippingCost = calculateShippingCost(
+    state.customerDetail,
+    shippingList
+  );
+
+  const vat = calculateVat(subtotal);
+  const priceBeforeVat = calculatePriceBeforeVat(subtotal);
+  const totalPrice = calculateTotalPrice(priceBeforeVat, shippingCost, vat);
+
   return (
     <Formik
       initialValues={initialValues}
@@ -69,6 +154,7 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
         handleBlur,
         handleSubmit,
         setFieldValue,
+        setFieldTouched,
       }) => (
         <form onSubmit={handleSubmit}>
           <Grid container flexWrap="wrap-reverse" spacing={6}>
@@ -103,33 +189,61 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
                   <Fragment>
                     <Fragment>
                       <Grid item lg={6}>
-                        <Box mt="1rem">
+                        <Box mt="1rem" p="0.5rem 1rem 0rem 1rem">
                           <Select
                             className="custom-select"
+                            name="bankOption"
                             mb="1rem"
-                            name="bank-select"
-                            options="{value}"
+                            options={installmentList.map((installment) => ({
+                              label: installment.bank_name,
+                              value: installment.bank_id.toString(),
+                            }))}
                             placeholder="เลือกธนาคาร"
-                            onChange={(e) => console.log(e)}
+                            value={selectedBank || ""}
+                            errorText={touched.bankOption && errors.bankOption}
+                            onChange={(selectedValue: SelectedValue) => {
+                              setSelectedBank(selectedValue);
+                              setFieldValue("bankOption", selectedValue.value);
+                              handleBankSelectChange(
+                                selectedValue,
+                                setFieldValue,
+                                setFieldTouched
+                              );
+                            }}
                           />
                         </Box>
                       </Grid>
                     </Fragment>
 
-                    <Fragment>
-                      <Grid item lg={6}>
-                        <Box>
-                          <Select
-                            className="custom-select"
-                            name="term-select"
-                            mb="1rem"
-                            options="{value}"
-                            placeholder="จำนวนงวดที่ผ่อนชำระ"
-                            onChange={(e) => console.log(e)}
-                          />
-                        </Box>
-                      </Grid>
-                    </Fragment>
+                    {selectedBank && ( // Only render the term-select if a bank is selected
+                      <Fragment>
+                        <Grid item lg={6}>
+                          <Box p="0.5rem 1rem 0rem 1rem">
+                            <Select
+                              className="custom-select"
+                              name="termOption"
+                              mb="1rem"
+                              options={termOptions.map((term) => ({
+                                label: term.interest_rate,
+                                value: term.term.toString(),
+                              }))}
+                              placeholder="จำนวนงวดที่ผ่อนชำระ"
+                              value={selectedTerm || ""}
+                              errorText={
+                                touched.termOption && errors.termOption
+                              }
+                              onChange={(selectedValue: SelectedValue) => {
+                                setSelectedTerm(selectedValue);
+                                setFieldValue(
+                                  "termOption",
+                                  selectedValue.value
+                                );
+                              }}
+                            />
+                          </Box>
+                        </Grid>
+                      </Fragment>
+                    )}
                   </Fragment>
                 )}
               </Card1>
@@ -224,7 +338,16 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      <PriceFormat price={0} />
+                      {state.customerDetail.map((item) => {
+                        const selectedShipping = shippingList.find(
+                          (shipping) =>
+                            shipping.shipping_id === item.shippingOption
+                        );
+                        const shippingRate = selectedShipping
+                          ? parseFloat(selectedShipping.shipping_rate)
+                          : 0;
+                        return <PriceFormat price={shippingRate} />;
+                      })}
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -238,7 +361,7 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      <PriceFormat price={0} />
+                      -
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -252,7 +375,7 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      <PriceFormat price={0} />
+                      <PriceFormat price={priceBeforeVat} />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -265,7 +388,7 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      <PriceFormat price={0} />
+                      <PriceFormat price={vat} />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -288,7 +411,7 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
                       lineHeight="1"
                       textAlign="right"
                     >
-                      <PriceFormat price={getTotalPrice()} />
+                      <PriceFormat price={totalPrice} />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -311,13 +434,27 @@ const PaymentForm: FC<Props> = ({ paymentMethods }) => {
     </Formik>
   );
 };
+const categoryOptions = [
+  { label: "Fashion", value: "fashion" },
+  { label: "Gadget", value: "gadget" },
+];
 
 const initialValues = {
   paymentOption: "",
+  bankOption: "",
+  termOption: "",
 };
 
 const checkoutSchema = yup.object().shape({
   paymentOption: yup.string().required("กรุณาเลือกวิธีการชำระเงิน"),
+  bankOption: yup.string().when("paymentOption", {
+    is: "8",
+    then: yup.string().required("กรุณาเลือกธนาคาร"),
+  }),
+  termOption: yup.string().when("paymentOption", {
+    is: "8",
+    then: yup.string().required("กรุณาเลือกจำนวนงวดที่ผ่อนชำระ"),
+  }),
 });
 
 export default PaymentForm;

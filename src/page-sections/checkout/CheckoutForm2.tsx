@@ -362,6 +362,15 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
                         )}
                       </Paragraph>
                     </Box>
+                    <Box mt="0.3rem">
+                      <Paragraph color="gray.600" fontSize="12px">
+                        {state.customerDetail[0].bankOption ? (
+                          <>({selectedPaymentOption.method_desc_th})</>
+                        ) : (
+                          <></>
+                        )}
+                      </Paragraph>
+                    </Box>
                   </Card>
                 </Grid>
               ) : (
