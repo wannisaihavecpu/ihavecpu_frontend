@@ -1,93 +1,152 @@
-import { Fragment } from "react";
 import { GetStaticProps } from "next";
-import Box from "@component/Box";
-import Container from "@component/Container";
-import Navbar from "@component/navbar/Navbar";
 import AppLayout from "@component/layout/AppLayout";
-import Section1 from "@sections/fashion-1/Section1";
-import Section2 from "@sections/fashion-1/Section2";
-import Section3 from "@sections/fashion-1/Section3";
-import Section4 from "@sections/fashion-1/Section4";
-import Section5 from "@sections/fashion-1/Section5";
-import Section6 from "@sections/fashion-1/Section6";
-import Section7 from "@sections/fashion-1/Section7";
-import Section8 from "@sections/fashion-1/Section8";
-import Section9 from "@sections/fashion-1/Section9";
-import api from "@utils/__api__/fashion-1";
-import Service from "@models/service.model";
+import Section1 from "@sections/market-1/Section1";
+import Section2 from "@sections/market-1/Section2";
+import Section3 from "@sections/market-1/Section3";
+import Section4 from "@sections/market-1/Section4";
+import Section5 from "@sections/market-1/Section5";
+import Section6 from "@sections/market-1/Section6";
+import Section7 from "@sections/market-1/Section7";
+import Section8 from "@sections/market-1/Section8";
+import Section10 from "@sections/market-1/Section10";
+import Section11 from "@sections/market-1/Section11";
+import Section12 from "@sections/market-1/Section12";
+import Section13 from "@sections/market-1/Section13";
+import api from "@utils/__api__/market-1";
+// data models
+import Shop from "@models/shop.model";
+import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
+import Service from "@models/service.model";
+import Category from "@models/category.model";
+import MainCarouselItem from "@models/market-1.model";
 
-// =======================================================
-type FashionShop1Props = {
-  hotDealList: any[];
-  dealOfTheWeek: any[];
-  serviceList: Service[];
-  trendingItems: Product[];
-  flashDealsData: Product[];
-  newArrivalsData: Product[];
+// =================================================================
+type Props = {
+  carList?: Product[];
+  carBrands?: Brand[];
+  opticsShops?: Shop[];
+  mobileShops?: Shop[];
+  moreItems?: Product[];
+  opticsList?: Product[];
+  mobileList?: Product[];
+  mobileBrands?: Brand[];
+  opticsBrands?: Brand[];
+  serviceList?: Service[];
+  topRatedBrands?: Brand[];
+  topCategories?: Category[];
+  flashDealsData?: Product[];
+  newArrivalsList?: Product[];
+  bigDiscountList?: Product[];
+  topRatedProducts?: Product[];
+  bottomCategories?: Category[];
+  mainCarouselData?: MainCarouselItem[];
 };
-// =======================================================
+// =================================================================
 
-const FashionOne = (props: FashionShop1Props) => {
+const Market1 = (props: Props) => {
   return (
-    <Fragment>
-      {/* NAVBAR AREA */}
-      <Navbar />
+    <main>
+      
+      
+      {/* HERO CAROUSEL AREA */}
+      <Section1 carouselData={props.mainCarouselData} />
+      
+      {/* FLASH DEAL PRODUCTS AREA */}
+      <Section2 products={props.flashDealsData} />
 
-      <Container my="2rem">
-        {/* DISCOUNT BANNER AREA */}
-        <Section1 />
+      {/* TOP CATEGORIES AREA */}
+      <Section3 categoryList={props.topCategories} />
 
-        {/* SERVICES AND SPECIAL OFFER AREA */}
-        <Box mb="3.75rem">
-          <Section2 />
-        </Box>
+      {/* TOP RATING AND BRANDS AREA */}
+      <Section4 topRatedList={props.topRatedProducts} topRatedBrands={props.topRatedBrands} />
 
-        {/* FLASH DEAL PRODUCTS AREA */}
-        <Section3 products={props.flashDealsData} />
+      {/* NEW ARRIVALS AREA */}
+      <Section5 newArrivalsList={props.newArrivalsList} />
 
-        {/* NEW ARRIVAL PRODUCTS AREA */}
-        <Section4 products={props.newArrivalsData} />
+      {/* BIG DISCOUNT AREA */}
+      <Section13 bigDiscountList={props.bigDiscountList} />
 
-        {/* DEALS OF WEEK PRODUCTS AREA */}
-        <Section5 list={props.dealOfTheWeek} />
+      {/* CAR LIST AREA */}
+      <Section6 carBrands={props.carBrands} carList={props.carList} />
 
-        {/* DEAL OF THE DAY CAROUSEL AREA */}
-        <Section6 list={props.hotDealList} />
+      {/* MOBILE PHONES AREA */}
+      <Section7
+        title="Accessories"
+        shops={props.mobileShops}
+        brands={props.mobileBrands}
+        productList={props.mobileList}
+      />
 
-        {/* TRENDING PRODUCTS AREA */}
-        <Section7 products={props.trendingItems} />
+      {/* DISCOUNT BANNERS AREA */}
+      <Section8 />
 
-        {/* SERVICES AREA */}
-        <Section8 serviceList={props.serviceList} />
+      {/* OPTICS AND WATCH AREA */}
+      <Section7
+        title="Notebooks"
+        shops={props.opticsShops}
+        brands={props.opticsBrands}
+        productList={props.opticsList}
+      />
 
-        {/* NEWSLETTER AREA */}
-        <Section9 />
-      </Container>
-    </Fragment>
+      {/* CATEGORIES AREA */}
+      <Section10 categories={props.bottomCategories} />
+
+      {/* MORE PRODUCTS AREA */}
+      <Section11 moreItems={props.moreItems} />
+
+      {/* SERVICES AREA */}
+      <Section12 serviceList={props.serviceList} />
+    </main>
   );
 };
 
-FashionOne.layout = AppLayout;
+Market1.layout = AppLayout;
+
+// ==============================================================
 
 export const getStaticProps: GetStaticProps = async () => {
-  const hotDealList = await api.getHotDealList();
+  const carList = await api.getCarList();
+  const carBrands = await api.getCarBrands();
+  const moreItems = await api.getMoreItems();
+  const mobileList = await api.getMobileList();
+  const opticsList = await api.getOpticsList();
+  const mobileShops = await api.getMobileShops();
+  const opticsShops = await api.getOpticsShops();
   const serviceList = await api.getServiceList();
+  const mobileBrands = await api.getMobileBrands();
   const flashDealsData = await api.getFlashDeals();
-  const trendingItems = await api.getTrendingItems();
-  const newArrivalsData = await api.getNewArrivals();
-  const dealOfTheWeek = await api.getDealOfTheWeekList();
+  const opticsBrands = await api.getOpticsBrands();
+  const bottomCategories = await api.getCategories();
+  const topCategories = await api.getTopCategories();
+  const topRatedBrands = await api.getTopRatedBrand();
+  const mainCarouselData = await api.getMainCarousel();
+  const newArrivalsList = await api.getNewArrivalList();
+  const bigDiscountList = await api.getBigDiscountList();
+  const topRatedProducts = await api.getTopRatedProduct();
 
   return {
     props: {
-      hotDealList,
+      carList,
+      carBrands,
+      moreItems,
+      mobileList,
+      opticsList,
       serviceList,
-      dealOfTheWeek,
-      trendingItems,
+      mobileShops,
+      opticsShops,
+      mobileBrands,
+      opticsBrands,
+      topCategories,
       flashDealsData,
-      newArrivalsData,
+      topRatedBrands,
+      newArrivalsList,
+      bigDiscountList,
+      mainCarouselData,
+      topRatedProducts,
+      bottomCategories,
     },
   };
 };
 
-export default FashionOne;
+export default Market1;
