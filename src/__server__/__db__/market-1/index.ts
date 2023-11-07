@@ -6,6 +6,7 @@ import * as db from "./data";
 import Mock from "../../mock";
 import shops from "../shop/data";
 
+
 Mock.onGet("/api/market-1/main-carousel").reply(async () => {
   try {
     return [200, db.mainCarouselData];
@@ -202,6 +203,16 @@ Mock.onGet("/api/market-1/blogs").reply(() => {
 Mock.onGet("/api/market-1/hot-deals").reply(() => {
   try {
     return [200, db.hotDealsData];
+  } catch (err) {
+    console.error(err);
+    return [500, { message: "Internal server error" }];
+  }
+});
+
+
+Mock.onGet("/api/market-1/services").reply(async () => {
+  try {
+    return [200, db.serviceList];
   } catch (err) {
     console.error(err);
     return [500, { message: "Internal server error" }];

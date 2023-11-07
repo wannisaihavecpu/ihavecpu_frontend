@@ -2909,59 +2909,6 @@ export const products = [
     },
   },
   {
-    id: "0b6b0712-f6cc-4158-ae55-aea86c8b9258",
-    slug: "xarioho-watch-black",
-    shop: {
-      id: "4ed771c8-4950-46a5-9fb0-3beca6135c47",
-      slug: "anytime-buys",
-      user: {
-        id: "b07cdcf3-5d71-4bba-aef9-5f0b598d6857",
-        email: "Orlando21@gmail.com",
-        phone: "1-202-283-9523 x0936",
-        avatar:
-          "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/622.jpg",
-        password: "uF0fOZJOpxUfe8d",
-        dateOfBirth: "1954-12-20T18:51:51.000Z",
-        verified: true,
-        name: {
-          firstName: "Courtney",
-          lastName: "Sporer",
-        },
-      },
-      email: "Lulu.Gorczany56@yahoo.com",
-      name: "Anytime Buys",
-      phone: "(613) 343-9004",
-      address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
-      verified: false,
-      coverPicture: "/assets/images/banners/banner-6.png",
-      profilePicture: "/assets/images/faces/propic(5).png",
-      socialLinks: {
-        facebook: null,
-        youtube: null,
-        twitter: null,
-        instagram: null,
-      },
-    },
-    title: "Xarioho Watch Black",
-    brand: null,
-    price: 226,
-    size: null,
-    colors: [],
-    discount: 5,
-    thumbnail: "/assets/images/products/Fashion/Accessories/15.BarihoWatchBlack.png",
-    images: [
-      "/assets/images/products/Fashion/Accessories/15.BarihoWatchBlack.png",
-      "/assets/images/products/Fashion/Accessories/15.BarihoWatchBlack.png",
-    ],
-    categories: ["fashion"],
-    status: null,
-    reviews: [],
-    for: {
-      demo: "market-1",
-      type: "optics",
-    },
-  },
-  {
     id: "7a88b70d-c8cf-45c7-a593-59469fdfa9d0",
     slug: "tarz-t3",
     shop: {
@@ -3755,31 +3702,31 @@ export const brands = [
   },
 ];
 
-// service
+// service list
 export const serviceList = [
   {
-    id: "5f9bd366-9583-4e6d-9b11-abe74b9c5d96",
+    id: "b774ce8e-439e-44be-9516-129e0ad8be18",
     icon: "truck",
-    title: "Worldwide Delivery",
-    description: null,
+    title: "ส่งฟรีทั่วไทย",
+    description: "เมื่อช็อปครบ 3,000 ขึ้นไป",
   },
   {
-    id: "121cffea-6972-41f8-8094-98dca22d17bb",
-    icon: "credit",
-    title: "Safe Payment",
-    description: null,
+    id: "cb0f797d-07ef-40f2-9de7-dd5eb8f1d6fd",
+    icon: "feedback-thumbs-up",
+    title: "เปลี่ยนคืนสินค้าง่าย",
+    description: "เปลี่ยนใหม่ภายใน 7 วัน",
   },
   {
-    id: "5b94f5d8-71ec-40a6-b5b8-401286deba24",
-    icon: "shield",
-    title: "Shop With Confidence",
-    description: null,
+    id: "dbb26e7b-b0eb-4133-896b-671ad71edf47",
+    icon: "alarm-clock",
+    title: "รวดเร็วในการให้บริการ",
+    description: "ทีมแอดมินที่มึคุณภาพ",
   },
   {
-    id: "8c4bb18f-d914-4269-9c7c-3c6728ba33e9",
-    icon: "customer-service",
-    title: "24/7 Support",
-    description: null,
+    id: "16265099-6150-4b44-80e5-1790383ada5f",
+    icon: "payment",
+    title: "ชำระเงินปลอดภัย",
+    description: "ด้วยระบบออนไลน์",
   },
 ];
 

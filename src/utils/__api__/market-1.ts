@@ -106,6 +106,12 @@ const getHotDealList = async () => {
   return response.data;
 };
 
+
+const getServices = async (): Promise<Service[]> => {
+  const response = await axios.get("/api/market-1/services");
+  return response.data;
+};
+
 export default {
   getBlogs,
   getCarList,
@@ -127,4 +133,5 @@ export default {
   getBigDiscountList,
   getTopRatedProduct,
   getHotDealList,
+  getServices,
 };

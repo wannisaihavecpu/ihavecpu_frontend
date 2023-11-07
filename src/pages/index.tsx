@@ -11,12 +11,13 @@ import Section7 from "@sections/market-1/Section7";
 import Section8 from "@sections/market-1/Section8";
 import Section10 from "@sections/market-1/Section10";
 import Section11 from "@sections/market-1/Section11";
-import Section12 from "@sections/market-1/Section12";
+// import Section12 from "@sections/market-1/Section12";
 import Section13 from "@sections/market-1/Section13";
 import Banner1 from "@sections/market-1/Banner1";
 import Bannersection4 from "@sections/market-1/Bannersection4";
 import Hotdeal from "@sections/market-1/Hotdeal";
 import Blogs from "@sections/market-1/Blogs";
+import Services from "@sections/market-1/Service";
 import api from "@utils/__api__/market-1";
 
 // data models
@@ -54,6 +55,7 @@ type Props = {
 // =================================================================
 
 const Home = (props: Props) => {
+  const FIXED_ID = "services-area";
   return (
     <main>
 
@@ -62,6 +64,8 @@ const Home = (props: Props) => {
       
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
+
+      
       
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
@@ -120,7 +124,11 @@ const Home = (props: Props) => {
       <Blogs blogs={props.blogs} />
 
       {/* SERVICES AREA */}
-      <Section12 serviceList={props.serviceList} />
+      {/* <Section12 serviceList={props.serviceList} /> */}
+
+      
+      {/* SERVICES AREA */}
+      <Services id={FIXED_ID} services={props.serviceList} />
       
     </main>
   );
