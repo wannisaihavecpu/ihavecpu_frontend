@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import Container from "@component/Container";
+// import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
 import Section2 from "@sections/market-1/Section2";
@@ -13,10 +13,17 @@ import Section10 from "@sections/market-1/Section10";
 import Section11 from "@sections/market-1/Section11";
 import Section12 from "@sections/market-1/Section12";
 import Section13 from "@sections/market-1/Section13";
+import Banner1 from "@sections/market-1/Banner1";
+import Bannersection4 from "@sections/market-1/Bannersection4";
+import Hotdeal from "@sections/market-1/Hotdeal";
+import Blogs from "@sections/market-1/Blogs";
 import api from "@utils/__api__/market-1";
-import Flashsale from "@sections/fashion-1/Section6";
+
 import api_hotdeal from "@utils/__api__/fashion-1";
+
+// import api_fashion2 from "@utils/__api__/fashion-2";
 // data models
+import Blog from "@models/blog.model";
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
@@ -26,6 +33,7 @@ import MainCarouselItem from "@models/market-1.model";
 
 // =================================================================
 type Props = {
+  blogs: Blog[];
   carList?: Product[];
   carBrands?: Brand[];
   opticsShops?: Shop[];
@@ -51,18 +59,22 @@ type Props = {
 const Home = (props: Props) => {
   return (
     <main>
+
+       {/* HERO CAROUSEL AREA */}
+       {/* <Herobanner data={props.mainCarouselData} /> */}
       
       
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
 
-      <Container>
+      
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
    
        {/* DEAL OF THE DAY CAROUSEL AREA */}
-       <Flashsale list={props.hotDealList} />
-
+  
+       <Hotdeal list={props.hotDealList} />
+     
       {/* TOP CATEGORIES AREA */}
       <Section3 categoryList={props.topCategories} />
 
@@ -78,6 +90,9 @@ const Home = (props: Props) => {
       {/* DIY LIST AREA */}
       <Section6 carBrands={props.carBrands} carList={props.carList} />
 
+      {/* BANNER1 OFFER BANNERS AREA */}
+      <Banner1 />
+
       {/* MOBILE PHONES AREA */}
       <Section7
         title="Set Promotiom"
@@ -88,6 +103,9 @@ const Home = (props: Props) => {
 
       {/* DISCOUNT BANNERS AREA */}
       <Section8 />
+
+      {/* BANNER SECTION 4 AREA */}
+      <Bannersection4 />
 
       {/* OPTICS AND WATCH AREA */}
       <Section7
@@ -103,9 +121,11 @@ const Home = (props: Props) => {
       {/* MORE PRODUCTS AREA */}
       <Section11 moreItems={props.moreItems} />
 
+      <Blogs blogs={props.blogs} />
+
       {/* SERVICES AREA */}
       <Section12 serviceList={props.serviceList} />
-      </Container>
+      
     </main>
   );
 };
@@ -115,6 +135,7 @@ Home.layout = AppLayout;
 // ==============================================================
 
 export const getStaticProps: GetStaticProps = async () => {
+  const blogs = await api.getBlogs();
   const carList = await api.getCarList();
   const carBrands = await api.getCarBrands();
   const moreItems = await api.getMoreItems();
@@ -137,6 +158,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
+      blogs,
       carList,
       carBrands,
       moreItems,

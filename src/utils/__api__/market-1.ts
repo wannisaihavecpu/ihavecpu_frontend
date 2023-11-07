@@ -1,4 +1,5 @@
 import axios from "axios";
+import Blog from "models/blog.model";
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
@@ -95,8 +96,13 @@ const getBigDiscountList = async (): Promise<Product[]> => {
   const response = await axios.get("/api/market-1/big-discounts");
   return response.data;
 };
+const getBlogs = async (): Promise<Blog[]> => {
+  const response = await axios.get("/api/fashion-shop-2/blogs");
+  return response.data;
+};
 
 export default {
+  getBlogs,
   getCarList,
   getCarBrands,
   getMoreItems,
