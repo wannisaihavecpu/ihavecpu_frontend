@@ -97,7 +97,12 @@ const getBigDiscountList = async (): Promise<Product[]> => {
   return response.data;
 };
 const getBlogs = async (): Promise<Blog[]> => {
-  const response = await axios.get("/api/fashion-shop-2/blogs");
+  const response = await axios.get("/api/market-1/blogs");
+  return response.data;
+};
+
+const getHotDealList = async () => {
+  const response = await axios.get("/api/market-1/hot-deals");
   return response.data;
 };
 
@@ -121,4 +126,5 @@ export default {
   getNewArrivalList,
   getBigDiscountList,
   getTopRatedProduct,
+  getHotDealList,
 };

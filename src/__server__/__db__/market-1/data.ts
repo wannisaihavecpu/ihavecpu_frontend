@@ -3945,3 +3945,25 @@ export const articles = [
     slug: "buy-2-get-1-free-offer",
   },
 ];
+
+// hotDealsData
+export const hotDealsData = [
+  {
+    id: 1,
+    expireDate: "Dec 5, 2024",
+    productName: "Apple Watch Series 4 (Black)",
+    imgUrl: "/assets/images/products/xiaomi-watch.png",
+  },
+  {
+    id: 2,
+    expireDate: "Dec 5, 2024",
+    productName: "Apple Watch Series 4 (Black)",
+    imgUrl: "/assets/images/products/xiaomi-watch.png",
+  },
+  {
+    id: 3,
+    expireDate: "Dec 5, 2024",
+    productName: "Apple Watch Series 4 (Black)",
+    imgUrl: "/assets/images/products/xiaomi-watch.png",
+  },
+];

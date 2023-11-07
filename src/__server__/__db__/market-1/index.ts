@@ -189,9 +189,19 @@ Mock.onGet("/api/market-1/get-service-list").reply(async () => {
 });
 
 // get blogs
-Mock.onGet("/api/fashion-shop-2/blogs").reply(() => {
+Mock.onGet("/api/market-1/blogs").reply(() => {
   try {
     return [200, db.articles];
+  } catch (err) {
+    console.error(err);
+    return [500, { message: "Internal server error" }];
+  }
+});
+
+
+Mock.onGet("/api/market-1/hot-deals").reply(() => {
+  try {
+    return [200, db.hotDealsData];
   } catch (err) {
     console.error(err);
     return [500, { message: "Internal server error" }];

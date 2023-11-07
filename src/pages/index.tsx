@@ -19,9 +19,6 @@ import Hotdeal from "@sections/market-1/Hotdeal";
 import Blogs from "@sections/market-1/Blogs";
 import api from "@utils/__api__/market-1";
 
-import api_hotdeal from "@utils/__api__/fashion-1";
-
-// import api_fashion2 from "@utils/__api__/fashion-2";
 // data models
 import Blog from "@models/blog.model";
 import Shop from "@models/shop.model";
@@ -100,7 +97,7 @@ const Home = (props: Props) => {
       />
 
       {/* DISCOUNT BANNERS AREA */}
-      {/* <Section8 /> */}
+      <Section8 />
 
       {/* BANNER SECTION 4 AREA */}
       <Bannersection4 />
@@ -153,7 +150,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const newArrivalsList = await api.getNewArrivalList();
   const bigDiscountList = await api.getBigDiscountList();
   const topRatedProducts = await api.getTopRatedProduct();
-  const hotDealList = await api_hotdeal.getHotDealList();
+  const hotDealList = await api.getHotDealList();
 
   return {
     props: {
