@@ -118,11 +118,11 @@ const Section6: FC<Props> = ({ list }) => {
                     <FlexBox flexWrap="wrap" mb="2rem">
                       <FlexBox alignItems="flex-end" mr="1.75rem">
                         <H3 lineHeight="1.3" mr="0.25rem">
-                          365
+                          25
                         </H3>
 
                         <SemiSpan fontWeight="600" lineHeight="1.7">
-                          DAYS
+                          วัน
                         </SemiSpan>
                       </FlexBox>
 
@@ -132,7 +132,7 @@ const Section6: FC<Props> = ({ list }) => {
                         </H3>
 
                         <SemiSpan fontWeight="600" lineHeight="1.7">
-                          HOURS
+                          ชั่วโมง
                         </SemiSpan>
                       </FlexBox>
 
@@ -142,7 +142,7 @@ const Section6: FC<Props> = ({ list }) => {
                         </H3>
 
                         <SemiSpan fontWeight="600" lineHeight="1.7">
-                          MINS
+                          นาที
                         </SemiSpan>
                       </FlexBox>
 
@@ -152,14 +152,14 @@ const Section6: FC<Props> = ({ list }) => {
                         </H3>
 
                         <SemiSpan fontWeight="600" lineHeight="1.7">
-                          SECS
+                          วินาที
                         </SemiSpan>
                       </FlexBox>
                     </FlexBox>
 
                     <FlexBox alignItems="center" mb="3rem">
                       <Button color="primary" variant="contained" borderRadius={8} mr="0.5rem">
-                        BUY NOW
+                        ซื้อเลย
                       </Button>
 
                       <FlexBox

@@ -1,4 +1,6 @@
+import { Fragment } from "react";
 import { GetStaticProps } from "next";
+import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
 import Section2 from "@sections/market-1/Section2";
@@ -13,6 +15,8 @@ import Section11 from "@sections/market-1/Section11";
 import Section12 from "@sections/market-1/Section12";
 import Section13 from "@sections/market-1/Section13";
 import api from "@utils/__api__/market-1";
+import Flashsale from "@sections/fashion-1/Section6";
+import api_hotdeal from "@utils/__api__/fashion-1";
 // data models
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
@@ -41,19 +45,23 @@ type Props = {
   topRatedProducts?: Product[];
   bottomCategories?: Category[];
   mainCarouselData?: MainCarouselItem[];
+  hotDealList: any[];
 };
 // =================================================================
 
-const Market1 = (props: Props) => {
+const Home = (props: Props) => {
   return (
     <main>
-      
+      <Container>
       
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
       
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
+   
+       {/* DEAL OF THE DAY CAROUSEL AREA */}
+       <Flashsale list={props.hotDealList} />
 
       {/* TOP CATEGORIES AREA */}
       <Section3 categoryList={props.topCategories} />
@@ -72,7 +80,7 @@ const Market1 = (props: Props) => {
 
       {/* MOBILE PHONES AREA */}
       <Section7
-        title="Accessories"
+        title="Set Promotiom"
         shops={props.mobileShops}
         brands={props.mobileBrands}
         productList={props.mobileList}
@@ -83,7 +91,7 @@ const Market1 = (props: Props) => {
 
       {/* OPTICS AND WATCH AREA */}
       <Section7
-        title="Notebooks"
+        title="Accessories"
         shops={props.opticsShops}
         brands={props.opticsBrands}
         productList={props.opticsList}
@@ -97,11 +105,12 @@ const Market1 = (props: Props) => {
 
       {/* SERVICES AREA */}
       <Section12 serviceList={props.serviceList} />
+      </Container>
     </main>
   );
 };
 
-Market1.layout = AppLayout;
+Home.layout = AppLayout;
 
 // ==============================================================
 
@@ -124,6 +133,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const newArrivalsList = await api.getNewArrivalList();
   const bigDiscountList = await api.getBigDiscountList();
   const topRatedProducts = await api.getTopRatedProduct();
+  const hotDealList = await api_hotdeal.getHotDealList();
 
   return {
     props: {
@@ -145,8 +155,9 @@ export const getStaticProps: GetStaticProps = async () => {
       mainCarouselData,
       topRatedProducts,
       bottomCategories,
+      hotDealList,
     },
   };
 };
 
-export default Market1;
+export default Home;
