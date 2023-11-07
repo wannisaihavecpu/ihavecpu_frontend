@@ -63,10 +63,8 @@ const Home = (props: Props) => {
        {/* HERO CAROUSEL AREA */}
        {/* <Herobanner data={props.mainCarouselData} /> */}
       
-      
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
-
       
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
@@ -102,7 +100,7 @@ const Home = (props: Props) => {
       />
 
       {/* DISCOUNT BANNERS AREA */}
-      <Section8 />
+      {/* <Section8 /> */}
 
       {/* BANNER SECTION 4 AREA */}
       <Bannersection4 />
@@ -121,6 +119,7 @@ const Home = (props: Props) => {
       {/* MORE PRODUCTS AREA */}
       <Section11 moreItems={props.moreItems} />
 
+      {/* BLOG AREA */}
       <Blogs blogs={props.blogs} />
 
       {/* SERVICES AREA */}

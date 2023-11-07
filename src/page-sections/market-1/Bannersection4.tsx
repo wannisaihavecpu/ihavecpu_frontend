@@ -14,7 +14,7 @@ const StyledButton = styled(Button)({
 const Bannersection4: FC = () => {
   return (
     <FlexBox
-      mt="4rem"
+      mb="4rem"
       alignItems="center"
       flexDirection="column"
       style={{

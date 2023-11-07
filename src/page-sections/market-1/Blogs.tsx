@@ -54,12 +54,12 @@ const StyledLink = styled(NavLink)({
 });
 
 // ======================================================================
-type Section8Props = { blogs: Blog[] };
+type BlogProps = { blogs: Blog[] };
 // ======================================================================
 
-const Blogs: FC<Section8Props> = ({ blogs }) => {
+const Blogs: FC<BlogProps> = ({ blogs }) => {
   return (
-    <Container mt="4rem">
+    <Container mb="4rem">
       <H2 textAlign="center" mb={4}>
         Latest Articles
       </H2>
