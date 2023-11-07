@@ -228,7 +228,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
                 </SemiSpan>
 
                 {!!off && (
-                  <SemiSpan color="text.muted" fontWeight="600">
+                  <SemiSpan color="text.muted" fontWeight="100" fontSize="0.75rem">
                     <del>{currency(price)}</del>
                   </SemiSpan>
                 )}

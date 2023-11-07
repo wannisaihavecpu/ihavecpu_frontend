@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import Container from "@component/Container";
 import styled from "styled-components";
 import Box from "@component/Box";
 import Card from "@component/Card";
@@ -43,7 +44,7 @@ const SectionWrapper = styled.div`
 type Props = { list: any[] };
 // ===========================================
 
-const Section6: FC<Props> = ({ list }) => {
+const Hotdeal: FC<Props> = ({ list }) => {
   const totalSlides = list.length;
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -54,6 +55,7 @@ const Section6: FC<Props> = ({ list }) => {
   };
 
   return (
+    <Container>
     <Box mb="3.75rem">
       <SectionWrapper>
         <Carousel
@@ -184,7 +186,8 @@ const Section6: FC<Props> = ({ list }) => {
         </Carousel>
       </SectionWrapper>
     </Box>
+    </Container>
   );
 };
 
-export default Section6;
+export default Hotdeal;

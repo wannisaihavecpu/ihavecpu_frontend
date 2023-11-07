@@ -55,7 +55,7 @@ const Section7: FC<Props> = ({ shops, brands, title, productList }) => {
                 color={type === "brands" ? "gray.900" : "gray.600"}
                 onClick={handleChangeType("brands")}
               >
-                Brands
+                Set Pro
               </Typography>
 
               <Typography
@@ -76,7 +76,7 @@ const Section7: FC<Props> = ({ shops, brands, title, productList }) => {
                 onClick={handleChangeType("shops")}
                 color={type === "shops" ? "gray.900" : "gray.600"}
               >
-                Shops
+                Set Base
               </Typography>
             </FlexBox>
 
@@ -116,7 +116,7 @@ const Section7: FC<Props> = ({ shops, brands, title, productList }) => {
 
           <Grid container spacing={6}>
             {productList.map((item, ind) => (
-              <Grid item lg={4} sm={6} xs={12} key={ind}>
+              <Grid item lg={3} sm={6} xs={12} key={ind}>
                 <ProductCard1
                   hoverEffect
                   id={item.id}
