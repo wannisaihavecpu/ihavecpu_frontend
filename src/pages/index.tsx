@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { GetStaticProps } from "next";
 import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
@@ -52,11 +51,12 @@ type Props = {
 const Home = (props: Props) => {
   return (
     <main>
-      <Container>
+      
       
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
-      
+
+      <Container>
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
    

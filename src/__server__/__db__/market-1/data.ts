@@ -19,37 +19,37 @@ export const mainCarouselData = [
 export const categories = [
   {
     id: "f4c1291a-ff9e-4aa2-aa6c-95eb8b8bcc5e",
-    name: "Headphone",
+    name: "หูฟัง",
     icon: null,
     slug: "headphone",
     image: "/assets/images/banners/category-1.png",
-    description: "3k orders this week",
+    description: "สินค้าขายดี",
     parent: [],
     for: { demo: "market-1", type: "top-categories" },
   },
   {
     id: "5dff32d0-5570-42cd-a8b6-61b0541e28b9",
-    name: "Watch",
+    name: "คีย์แคป",
     icon: null,
     slug: "watch",
     image: "/assets/images/banners/category-2.png",
-    description: "3k orders this week",
+    description: "อุปกรณ์เสริมสำหรับเกมเมอร์",
     parent: [],
     for: { demo: "market-1", type: "top-categories" },
   },
   {
     id: "c8074ef7-6bf3-496a-91d5-d974dc7d091b",
-    name: "Sunglass",
+    name: "เกมมิ่ง",
     icon: null,
     slug: "sunglass",
     image: "/assets/images/banners/category-3.png",
-    description: "3k orders this week",
+    description: "อุปกรณ์ยอดฮิต",
     parent: [],
     for: { demo: "market-1", type: "top-categories" },
   },
   {
     id: "ae6b57bf-b967-484b-ab32-3314f10f5166",
-    name: "Headphone",
+    name: "เก้สอี้เกมมิ่ง",
     icon: null,
     slug: "headphone",
     image: "/assets/images/banners/category-1.png",
@@ -59,7 +59,7 @@ export const categories = [
   },
   {
     id: "0ed2a642-0b27-47ec-8d9c-b3fce4159cfd",
-    name: "Watch",
+    name: "แผ่นรองเมาส์",
     icon: null,
     slug: "watch",
     image: "/assets/images/banners/category-2.png",
@@ -69,7 +69,7 @@ export const categories = [
   },
   {
     id: "6df3771a-7075-492d-8f1f-c8358cd6345f",
-    name: "Automobile",
+    name: "โน๊ตบุ๊ก",
     icon: null,
     slug: "automobile",
     image: "/assets/images/products/Fashion/Clothes/7.DenimClassicBlueJeans.png",
@@ -79,7 +79,7 @@ export const categories = [
   },
   {
     id: "25a4d207-512d-4001-b531-1cded6665f88",
-    name: "Car",
+    name: "อุปกรณ์เสริม",
     icon: null,
     slug: "car",
     image: "/assets/images/products/Fashion/Clothes/20.GrayOvercoatWomen.png",
@@ -89,7 +89,7 @@ export const categories = [
   },
   {
     id: "79c89024-dff2-4a00-9ce5-251145dfc18f",
-    name: "Fashion",
+    name: "ชุดระบายความร้อน",
     icon: null,
     slug: "fashion",
     image: "/assets/images/products/Fashion/Jewellery/8.IndianPearlThreadEarrings.png",
@@ -99,7 +99,7 @@ export const categories = [
   },
   {
     id: "6097cbe8-eba5-4462-aea0-b0d53f9dd0ed",
-    name: "Mobile",
+    name: "จอมอนิเตอร์",
     icon: null,
     slug: "mobile",
     image: "/assets/images/products/Fashion/Jewellery/21.FeathersandBeadsBohemianNecklace.png",
@@ -109,7 +109,7 @@ export const categories = [
   },
   {
     id: "e6660169-fbba-4724-81e3-8ffae6ff3707",
-    name: "Laptop",
+    name: "คีย์บอร์ด",
     icon: null,
     slug: "laptop",
     image: "/assets/images/products/Fashion/Shoes/11.Flowwhite.png",
@@ -119,7 +119,7 @@ export const categories = [
   },
   {
     id: "158d635a-76fd-425b-a158-1e8d8cd97542",
-    name: "Desktop",
+    name: "เมาส์",
     icon: null,
     slug: "desktop",
     image: "/assets/images/products/Groceries/1.SaktiSambarPowder.png",
@@ -129,7 +129,7 @@ export const categories = [
   },
   {
     id: "0b68c451-0d4d-47ac-83e4-33651ae3d11f",
-    name: "Tablet",
+    name: "พาวเวอร์ซัพพลาย",
     icon: null,
     slug: "tablet",
     image: "/assets/images/products/Groceries/14.ACIProducts.png",
@@ -139,7 +139,7 @@ export const categories = [
   },
   {
     id: "7a069456-f06a-4688-994e-ddb620f9f67c",
-    name: "Fashion",
+    name: "ฮาร์ดไดรฟ์",
     icon: null,
     slug: "fashion",
     image: "/assets/images/products/Groceries/27.SardinesPack.png",
@@ -149,7 +149,7 @@ export const categories = [
   },
   {
     id: "5144e1aa-c745-44ae-a40b-a41a35229d27",
-    name: "Electronics",
+    name: "แรม",
     icon: null,
     slug: "electronics",
     image: "/assets/images/products/Health&Beauty/12.BeautySocietyantiacnemask.png",
@@ -159,7 +159,7 @@ export const categories = [
   },
   {
     id: "b75056ae-be37-4061-a06e-9db6a9fda38b",
-    name: "Furniture",
+    name: "การ์ดจอ",
     icon: null,
     slug: "furniture",
     image: "/assets/images/products/Health&Beauty/25.MarioBadescuSkinCareShampoo.png",
@@ -169,7 +169,7 @@ export const categories = [
   },
   {
     id: "282a5ae0-9d26-4edf-848b-ffb66d949bbe",
-    name: "Camera",
+    name: "เมนบอร์ด",
     icon: null,
     slug: "camera",
     image: "/assets/images/products/Home&Garden/13.GardenRosesinBlueVase.png",
@@ -179,7 +179,7 @@ export const categories = [
   },
   {
     id: "3c36096b-73b4-4c3e-a768-f846cc889fd5",
-    name: "Electronics",
+    name: "ซีพียู",
     icon: null,
     slug: "electronics",
     image: "/assets/images/products/Fashion/Accessories/12.Xiaomimiband2.png",
