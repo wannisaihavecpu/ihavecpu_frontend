@@ -75,7 +75,7 @@ const Home = (props: Props) => {
       {/* BIG DISCOUNT AREA */}
       <Section13 bigDiscountList={props.bigDiscountList} />
 
-      {/* CAR LIST AREA */}
+      {/* DIY LIST AREA */}
       <Section6 carBrands={props.carBrands} carList={props.carList} />
 
       {/* MOBILE PHONES AREA */}
