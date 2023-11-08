@@ -1,6 +1,7 @@
 const navbarNavigations = [
+  { title: "หน้าแรก", url: "/" },
   {
-    title: "หน้าแรก",
+    title: "Page",
     child: [
       { title: "Market 1", url: "/market-1" },
       { title: "Market 2", url: "/market-2" },
@@ -17,7 +18,7 @@ const navbarNavigations = [
     ],
   },
   {
-    title: "Pages",
+    title: "เกี่ยวกับเรา",
     child: [
       {
         title: "Sale Page",
@@ -46,7 +47,7 @@ const navbarNavigations = [
     ],
   },
   {
-    title: "User Account",
+    title: "ติดต่อเรา",
     child: [
       {
         title: "Orders",
@@ -80,7 +81,7 @@ const navbarNavigations = [
     ],
   },
   {
-    title: "Vendor Account",
+    title: "นโยบายความเป็นส่วนตัว",
     child: [
       { title: "Dashboard", url: "/vendor/dashboard" },
       {
@@ -100,8 +101,8 @@ const navbarNavigations = [
       { title: "Profile", url: "/vendor/account-settings" },
     ],
   },
-  { title: "Track My Orders", url: "/orders" },
-  { title: "Back to Demos", url: "/" },
+  { title: "ผลงานของเรา", url: "/orders" },
+  { title: "จัดสเป็กคอม", url: "/" },
   // {
   //   title: "Documentation",
   //   url:

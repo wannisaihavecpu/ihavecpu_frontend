@@ -8,7 +8,7 @@ import { H1, H3, Paragraph } from "@component/Typography";
 
 // custom styled components
 const CardWrapper = styled(Box)({
-  maxHeight: 240,
+  maxHeight: 200,
   overflow: "hidden",
   borderRadius: "10px",
   position: "relative",

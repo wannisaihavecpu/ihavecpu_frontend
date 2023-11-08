@@ -3,14 +3,14 @@ import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
 import { BannerCard1, BannerCard2 } from "@component/banners";
 
-const Section5: FC = () => {
+const Banner1: FC = () => {
   return (
     <Container mb="4rem">
       <Grid container spacing={5}>
         <Grid item md={4} xs={12}>
           <BannerCard1
             url="#"
-            title="For Men's"
+            title="For Gamer"
             subTitle="Starting At $29"
             img="/assets/images/banners/men's-fashion.jpg"
           />
@@ -29,7 +29,7 @@ const Section5: FC = () => {
         <Grid item md={4} xs={12}>
           <BannerCard1
             url="#"
-            title="For Women's"
+            title="For Member"
             subTitle="25% Off"
             img="/assets/images/banners/womens-fashion.jpg"
             contentPosition="right"
@@ -40,4 +40,4 @@ const Section5: FC = () => {
   );
 };
 
-export default Section5;
+export default Banner1;

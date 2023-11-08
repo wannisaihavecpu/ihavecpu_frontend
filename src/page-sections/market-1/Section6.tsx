@@ -65,11 +65,11 @@ const Section6: FC<Props> = ({ carList, carBrands }) => {
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title="Cars" seeMoreLink="#" />
+          <CategorySectionHeader title="DIY" seeMoreLink="#" />
 
           <Grid container spacing={6}>
             {carList.map((item, ind) => (
-              <Grid item lg={4} sm={6} xs={12} key={ind}>
+              <Grid item lg={3} sm={6} xs={12} key={ind}>
                 <ProductCard1
                   hoverEffect
                   id={item.id}
