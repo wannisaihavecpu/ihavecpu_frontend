@@ -64,8 +64,9 @@ const Home = (props: Props) => {
       
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
-
       
+      {/* BANNER1 OFFER BANNERS AREA */}
+      <Banner1 />
       
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />

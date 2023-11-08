@@ -3720,7 +3720,7 @@ export const serviceList = [
     id: "dbb26e7b-b0eb-4133-896b-671ad71edf47",
     icon: "alarm-clock",
     title: "รวดเร็วในการให้บริการ",
-    description: "ทีมแอดมินที่มึคุณภาพ",
+    description: "ตอบด่วน ตอบไว",
   },
   {
     id: "16265099-6150-4b44-80e5-1790383ada5f",
