@@ -1,4 +1,5 @@
 import { GetStaticProps } from "next";
+// import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
 import Section2 from "@sections/market-1/Section2";
@@ -12,8 +13,14 @@ import Section10 from "@sections/market-1/Section10";
 import Section11 from "@sections/market-1/Section11";
 import Section12 from "@sections/market-1/Section12";
 import Section13 from "@sections/market-1/Section13";
+import Banner1 from "@sections/market-1/Banner1";
+import Bannersection4 from "@sections/market-1/Bannersection4";
+import Hotdeal from "@sections/market-1/Hotdeal";
+import Blogs from "@sections/market-1/Blogs";
 import api from "@utils/__api__/market-1";
+
 // data models
+import Blog from "@models/blog.model";
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
@@ -23,6 +30,7 @@ import MainCarouselItem from "@models/market-1.model";
 
 // =================================================================
 type Props = {
+  blogs: Blog[];
   carList?: Product[];
   carBrands?: Brand[];
   opticsShops?: Shop[];
@@ -41,20 +49,27 @@ type Props = {
   topRatedProducts?: Product[];
   bottomCategories?: Category[];
   mainCarouselData?: MainCarouselItem[];
+  hotDealList: any[];
 };
 // =================================================================
 
-const Market1 = (props: Props) => {
+const Home = (props: Props) => {
   return (
     <main>
-      
+
+       {/* HERO CAROUSEL AREA */}
+       {/* <Herobanner data={props.mainCarouselData} /> */}
       
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
       
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
-
+   
+       {/* DEAL OF THE DAY CAROUSEL AREA */}
+  
+       <Hotdeal list={props.hotDealList} />
+     
       {/* TOP CATEGORIES AREA */}
       <Section3 categoryList={props.topCategories} />
 
@@ -67,12 +82,15 @@ const Market1 = (props: Props) => {
       {/* BIG DISCOUNT AREA */}
       <Section13 bigDiscountList={props.bigDiscountList} />
 
-      {/* CAR LIST AREA */}
+      {/* DIY LIST AREA */}
       <Section6 carBrands={props.carBrands} carList={props.carList} />
+
+      {/* BANNER1 OFFER BANNERS AREA */}
+      <Banner1 />
 
       {/* MOBILE PHONES AREA */}
       <Section7
-        title="Accessories"
+        title="Set Promotiom"
         shops={props.mobileShops}
         brands={props.mobileBrands}
         productList={props.mobileList}
@@ -81,9 +99,12 @@ const Market1 = (props: Props) => {
       {/* DISCOUNT BANNERS AREA */}
       <Section8 />
 
+      {/* BANNER SECTION 4 AREA */}
+      <Bannersection4 />
+
       {/* OPTICS AND WATCH AREA */}
       <Section7
-        title="Notebooks"
+        title="Accessories"
         shops={props.opticsShops}
         brands={props.opticsBrands}
         productList={props.opticsList}
@@ -95,17 +116,22 @@ const Market1 = (props: Props) => {
       {/* MORE PRODUCTS AREA */}
       <Section11 moreItems={props.moreItems} />
 
+      {/* BLOG AREA */}
+      <Blogs blogs={props.blogs} />
+
       {/* SERVICES AREA */}
       <Section12 serviceList={props.serviceList} />
+      
     </main>
   );
 };
 
-Market1.layout = AppLayout;
+Home.layout = AppLayout;
 
 // ==============================================================
 
 export const getStaticProps: GetStaticProps = async () => {
+  const blogs = await api.getBlogs();
   const carList = await api.getCarList();
   const carBrands = await api.getCarBrands();
   const moreItems = await api.getMoreItems();
@@ -124,9 +150,11 @@ export const getStaticProps: GetStaticProps = async () => {
   const newArrivalsList = await api.getNewArrivalList();
   const bigDiscountList = await api.getBigDiscountList();
   const topRatedProducts = await api.getTopRatedProduct();
+  const hotDealList = await api.getHotDealList();
 
   return {
     props: {
+      blogs,
       carList,
       carBrands,
       moreItems,
@@ -145,8 +173,9 @@ export const getStaticProps: GetStaticProps = async () => {
       mainCarouselData,
       topRatedProducts,
       bottomCategories,
+      hotDealList,
     },
   };
 };
 
-export default Market1;
+export default Home;

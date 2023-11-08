@@ -13,7 +13,8 @@ type Props = { carouselData: MainCarouselItem[] };
 const Section1: FC<Props> = ({ carouselData }) => {
   return (
     <Fragment>
-      <Navbar navListOpen={true} />
+      <Navbar navListOpen={false} />
+      {/* <Navbar navListOpen={true} /> */}
 
       <Box bg="gray.white" mb="3.75rem">
         <Container pb="2rem">
