@@ -5,13 +5,22 @@ import { GetServerSideProps } from "next";
 import axios from "axios";
 import branchList from "@models/branchList.model";
 import shippingList from "@models/shippingList.model";
+import listCouponProduct from "@models/listCouponProduct.model";
 
-type Props = { branch: branchList; shipping: shippingList };
+type Props = {
+  branch: branchList;
+  shipping: shippingList;
+  listCoupon: listCouponProduct;
+};
 
 const Checkout = (props: Props) => {
   return (
     <Grid container flexWrap="wrap-reverse" spacing={6}>
-      <CheckoutForm branchList={props.branch} shippingList={props.shipping} />
+      <CheckoutForm
+        branchList={props.branch}
+        shippingList={props.shipping}
+        listCoupon={props.listCoupon}
+      />
     </Grid>
   );
 };
@@ -50,10 +59,29 @@ export const getServerSideProps: GetServerSideProps = async () => {
       );
     }
 
+    // listCoupon
+    const productIds = ["4134", "1"];
+    const couponResponse = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/coupons/listCouponProduct`,
+      { product: productIds }
+    );
+    const couponData = couponResponse.data;
+
+    let couponList = [];
+    if (couponData.res_code === "00") {
+      couponList = couponData.res_result;
+    } else {
+      console.error(
+        "API returned an error for coupon availability:",
+        couponData.res_text
+      );
+    }
+
     return {
       props: {
         branch: branchList,
         shipping: shippingList,
+        listCoupon: couponList,
       },
     };
   } catch (error) {

@@ -23,9 +23,9 @@ import Box from "@component/Box";
 import Select from "@component/Select";
 
 // import { useFormik } from "formik";
-type Props = { branchList; shippingList };
+type Props = { branchList; shippingList; listCoupon };
 
-const CheckoutForm: FC<Props> = ({ shippingList }) => {
+const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
   const router = useRouter();
   const { state, updateCustomerDetailsPurchase } = useAppContext();
 
@@ -783,6 +783,7 @@ const CheckoutForm: FC<Props> = ({ shippingList }) => {
                       onClose={toggleDialog}
                       selectedCoupon={selectedCoupon}
                       setSelectedCoupon={setSelectedCoupon}
+                      listCoupon={listCoupon}
                     />
                   </Grid>
                 </Card1>
