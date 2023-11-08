@@ -41,8 +41,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
 
   const handleFormSubmit = async (values) => {
     if (buttonClicked === "submitPayment") {
-      console.log(values);
-      console.log("update");
       updateCustomerDetailsPurchase(values);
 
       router.push("/payment");
@@ -112,7 +110,8 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
       ) || 0
     );
   };
-  console.log(state.customerDetail);
+
+  console.log("selectedCoupon", selectedCoupon);
 
   return (
     <Fragment>

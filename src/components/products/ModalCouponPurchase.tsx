@@ -397,7 +397,6 @@ const ModalCouponPurchase: FC<Props> = (props) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("dadaa", data.res_result);
         if (data.res_code === "00" && Array.isArray(data.res_result)) {
           setMyCoupon(data.res_result);
         }

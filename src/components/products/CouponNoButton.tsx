@@ -66,7 +66,7 @@ export const CouponStyle = styled.div<CouponNoButtonProps>`
     border-bottom-right-radius: 110px;
     border-top: 0.01px solid;
     border-top-color: ${(props) => props.color || "white"};
-    top: -5px;
+    top: -2px;
     right: -12px;
   }
 
@@ -75,7 +75,7 @@ export const CouponStyle = styled.div<CouponNoButtonProps>`
     border-top-right-radius: 110px;
     border-bottom: 0.1px solid;
     border-bottom-color: ${(props) => props.color || "white"};
-    bottom: -5px;
+    bottom: -2px;
     right: -12px;
   }
 
