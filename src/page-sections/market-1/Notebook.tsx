@@ -12,10 +12,10 @@ import Product from "@models/product.model";
 import Brand from "@models/Brand.model";
 
 // ==============================================================
-type Props = { carList: Product[]; carBrands: Brand[] };
+type Props = { notebookList: Product[]; notebookBrands: Brand[] };
 // ==============================================================
 
-const Notebook: FC<Props> = ({ carList, carBrands }) => {
+const Notebook: FC<Props> = ({ notebookList, notebookBrands }) => {
   const [selected, setSelected] = useState("");
 
   const handleCategoryClick = (brand: Brand) => () => {
@@ -28,7 +28,7 @@ const Notebook: FC<Props> = ({ carList, carBrands }) => {
       <FlexBox>
         <Hidden down={768} mr="1.75rem">
           <Box shadow={6} borderRadius={10} padding="1.25rem" bg="white">
-            {carBrands.map((brand) => (
+            {notebookBrands.map((brand) => (
               <StyledProductCategory
                 mb="0.75rem"
                 id={brand.id}
@@ -68,7 +68,7 @@ const Notebook: FC<Props> = ({ carList, carBrands }) => {
           <CategorySectionHeader title="Notebooks" seeMoreLink="#" />
 
           <Grid container spacing={6}>
-            {carList.map((item, ind) => (
+            {notebookList.map((item, ind) => (
               <Grid item lg={3} sm={6} xs={12} key={ind}>
                 <ProductCard1
                   hoverEffect

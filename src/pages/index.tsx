@@ -37,6 +37,8 @@ import MainCarouselItem from "@models/market-1.model";
 // =================================================================
 type Props = {
   blogs: Blog[];
+  notebookList?: Product[];
+  notebookBrands?: Brand[];
   carList?: Product[];
   carBrands?: Brand[];
   opticsShops?: Shop[];
@@ -44,11 +46,9 @@ type Props = {
   notebookShops?: Shop[];
   moreItems?: Product[];
   opticsList?: Product[];
-  notebookList?: Product[];
   mobileList?: Product[];
   mobileBrands?: Brand[];
   opticsBrands?: Brand[];
-  notebookBrands?: Brand[];
   serviceList?: Service[];
   topRatedBrands?: Brand[];
   topCategories?: Category[];
@@ -80,8 +80,14 @@ const Home = (props: Props) => {
       <Section2 products={props.flashDealsData} />
    
        {/* DEAL OF THE DAY CAROUSEL AREA */}
-  
        <Hotdeal list={props.hotDealList} />
+       
+       
+      {/* BIG DISCOUNT AREA */}
+      <Section13 bigDiscountList={props.bigDiscountList} />
+      
+        {/* BANNER2BOX  BANNERS AREA */}
+        <Banner2box />
      
       {/* TOP CATEGORIES AREA */}
       <Section3 categoryList={props.topCategories} />
@@ -132,7 +138,7 @@ const Home = (props: Props) => {
 
       
       {/* OPTICS AND WATCH AREA */}
-      <Notebook carBrands={props.carBrands} carList={props.carList} />
+      <Notebook notebookBrands={props.notebookBrands} notebookList={props.notebookList} />
       
 
       {/* CATEGORIES AREA */}
@@ -161,6 +167,8 @@ Home.layout = AppLayout;
 
 export const getStaticProps: GetStaticProps = async () => {
   const blogs = await api.getBlogs();
+  const notebookList = await api.getNotebookList();
+  const notebookBrands = await api.getNotebookBrands();
   const carList = await api.getCarList();
   const carBrands = await api.getCarBrands();
   const moreItems = await api.getMoreItems();
@@ -184,6 +192,8 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       blogs,
+      notebookList,
+      notebookBrands,
       carList,
       carBrands,
       moreItems,

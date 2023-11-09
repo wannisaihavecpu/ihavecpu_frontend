@@ -2007,6 +2007,65 @@ export const products = [
       type: "cars",
     },
   },
+
+  //Notebook
+  {
+    id: "4b390b71-667e-4151-be09-0d64cbbd4bb2",
+    slug: "lord-2020",
+    shop: {
+      id: "9932a576-af7c-42df-a9b3-938a9ff20c64",
+      slug: "anytime-buys",
+      user: {
+        id: "329af8c6-72bb-4f40-9e81-5267bde4dec1",
+        email: "Earnestine33@yahoo.com",
+        phone: "(333) 325-7077 x207",
+        avatar:
+          "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1198.jpg",
+        password: "ZrdN5bEZxcPZO6Y",
+        dateOfBirth: "1963-06-23T08:02:53.993Z",
+        verified: true,
+        name: {
+          firstName: "Kaleb",
+          lastName: "Rau",
+        },
+      },
+      email: "Korbin.Kohler78@yahoo.com",
+      name: "Anytime Buys",
+      phone: "(613) 343-9004",
+      address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
+      verified: false,
+      coverPicture: "/assets/images/banners/banner-6.png",
+      profilePicture: "/assets/images/faces/propic(5).png",
+      socialLinks: {
+        facebook: null,
+        youtube: null,
+        twitter: null,
+        instagram: null,
+      },
+    },
+    title: "DELL INSPIRON G15-W566312600M2CTH-G15-DS-W (DARK SHADOW GREY)",
+    brand: null,
+    price: 46990,
+    size: null,
+    colors: [],
+    discount: 6,
+    thumbnail: "/assets/images/products/notebook/product6193_800.jpg",
+    images: [
+      "/assets/images/products/notebook/product6193_800.jpg",
+      "/assets/images/products/notebook/product6194_800.jpg",
+      "/assets/images/products/notebook/product6192_800.jpg",
+      "/assets/images/products/notebook/product6191_800.jpg",
+      "/assets/images/products/notebook/product6190_800.jpg",
+      "/assets/images/products/notebook/product6188_800.jpg",
+    ],
+    categories: ["notebook"],
+    status: null,
+    reviews: [],
+    for: {
+      demo: "market-1",
+      type: "notebooks",
+    },
+  },
   // {
   //   id: "b9eee706-fb2e-4824-b7ad-0a70b5d044cc",
   //   slug: "mapple-earphones",
@@ -3548,6 +3607,7 @@ export const products = [
 
 // brands
 export const brands = [
+  //DIY
   {
     id: "2dbb367f-d432-4d90-867b-756f2b4a0dcb",
     slug: "cpu",
@@ -3596,6 +3656,64 @@ export const brands = [
     type: "car",
     for: { demo: "market-1", type: "car-brands" },
   },
+  // Notebook brand
+  {
+    id: "2dbb367f-d432-4d90-867b-756f2b4a0dcb",
+    slug: "asus",
+    name: "ASUS",
+    image: "/assets/images/brands/asus2.png",
+    type: "notebook",
+    for: { demo: "market-1", type: "notebook-brands" },
+  },
+  {
+    id: "44668f9f-e8e4-473e-bae4-591e45adf4e4",
+    slug: "dell",
+    name: "DELL",
+    image: "/assets/images/brands/dell.png",
+    type: "notebook",
+    for: { demo: "market-1", type: "notebook-brands" },
+  },
+  {
+    id: "91d0d7e5-d260-46f1-8445-bc098c5ae630",
+    slug: "msi",
+    name: "MSI",
+    image: "/assets/images/brands/msi2.png",
+    type: "notebook",
+    for: { demo: "market-1", type: "notebook-brands" },
+  },
+  {
+    id: "e8f9d5c3-8bfa-473a-8029-e6813cfd1a99",
+    slug: "acer",
+    name: "ACER",
+    image: "/assets/images/brands/acer.png",
+    type: "notebook",
+    for: { demo: "market-1", type: "notebook-brands" },
+  },
+  {
+    id: "76436695-c58d-4402-9af7-bbc46fdc57b0",
+    slug: "hp",
+    name: "HP",
+    image: "/assets/images/brands/hp.png",
+    type: "notebook",
+    for: { demo: "market-1", type: "notebook-brands" },
+  },
+  {
+    id: "95909c6c-91e7-4b64-a26b-0e3a56f144c2",
+    slug: "lenovo",
+    name: "LENOVO",
+    image: "/assets/images/brands/lenovo.png",
+    type: "notebook",
+    for: { demo: "market-1", type: "notebook-brands" },
+  },
+  {
+    id: "95909c6c-91e7-4b64-a26b-0e3a56f144c9",
+    slug: "gigabyte",
+    name: "GIGABYTE",
+    image: "/assets/images/brands/gigabyte.png",
+    type: "notebook",
+    for: { demo: "market-1", type: "notebook-brands" },
+  },
+  //Mobile
   {
     id: "e73dc783-c355-4a30-9ae3-4995d4f13513",
     slug: "apple",

@@ -32,6 +32,16 @@ const getCarList = async (): Promise<Product[]> => {
   return response.data;
 };
 
+const getNotebookBrands = async (): Promise<Brand[]> => {
+  const response = await axios.get("/api/market-1/notebook-brand-list");
+  return response.data;
+};
+
+const getNotebookList = async (): Promise<Product[]> => {
+  const response = await axios.get("/api/market-1/notebook-list");
+  return response.data;
+};
+
 const getMobileBrands = async (): Promise<Brand[]> => {
   const response = await axios.get("/api/market-1/mobile-brand-list");
   return response.data;
@@ -53,12 +63,6 @@ const getOpticsBrands = async (): Promise<Brand[]> => {
 };
 
 const getOpticsShops = async (): Promise<Shop[]> => {
-  const response = await axios.get("/api/market-1/optics/watch-shops");
-  return response.data;
-};
-
-
-const getNotebooksShops = async (): Promise<Shop[]> => {
   const response = await axios.get("/api/market-1/optics/watch-shops");
   return response.data;
 };
@@ -120,6 +124,8 @@ const getServices = async (): Promise<Service[]> => {
 
 export default {
   getBlogs,
+  getNotebookList,
+  getNotebookBrands,
   getCarList,
   getCarBrands,
   getMoreItems,
@@ -130,7 +136,6 @@ export default {
   getServiceList,
   getMobileShops,
   getOpticsShops,
-  getNotebooksShops,
   getMainCarousel,
   getMobileBrands,
   getOpticsBrands,
