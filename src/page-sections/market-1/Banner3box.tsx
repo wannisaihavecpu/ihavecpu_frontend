@@ -3,15 +3,15 @@ import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
 import { BannerCard1, BannerCard2 } from "@component/banners";
 
-const Banner1: FC = () => {
+const Banner3box: FC = () => {
   return (
     <Container mb="4rem">
       <Grid container spacing={5}>
         <Grid item md={4} xs={12}>
           <BannerCard1
             url="#"
-            title="For Gamer"
-            subTitle="Starting At $29"
+            title="GIGABYE"
+            subTitle="Starting At  50%"
             img="/assets/images/banners/men's-fashion.jpg"
           />
         </Grid>
@@ -29,7 +29,7 @@ const Banner1: FC = () => {
         <Grid item md={4} xs={12}>
           <BannerCard1
             url="#"
-            title="Intel Gen 13"
+            title="For Member"
             subTitle="25% Off"
             img="/assets/images/banners/womens-fashion.jpg"
             contentPosition="right"
@@ -40,4 +40,4 @@ const Banner1: FC = () => {
   );
 };
 
-export default Banner1;
+export default Banner3box;

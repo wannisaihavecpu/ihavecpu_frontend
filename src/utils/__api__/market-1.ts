@@ -32,6 +32,16 @@ const getCarList = async (): Promise<Product[]> => {
   return response.data;
 };
 
+const getNotebookBrands = async (): Promise<Brand[]> => {
+  const response = await axios.get("/api/market-1/notebook-brand-list");
+  return response.data;
+};
+
+const getNotebookList = async (): Promise<Product[]> => {
+  const response = await axios.get("/api/market-1/notebook-list");
+  return response.data;
+};
+
 const getMobileBrands = async (): Promise<Brand[]> => {
   const response = await axios.get("/api/market-1/mobile-brand-list");
   return response.data;
@@ -106,8 +116,16 @@ const getHotDealList = async () => {
   return response.data;
 };
 
+
+const getServices = async (): Promise<Service[]> => {
+  const response = await axios.get("/api/market-1/services");
+  return response.data;
+};
+
 export default {
   getBlogs,
+  getNotebookList,
+  getNotebookBrands,
   getCarList,
   getCarBrands,
   getMoreItems,
@@ -127,4 +145,5 @@ export default {
   getBigDiscountList,
   getTopRatedProduct,
   getHotDealList,
+  getServices,
 };

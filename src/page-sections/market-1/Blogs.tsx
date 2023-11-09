@@ -59,7 +59,7 @@ type BlogProps = { blogs: Blog[] };
 
 const Blogs: FC<BlogProps> = ({ blogs }) => {
   return (
-    <Container mb="4rem">
+    <Container mb="1rem">
       <H2 textAlign="center" mb={4}>
         Latest Articles
       </H2>

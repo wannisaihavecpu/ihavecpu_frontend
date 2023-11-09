@@ -6,17 +6,23 @@ import Section2 from "@sections/market-1/Section2";
 import Section3 from "@sections/market-1/Section3";
 import Section4 from "@sections/market-1/Section4";
 import Section5 from "@sections/market-1/Section5";
-import Section6 from "@sections/market-1/Section6";
+// import Section6 from "@sections/market-1/Section6";
+import Diy from "@sections/market-1/Diy";
 import Section7 from "@sections/market-1/Section7";
-import Section8 from "@sections/market-1/Section8";
+import Notebook from "@sections/market-1/Notebook";
+// import Section8 from "@sections/market-1/Section8";
 import Section10 from "@sections/market-1/Section10";
 import Section11 from "@sections/market-1/Section11";
-import Section12 from "@sections/market-1/Section12";
+// import Section12 from "@sections/market-1/Section12";
 import Section13 from "@sections/market-1/Section13";
 import Banner1 from "@sections/market-1/Banner1";
-import Bannersection4 from "@sections/market-1/Bannersection4";
+import Banner1box from "@sections/market-1/Banner1box";
+import Banner2box from "@sections/market-1/Banner2box";
+import Banner3box from "@sections/market-1/Banner3box";
+// import Bannersection4 from "@sections/market-1/Bannersection4";
 import Hotdeal from "@sections/market-1/Hotdeal";
 import Blogs from "@sections/market-1/Blogs";
+import Services from "@sections/market-1/Service";
 import api from "@utils/__api__/market-1";
 
 // data models
@@ -31,10 +37,13 @@ import MainCarouselItem from "@models/market-1.model";
 // =================================================================
 type Props = {
   blogs: Blog[];
+  notebookList?: Product[];
+  notebookBrands?: Brand[];
   carList?: Product[];
   carBrands?: Brand[];
   opticsShops?: Shop[];
   mobileShops?: Shop[];
+  notebookShops?: Shop[];
   moreItems?: Product[];
   opticsList?: Product[];
   mobileList?: Product[];
@@ -54,6 +63,7 @@ type Props = {
 // =================================================================
 
 const Home = (props: Props) => {
+  const FIXED_ID = "services-area";
   return (
     <main>
 
@@ -63,12 +73,21 @@ const Home = (props: Props) => {
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
       
+      {/* BANNER1 OFFER BANNERS AREA */}
+      <Banner1 />
+      
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
    
        {/* DEAL OF THE DAY CAROUSEL AREA */}
-  
        <Hotdeal list={props.hotDealList} />
+       
+       
+      {/* BIG DISCOUNT AREA */}
+      <Section13 bigDiscountList={props.bigDiscountList} />
+      
+        {/* BANNER2BOX  BANNERS AREA */}
+        <Banner2box />
      
       {/* TOP CATEGORIES AREA */}
       <Section3 categoryList={props.topCategories} />
@@ -82,13 +101,10 @@ const Home = (props: Props) => {
       {/* BIG DISCOUNT AREA */}
       <Section13 bigDiscountList={props.bigDiscountList} />
 
-      {/* DIY LIST AREA */}
-      <Section6 carBrands={props.carBrands} carList={props.carList} />
+        {/* BANNER2BOX  BANNERS AREA */}
+        <Banner2box />
 
-      {/* BANNER1 OFFER BANNERS AREA */}
-      <Banner1 />
-
-      {/* MOBILE PHONES AREA */}
+      {/* COM SET PHONES AREA */}
       <Section7
         title="Set Promotiom"
         shops={props.mobileShops}
@@ -96,19 +112,34 @@ const Home = (props: Props) => {
         productList={props.mobileList}
       />
 
+      {/* BANNER3BOX BANNERS AREA */}
+      <Banner3box />
+
+      {/* DIY LIST AREA */}
+      <Diy carBrands={props.carBrands} carList={props.carList} />
+
+
       {/* DISCOUNT BANNERS AREA */}
-      <Section8 />
+      {/* <Section8 /> */}
 
       {/* BANNER SECTION 4 AREA */}
-      <Bannersection4 />
+      {/* <Bannersection4 /> */}
+
+       {/* BANNER1 OFFER BANNERS AREA */}
+       <Banner1box />
 
       {/* OPTICS AND WATCH AREA */}
-      <Section7
+      {/* <Section7
         title="Accessories"
         shops={props.opticsShops}
         brands={props.opticsBrands}
         productList={props.opticsList}
-      />
+      /> */}
+
+      
+      {/* OPTICS AND WATCH AREA */}
+      <Notebook notebookBrands={props.notebookBrands} notebookList={props.notebookList} />
+      
 
       {/* CATEGORIES AREA */}
       <Section10 categories={props.bottomCategories} />
@@ -120,7 +151,11 @@ const Home = (props: Props) => {
       <Blogs blogs={props.blogs} />
 
       {/* SERVICES AREA */}
-      <Section12 serviceList={props.serviceList} />
+      {/* <Section12 serviceList={props.serviceList} /> */}
+
+      
+      {/* SERVICES AREA */}
+      <Services id={FIXED_ID} services={props.serviceList} />
       
     </main>
   );
@@ -132,6 +167,8 @@ Home.layout = AppLayout;
 
 export const getStaticProps: GetStaticProps = async () => {
   const blogs = await api.getBlogs();
+  const notebookList = await api.getNotebookList();
+  const notebookBrands = await api.getNotebookBrands();
   const carList = await api.getCarList();
   const carBrands = await api.getCarBrands();
   const moreItems = await api.getMoreItems();
@@ -155,6 +192,8 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       blogs,
+      notebookList,
+      notebookBrands,
       carList,
       carBrands,
       moreItems,

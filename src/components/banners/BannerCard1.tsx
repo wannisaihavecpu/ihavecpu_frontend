@@ -8,7 +8,7 @@ import styled from "styled-components";
 
 // custom styled components
 const CardWrapper = styled(Box)({
-  maxHeight: 200,
+  maxHeight: 180,
   overflow: "hidden",
   borderRadius: "10px",
   position: "relative",
@@ -77,7 +77,7 @@ const BannerCard1: FC<BannerCard1Props> = ({
 
         <Link href={url}>
           <a>
-            <CardLink>Shop Now</CardLink>
+            <CardLink>ดูรายละเอีย</CardLink>
           </a>
         </Link>
       </CardContent>

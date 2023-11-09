@@ -8,7 +8,7 @@ import { H1, H3, Paragraph } from "@component/Typography";
 
 // custom styled components
 const CardWrapper = styled(Box)({
-  maxHeight: 200,
+  maxHeight: 180,
   overflow: "hidden",
   borderRadius: "10px",
   position: "relative",
@@ -56,7 +56,7 @@ const BannerCard2: FC<BannerCard2Props> = ({ img, url, text1, text2, text3 }) =>
         <Link href={url}>
           <a>
             <Button variant="outlined" color="primary">
-              Shop Now
+              ช็อปเลย
             </Button>
           </a>
         </Link>

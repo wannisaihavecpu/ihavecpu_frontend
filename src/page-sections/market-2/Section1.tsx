@@ -15,7 +15,7 @@ import { CarouselCard3 } from "@component/carousel-cards";
 // styled components
 const CarouselBox = styled(Box)({
   overflow: "hidden",
-  borderRadius: 3,
+  borderRadius: 10,
   "& .carousel__dot-group": {
     left: 0,
     right: 0,
@@ -41,6 +41,7 @@ const CardWrapper = styled(Box)({
   [`@media(max-width: ${deviceSize.xs}px)`]: {
     flexDirection: "column",
     width: "100%",
+    borderRadius: 10,
   },
 });
 
