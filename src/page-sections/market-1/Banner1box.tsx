@@ -38,7 +38,7 @@ const Banner1box: FC = () => {
   return (
     <Container pb="4rem">
       <BannerWrapper>
-        {/* <Box textAlign="center">
+        <Box textAlign="center">
           <H3 fontSize={36} lineHeight={1}>
             ลดกระหน่ำ{" "}
             <Span color="primary.main" fontSize="inherit">
@@ -49,7 +49,7 @@ const Banner1box: FC = () => {
           <Paragraph fontSize={16}>
             เฉพาะสินค้าเกมมิ่งเกียร์ที่ร่วมรายการ
           </Paragraph>
-        </Box> */}
+        </Box>
 
         <StyledButton size="large">ดูรายละเอียด</StyledButton>
       </BannerWrapper>
