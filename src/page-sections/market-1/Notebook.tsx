@@ -15,7 +15,7 @@ import Brand from "@models/Brand.model";
 type Props = { carList: Product[]; carBrands: Brand[] };
 // ==============================================================
 
-const Section6: FC<Props> = ({ carList, carBrands }) => {
+const Notebook: FC<Props> = ({ carList, carBrands }) => {
   const [selected, setSelected] = useState("");
 
   const handleCategoryClick = (brand: Brand) => () => {
@@ -58,14 +58,14 @@ const Section6: FC<Props> = ({ carList, carBrands }) => {
               bg={selected.match("all") ? "white" : "gray.100"}
             >
               <span id="all" className="product-category-title show-all">
-                View All Brands
+                ดูสินค้าทั้งหมด
               </span>
             </StyledProductCategory>
           </Box>
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title="DIY" seeMoreLink="#" />
+          <CategorySectionHeader title="Notebooks" seeMoreLink="#" />
 
           <Grid container spacing={6}>
             {carList.map((item, ind) => (
@@ -90,4 +90,4 @@ const Section6: FC<Props> = ({ carList, carBrands }) => {
   );
 };
 
-export default Section6;
+export default Notebook;

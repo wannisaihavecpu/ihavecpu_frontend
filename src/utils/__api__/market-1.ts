@@ -57,6 +57,12 @@ const getOpticsShops = async (): Promise<Shop[]> => {
   return response.data;
 };
 
+
+const getNotebooksShops = async (): Promise<Shop[]> => {
+  const response = await axios.get("/api/market-1/optics/watch-shops");
+  return response.data;
+};
+
 const getOpticsList = async (): Promise<Product[]> => {
   const response = await axios.get("/api/market-1/optics-list");
   return response.data;
@@ -124,6 +130,7 @@ export default {
   getServiceList,
   getMobileShops,
   getOpticsShops,
+  getNotebooksShops,
   getMainCarousel,
   getMobileBrands,
   getOpticsBrands,

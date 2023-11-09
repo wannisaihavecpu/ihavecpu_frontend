@@ -15,7 +15,7 @@ import Brand from "@models/Brand.model";
 type Props = { carList: Product[]; carBrands: Brand[] };
 // ==============================================================
 
-const Section6: FC<Props> = ({ carList, carBrands }) => {
+const Diy: FC<Props> = ({ carList, carBrands }) => {
   const [selected, setSelected] = useState("");
 
   const handleCategoryClick = (brand: Brand) => () => {
@@ -58,7 +58,7 @@ const Section6: FC<Props> = ({ carList, carBrands }) => {
               bg={selected.match("all") ? "white" : "gray.100"}
             >
               <span id="all" className="product-category-title show-all">
-                View All Brands
+                ดูสินค้าทั้งหมด
               </span>
             </StyledProductCategory>
           </Box>
@@ -90,4 +90,4 @@ const Section6: FC<Props> = ({ carList, carBrands }) => {
   );
 };
 
-export default Section6;
+export default Diy;
