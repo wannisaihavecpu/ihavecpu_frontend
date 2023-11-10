@@ -16,6 +16,7 @@ type Props = {
   payment: paymentList;
 };
 
+
 const CheckoutAlternative = (props: Props) => {
   return (
     <Container my="1.5rem">

@@ -49,6 +49,7 @@ const CheckoutNavLayout: FC<Props> = ({ children }) => {
         break;
       case "/checkout-alternative":
         setSelectedStep(4);
+        break;
       default:
         break;
     }

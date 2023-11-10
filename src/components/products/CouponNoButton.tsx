@@ -6,9 +6,12 @@ import styled from "styled-components";
 import Icon from "@component/icon/Icon";
 
 interface CouponNoButtonProps {
+  id?: number;
   topic?: string;
   color?: string;
   code?: string;
+  highlight1?: string;
+  highlight2?: string;
   description?: string;
   dateExpired?: string;
   onClick?: () => void;
@@ -32,7 +35,6 @@ export const CouponStyle = styled.div<CouponNoButtonProps>`
     position: relative;
     display: flex;
     justify-content: flex-start; /* Updated alignment */
-
     flex: 1;
     padding: 10px 20px;
   }
@@ -159,7 +161,7 @@ export const CouponStyle = styled.div<CouponNoButtonProps>`
     font-size: 10px;
     font-weight: bold;
     text-align: left;
-    max-width: 70%;
+    max-width: 80px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -168,7 +170,7 @@ export const CouponStyle = styled.div<CouponNoButtonProps>`
     font-size: 9px;
     font-weight: thin;
     text-align: left;
-    max-width: 60%;
+    max-width: 80px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -206,6 +208,8 @@ export const CouponStyle = styled.div<CouponNoButtonProps>`
 `;
 
 const CouponNoButton: FC<CouponNoButtonProps> = ({
+  highlight1,
+  highlight2,
   topic,
   description,
   dateExpired,
@@ -243,8 +247,8 @@ const CouponNoButton: FC<CouponNoButtonProps> = ({
             <div className="couponleft">
               <div className="couponright-inner">
                 <div className="couponPriceContainer">
-                  <div className="couponTitlePrice">ลดเพิ่ม</div>
-                  <div className="couponPrice">1,000.-</div>
+                  <div className="couponTitlePrice">{highlight1}</div>
+                  <div className="couponPrice">{highlight2}</div>
                 </div>
               </div>
             </div>

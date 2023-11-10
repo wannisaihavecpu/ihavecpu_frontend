@@ -24,6 +24,7 @@ export type CartItem = {
 };
 
 export type CustomerDetails = {
+  customOption?: number;
   ship_firstname?: string;
   ship_lastname?: string;
   ship_email?: string;
@@ -50,6 +51,8 @@ export type CustomerDetails = {
   paymentOption?: number;
   bankOption?: number;
   termOption?: number;
+  use_point?: number;
+  code_coupon?: number;
 };
 
 type CartActionType = { type: "CHANGE_CART_AMOUNT"; payload: CartItem };
@@ -64,6 +67,7 @@ type ActionType =
   | UpdateCustomerDetailsPurchaseActionType;
 
 const INITIAL_CUSTOMER_DETAILS: CustomerDetails = {
+  customOption: 1,
   ship_firstname: "",
   ship_lastname: "",
   ship_email: "",
@@ -92,6 +96,9 @@ const INITIAL_CUSTOMER_DETAILS: CustomerDetails = {
   paymentOption: null,
   bankOption: null,
   termOption: null,
+
+  use_point: null,
+  code_coupon: null,
 };
 
 // =================================================================================

@@ -49,7 +49,6 @@ const calculatePriceBeforeVat = (subtotal) => {
 const calculateTotalPrice = (subtotal, shippingCost, vat) => {
   return subtotal + shippingCost + vat;
 };
-
 const PaymentForm: FC<Props> = ({
   paymentMethods,
   installmentList,
@@ -61,6 +60,8 @@ const PaymentForm: FC<Props> = ({
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedTerm, setSelectedTerm] = useState(null);
+
+  const [apiResponsePayment, setApiResponsePayment] = useState(null);
 
   const [termOptions, setTermOptions] = useState([]);
 
@@ -139,10 +140,67 @@ const PaymentForm: FC<Props> = ({
   const vat = calculateVat(subtotal);
   const priceBeforeVat = calculatePriceBeforeVat(subtotal);
   const totalPrice = calculateTotalPrice(priceBeforeVat, shippingCost, vat);
+  const product = state.cart.map((item) => ({
+    product_id: item.id,
+    quantity: item.qty.toString(),
+  }));
+
+  console.log("payment", state);
+
+  console.log("selected bank", selectedBank);
+
+  const calculatePayment = async () => {
+    console.log("calculatePayment");
+    let parsedPoint = state.customerDetail[0]?.use_point;
+    if (isNaN(parsedPoint)) {
+      parsedPoint = 0;
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_PATH}/payment/calculate`;
+
+    const payload = {
+      product,
+      shippingMethod:
+        state.customerDetail[0]?.shippingOption !== null
+          ? state.customerDetail[0]?.shippingOption
+          : null,
+      couponID:
+        state.customerDetail[0]?.code_coupon !== null
+          ? state.customerDetail[0]?.code_coupon
+          : null,
+      point: parsedPoint !== 0 ? parsedPoint : 0,
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          userid: "983",
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.res_code === "00") {
+        setApiResponsePayment(data.res_result);
+      }
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+
+  useEffect(() => {
+    calculatePayment();
+  }, []);
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={state.customerDetail[0] || initialValues}
       validationSchema={checkoutSchema}
       onSubmit={handleFormSubmit}
     >
@@ -163,7 +221,7 @@ const PaymentForm: FC<Props> = ({
                 {paymentMethods.map((payment, index) => (
                   <Fragment key={payment.gateway_id}>
                     <Radio
-                      key={payment.gateway_id}
+                      key={index}
                       mb={index !== paymentMethods.length - 1 ? "1.5rem" : "0"}
                       width={15}
                       height={15}
@@ -215,7 +273,7 @@ const PaymentForm: FC<Props> = ({
                       </Grid>
                     </Fragment>
 
-                    {selectedBank && ( // Only render the term-select if a bank is selected
+                    {selectedBank && (
                       <Fragment>
                         <Grid item lg={6}>
                           <Box p="0.5rem 1rem 0rem 1rem">
@@ -338,16 +396,9 @@ const PaymentForm: FC<Props> = ({
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      {state.customerDetail.map((item) => {
-                        const selectedShipping = shippingList.find(
-                          (shipping) =>
-                            shipping.shipping_id === item.shippingOption
-                        );
-                        const shippingRate = selectedShipping
-                          ? parseFloat(selectedShipping.shipping_rate)
-                          : 0;
-                        return <PriceFormat price={shippingRate} />;
-                      })}
+                      <PriceFormat
+                        price={apiResponsePayment?.shippingFee ?? 0}
+                      />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -361,7 +412,9 @@ const PaymentForm: FC<Props> = ({
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      -
+                      <PriceFormat
+                        price={apiResponsePayment?.discountCoupon ?? 0}
+                      />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -375,7 +428,9 @@ const PaymentForm: FC<Props> = ({
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      <PriceFormat price={priceBeforeVat} />
+                      <PriceFormat
+                        price={apiResponsePayment?.priceBeforeVat ?? 0}
+                      />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -388,7 +443,7 @@ const PaymentForm: FC<Props> = ({
 
                   <FlexBox alignItems="flex-end">
                     <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-                      <PriceFormat price={vat} />
+                      <PriceFormat price={apiResponsePayment?.vat ?? 0} />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -411,7 +466,7 @@ const PaymentForm: FC<Props> = ({
                       lineHeight="1"
                       textAlign="right"
                     >
-                      <PriceFormat price={totalPrice} />
+                      <PriceFormat price={apiResponsePayment?.netPrice ?? 0} />
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -447,14 +502,14 @@ const initialValues = {
 
 const checkoutSchema = yup.object().shape({
   paymentOption: yup.string().required("กรุณาเลือกวิธีการชำระเงิน"),
-  bankOption: yup.string().when("paymentOption", {
-    is: "8",
-    then: yup.string().required("กรุณาเลือกธนาคาร"),
-  }),
-  termOption: yup.string().when("paymentOption", {
-    is: "8",
-    then: yup.string().required("กรุณาเลือกจำนวนงวดที่ผ่อนชำระ"),
-  }),
+  // bankOption: yup.string().when("paymentOption", {
+  //   is: "8",
+  //   then: yup.string().required("กรุณาเลือกธนาคาร"),
+  // }),
+  // termOption: yup.string().when("paymentOption", {
+  //   is: "8",
+  //   then: yup.string().required("กรุณาเลือกจำนวนงวดที่ผ่อนชำระ"),
+  // }),
 });
 
 export default PaymentForm;

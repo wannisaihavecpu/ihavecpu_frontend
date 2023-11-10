@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     };
 
     const installmentResponse = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_PATH}/installmentlist`,
+      `${process.env.NEXT_PUBLIC_API_PATH}/installment/list`,
       requestBody
     );
     const installmentData = installmentResponse.data;

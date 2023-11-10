@@ -29,6 +29,8 @@ type Props = {
   selectedCoupon?: string | null;
   setSelectedCoupon?: (coupon: string | null) => void;
   listCoupon?: listCouponProduct[];
+  calculatePayment: (shippingMethod: string, couponID: string) => void;
+  shippingOption?: string | null;
 };
 
 const ModalContainer = styled.div`
@@ -481,8 +483,8 @@ const ModalCouponPurchase: FC<Props> = (props) => {
     }
   };
   const handleCouponClick = (coupon) => {
+    props.calculatePayment(props.shippingOption, coupon.id);
     const isCouponChecked = checkedCoupons.includes(coupon);
-
     if (isCouponChecked) {
       setCheckedCoupons(checkedCoupons.filter((c) => c !== coupon));
     } else {

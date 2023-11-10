@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import NextImage from "next/image";
 import { useRouter } from "next/router";
 import * as yup from "yup";
@@ -7,24 +7,20 @@ import { format } from "date-fns";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Avatar from "@component/avatar";
-import Select from "@component/Select";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { Card1 } from "@component/Card1";
-import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
 import Typography, { H6, Paragraph } from "@component/Typography";
 import { useAppContext } from "@context/AppContext";
-import shippingl from "@models/shippingList.model";
-import paymentl from "@models/paymentList";
+
 type Props = { shippingList; paymentList };
 
 const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
   const router = useRouter();
   const { state } = useAppContext();
 
-  const [dateList, setDateList] = useState([]);
-  const [hasVoucher, setHasVoucher] = useState(false);
+  // const [dateList, setDateList] = useState([]);
+  // const [hasVoucher, setHasVoucher] = useState(false);
 
   const selectedShippingOption = shippingList.find(
     (option) => option.shipping_id === state.customerDetail[0].shippingOption
@@ -33,7 +29,6 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
   const selectedPaymentOption = paymentList.find(
     (option) => option.gateway_id === state.customerDetail[0].paymentOption
   );
-  console.log("Selected Payment Option:", selectedPaymentOption);
 
   const handleFormSubmit = async (values) => {
     console.log(values);
@@ -44,7 +39,7 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
     setFieldValue(fieldName, value);
   };
 
-  const toggleHasVoucher = () => setHasVoucher((has) => !has);
+  // const toggleHasVoucher = () => setHasVoucher((has) => !has);
 
   useEffect(() => {
     let list = [];
@@ -57,11 +52,9 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
       today.setDate(dateCount + i);
       list.push({ label: format(today, "dd MMMM"), value: today });
     }
-
-    setDateList(list);
   }, []);
-  console.log("Checkout alternative");
-  console.log(state);
+  // console.log("Checkout alternative");
+  // console.log(state);
 
   return (
     <Formik
@@ -69,14 +62,7 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
       initialValues={initialValues}
       validationSchema={checkoutSchema}
     >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleSubmit,
-        setFieldValue,
-      }) => (
+      {({ values, handleSubmit, setFieldValue }) => (
         <form onSubmit={handleSubmit}>
           <Card1 mb="1.5rem">
             <FlexBox alignItems="center" mb="1.75rem">
@@ -424,57 +410,22 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
   );
 };
 
-const addressList = [
-  {
-    addressType: "ที่อยู่ในการจัดส่งสินค้า",
-    address: "777 Brockton Avenue, Abington MA 23514654654654654564654",
-  },
-  {
-    addressType: "ที่อยู่ออกใบกำกับภาษี ",
-    address: "777 Brockton Avenue, Abington MA 2351",
-  },
-  {
-    addressType: "วิธีการจัดส่ง ",
-    address: "DHL +฿50.00",
-  },
-];
-
-const contactList = [
-  { contactType: "Primary", contact: "+1-202-555-0119" },
-  { contactType: "Secondary", contact: "+1-202-555-0222" },
-];
-
-const paymentMethodList = [
-  {
-    cardType: "gbpay",
-    last4Digits: "4765",
-    name: "QR Code (QR payment GBPay)",
-  },
-];
-
-const timeList = [
-  { label: "9AM - 11AM", value: "9AM - 11AM" },
-  { label: "11AM - 1PM", value: "11AM - 1PM" },
-  { label: "3PM - 5PM", value: "3PM - 5PM" },
-  { label: "5PM - 7PM", value: "5PM - 7PM" },
-];
-
 const initialValues = {
-  address: "",
-  contact: "",
-  card: "",
-  date: "",
-  time: "",
-  voucher: "",
+  // address: "",
+  // contact: "",
+  // card: "",
+  // date: "",
+  // time: "",
+  // voucher: "",
 };
 
 const checkoutSchema = yup.object().shape({
-  address: yup.string().required("required"),
-  contact: yup.string().required("required"),
-  card: yup.string().required("required"),
-  date: yup.object().required("required"),
-  time: yup.object().required("required"),
-  voucher: yup.string(),
+  // address: yup.string().required("required"),
+  // contact: yup.string().required("required"),
+  // card: yup.string().required("required"),
+  // date: yup.object().required("required"),
+  // time: yup.object().required("required"),
+  // voucher: yup.string(),
 });
 
 export default CheckoutForm2;

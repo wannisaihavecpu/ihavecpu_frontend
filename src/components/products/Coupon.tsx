@@ -206,7 +206,6 @@ export const CouponStyle = styled.div<CouponProps>`
 `;
 
 const Coupon: FC<CouponProps> = ({
-  id,
   code,
   highlight1,
   highlight2,

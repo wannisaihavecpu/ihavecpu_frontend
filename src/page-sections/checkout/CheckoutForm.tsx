@@ -20,9 +20,9 @@ import { useAppContext } from "@context/AppContext";
 import PriceFormat from "@component/PriceFormat";
 import StyledSearchBox from "@component/search-box/styled";
 import Box from "@component/Box";
-import Select from "@component/Select";
+import { notify } from "@component/toast";
+import { useFormik } from "formik";
 
-// import { useFormik } from "formik";
 type Props = { branchList; shippingList; listCoupon };
 
 const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
@@ -31,38 +31,69 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
 
   const [sameAsShipping, setSameAsShipping] = useState(false);
   const [taxInvoice, setTaxInvoice] = useState(false);
-  const [shippingOptions, setShippingOptions] = useState([]);
+
+  const [usePoint, setUsePoint] = useState(null);
 
   const [open, setOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
   const [buttonClicked, setButtonClicked] = useState(null);
+  const [apiResponse, setApiResponse] = useState(null);
+
+  const product = state.cart.map((item) => ({
+    product_id: item.id,
+    quantity: item.qty.toString(),
+  }));
 
   const handleFormSubmit = async (values) => {
+    const updatedCustomerDetail = {
+      ...values,
+      code_coupon:
+        selectedCoupon !== null
+          ? selectedCoupon.id
+          : state.customerDetail[0]?.code_coupon,
+      use_point:
+        usePoint !== null ? usePoint : state.customerDetail[0]?.use_point,
+    };
     if (buttonClicked === "submitPayment") {
-      updateCustomerDetailsPurchase(values);
-
+      updateCustomerDetailsPurchase(updatedCustomerDetail);
       router.push("/payment");
     }
   };
-  const clearSelectedCoupon = () => {
-    setSelectedCoupon(null);
+  const clearSelectedCoupon = async () => {
+    const updatedCustomerDetail = {
+      ...state.customerDetail[0],
+      code_coupon: null,
+    };
+    if (selectedCoupon !== null && state.customerDetail[0]?.code_coupon) {
+      setSelectedCoupon(null);
+      await updateCustomerDetailsPurchase(updatedCustomerDetail);
+    } else if (
+      selectedCoupon !== null &&
+      state.customerDetail[0]?.code_coupon === null
+    ) {
+      setSelectedCoupon(null);
+      await updateCustomerDetailsPurchase(updatedCustomerDetail);
+      calculatePayment(formik.values.shippingOption, null);
+    }
   };
-  // const formik = useFormik({
-  //   initialValues,
-  //   onSubmit: handleFormSubmit,
-  //   validationSchema: checkoutSchema,
-  // });
 
-  const updateCustomerDetails = (values) => {
-    const { dispatch } = useAppContext();
-
-    dispatch({
-      type: "UPDATE_CUSTOMER_DETAILS_PURCHASE",
-      payload: values,
-    });
-  };
+  useEffect(() => {
+    const handleStateUpdate = () => {
+      setSelectedCoupon(null);
+      calculatePayment(formik.values.shippingOption, null);
+    };
+    // check state has been updated
+    if (state.customerDetail[0]?.code_coupon === null) {
+      handleStateUpdate();
+    }
+  }, [state.customerDetail[0]?.code_coupon]);
+  const formik = useFormik({
+    initialValues,
+    onSubmit: handleFormSubmit,
+    validationSchema: checkoutSchema,
+  });
 
   const handleCheckboxChange =
     (values, setFieldValue) =>
@@ -78,7 +109,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
         setFieldValue("bill_city", "");
         setFieldValue("bill_postcode", "");
       } else {
-        // opulate billing address fields with shipping address if checked
+        // billing address fields with shipping address if checked
         setFieldValue("bill_address1", values.ship_address1);
         setFieldValue("bill_subdistrict", values.ship_subdistrict);
         setFieldValue("bill_state", values.ship_state);
@@ -112,6 +143,128 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
   };
 
   console.log("selectedCoupon", selectedCoupon);
+  const calculatePaymentForPoint = async (
+    shippingMethod = null,
+    couponID = null,
+    point = null
+  ) => {
+    console.log("calculatePaymentForpoint");
+    let parsedPoint = parseInt(point, 10);
+    if (isNaN(parsedPoint)) {
+      parsedPoint = 0;
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_PATH}/payment/calculate`;
+
+    const payload = {
+      product,
+      shippingMethod:
+        shippingMethod !== ""
+          ? shippingMethod
+          : state.customerDetail[0].shippingOption,
+      couponID:
+        couponID !== null ? couponID : state.customerDetail[0].code_coupon,
+      point:
+        parsedPoint !== 0 ? parsedPoint : state.customerDetail[0].use_point,
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          userid: "983",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (data.res_code === "00") {
+        if (data.res_result.usePoint != 0) {
+          setApiResponse(data.res_result);
+          setUsePoint(data.res_result.usePoint);
+          notify("success", "ใช้คะแนนสะสมแล้ว");
+        } else {
+          setUsePoint(null);
+          notify("error", "ใช้คะแนนสะสมไม่สำเร็จ");
+        }
+      } else {
+        console.error(`Error: ${data.res_code}, Message: ${data.res_text}`);
+      }
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+  const calculatePayment = async (shippingMethod = null, couponID = null) => {
+    console.log("calculatePayment");
+    let parsedPoint = parseInt(usePoint, 10);
+    if (isNaN(parsedPoint)) {
+      parsedPoint = 0;
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_PATH}/payment/calculate`;
+
+    const payload = {
+      product,
+      shippingMethod:
+        shippingMethod !== ""
+          ? shippingMethod
+          : state.customerDetail[0].shippingOption,
+      couponID:
+        couponID !== null ? couponID : state.customerDetail[0].code_coupon,
+      point:
+        parsedPoint !== 0
+          ? parsedPoint.toString()
+          : state.customerDetail[0].use_point,
+    };
+
+    console.log("payload", payload);
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          userid: "983",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setApiResponse(data.res_result);
+      if (data.res_result.couponDetail) {
+        setSelectedCoupon(data.res_result.couponDetail);
+      }
+      formik.setFieldValue("shippingOption", shippingMethod);
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+
+  const handleRadioClick = (shippingMethod) => {
+    calculatePayment(shippingMethod, selectedCoupon ? selectedCoupon.id : null);
+  };
+  const handleUsePointClick = (point) => {
+    calculatePaymentForPoint(
+      formik.values.shippingOption,
+      selectedCoupon ? selectedCoupon.id : null,
+      point
+    );
+  };
+
+  useEffect(() => {
+    // if (state.customerDetail[0] === null) {
+    calculatePayment(
+      formik.values.shippingOption,
+      selectedCoupon ? selectedCoupon.id : null
+    );
+    // }
+  }, []);
 
   return (
     <Fragment>
@@ -539,7 +692,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.shippingFee ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -557,7 +710,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.discountCoupon ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -575,7 +728,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.priceBeforeVat ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -592,7 +745,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.vat ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -623,6 +776,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                                 "shippingOption",
                                 option.shipping_id
                               );
+                              handleRadioClick(option.shipping_id);
                             }}
                             label={
                               <Typography
@@ -677,7 +831,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                         lineHeight="1"
                         textAlign="right"
                       >
-                        <PriceFormat price={getTotalPrice()} />
+                        <PriceFormat price={apiResponse?.netPrice ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -707,15 +861,19 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                         </Icon>
                         <TextField
                           fullwidth
-                          name="code_coupon"
+                          name="use_point"
                           className="search-field"
                           placeholder="กรอกคะแนนสะสม"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.use_point || ""}
                         />
                         <Button
                           className="search-button"
                           variant="contained"
                           color="ihavecpu"
                           type="button"
+                          onClick={() => handleUsePointClick(values.use_point)}
                         >
                           กดใช้
                         </Button>
@@ -728,11 +886,17 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                       {selectedCoupon ? (
                         <>
                           <CouponNoButton
-                            topic={selectedCoupon.code}
-                            code={selectedCoupon.code}
-                            description={selectedCoupon.description}
+                            id={apiResponse?.couponDetail?.id}
+                            topic={apiResponse?.couponDetail?.title}
+                            highlight1={
+                              apiResponse?.couponDetail?.highlight?.highlight1
+                            }
+                            highlight2={
+                              apiResponse?.couponDetail?.highlight?.highlight2
+                            }
+                            description={apiResponse?.couponDetail?.description}
                             color="white"
-                            dateExpired={selectedCoupon.endDate}
+                            dateExpired={apiResponse?.couponDetail?.endDate}
                             onClear={clearSelectedCoupon}
                           />
                         </>
@@ -778,6 +942,8 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                       ดำเนินการชำระเงิน
                     </Button>
                     <ModalCouponPurchase
+                      shippingOption={formik.values.shippingOption}
+                      calculatePayment={calculatePayment}
                       open={open}
                       onClose={toggleDialog}
                       selectedCoupon={selectedCoupon}
@@ -817,6 +983,8 @@ const initialValues = {
   bill_city: "",
   bill_postcode: "",
   shippingOption: "",
+  use_point: "",
+  code_coupon: "",
 };
 
 const checkoutSchema = yup.object().shape({

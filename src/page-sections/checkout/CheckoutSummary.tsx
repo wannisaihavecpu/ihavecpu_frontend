@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { FC } from "react";
 import { Card1 } from "@component/Card1";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
@@ -7,11 +7,11 @@ import Typography, { H6 } from "@component/Typography";
 import Radio from "@component/radio";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
-import ModalCouponPurchase from "@component/products/ModalCouponPurchase";
+// import ModalCouponPurchase from "@component/products/ModalCouponPurchase";
 
 const CheckoutSummary: FC = () => {
-  const [open, setOpen] = useState(false);
-  const toggleDialog = useCallback(() => setOpen((open) => !open), []);
+  // const [open, setOpen] = useState(false);
+  // const toggleDialog = useCallback(() => setOpen((open) => !open), []);
   return (
     <Card1>
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
@@ -124,7 +124,7 @@ const CheckoutSummary: FC = () => {
           </FlexBox>
           <FlexBox>
             <Button
-              onClick={toggleDialog}
+              // onClick={toggleDialog}
               mt="1rem"
               variant="outlined"
               color="ihavecpu"
@@ -145,7 +145,7 @@ const CheckoutSummary: FC = () => {
         >
           ดำเนินการชำระเงิน
         </Button>
-        <ModalCouponPurchase open={open} onClose={toggleDialog} />
+        {/* <ModalCouponPurchase open={open} onClose={toggleDialog} /> */}
       </Grid>
     </Card1>
   );

@@ -206,7 +206,6 @@ export const CouponStyle = styled.div<CouponForUseProps>`
 `;
 
 const CouponForUse: FC<CouponForUseProps> = ({
-  id,
   topic,
   description,
   dateExpired,
