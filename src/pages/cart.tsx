@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import Link from "next/link";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import { Card1 } from "@component/Card1";
@@ -47,13 +46,8 @@ const Cart = () => {
     >
       {({
         values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
         handleSubmit,
         setFieldValue,
-        setFieldTouched,
       }) => (
         <form onSubmit={handleSubmit}>
           <Fragment>

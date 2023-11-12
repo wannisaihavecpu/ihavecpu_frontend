@@ -16,12 +16,6 @@ const CheckoutSummary: FC = () => {
       ) || 0
     );
   };
-  function calculatePointsFromTotalPrice(totalPrice) {
-    const conversionRate = 25;
-    const points = Math.floor((totalPrice / 2500) * conversionRate);
-
-    return points;
-  }
 
   return (
     <Card1>

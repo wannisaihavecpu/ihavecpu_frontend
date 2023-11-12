@@ -13,9 +13,13 @@ import { Card1 } from "@component/Card1";
 import Typography, { H6, Paragraph } from "@component/Typography";
 import { useAppContext } from "@context/AppContext";
 
-type Props = { shippingList; paymentList };
+type Props = { shippingList; paymentList; installmentList };
 
-const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
+const CheckoutForm2: FC<Props> = ({
+  shippingList,
+  paymentList,
+  installmentList,
+}) => {
   const router = useRouter();
   const { state } = useAppContext();
 
@@ -132,9 +136,11 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
                       {item.ship_firstname} {item.ship_lastname}
                     </Paragraph>
                     <Paragraph color="gray.700">
-                      {item.ship_address1} ต.{item.ship_subdistrict} อ.
-                      {item.ship_city} จ.
-                      {item.ship_state} {item.ship_postcode}
+                      {item.ship_address1}
+                      {item.ship_subdistrict && ` ต.${item.ship_subdistrict}`}
+                      {item.ship_city && ` อ.${item.ship_city}`}
+                      {item.ship_state && ` จ.${item.ship_state}`}
+                      {item.ship_postcode}
                     </Paragraph>
                   </Card>
                 </Grid>
@@ -203,6 +209,39 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
                     <H6 mb="0.25rem">วิธีการจัดส่ง</H6>
                     <Paragraph color="gray.700">
                       {selectedShippingOption.title}
+                    </Paragraph>
+                  </Card>
+                </Grid>
+              ) : (
+                <></>
+              )}
+              {/* custom build */}
+              {state.customerDetail[0].customOption ? (
+                <Grid item md={6} sm={6} xs={12}>
+                  <Card
+                    bg="gray.100"
+                    p="1rem"
+                    boxShadow="none"
+                    border="1px solid"
+                    cursor="pointer"
+                    borderColor={
+                      state.customerDetail[0].bill_firstname ===
+                      values.bill_firstname
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      state.customerDetail[0].bill_firstname || "",
+                      "address",
+                      setFieldValue
+                    )}
+                    style={{ height: "100%" }}
+                  >
+                    <H6 mb="0.25rem">ข้อมูลเพิ่มเติม</H6>
+                    <Paragraph color="gray.700">
+                      {state.customerDetail[0].customOption === 1
+                        ? "สั่งประกอบ"
+                        : "ไม่ต้องประกอบ"}
                     </Paragraph>
                   </Card>
                 </Grid>
@@ -312,9 +351,9 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
                     bg="gray.100"
                     p="1rem"
                     boxShadow="none"
-                    border="1px solid"
+                    // border="1px solid"
                     cursor="pointer"
-                    borderColor="primary.main"
+                    // borderColor="primary.main"
                     // onClick={handleFieldValueChange(
                     //   item.last4Digits,
                     //   "card",
@@ -351,7 +390,28 @@ const CheckoutForm2: FC<Props> = ({ shippingList, paymentList }) => {
                     <Box mt="0.3rem">
                       <Paragraph color="gray.600" fontSize="12px">
                         {state.customerDetail[0].bankOption ? (
-                          <>({selectedPaymentOption.method_desc_th})</>
+                          <>
+                            {
+                              installmentList.find(
+                                (option) =>
+                                  option.bank_id.toString() ===
+                                  state.customerDetail[0].bankOption
+                              )?.bank_name
+                            }{" "}
+                            {
+                              installmentList
+                                .find(
+                                  (option) =>
+                                    option.bank_id.toString() ===
+                                    state.customerDetail[0].bankOption
+                                )
+                                ?.installment_terms.find(
+                                  (termOption) =>
+                                    termOption.term.toString() ===
+                                    state.customerDetail[0].termOption
+                                )?.interest_rate
+                            }
+                          </>
                         ) : (
                           <></>
                         )}

@@ -5,6 +5,8 @@ import Typography, { Span } from "@component/Typography";
 import { useAppContext } from "@context/AppContext";
 import PriceFormat from "@component/PriceFormat";
 import { Card1 } from "@component/Card1";
+import Grid from "@component/grid/Grid";
+import { Button } from "@component/buttons";
 
 const CheckoutSummary2: FC = () => {
   const { state } = useAppContext();
@@ -16,7 +18,6 @@ const CheckoutSummary2: FC = () => {
   }));
 
   const calculatePayment = async () => {
-    console.log("calculatePayment");
     let parsedPoint = state.customerDetail[0]?.use_point;
     if (isNaN(parsedPoint)) {
       parsedPoint = 0;
@@ -137,6 +138,17 @@ const CheckoutSummary2: FC = () => {
           <PriceFormat price={apiResponseCheckout?.netPrice ?? 0} />
         </Typography>
       </FlexBox>
+      <Grid item xl={12} md={12} xs={12}>
+        <Button
+          mt="1rem"
+          variant="contained"
+          color="ihavecpu"
+          type="submit"
+          style={{ width: "100%" }}
+        >
+          ชำระเงิน
+        </Button>
+      </Grid>
     </Card1>
   );
 };

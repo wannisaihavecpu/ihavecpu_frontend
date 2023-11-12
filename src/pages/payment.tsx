@@ -1,6 +1,4 @@
-import Grid from "@component/grid/Grid";
 import PaymentForm from "@sections/payment/PaymentForm";
-import PaymentSummary from "@sections/payment/PaymentSummary";
 import CheckoutNavLayout from "@component/layout/CheckoutNavLayout";
 import { GetServerSideProps } from "next";
 import axios from "axios";

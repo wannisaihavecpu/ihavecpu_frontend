@@ -23,45 +23,21 @@ interface SelectedValue {
 
 type Props = { paymentMethods; installmentList; shippingList };
 
-const calculateSubtotal = (cart) => {
-  if (!cart || !Array.isArray(cart)) {
-    return 0;
-  }
 
-  return cart.reduce((accumulator, item) => accumulator + (item.price || 0), 0);
-};
-
-const calculateShippingCost = (customerDetail, shippingList) => {
-  const selectedShipping = shippingList.find(
-    (shipping) => shipping.shipping_id === customerDetail[0].shippingOption
-  );
-  return selectedShipping ? parseFloat(selectedShipping.shipping_rate) : 0;
-};
-
-const calculateVat = (subtotal) => {
-  return subtotal * (7 / 107);
-};
-
-const calculatePriceBeforeVat = (subtotal) => {
-  return subtotal * (100 / 107);
-};
-
-const calculateTotalPrice = (subtotal, shippingCost, vat) => {
-  return subtotal + shippingCost + vat;
-};
 const PaymentForm: FC<Props> = ({
   paymentMethods,
   installmentList,
-  shippingList,
 }) => {
   // const width = useWindowSize();
   const router = useRouter();
-  const { state, updateCustomerDetailsPurchase, dispatch } = useAppContext();
-  const [paymentMethod, setPaymentMethod] = useState("credit-card");
+  const { state, updateCustomerDetailsPurchase} = useAppContext();
+  // const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [selectedBank, setSelectedBank] = useState(null);
+
   const [selectedTerm, setSelectedTerm] = useState(null);
 
   const [apiResponsePayment, setApiResponsePayment] = useState(null);
+  const [apiResponseInstallment, setApiResponseInstallment] = useState(null);
 
   const [termOptions, setTermOptions] = useState([]);
 
@@ -78,31 +54,12 @@ const PaymentForm: FC<Props> = ({
     router.push("/checkout-alternative");
   };
 
-  const handlePaymentMethodChange = (event) => {
-    const name = event.target.name;
-    setPaymentMethod(name);
-  };
 
-  const getTotalPrice = () => {
-    return (
-      state.cart.reduce(
-        (accumulator, item) => accumulator + item.price * item.qty,
-        0
-      ) || 0
-    );
-  };
-  function calculatePointsFromTotalPrice(totalPrice) {
-    const conversionRate = 25;
-    const points = Math.floor((totalPrice / 2500) * conversionRate);
+  // const handlePaymentMethodChange = (event) => {
+  //   const name = event.target.name;
+  //   setPaymentMethod(name);
+  // };
 
-    return points;
-  }
-  console.log("paymentMethod", paymentMethod);
-
-  const optionsBankList = installmentList.map((installment) => ({
-    label: installment.bank_name,
-    value: installment.bank_id.toString(),
-  }));
 
   const handleBankSelectChange = (
     selectedValue,
@@ -120,37 +77,20 @@ const PaymentForm: FC<Props> = ({
     if (selectedBankData) {
       setTermOptions(selectedBankData.installment_terms);
     } else {
-      console.log("this null");
       setTermOptions(null);
     }
   };
 
   // calculate
-  const subtotal = state.cart.reduce((accumulator, item) => {
-    const totalQty = item.qty;
-    const totalPrice = item.price * totalQty;
-    return accumulator + totalPrice;
-  }, 0);
-  console.log("subtotal", subtotal);
-  const shippingCost = calculateShippingCost(
-    state.customerDetail,
-    shippingList
-  );
-
-  const vat = calculateVat(subtotal);
-  const priceBeforeVat = calculatePriceBeforeVat(subtotal);
-  const totalPrice = calculateTotalPrice(priceBeforeVat, shippingCost, vat);
   const product = state.cart.map((item) => ({
     product_id: item.id,
     quantity: item.qty.toString(),
   }));
-
-  console.log("payment", state);
-
-  console.log("selected bank", selectedBank);
+  const initialSelectedLabel = installmentList.find(
+    (installment) => installment.bank_id.toString() === state.customerDetail[0].bankOption
+  )?.bank_name;
 
   const calculatePayment = async () => {
-    console.log("calculatePayment");
     let parsedPoint = state.customerDetail[0]?.use_point;
     if (isNaN(parsedPoint)) {
       parsedPoint = 0;
@@ -188,15 +128,71 @@ const PaymentForm: FC<Props> = ({
 
       if (data.res_code === "00") {
         setApiResponsePayment(data.res_result);
+        setApiResponseInstallment(data.installmentOption);
       }
     } catch (error) {
       console.error("Error calling API:", error);
     }
   };
+  
+  
 
   useEffect(() => {
     calculatePayment();
   }, []);
+  useEffect(() => {
+    if (state.customerDetail[0].bankOption) {
+      const selectedBankData = installmentList.find(
+        (item) => item.bank_id.toString() === state.customerDetail[0].bankOption
+      );
+  
+      setSelectedBank({
+        label: initialSelectedLabel || '',
+        value: state.customerDetail[0].bankOption.toString() || '',
+      });
+  
+      if (
+        state.customerDetail[0].termOption !== undefined &&
+        selectedBankData &&
+        selectedBankData.installment_terms
+      ) {
+        const initialSelectedTermValue = state.customerDetail[0].termOption.toString();
+        const initialSelectedTermOption = selectedBankData.installment_terms.find(
+          (termOption) => termOption.term.toString() === initialSelectedTermValue
+        );
+  
+        setSelectedTerm({
+          label: initialSelectedTermOption?.interest_rate || '',
+          value: initialSelectedTermValue,
+        });
+      }
+    }
+  }, [initialSelectedLabel, state.customerDetail, installmentList]);
+  useEffect(() => {
+    const fetchSelectedBankData = async () => {
+      if (state.customerDetail[0].bankOption) {
+        const selectedBankData = installmentList.find(
+          (item) => item.bank_id.toString() === state.customerDetail[0].bankOption
+        );
+        const initialSelectedTermValue = state.customerDetail[0].termOption.toString();
+        const initialSelectedTermOption = selectedBankData.installment_terms.find(
+          (termOption) => termOption.term.toString() === initialSelectedTermValue
+        );
+  
+        if (selectedBankData && selectedBankData.installment_terms) {
+          setSelectedTerm({
+            label: initialSelectedTermOption?.interest_rate || '',
+            value: initialSelectedTermValue || '',
+          });
+  
+          setTermOptions(selectedBankData.installment_terms);
+        }
+      }
+    };
+  
+    fetchSelectedBankData();
+  }, [state.customerDetail[0].bankOption, installmentList]);
+  
 
   return (
     <Formik
@@ -208,8 +204,6 @@ const PaymentForm: FC<Props> = ({
         values,
         errors,
         touched,
-        handleChange,
-        handleBlur,
         handleSubmit,
         setFieldValue,
         setFieldTouched,
@@ -229,6 +223,10 @@ const PaymentForm: FC<Props> = ({
                       name="paymentOption"
                       value={payment.gateway_id}
                       onChange={() => {
+                        setFieldValue("bankOption", "");
+                        setFieldValue("termOption", "");
+                        setFieldTouched("bankOption", false);
+                        setFieldTouched("termOption", false);
                         setFieldValue("paymentOption", payment.gateway_id);
                       }}
                       checked={values.paymentOption === payment.gateway_id}
@@ -251,16 +249,19 @@ const PaymentForm: FC<Props> = ({
                           <Select
                             className="custom-select"
                             name="bankOption"
+                            placeholder="เลือกธนาคาร"
                             mb="1rem"
                             options={installmentList.map((installment) => ({
                               label: installment.bank_name,
                               value: installment.bank_id.toString(),
                             }))}
-                            placeholder="เลือกธนาคาร"
-                            value={selectedBank || ""}
+                            value={selectedBank}
                             errorText={touched.bankOption && errors.bankOption}
                             onChange={(selectedValue: SelectedValue) => {
-                              setSelectedBank(selectedValue);
+                              setSelectedBank({
+                                label: selectedValue.label,
+                                value: selectedValue.value || "0", 
+                              });
                               setFieldValue("bankOption", selectedValue.value);
                               handleBankSelectChange(
                                 selectedValue,
@@ -291,7 +292,10 @@ const PaymentForm: FC<Props> = ({
                                 touched.termOption && errors.termOption
                               }
                               onChange={(selectedValue: SelectedValue) => {
-                                setSelectedTerm(selectedValue);
+                                setSelectedTerm({
+                                  label: selectedValue.label,
+                                  value: selectedValue.value || "0", 
+                                });
                                 setFieldValue(
                                   "termOption",
                                   selectedValue.value
@@ -466,7 +470,39 @@ const PaymentForm: FC<Props> = ({
                       lineHeight="1"
                       textAlign="right"
                     >
-                      <PriceFormat price={apiResponsePayment?.netPrice ?? 0} />
+                      {selectedBank && selectedTerm ? (
+                        apiResponseInstallment &&
+                        apiResponseInstallment
+                          .filter(
+                            (option) =>
+                              option.bank_id.toString() ===
+                              (selectedBank?.value ?? "")
+                          )
+                          .map((option) => {
+                            const termInfo = option.installment_terms.find(
+                              (term) =>
+                                term.term.toString() ===
+                                (selectedTerm?.value ?? "")
+                            );
+                            if (termInfo) {
+                              const calculatedValue =
+                                termInfo.monthlyPrice *
+                                parseInt(selectedTerm?.value ?? "0", 10);
+                              return (
+                                <PriceFormat
+                                  key={`${selectedBank?.value}-${selectedTerm?.value}`}
+                                  price={calculatedValue}
+                                />
+                              );
+                            } else {
+                              return null;
+                            }
+                          })
+                      ) : (
+                        <PriceFormat
+                          price={apiResponsePayment?.netPrice ?? 0}
+                        />
+                      )}
                     </Typography>
                   </FlexBox>
                 </FlexBox>
@@ -489,10 +525,7 @@ const PaymentForm: FC<Props> = ({
     </Formik>
   );
 };
-const categoryOptions = [
-  { label: "Fashion", value: "fashion" },
-  { label: "Gadget", value: "gadget" },
-];
+
 
 const initialValues = {
   paymentOption: "",
@@ -502,14 +535,14 @@ const initialValues = {
 
 const checkoutSchema = yup.object().shape({
   paymentOption: yup.string().required("กรุณาเลือกวิธีการชำระเงิน"),
-  // bankOption: yup.string().when("paymentOption", {
-  //   is: "8",
-  //   then: yup.string().required("กรุณาเลือกธนาคาร"),
-  // }),
-  // termOption: yup.string().when("paymentOption", {
-  //   is: "8",
-  //   then: yup.string().required("กรุณาเลือกจำนวนงวดที่ผ่อนชำระ"),
-  // }),
+  bankOption: yup.string().when("paymentOption", {
+    is: "8",
+    then: yup.string().required("กรุณาเลือกธนาคาร"),
+  }),
+  termOption: yup.string().when("paymentOption", {
+    is: "8",
+    then: yup.string().required("กรุณาเลือกจำนวนงวดที่ผ่อนชำระ"),
+  }),
 });
 
 export default PaymentForm;

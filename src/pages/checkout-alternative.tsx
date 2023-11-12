@@ -2,20 +2,21 @@ import { GetServerSideProps } from "next";
 import axios from "axios";
 import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
-import GroceryLayout from "@component/layout/GroceryLayout";
 import CheckoutForm2 from "@sections/checkout/CheckoutForm2";
 import CheckoutSummary2 from "@sections/checkout/CheckoutSummary2";
 import CheckoutNavLayout from "@component/layout/CheckoutNavLayout";
 import branchList from "@models/branchList.model";
 import shippingList from "@models/shippingList.model";
 import paymentList from "@models/paymentList";
+import installmentList from "@models/installmentList.model";
+
 
 type Props = {
   branch: branchList;
   shipping: shippingList;
   payment: paymentList;
+  installment: installmentList;
 };
-
 
 const CheckoutAlternative = (props: Props) => {
   return (
@@ -25,6 +26,7 @@ const CheckoutAlternative = (props: Props) => {
           <CheckoutForm2
             shippingList={props.shipping}
             paymentList={props.payment}
+            installmentList={props.installment}
           />
         </Grid>
 
@@ -88,11 +90,30 @@ export const getServerSideProps: GetServerSideProps = async () => {
       );
     }
 
+    // installment list
+    const requestBody = {
+      price: 3000,
+    };
+
+    const installmentResponse = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/installment/list`,
+      requestBody
+    );
+    const installmentData = installmentResponse.data;
+    let installmentList = [];
+
+    if (installmentData.res_code === "00") {
+      installmentList = installmentData.res_result;
+    } else {
+      console.error("API returned an error:", installmentData.res_text);
+    }
+
     return {
       props: {
         branch: branchList,
         shipping: shippingList,
         payment: paymentList,
+        installment: installmentList,
       },
     };
   } catch (error) {
@@ -103,6 +124,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     props: {
       branch: [],
       shippingList: [],
+      installmentList: [],
     },
   };
 };
