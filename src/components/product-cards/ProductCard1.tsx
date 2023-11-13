@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { FC, Fragment, useCallback, useState } from "react";
 import styled from "styled-components";
 import { useAppContext } from "@context/AppContext";
@@ -10,9 +10,10 @@ import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import Card, { CardProps } from "@component/Card";
 import { H3, SemiSpan, H6 } from "@component/Typography";
-import { currency, getTheme } from "@utils/utils";
+import { getTheme } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
 import ProductQuickView from "@component/products/ProductQuickView";
+import PriceFormat from "@component/PriceFormat";
 
 // styled component
 const Wrapper = styled(Card)`
@@ -105,6 +106,7 @@ interface ProductCard1Props extends CardProps {
   slug: string;
   title: string;
   price: number;
+  priceBefore?: number;
   imgUrl?: string;
   rating?: number;
   images?: string[];
@@ -119,6 +121,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
   slug,
   title,
   price,
+  priceBefore,
   imgUrl,
   images,
   description,
@@ -133,7 +136,14 @@ const ProductCard1: FC<ProductCard1Props> = ({
   const handleCartAmountChange = (amount: number) => () => {
     dispatch({
       type: "CHANGE_CART_AMOUNT",
-      payload: { id, slug, price, imgUrl, name: title, qty: amount },
+      payload: {
+        id,
+        slug,
+        price,
+        imgUrl,
+        name: title,
+        qty: amount,
+      },
     });
   };
 
@@ -148,9 +158,9 @@ const ProductCard1: FC<ProductCard1Props> = ({
               p="5px 10px"
               fontSize="10px"
               fontWeight="600"
-              bg="primary.main"
+              bg="ihavecpu.main"
               position="absolute"
-              color="primary.text"
+              color="ihavecpu.text"
               zIndex={1}
             >
               {off}% off
@@ -162,7 +172,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
               color="secondary"
               variant="small"
               mb="0.5rem"
-              onClick={toggleDialog}
+              // onClick={toggleDialog}
             >
               eye-alt
             </Icon>
@@ -172,18 +182,26 @@ const ProductCard1: FC<ProductCard1Props> = ({
             </Icon>
           </FlexBox>
 
-          <Link href={`/product/${slug}`}>
-            <a>
-              <Image
-                alt={title}
-                width={100}
-                src={imgUrl}
-                height={100}
-                objectFit="cover"
-                layout="responsive"
-              />
-            </a>
-          </Link>
+          {/* <Link href={`/product/${slug}`}> */}
+          <a>
+            {/* <Image
+              alt={title}
+              width={100}
+              src={imgUrl}
+              height={100}
+              objectFit="cover"
+              layout="responsive"
+              priority={true}
+            /> */}
+            <img
+              alt={title}
+              width={100}
+              src={imgUrl}
+              height={100}
+              style={{ objectFit: "cover", width: "100%", height: "100%" }}
+            />
+          </a>
+          {/* </Link> */}
         </div>
 
         <div className="details">
@@ -222,14 +240,20 @@ const ProductCard1: FC<ProductCard1Props> = ({
                 {description}
               </H6>
               <FlexBox alignItems="center" mt="10px">
-                <SemiSpan pr="0.5rem" fontWeight="600" color="primary.main">
+                <SemiSpan pr="0.5rem" fontWeight="600" color="ihavecpu.main">
                   {/* {calculateDiscount(price, off)} */}
-                  {currency(price)}
+                  <PriceFormat price={price ?? 0} />
                 </SemiSpan>
 
                 {!!off && (
-                  <SemiSpan color="text.muted" fontWeight="100" fontSize="0.75rem">
-                    <del>{currency(price)}</del>
+                  <SemiSpan
+                    color="text.muted"
+                    fontWeight="100"
+                    fontSize="0.75rem"
+                  >
+                    <del>
+                      <PriceFormat price={priceBefore ?? 0} />
+                    </del>
                   </SemiSpan>
                 )}
               </FlexBox>
@@ -244,9 +268,9 @@ const ProductCard1: FC<ProductCard1Props> = ({
               <Button
                 size="none"
                 padding="3px"
-                color="primary"
+                color="ihavecpu"
                 variant="outlined"
-                borderColor="primary.light"
+                borderColor="ihavecpu.main"
                 onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}
               >
                 <Icon variant="small">plus</Icon>
@@ -254,16 +278,16 @@ const ProductCard1: FC<ProductCard1Props> = ({
 
               {!!cartItem?.qty && (
                 <Fragment>
-                  <SemiSpan color="text.primary" fontWeight="600">
+                  <SemiSpan color="text.ihavecpu" fontWeight="600">
                     {cartItem.qty}
                   </SemiSpan>
 
                   <Button
                     size="none"
                     padding="3px"
-                    color="primary"
+                    color="ihavecpu"
                     variant="outlined"
-                    borderColor="primary.light"
+                    borderColor="ihavecpu.light"
                     onClick={handleCartAmountChange(cartItem.qty - 1)}
                   >
                     <Icon variant="small">minus</Icon>

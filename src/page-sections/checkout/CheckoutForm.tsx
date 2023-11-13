@@ -142,13 +142,11 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
     );
   };
 
-  console.log("selectedCoupon", selectedCoupon);
   const calculatePaymentForPoint = async (
     shippingMethod = null,
     couponID = null,
     point = null
   ) => {
-    console.log("calculatePaymentForpoint");
     let parsedPoint = parseInt(point, 10);
     if (isNaN(parsedPoint)) {
       parsedPoint = 0;
@@ -197,7 +195,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
     }
   };
   const calculatePayment = async (shippingMethod = null, couponID = null) => {
-    console.log("calculatePayment");
     let parsedPoint = parseInt(usePoint, 10);
     if (isNaN(parsedPoint)) {
       parsedPoint = 0;
@@ -219,7 +216,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
           : state.customerDetail[0].use_point,
     };
 
-    console.log("payload", payload);
 
     try {
       const response = await fetch(url, {
