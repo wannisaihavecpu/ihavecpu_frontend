@@ -39,9 +39,7 @@ const Footer1: FC = () => {
                 </Link>
 
                 <Paragraph mb="1.25rem" color="gray.500">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor libero id et, in
-                  gravida. Sit diam duis mauris nulla cursus. Erat et lectus vel ut sollicitudin
-                  elit at amet.
+                ถ้าคุณชอบคอมพิวเตอร์ เราคือเพื่อนกัน iHAVECPU ร้านจำหน่ายอุปกรณ์คอมพิวเตอร์ โน๊ตบุ๊ก อุปกรณ์ต่อพ่วง เกมมิ่งเกียร์ รับประกันทุกชิ้น บริการจัดสเปกคอมพิวเตอร์ ตามการใช้งานในงบประมาณที่ลูกค้าเลือกได้เอง
                 </Paragraph>
 
                 <AppStore />
@@ -49,39 +47,48 @@ const Footer1: FC = () => {
 
               <Grid item lg={2} md={6} sm={6} xs={12}>
                 <Typography mb="1.25rem" lineHeight="1" fontSize="25px" fontWeight="600">
-                  About Us
+                  เกี่ยวกับเรา
                 </Typography>
 
                 <div>
-                  {aboutLinks.map((item, ind) => (
-                    <Link href="/" key={ind}>
-                      <StyledLink>{item}</StyledLink>
-                    </Link>
+                  {aboutLink.map((item) => (
+                    <a
+                    href={item.url}
+                    target="_blank"
+                    key={item.title}
+                    rel="noreferrer noopenner"
+                  >
+                      <StyledLink>{item.title}</StyledLink>
+                    </a>
                   ))}
                 </div>
               </Grid>
 
               <Grid item lg={3} md={6} sm={6} xs={12}>
                 <Typography mb="1.25rem" lineHeight="1" fontSize="25px" fontWeight="600">
-                  Customer Care
+                  บริการลูกค้า
                 </Typography>
-
                 <div>
-                  {customerCareLinks.map((item, ind) => (
-                    <Link href="/" key={ind}>
-                      <StyledLink>{item}</StyledLink>
-                    </Link>
+                  {customerList.map((item) => (
+                    <a
+                    href={item.url}
+                    target="_blank"
+                    key={item.title}
+                    rel="noreferrer noopenner"
+                  >
+                      <StyledLink>{item.title}</StyledLink>
+                    </a>
                   ))}
                 </div>
               </Grid>
 
               <Grid item lg={3} md={6} sm={6} xs={12}>
                 <Typography mb="1.25rem" lineHeight="1" fontSize="25px" fontWeight="600">
-                  Contact Us
+                  ติดต่อเรา
                 </Typography>
 
                 <Typography py="0.3rem" color="gray.500">
-                เลขที่ 228 ตำบล หนองแสง อำเภอปากพลี นครนายก 26130
+                เลขที่ 252 ตำบล หนองแสง อำเภอปากพลี นครนายก 26130
                 </Typography>
 
                 <Typography py="0.3rem" color="gray.500">
@@ -117,15 +124,22 @@ const Footer1: FC = () => {
   );
 };
 
-const aboutLinks = ["Careers", "Our Stores", "Our Cares", "Terms & Conditions", "Privacy Policy"];
-
-const customerCareLinks = [
-  "Help Center",
-  "How to Buy",
-  "Track Your Order",
-  "Corporate & Bulk Purchasing",
-  "Returns & Refunds",
+const aboutLink = [
+  { title: "บริการของเรา", url: "https://www.ihavecpu.com/" },
+  { title: "ร้านค้าของเรา", url: "/" },
+  { title: "ความห่วงใยของเรา", url: "https://www.youtube.com/channel/UCsIyD-TSO1wQFz-n2Y4i3Rg" },
+  { title: "ข้อตกลงและเงื่อนไข", url: "/" },
+  { title: "นโยบายความเป็นส่วนตัว", url: "/" },
 ];
+
+const customerList = [
+  { title: "ศูนย์ช่วยเหลือ", url: "https://www.ihavecpu.com/" },
+  { title: "วิธีการซื้อ", url: "/" },
+  { title: "ติดตามคำสั่งซื้อของคุณ", url: "https://www.youtube.com/channel/UCsIyD-TSO1wQFz-n2Y4i3Rg" },
+  { title: "จัดการคำสั่งซื้อ", url: "/" },
+  { title: "การคืนสินค้าและการคืนเงิน", url: "/" },
+];
+
 
 const iconList = [
   { iconName: "facebook", url: "https://www.facebook.com/UILibOfficial" },
