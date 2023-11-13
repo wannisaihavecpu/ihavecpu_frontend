@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import NextImage from "next/image";
 import { useRouter } from "next/router";
 import * as yup from "yup";
@@ -7,18 +7,32 @@ import { format } from "date-fns";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Avatar from "@component/avatar";
-import Select from "@component/Select";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { Card1 } from "@component/Card1";
-import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
 import Typography, { H6, Paragraph } from "@component/Typography";
+import { useAppContext } from "@context/AppContext";
 
-const CheckoutForm2: FC = () => {
+type Props = { shippingList; paymentList; installmentList };
+
+const CheckoutForm2: FC<Props> = ({
+  shippingList,
+  paymentList,
+  installmentList,
+}) => {
   const router = useRouter();
-  const [dateList, setDateList] = useState([]);
-  const [hasVoucher, setHasVoucher] = useState(false);
+  const { state } = useAppContext();
+
+  // const [dateList, setDateList] = useState([]);
+  // const [hasVoucher, setHasVoucher] = useState(false);
+
+  const selectedShippingOption = shippingList.find(
+    (option) => option.shipping_id === state.customerDetail[0].shippingOption
+  );
+
+  const selectedPaymentOption = paymentList.find(
+    (option) => option.gateway_id === state.customerDetail[0].paymentOption
+  );
 
   const handleFormSubmit = async (values) => {
     console.log(values);
@@ -29,7 +43,7 @@ const CheckoutForm2: FC = () => {
     setFieldValue(fieldName, value);
   };
 
-  const toggleHasVoucher = () => setHasVoucher((has) => !has);
+  // const toggleHasVoucher = () => setHasVoucher((has) => !has);
 
   useEffect(() => {
     let list = [];
@@ -42,9 +56,9 @@ const CheckoutForm2: FC = () => {
       today.setDate(dateCount + i);
       list.push({ label: format(today, "dd MMMM"), value: today });
     }
-
-    setDateList(list);
   }, []);
+  // console.log("Checkout alternative");
+  // console.log(state);
 
   return (
     <Formik
@@ -52,17 +66,22 @@ const CheckoutForm2: FC = () => {
       initialValues={initialValues}
       validationSchema={checkoutSchema}
     >
-      {({ values, errors, touched, handleChange, handleSubmit, setFieldValue }) => (
+      {({ values, handleSubmit, setFieldValue }) => (
         <form onSubmit={handleSubmit}>
           <Card1 mb="1.5rem">
             <FlexBox alignItems="center" mb="1.75rem">
-              <Avatar bg="primary.main" size={32} color="primary.text" mr="0.875rem">
+              <Avatar
+                bg="ihavecpu.main"
+                size={32}
+                color="primary.text"
+                mr="0.875rem"
+              >
                 1
               </Avatar>
               <Typography fontSize="20px">รายละเอียดจัดส่ง</Typography>
             </FlexBox>
 
-            <Box mb="1.75rem">
+            {/* <Box mb="1.75rem">
               <Grid container spacing={6}>
                 <Grid item sm={6} xs={12}>
                   <Select
@@ -87,32 +106,159 @@ const CheckoutForm2: FC = () => {
                   />
                 </Grid>
               </Grid>
-            </Box>
+            </Box> */}
 
-            <Typography mb="0.75rem">ที่อยู่ในการจัดส่ง</Typography>
+            <Typography mb="0.75rem"></Typography>
             <Grid container spacing={6}>
-              {addressList.map((item, ind) => (
-                <Grid item md={4} sm={6} xs={12} key={ind}>
+              {/* shipping address*/}
+              {state.customerDetail.map((item, ind) => (
+                <Grid item md={6} sm={6} xs={12} key={ind}>
                   <Card
                     bg="gray.100"
                     p="1rem"
                     boxShadow="none"
                     border="1px solid"
                     cursor="pointer"
-                    borderColor={item.address === values.address ? "primary.main" : "transparent"}
-                    onClick={handleFieldValueChange(item.address, "address", setFieldValue)}
+                    borderColor={
+                      item.ship_firstname === values.ship_firstname
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      item.ship_firstname || "",
+                      "address",
+                      setFieldValue
+                    )}
+                    style={{ height: "100%" }}
                   >
-                    <H6 mb="0.25rem">{item.addressType}</H6>
-                    <Paragraph color="gray.700">{item.address}</Paragraph>
+                    <H6 mb="0.25rem">ที่อยู่ในการจัดส่งสินค้า</H6>
+                    <Paragraph color="gray.700">
+                      {item.ship_firstname} {item.ship_lastname}
+                    </Paragraph>
+                    <Paragraph color="gray.700">
+                      {item.ship_address1}
+                      {item.ship_subdistrict && ` ต.${item.ship_subdistrict}`}
+                      {item.ship_city && ` อ.${item.ship_city}`}
+                      {item.ship_state && ` จ.${item.ship_state}`}
+                      {item.ship_postcode}
+                    </Paragraph>
                   </Card>
                 </Grid>
               ))}
+              {/* tax address*/}
+              {state.customerDetail[0].request_tax === true ? (
+                <Grid item md={6} sm={6} xs={12}>
+                  <Card
+                    bg="gray.100"
+                    p="1rem"
+                    boxShadow="none"
+                    border="1px solid"
+                    cursor="pointer"
+                    borderColor={
+                      state.customerDetail[0].bill_firstname ===
+                      values.bill_firstname
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      state.customerDetail[0].bill_firstname || "",
+                      "address",
+                      setFieldValue
+                    )}
+                    style={{ height: "100%" }}
+                  >
+                    <H6 mb="0.25rem">ที่อยู่ในการจัดส่งสินค้า (ใบกำกับภาษี)</H6>
+                    <Paragraph color="gray.700">
+                      {state.customerDetail[0].bill_firstname}{" "}
+                      {state.customerDetail[0].bill_lastname}
+                    </Paragraph>
+                    <Paragraph color="gray.700">
+                      {state.customerDetail[0].bill_address1} ต.
+                      {state.customerDetail[0].bill_subdistrict} อ.
+                      {state.customerDetail[0].bill_city} จ.
+                      {state.customerDetail[0].bill_state}{" "}
+                      {state.customerDetail[0].bill_postcode}
+                    </Paragraph>
+                  </Card>
+                </Grid>
+              ) : (
+                <></>
+              )}
+              {/* delivery*/}
+              {state.customerDetail[0].shippingOption ? (
+                <Grid item md={6} sm={6} xs={12}>
+                  <Card
+                    bg="gray.100"
+                    p="1rem"
+                    boxShadow="none"
+                    border="1px solid"
+                    cursor="pointer"
+                    borderColor={
+                      state.customerDetail[0].bill_firstname ===
+                      values.bill_firstname
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      state.customerDetail[0].bill_firstname || "",
+                      "address",
+                      setFieldValue
+                    )}
+                    style={{ height: "100%" }}
+                  >
+                    <H6 mb="0.25rem">วิธีการจัดส่ง</H6>
+                    <Paragraph color="gray.700">
+                      {selectedShippingOption.title}
+                    </Paragraph>
+                  </Card>
+                </Grid>
+              ) : (
+                <></>
+              )}
+              {/* custom build */}
+              {state.customerDetail[0].customOption ? (
+                <Grid item md={6} sm={6} xs={12}>
+                  <Card
+                    bg="gray.100"
+                    p="1rem"
+                    boxShadow="none"
+                    border="1px solid"
+                    cursor="pointer"
+                    borderColor={
+                      state.customerDetail[0].bill_firstname ===
+                      values.bill_firstname
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      state.customerDetail[0].bill_firstname || "",
+                      "address",
+                      setFieldValue
+                    )}
+                    style={{ height: "100%" }}
+                  >
+                    <H6 mb="0.25rem">ข้อมูลเพิ่มเติม</H6>
+                    <Paragraph color="gray.700">
+                      {state.customerDetail[0].customOption === 1
+                        ? "สั่งประกอบ"
+                        : "ไม่ต้องประกอบ"}
+                    </Paragraph>
+                  </Card>
+                </Grid>
+              ) : (
+                <></>
+              )}
             </Grid>
           </Card1>
 
-          <Card1 mb="1.5rem">
+          {/* <Card1 mb="1.5rem">
             <FlexBox alignItems="center" mb="1.75rem">
-              <Avatar bg="primary.main" size={32} color="primary.text" mr="0.875rem">
+              <Avatar
+                bg="primary.main"
+                size={32}
+                color="primary.text"
+                mr="0.875rem"
+              >
                 3
               </Avatar>
               <Typography fontSize="20px">ข้อมูลส่วนตัว</Typography>
@@ -129,8 +275,16 @@ const CheckoutForm2: FC = () => {
                     boxShadow="none"
                     border="1px solid"
                     cursor="pointer"
-                    borderColor={item.contact === values.contact ? "primary.main" : "transparent"}
-                    onClick={handleFieldValueChange(item.contact, "contact", setFieldValue)}
+                    borderColor={
+                      item.contact === values.contact
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      item.contact,
+                      "contact",
+                      setFieldValue
+                    )}
                   >
                     <H6 mb="0.25rem">{item.contactType}</H6>
                     <Paragraph color="gray.700">{item.contact}</Paragraph>
@@ -138,30 +292,48 @@ const CheckoutForm2: FC = () => {
                 </Grid>
               ))}
             </Grid>
-          </Card1>
+          </Card1> */}
 
           <Card1 mb="1.5rem">
             <FlexBox alignItems="center" mb="1.75rem">
-              <Avatar bg="primary.main" size={32} color="primary.text" mr="0.875rem">
-                3
+              <Avatar
+                bg="ihavecpu.main"
+                size={32}
+                color="primary.text"
+                mr="0.875rem"
+              >
+                2
               </Avatar>
               <Typography fontSize="20px">รายละเอียดในการชำระเงิน</Typography>
             </FlexBox>
 
-            <Typography mb="0.75rem">วิธีการชำระเงินที่บันทึกไว้</Typography>
+            <Typography mb="0.75rem">วิธีการชำระเงินที่เลือกไว้</Typography>
             <Grid container spacing={6}>
-              {paymentMethodList.map((item) => (
-                <Grid item md={4} sm={6} xs={12} key={item.last4Digits}>
+              {/* {paymentMethodList.map((item) => (
+                <Grid item md={6} sm={6} xs={12} key={item.last4Digits}>
                   <Card
                     bg="gray.100"
                     p="1rem"
                     boxShadow="none"
                     border="1px solid"
                     cursor="pointer"
-                    borderColor={item.last4Digits === values.card ? "primary.main" : "transparent"}
-                    onClick={handleFieldValueChange(item.last4Digits, "card", setFieldValue)}
+                    borderColor={
+                      item.last4Digits === values.card
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      item.last4Digits,
+                      "card",
+                      setFieldValue
+                    )}
                   >
-                    <Box height="24px" width="36px" position="relative" mb="0.5rem">
+                    <Box
+                      height="24px"
+                      width="36px"
+                      position="relative"
+                      mb="0.5rem"
+                    >
                       <NextImage
                         src={`/assets/images/payment-methods/${item.cardType}.svg`}
                         layout="fill"
@@ -169,14 +341,90 @@ const CheckoutForm2: FC = () => {
                       />
                     </Box>
 
-                    <Paragraph color="gray.700">**** **** **** {item.last4Digits}</Paragraph>
                     <Paragraph color="gray.700">{item.name}</Paragraph>
                   </Card>
                 </Grid>
-              ))}
+              ))} */}
+              {state.customerDetail[0].paymentOption ? (
+                <Grid item md={7} sm={6} xs={12}>
+                  <Card
+                    bg="gray.100"
+                    p="1rem"
+                    boxShadow="none"
+                    // border="1px solid"
+                    cursor="pointer"
+                    // borderColor="primary.main"
+                    // onClick={handleFieldValueChange(
+                    //   item.last4Digits,
+                    //   "card",
+                    //   setFieldValue
+                    // )}
+                  >
+                    <Box
+                      height="24px"
+                      width="36px"
+                      position="relative"
+                      mb="0.5rem"
+                    >
+                      <NextImage
+                        src={`/assets/images/payment-methods/${selectedPaymentOption.icon}.svg`}
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </Box>
+
+                    <Box mt="1rem">
+                      <Paragraph color="gray.800" fontWeight={600}>
+                        {selectedPaymentOption.method_name_th}
+                      </Paragraph>
+                    </Box>
+                    <Box mt="0.3rem">
+                      <Paragraph color="gray.600" fontSize="12px">
+                        {selectedPaymentOption.method_desc_th ? (
+                          <>({selectedPaymentOption.method_desc_th})</>
+                        ) : (
+                          <></>
+                        )}
+                      </Paragraph>
+                    </Box>
+                    <Box mt="0.3rem">
+                      <Paragraph color="gray.600" fontSize="12px">
+                        {state.customerDetail[0].bankOption ? (
+                          <>
+                            {
+                              installmentList.find(
+                                (option) =>
+                                  option.bank_id.toString() ===
+                                  state.customerDetail[0].bankOption
+                              )?.bank_name
+                            }{" "}
+                            {
+                              installmentList
+                                .find(
+                                  (option) =>
+                                    option.bank_id.toString() ===
+                                    state.customerDetail[0].bankOption
+                                )
+                                ?.installment_terms.find(
+                                  (termOption) =>
+                                    termOption.term.toString() ===
+                                    state.customerDetail[0].termOption
+                                )?.interest_rate
+                            }
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </Paragraph>
+                    </Box>
+                  </Card>
+                </Grid>
+              ) : (
+                <></>
+              )}
             </Grid>
 
-            <Paragraph
+            {/* <Paragraph
               className="cursor-pointer"
               color="primary.main"
               mt="1.5rem"
@@ -195,15 +443,26 @@ const CheckoutForm2: FC = () => {
                   value={values.voucher || ""}
                   onChange={handleChange}
                 />
-                <Button variant="contained" color="primary" type="button" ml="1rem">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="button"
+                  ml="1rem"
+                >
                   ยืนยัน
                 </Button>
               </FlexBox>
-            )}
+            )} */}
 
-            <Button variant="contained" color="primary" mt="1.5rem" type="submit" fullwidth>
+            {/* <Button
+              variant="contained"
+              color="primary"
+              mt="1.5rem"
+              type="submit"
+              fullwidth
+            >
               สถานะคำสั่งซื้อ
-            </Button>
+            </Button> */}
           </Card1>
         </form>
       )}
@@ -211,46 +470,22 @@ const CheckoutForm2: FC = () => {
   );
 };
 
-const addressList = [
-  { addressType: "Home", address: "435 Bristol Avenue, Abington MA 2351" },
-  { addressType: "Office", address: "777 Brockton Avenue, Abington MA 2351" },
-  { addressType: "Office 2", address: "777 Kazi Avenue, Abington MA 2351" },
-];
-
-const contactList = [
-  { contactType: "Primary", contact: "+1-202-555-0119" },
-  { contactType: "Secondary", contact: "+1-202-555-0222" },
-];
-
-const paymentMethodList = [
-  { cardType: "Amex", last4Digits: "4765", name: "Jaslynn Land" },
-  { cardType: "Mastercard", last4Digits: "5432", name: "Jaslynn Land" },
-  { cardType: "Visa", last4Digits: "4543", name: "Jaslynn Land" },
-];
-
-const timeList = [
-  { label: "9AM - 11AM", value: "9AM - 11AM" },
-  { label: "11AM - 1PM", value: "11AM - 1PM" },
-  { label: "3PM - 5PM", value: "3PM - 5PM" },
-  { label: "5PM - 7PM", value: "5PM - 7PM" },
-];
-
 const initialValues = {
-  address: "",
-  contact: "",
-  card: "",
-  date: "",
-  time: "",
-  voucher: "",
+  // address: "",
+  // contact: "",
+  // card: "",
+  // date: "",
+  // time: "",
+  // voucher: "",
 };
 
 const checkoutSchema = yup.object().shape({
-  address: yup.string().required("required"),
-  contact: yup.string().required("required"),
-  card: yup.string().required("required"),
-  date: yup.object().required("required"),
-  time: yup.object().required("required"),
-  voucher: yup.string(),
+  // address: yup.string().required("required"),
+  // contact: yup.string().required("required"),
+  // card: yup.string().required("required"),
+  // date: yup.object().required("required"),
+  // time: yup.object().required("required"),
+  // voucher: yup.string(),
 });
 
 export default CheckoutForm2;

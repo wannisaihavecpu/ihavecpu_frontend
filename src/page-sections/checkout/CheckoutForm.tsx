@@ -20,37 +20,80 @@ import { useAppContext } from "@context/AppContext";
 import PriceFormat from "@component/PriceFormat";
 import StyledSearchBox from "@component/search-box/styled";
 import Box from "@component/Box";
+import { notify } from "@component/toast";
+import { useFormik } from "formik";
 
-// import { useFormik } from "formik";
+type Props = { branchList; shippingList; listCoupon };
 
-const CheckoutForm: FC = () => {
+const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
   const router = useRouter();
-  const { state } = useAppContext();
+  const { state, updateCustomerDetailsPurchase } = useAppContext();
 
   const [sameAsShipping, setSameAsShipping] = useState(false);
   const [taxInvoice, setTaxInvoice] = useState(false);
-  const [shippingOptions, setShippingOptions] = useState([]);
+
+  const [usePoint, setUsePoint] = useState(null);
 
   const [open, setOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
   const [buttonClicked, setButtonClicked] = useState(null);
+  const [apiResponse, setApiResponse] = useState(null);
+
+  const product = state.cart.map((item) => ({
+    product_id: item.id,
+    quantity: item.qty.toString(),
+  }));
 
   const handleFormSubmit = async (values) => {
+    const updatedCustomerDetail = {
+      ...values,
+      code_coupon:
+        selectedCoupon !== null
+          ? selectedCoupon.id
+          : state.customerDetail[0]?.code_coupon,
+      use_point:
+        usePoint !== null ? usePoint : state.customerDetail[0]?.use_point,
+    };
     if (buttonClicked === "submitPayment") {
-      console.log(values);
+      updateCustomerDetailsPurchase(updatedCustomerDetail);
       router.push("/payment");
     }
   };
-  const clearSelectedCoupon = () => {
-    setSelectedCoupon(null);
+  const clearSelectedCoupon = async () => {
+    const updatedCustomerDetail = {
+      ...state.customerDetail[0],
+      code_coupon: null,
+    };
+    if (selectedCoupon !== null && state.customerDetail[0]?.code_coupon) {
+      setSelectedCoupon(null);
+      await updateCustomerDetailsPurchase(updatedCustomerDetail);
+    } else if (
+      selectedCoupon !== null &&
+      state.customerDetail[0]?.code_coupon === null
+    ) {
+      setSelectedCoupon(null);
+      await updateCustomerDetailsPurchase(updatedCustomerDetail);
+      calculatePayment(formik.values.shippingOption, null);
+    }
   };
-  // const formik = useFormik({
-  //   initialValues,
-  //   onSubmit: handleFormSubmit,
-  //   validationSchema: checkoutSchema,
-  // });
+
+  useEffect(() => {
+    const handleStateUpdate = () => {
+      setSelectedCoupon(null);
+      calculatePayment(formik.values.shippingOption, null);
+    };
+    // check state has been updated
+    if (state.customerDetail[0]?.code_coupon === null) {
+      handleStateUpdate();
+    }
+  }, [state.customerDetail[0]?.code_coupon]);
+  const formik = useFormik({
+    initialValues,
+    onSubmit: handleFormSubmit,
+    validationSchema: checkoutSchema,
+  });
 
   const handleCheckboxChange =
     (values, setFieldValue) =>
@@ -59,14 +102,14 @@ const CheckoutForm: FC = () => {
       setFieldValue("same_as_shipping", checked);
 
       if (!checked) {
-        // Clear the billing address fields when unchecked
+        // clear the billing address fields when unchecked
         setFieldValue("bill_address1", "");
         setFieldValue("bill_subdistrict", "");
         setFieldValue("bill_state", "");
         setFieldValue("bill_city", "");
         setFieldValue("bill_postcode", "");
       } else {
-        // Populate billing address fields with shipping address if checked
+        // billing address fields with shipping address if checked
         setFieldValue("bill_address1", values.ship_address1);
         setFieldValue("bill_subdistrict", values.ship_subdistrict);
         setFieldValue("bill_state", values.ship_state);
@@ -99,23 +142,134 @@ const CheckoutForm: FC = () => {
     );
   };
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/shippinglist`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.data) {
-          setShippingOptions(data.data);
-        }
-      })
-      .catch((error) => {
-        console.error("error fetching", error);
+  console.log("selectedCoupon", selectedCoupon);
+  const calculatePaymentForPoint = async (
+    shippingMethod = null,
+    couponID = null,
+    point = null
+  ) => {
+    console.log("calculatePaymentForpoint");
+    let parsedPoint = parseInt(point, 10);
+    if (isNaN(parsedPoint)) {
+      parsedPoint = 0;
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_PATH}/payment/calculate`;
+
+    const payload = {
+      product,
+      shippingMethod:
+        shippingMethod !== ""
+          ? shippingMethod
+          : state.customerDetail[0].shippingOption,
+      couponID:
+        couponID !== null ? couponID : state.customerDetail[0].code_coupon,
+      point:
+        parsedPoint !== 0 ? parsedPoint : state.customerDetail[0].use_point,
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          userid: "983",
+        },
+        body: JSON.stringify(payload),
       });
+
+      const data = await response.json();
+
+      if (data.res_code === "00") {
+        if (data.res_result.usePoint != 0) {
+          setApiResponse(data.res_result);
+          setUsePoint(data.res_result.usePoint);
+          notify("success", "ใช้คะแนนสะสมแล้ว");
+        } else {
+          setUsePoint(null);
+          notify("error", "ใช้คะแนนสะสมไม่สำเร็จ");
+        }
+      } else {
+        console.error(`Error: ${data.res_code}, Message: ${data.res_text}`);
+      }
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+  const calculatePayment = async (shippingMethod = null, couponID = null) => {
+    console.log("calculatePayment");
+    let parsedPoint = parseInt(usePoint, 10);
+    if (isNaN(parsedPoint)) {
+      parsedPoint = 0;
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_PATH}/payment/calculate`;
+
+    const payload = {
+      product,
+      shippingMethod:
+        shippingMethod !== ""
+          ? shippingMethod
+          : state.customerDetail[0].shippingOption,
+      couponID:
+        couponID !== null ? couponID : state.customerDetail[0].code_coupon,
+      point:
+        parsedPoint !== 0
+          ? parsedPoint.toString()
+          : state.customerDetail[0].use_point,
+    };
+
+    console.log("payload", payload);
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          userid: "983",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setApiResponse(data.res_result);
+      if (data.res_result.couponDetail) {
+        setSelectedCoupon(data.res_result.couponDetail);
+      }
+      formik.setFieldValue("shippingOption", shippingMethod);
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+
+  const handleRadioClick = (shippingMethod) => {
+    calculatePayment(shippingMethod, selectedCoupon ? selectedCoupon.id : null);
+  };
+  const handleUsePointClick = (point) => {
+    calculatePaymentForPoint(
+      formik.values.shippingOption,
+      selectedCoupon ? selectedCoupon.id : null,
+      point
+    );
+  };
+
+  useEffect(() => {
+    // if (state.customerDetail[0] === null) {
+    calculatePayment(
+      formik.values.shippingOption,
+      selectedCoupon ? selectedCoupon.id : null
+    );
+    // }
   }, []);
 
   return (
     <Fragment>
       <Formik
-        initialValues={initialValues}
+        initialValues={state.customerDetail[0] || initialValues}
         validationSchema={checkoutSchema}
         onSubmit={handleFormSubmit}
       >
@@ -538,7 +692,7 @@ const CheckoutForm: FC = () => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.shippingFee ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -556,46 +710,11 @@ const CheckoutForm: FC = () => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.discountCoupon ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
 
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
-                    <Typography color="text.hint">ส่วนลดคูปอง:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
-                    <Typography color="text.hint">ส่วนลดคะแนนสะสม:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
                   <FlexBox
                     justifyContent="space-between"
                     alignItems="center"
@@ -609,7 +728,7 @@ const CheckoutForm: FC = () => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.priceBeforeVat ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -626,27 +745,7 @@ const CheckoutForm: FC = () => {
                         fontWeight="600"
                         lineHeight="1"
                       >
-                        <PriceFormat price={0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="1rem"
-                  >
-                    <Typography color="text.hint">
-                      ดอกเบี้ยผ่อนชําระ:
-                    </Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={0} />
+                        <PriceFormat price={apiResponse?.vat ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -659,30 +758,37 @@ const CheckoutForm: FC = () => {
                   >
                     <Typography color="text.hint">วิธีการจัดส่ง:</Typography>
                     <FlexBox flexDirection="column">
-                      {shippingOptions.map((option) => (
-                        <Radio
-                          key={option.shipping_id}
-                          mb="0.5rem"
-                          color="secondary"
-                          name="shippingOption"
-                          value={option.shipping_id}
-                          width={15}
-                          height={15}
-                          checked={values.shippingOption === option.shipping_id}
-                          onChange={() => {
-                            setFieldValue("shippingOption", option.shipping_id);
-                          }}
-                          label={
-                            <Typography
-                              ml="6px"
-                              fontWeight="600"
-                              fontSize="13px"
-                            >
-                              {option.title}
-                            </Typography>
-                          }
-                        />
-                      ))}
+                      {shippingList &&
+                        shippingList.map((option) => (
+                          <Radio
+                            key={option.shipping_id}
+                            mb="0.5rem"
+                            color="secondary"
+                            name="shippingOption"
+                            value={option.shipping_id}
+                            width={15}
+                            height={15}
+                            checked={
+                              values.shippingOption === option.shipping_id
+                            }
+                            onChange={() => {
+                              setFieldValue(
+                                "shippingOption",
+                                option.shipping_id
+                              );
+                              handleRadioClick(option.shipping_id);
+                            }}
+                            label={
+                              <Typography
+                                ml="6px"
+                                fontWeight="600"
+                                fontSize="13px"
+                              >
+                                {option.title}
+                              </Typography>
+                            }
+                          />
+                        ))}
                       {touched.shippingOption && errors.shippingOption && (
                         <H6
                           fontWeight={300}
@@ -694,6 +800,18 @@ const CheckoutForm: FC = () => {
                         </H6>
                       )}
                     </FlexBox>
+                  </FlexBox>
+                  <FlexBox>
+                    <Grid item sm={12} xs={12}>
+                      {/* <Select
+                        label="สาขาที่ต้องการรับ"
+                        options={branchList.map((branch) => ({
+                          value: branch.branch_id,
+                          label: branch.branch_name_th,
+                        }))}
+                        value={values.selectedBranch}
+                      /> */}
+                    </Grid>
                   </FlexBox>
 
                   <Divider mb="1rem" />
@@ -713,7 +831,7 @@ const CheckoutForm: FC = () => {
                         lineHeight="1"
                         textAlign="right"
                       >
-                        <PriceFormat price={getTotalPrice()} />
+                        <PriceFormat price={apiResponse?.netPrice ?? 0} />
                       </Typography>
                     </FlexBox>
                   </FlexBox>
@@ -743,15 +861,19 @@ const CheckoutForm: FC = () => {
                         </Icon>
                         <TextField
                           fullwidth
-                          name="code_coupon"
+                          name="use_point"
                           className="search-field"
                           placeholder="กรอกคะแนนสะสม"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.use_point || ""}
                         />
                         <Button
                           className="search-button"
                           variant="contained"
                           color="ihavecpu"
                           type="button"
+                          onClick={() => handleUsePointClick(values.use_point)}
                         >
                           กดใช้
                         </Button>
@@ -764,11 +886,17 @@ const CheckoutForm: FC = () => {
                       {selectedCoupon ? (
                         <>
                           <CouponNoButton
-                            topic={selectedCoupon.code}
-                            code={selectedCoupon.code}
-                            description={selectedCoupon.description}
+                            id={apiResponse?.couponDetail?.id}
+                            topic={apiResponse?.couponDetail?.title}
+                            highlight1={
+                              apiResponse?.couponDetail?.highlight?.highlight1
+                            }
+                            highlight2={
+                              apiResponse?.couponDetail?.highlight?.highlight2
+                            }
+                            description={apiResponse?.couponDetail?.description}
                             color="white"
-                            dateExpired={selectedCoupon.endDate}
+                            dateExpired={apiResponse?.couponDetail?.endDate}
                             onClear={clearSelectedCoupon}
                           />
                         </>
@@ -814,10 +942,13 @@ const CheckoutForm: FC = () => {
                       ดำเนินการชำระเงิน
                     </Button>
                     <ModalCouponPurchase
+                      shippingOption={formik.values.shippingOption}
+                      calculatePayment={calculatePayment}
                       open={open}
                       onClose={toggleDialog}
                       selectedCoupon={selectedCoupon}
                       setSelectedCoupon={setSelectedCoupon}
+                      listCoupon={listCoupon}
                     />
                   </Grid>
                 </Card1>
@@ -831,6 +962,7 @@ const CheckoutForm: FC = () => {
 };
 
 const initialValues = {
+  selectedBranch: "",
   ship_firstname: "",
   ship_lastname: "",
   ship_email: "",
@@ -851,6 +983,8 @@ const initialValues = {
   bill_city: "",
   bill_postcode: "",
   shippingOption: "",
+  use_point: "",
+  code_coupon: "",
 };
 
 const checkoutSchema = yup.object().shape({
@@ -937,7 +1071,7 @@ const checkoutSchema = yup.object().shape({
     then: yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
     otherwise: yup.string(),
   }),
-  shippingOption: yup.string().required("กรุณาเลือกวิธีการจัดส่ง"),
+  shippingOption: yup.string().nullable().required("กรุณาเลือกวิธีการจัดส่ง"),
 });
 
 export default CheckoutForm;

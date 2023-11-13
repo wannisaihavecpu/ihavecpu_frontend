@@ -1,6 +1,6 @@
 export default [
   {
-    product_id: "4108",
+    product_id: "9613",
     sel_option: null,
     product_code: "SKU-67171",
     slug: "SKU-67171",
@@ -76,7 +76,7 @@ export default [
   {
     product_id: "4109",
     sel_option: null,
-    product_code: "SKU-06253",
+    product_code: "9612",
     slug: "SKU-06253",
     supplier_id: null,
     cat_id: "46",
@@ -152,7 +152,7 @@ export default [
   {
     product_id: "4110",
     sel_option: null,
-    product_code: "SKU-65720",
+    product_code: "9610",
     slug: "SKU-65720",
     supplier_id: null,
     cat_id: "345",

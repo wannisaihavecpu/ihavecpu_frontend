@@ -5,9 +5,12 @@ import Box from "@component/Box";
 import styled from "styled-components"; // Import css from styled-components
 
 interface CouponForUseProps {
+  id?: number;
   topic?: string;
   color?: string;
   code?: string;
+  highlight1?: string;
+  highlight2?: string;
   description?: string;
   dateExpired?: string;
   onClick?: () => void;
@@ -30,7 +33,6 @@ export const CouponStyle = styled.div<CouponForUseProps>`
     position: relative;
     display: flex;
     justify-content: flex-start; /* Updated alignment */
-
     flex: 1;
     padding: 10px 20px;
   }
@@ -157,7 +159,7 @@ export const CouponStyle = styled.div<CouponForUseProps>`
     font-size: 10px;
     font-weight: bold;
     text-align: left;
-    max-width: 70%;
+    max-width: 80px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -166,7 +168,7 @@ export const CouponStyle = styled.div<CouponForUseProps>`
     font-size: 9px;
     font-weight: thin;
     text-align: left;
-    max-width: 60%;
+    max-width: 80px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -210,6 +212,8 @@ const CouponForUse: FC<CouponForUseProps> = ({
   checked,
   onClick,
   color,
+  highlight1,
+  highlight2,
 }) => {
   const formatDate = (dateExpired) => {
     const months = [
@@ -242,8 +246,8 @@ const CouponForUse: FC<CouponForUseProps> = ({
             <div className="couponleft">
               <div className="couponright-inner">
                 <div className="couponPriceContainer">
-                  <div className="couponTitlePrice">ลดเพิ่ม</div>
-                  <div className="couponPrice">1,000.-</div>
+                  <div className="couponTitlePrice">{highlight1}</div>
+                  <div className="couponPrice">{highlight2}</div>
                 </div>
               </div>
             </div>
@@ -267,7 +271,6 @@ const CouponForUse: FC<CouponForUseProps> = ({
                     variant={checked ? "border" : null}
                     bg={checked ? null : "primary.light"}
                     onClick={onClick}
-                    style={{ width: "70px" }}
                     type="button"
                   >
                     {checked ? "กำลังใช้คูปอง" : "ใช้คูปอง"}

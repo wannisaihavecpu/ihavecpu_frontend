@@ -20,6 +20,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styled from "styled-components";
+import listCouponProduct from "@models/listCouponProduct.model";
 
 // Define the Props type
 type Props = {
@@ -27,6 +28,9 @@ type Props = {
   onClose: () => void;
   selectedCoupon?: string | null;
   setSelectedCoupon?: (coupon: string | null) => void;
+  listCoupon?: listCouponProduct[];
+  calculatePayment: (shippingMethod: string, couponID: string) => void;
+  shippingOption?: string | null;
 };
 
 const ModalContainer = styled.div`
@@ -63,12 +67,12 @@ const ModalContainer = styled.div`
       width: 960px;
     }
   }
-  @media (min-width: 800px) and (max-width: 1002px) {
+  @media (min-width: 895px) and (max-width: 1002px) {
     .modal-container {
-      width: 750px;
+      width: 900px;
     }
   }
-  @media (min-width: 700px) and (max-width: 800px) {
+  @media (min-width: 700px) and (max-width: 894px) {
     .modal-container {
       width: 750px;
       height: 750px;
@@ -351,13 +355,13 @@ const ModalContainer = styled.div`
 
 const ModalCouponPurchase: FC<Props> = (props) => {
   const { open, onClose, setSelectedCoupon } = props;
-  const [myCoupon, setMyCoupon] = useState({ data: { items: [] } });
+  const [myCoupon, setMyCoupon] = useState([]);
   const [swiperSlidesPerView, setSwiperSlidesPerView] = useState(1);
   const [checkedCoupons, setCheckedCoupons] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.matchMedia("(min-width: 769px)").matches) {
+      if (window.matchMedia("(min-width: 1000px)").matches) {
         setSwiperSlidesPerView(3);
       } else {
         setSwiperSlidesPerView(1);
@@ -382,20 +386,22 @@ const ModalCouponPurchase: FC<Props> = (props) => {
   });
   const fetchMyCouponAvailable = () => {
     const requestBody = {
-      product_id: ["A4", "A1", "A2", "A3"],
+      product_id: ["4993", "4209", "4997"],
     };
 
-    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/myCouponAvaliable`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/coupons/mycouponAvaliable`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        userid: "983",
       },
       body: JSON.stringify(requestBody),
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setMyCoupon(data);
+        if (data.res_code === "00" && Array.isArray(data.res_result)) {
+          setMyCoupon(data.res_result);
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -408,11 +414,12 @@ const ModalCouponPurchase: FC<Props> = (props) => {
     }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_PATH}/collectCoupon`,
+        `${process.env.NEXT_PUBLIC_API_PATH}/coupons/collect`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            userid: "983",
           },
           body: JSON.stringify({
             code: formik.values.code_coupon,
@@ -420,13 +427,21 @@ const ModalCouponPurchase: FC<Props> = (props) => {
         }
       );
 
-      if (response.status === 200) {
-        // Parse the response data as JSON
-        const data = await response.json();
-        if (data.status === "success") {
-          notify("success", "ใช้โค้ดนี้แล้ว");
-          fetchMyCouponAvailable();
-        }
+      const data = await response.json();
+      if (data.res_code === "00" && data.res_text === "Success") {
+        notify("success", "เก็บโค้ดนี้แล้ว");
+        formik.setFieldValue("code_coupon", "");
+        formik.setFieldTouched("code_coupon", false);
+        formik.setFieldError("code_coupon", "");
+        fetchMyCouponAvailable();
+      } else if (
+        data.res_code === "01" &&
+        data.res_text === "Already have this coupon"
+      ) {
+        notify("error", "คุณมีคูปองนี้อยู่แล้ว");
+        formik.setFieldValue("code_coupon", "");
+        formik.setFieldTouched("code_coupon", false);
+        formik.setFieldError("code_coupon", "");
       } else {
         notify("error", "ไม่เจอโค้ดนี้");
         formik.setFieldValue("code_coupon", "");
@@ -437,9 +452,39 @@ const ModalCouponPurchase: FC<Props> = (props) => {
       console.error("An error occurred while collecting the coupon:", error);
     }
   };
-  const handleCouponClick = (coupon) => {
-    const isCouponChecked = checkedCoupons.includes(coupon);
+  const handleCollectCoupon = async (couponCode) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PATH}/coupons/collect`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            userid: "983",
+          },
+          body: JSON.stringify({
+            code: couponCode,
+          }),
+        }
+      );
 
+      const data = await response.json();
+      if (data.res_code === "00" && data.res_text === "Success") {
+        notify("success", "เก็บโค้ดนี้แล้ว");
+        fetchMyCouponAvailable();
+      } else if (
+        data.res_code === "01" &&
+        data.res_text === "Already have this coupon"
+      ) {
+        notify("error", "คุณมีคูปองนี้อยู่แล้ว");
+      }
+    } catch (error) {
+      console.error("Error collecting coupon:", error);
+    }
+  };
+  const handleCouponClick = (coupon) => {
+    props.calculatePayment(props.shippingOption, coupon.id);
+    const isCouponChecked = checkedCoupons.includes(coupon);
     if (isCouponChecked) {
       setCheckedCoupons(checkedCoupons.filter((c) => c !== coupon));
     } else {
@@ -450,7 +495,6 @@ const ModalCouponPurchase: FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    // load available coupons when the component mounts
     fetchMyCouponAvailable();
   }, []);
   useEffect(() => {
@@ -517,7 +561,7 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                             onClick={handleCodeCouponSubmit}
                             type="button"
                           >
-                            ใช้โค้ด
+                            เก็บโค้ด
                           </Button>
                         </StyledSearchBox>
                       </form>
@@ -538,15 +582,18 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                 slidesPerView={swiperSlidesPerView}
                 spaceBetween={10}
               >
-                {Array.isArray(myCoupon.data.items) &&
-                  myCoupon.data.items.map((coupon, index) => (
+                {Array.isArray(myCoupon) &&
+                  myCoupon.map((coupon, index) => (
                     <SwiperSlide key={index}>
                       <Grid container spacing={3}>
                         <Grid item md={12} sm={12} xs={12}>
                           <CouponForUse
-                            topic={coupon.code}
+                            id={coupon.id}
                             code={coupon.code}
+                            topic={coupon.title}
                             description={coupon.description}
+                            highlight1={coupon.highlight.highlight1}
+                            highlight2={coupon.highlight.highlight2}
                             color="white"
                             dateExpired={coupon.endDate}
                             onClick={() => {
@@ -559,75 +606,82 @@ const ModalCouponPurchase: FC<Props> = (props) => {
                       </Grid>
                     </SwiperSlide>
                   ))}
-              </Swiper>
-              {/* <Swiper className="swiper">
-                {Array.isArray(myCoupon.data.items) &&
-                  myCoupon.data.items
-                    .reduce((chunks, item, i) => {
-                      if (i % 3 === 0) {
-                        chunks.push([]);
-                      }
-                      chunks[chunks.length - 1].push(item);
-                      return chunks;
-                    }, [])
-                    .map((couponGroup, index) => (
-                      <SwiperSlide key={index}>
-                        <Grid container spacing={3}>
-                          {couponGroup.map((coupon, innerIndex) => (
-                            <Grid item key={innerIndex} md={4} sm={12} xs={12}>
-                              <CouponPurchase
-                                key={innerIndex}
-                                topic={coupon.title}
-                                description={coupon.description}
-                                dateExpired={coupon.endDate}
-                              />
-                            </Grid>
-                          ))}
-                        </Grid>
+                {myCoupon.length < swiperSlidesPerView &&
+                  // add empty placeholders
+                  Array(swiperSlidesPerView - myCoupon.length)
+                    .fill(null)
+                    .map((_, index) => (
+                      <SwiperSlide key={`empty_${index}`}>
+                        <div style={{ visibility: "hidden" }}></div>
                       </SwiperSlide>
                     ))}
-              </Swiper> */}
+              </Swiper>
             </section>
             <footer
               className="modal-container-footer"
               style={{ backgroundColor: "#f9f9f9" }}
             >
-              <Grid item xs={12}>
-                <Box>
-                  <span className="modal-container-title">
-                    <FlexBox alignItems="center">
-                      <H5 className="footer-title">เก็บโค้ดส่วนลด</H5>
-                    </FlexBox>
-                    <Box mt="1rem">
-                      <Swiper
-                        className="swiper"
-                        slidesPerView={swiperSlidesPerView}
-                        spaceBetween={10}
-                        scrollbar={{ draggable: true }}
-                        pagination={{ clickable: true }}
-                      >
-                        {Array.isArray(myCoupon.data.items) &&
-                          myCoupon.data.items.map((coupon, index) => (
-                            <SwiperSlide key={index}>
-                              <Grid container spacing={3}>
-                                <Grid item md={12} sm={12} xs={12}>
-                                  <Coupon
-                                    topic={coupon.id}
-                                    description={coupon.description}
-                                    color="#f9f9f9"
-                                    code={coupon.code}
-                                    dateExpired={coupon.endDate}
-                                    onClick={() => {}}
-                                  />
+              {props.listCoupon.filter(
+                (coupon) =>
+                  !myCoupon.some((myCoupon) => myCoupon.code === coupon.code)
+              ).length > 0 ? (
+                <Grid item xs={12}>
+                  <Box>
+                    <span className="modal-container-title">
+                      <FlexBox alignItems="center">
+                        <H5 className="footer-title">เก็บโค้ดส่วนลด</H5>
+                      </FlexBox>
+                      <Box mt="1rem">
+                        <Swiper
+                          className="swiper"
+                          slidesPerView={swiperSlidesPerView}
+                          spaceBetween={10}
+                          scrollbar={{ draggable: true }}
+                          pagination={{ clickable: true }}
+                        >
+                          {props.listCoupon
+                            .filter(
+                              (coupon) =>
+                                !myCoupon.some(
+                                  (myCoupon) => myCoupon.code === coupon.code
+                                )
+                            )
+                            .map((coupon, index) => (
+                              <SwiperSlide key={index}>
+                                <Grid container spacing={3}>
+                                  <Grid item md={12} sm={12} xs={12}>
+                                    <Coupon
+                                      id={coupon.id}
+                                      topic={coupon.title}
+                                      highlight1={coupon.highlight.highlight1}
+                                      highlight2={coupon.highlight.highlight2}
+                                      description={coupon.description}
+                                      code={coupon.code}
+                                      dateExpired={coupon.endDate}
+                                      color="#f9f9f9"
+                                      onClick={handleCollectCoupon}
+                                    />
+                                  </Grid>
                                 </Grid>
-                              </Grid>
-                            </SwiperSlide>
-                          ))}
-                      </Swiper>
-                    </Box>
-                  </span>
-                </Box>
-              </Grid>
+                              </SwiperSlide>
+                            ))}
+                          {props.listCoupon.length < swiperSlidesPerView &&
+                            // add empty placeholders
+                            Array(swiperSlidesPerView - props.listCoupon.length)
+                              .fill(null)
+                              .map((_, index) => (
+                                <SwiperSlide key={`empty_${index}`}>
+                                  <div style={{ visibility: "hidden" }}></div>
+                                </SwiperSlide>
+                              ))}
+                        </Swiper>
+                      </Box>
+                    </span>
+                  </Box>
+                </Grid>
+              ) : (
+                <></>
+              )}
             </footer>
           </article>
         </div>

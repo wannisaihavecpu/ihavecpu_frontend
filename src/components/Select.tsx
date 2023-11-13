@@ -25,11 +25,19 @@ interface SelectProps extends Props, SpaceProps {
   options: SelectOption[];
 }
 
-const Select: FC<SelectProps> = ({ options, isMulti = false, id, label, errorText, ...props }) => {
+const Select: FC<SelectProps> = ({
+  options,
+  isMulti = false,
+  id,
+  label,
+  errorText,
+  ...props
+}) => {
   // extract spacing props
   let spacingProps = {};
   for (const key in props) {
-    if (key.startsWith("m") || key.startsWith("p")) spacingProps[key] = props[key];
+    if (key.startsWith("m") || key.startsWith("p"))
+      spacingProps[key] = props[key];
   }
 
   return (

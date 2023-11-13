@@ -16,12 +16,7 @@ const CheckoutSummary: FC = () => {
       ) || 0
     );
   };
-  function calculatePointsFromTotalPrice(totalPrice) {
-    const conversionRate = 25;
-    const points = Math.floor((totalPrice / 2500) * conversionRate);
 
-    return points;
-  }
   return (
     <Card1>
       {state.cart.map((item) => {
@@ -91,25 +86,6 @@ const CheckoutSummary: FC = () => {
       </FlexBox>
 
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">ส่วนลดคูปอง:</Typography>
-
-        <FlexBox alignItems="flex-end">
-          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-            <PriceFormat price={0} />
-          </Typography>
-        </FlexBox>
-      </FlexBox>
-
-      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">ส่วนลดคะแนนสะสม:</Typography>
-
-        <FlexBox alignItems="flex-end">
-          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-            <PriceFormat price={0} />
-          </Typography>
-        </FlexBox>
-      </FlexBox>
-      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
         <Typography color="text.hint">ราคาก่อนภาษี:</Typography>
 
         <FlexBox alignItems="flex-end">
@@ -120,16 +96,6 @@ const CheckoutSummary: FC = () => {
       </FlexBox>
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
         <Typography color="text.hint">ภาษี VAT 7%:</Typography>
-
-        <FlexBox alignItems="flex-end">
-          <Typography fontSize="14px" fontWeight="600" lineHeight="1">
-            <PriceFormat price={0} />
-          </Typography>
-        </FlexBox>
-      </FlexBox>
-
-      <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
-        <Typography color="text.hint">ดอกเบี้ยผ่อนชําระ:</Typography>
 
         <FlexBox alignItems="flex-end">
           <Typography fontSize="14px" fontWeight="600" lineHeight="1">
@@ -155,12 +121,6 @@ const CheckoutSummary: FC = () => {
             <PriceFormat price={getTotalPrice()} />
           </Typography>
         </FlexBox>
-      </FlexBox>
-      <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
-        <Typography color="#d4001a" fontWeight="600" fontSize="15px">
-          สมาชิก รับคะแนนสะสม {calculatePointsFromTotalPrice(getTotalPrice())}{" "}
-          คะแนน
-        </Typography>
       </FlexBox>
     </Card1>
   );
