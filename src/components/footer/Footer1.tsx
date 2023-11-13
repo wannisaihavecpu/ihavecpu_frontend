@@ -108,7 +108,7 @@ const Footer1: FC = () => {
                       rel="noreferrer noopenner"
                     >
                       <Box m="5px" p="10px" size="small" borderRadius="50%" bg="rgba(0,0,0,0.2)">
-                        <Icon size="12px" defaultcolor="auto">
+                        <Icon size="18px" defaultcolor="auto">
                           {item.iconName}
                         </Icon>
                       </Box>
@@ -125,28 +125,28 @@ const Footer1: FC = () => {
 };
 
 const aboutLink = [
-  { title: "บริการของเรา", url: "https://www.ihavecpu.com/" },
-  { title: "ร้านค้าของเรา", url: "/" },
-  { title: "ความห่วงใยของเรา", url: "https://www.youtube.com/channel/UCsIyD-TSO1wQFz-n2Y4i3Rg" },
-  { title: "ข้อตกลงและเงื่อนไข", url: "/" },
-  { title: "นโยบายความเป็นส่วนตัว", url: "/" },
+  { title: "ติดต่อ iHAVECPU", url: "/" },
+  { title: "เกี่ยวกับ iHAVECPU", url: "/aboutus" },
+  // { title: "ความห่วงใยของเรา", url: "/vendor/account-settings" },
+  { title: "ข้อตกลงและเงื่อนไข", url: "/aboutus/Terms" },
+  { title: "นโยบายความเป็นส่วนตัว", url: "/aboutus/Privacy" },
 ];
 
 const customerList = [
-  { title: "ศูนย์ช่วยเหลือ", url: "https://www.ihavecpu.com/" },
-  { title: "วิธีการซื้อ", url: "/" },
-  { title: "ติดตามคำสั่งซื้อของคุณ", url: "https://www.youtube.com/channel/UCsIyD-TSO1wQFz-n2Y4i3Rg" },
-  { title: "จัดการคำสั่งซื้อ", url: "/" },
-  { title: "การคืนสินค้าและการคืนเงิน", url: "/" },
+  // { title: "ศูนย์ช่วยเหลือ", url: "https://www.ihavecpu.com/" },
+  { title: "การจัดส่งสินค้า", url: "/aboutus/Shippings" },
+  { title: "การรับประกันสินค้า", url: "/aboutus/Warrantys" },
+  { title: "การยกเลิกการสั่งซื้อสินค้า", url: "/aboutus/Cancellations" },
+  { title: "การคืนสินค้าและการคืนเงิน", url: "/aboutus/Returns" },
 ];
 
 
 const iconList = [
-  { iconName: "facebook", url: "https://www.facebook.com/UILibOfficial" },
+  { iconName: "facebook", url: "https://www.facebook.com/CPUCore2Duo" },
   { iconName: "twitter", url: "/" },
-  { iconName: "youtube", url: "https://www.youtube.com/channel/UCsIyD-TSO1wQFz-n2Y4i3Rg" },
-  { iconName: "google", url: "/" },
-  { iconName: "instagram", url: "/" },
+  { iconName: "youtube", url: "https://www.youtube.com/@iHAVECPU_" },
+  { iconName: "google", url: "https://page.line.me/ihavecpu?openQrModal=true" },
+  { iconName: "instagram", url: "https://www.instagram.com/ihavecpu_official/" },
 ];
 
 export default Footer1;
