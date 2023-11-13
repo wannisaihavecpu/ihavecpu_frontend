@@ -35,7 +35,6 @@ const CheckoutForm2: FC<Props> = ({
   );
 
   const handleFormSubmit = async (values) => {
-    console.log(values);
     router.push("/payment");
   };
 

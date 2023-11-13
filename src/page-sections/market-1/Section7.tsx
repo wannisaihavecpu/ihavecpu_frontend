@@ -24,10 +24,7 @@ interface Props {
 
 // ======================================================
 
-const Section7: FC<Props> = ({
-  title,
-  category,
-}) => {
+const Section7: FC<Props> = ({ title, category }) => {
   const [list, setList] = useState<any[]>([]);
   const [selected, setSelected] = useState("");
   const [type, setType] = useState<"pro" | "base">("pro");
