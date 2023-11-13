@@ -12,6 +12,8 @@ import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 import menuDropdown from "@models/menuDropdown.model";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 // ======================================================
 interface Props {
@@ -30,6 +32,7 @@ const Section7: FC<Props> = ({ title, category }) => {
   const [type, setType] = useState<"pro" | "base">("pro");
 
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const setPro = category.find((cat) => cat.displayCategoryID === 107);
   const setBase = category.find((cat) => cat.displayCategoryID === 1);
@@ -45,6 +48,7 @@ const Section7: FC<Props> = ({ title, category }) => {
       .then((data) => {
         if (data.res_code === "00" && Array.isArray(data.res_result)) {
           setProduct(data.res_result);
+          setLoading(true);
         }
       })
       .catch((error) => {
@@ -167,24 +171,45 @@ const Section7: FC<Props> = ({ title, category }) => {
         <Box flex="1 1 0" minWidth="0px">
           <CategorySectionHeader title={title} seeMoreLink="#" />
 
-          <Grid container spacing={6}>
-            {product &&
-              product.map((item, ind) => (
-                <Grid item lg={3} sm={6} xs={12} key={ind}>
-                  <ProductCard1
-                    hoverEffect
-                    id={item.product_id}
-                    slug={item.product_id}
-                    title={item.name_th}
-                    price={parseInt(item.price_sale)}
-                    priceBefore={parseInt(item.price_before)}
-                    off={item.discount}
-                    // images={item.image}
-                    imgUrl={item.image800}
-                  />
-                </Grid>
-              ))}
-          </Grid>
+          {loading ? (
+            <Grid item lg={3} sm={6} xs={12}>
+              <section>
+                <article className="item">
+                  <div className="item-img">
+                    <Skeleton width={140} height={140} />
+                  </div>
+                  <h3 className="item-title">
+                    <Skeleton count={4} />
+                  </h3>
+                  <div className="item-info">
+                    <Skeleton width={160} height={20} />
+                    <Skeleton width={30} height={20} />
+                    <Skeleton width={22} height={22} circle={true} />
+                  </div>
+                  <Skeleton height={48} count={2} className="skeleton" />
+                </article>
+              </section>
+            </Grid>
+          ) : (
+            // Render the product grid when loading is false
+            <Grid container spacing={6}>
+              {product &&
+                product.map((item, ind) => (
+                  <Grid item lg={3} sm={6} xs={12} key={ind}>
+                    <ProductCard1
+                      hoverEffect
+                      id={item.product_id}
+                      slug={item.product_id}
+                      title={item.name_th}
+                      price={parseInt(item.price_sale)}
+                      priceBefore={parseInt(item.price_before)}
+                      off={item.discount}
+                      imgUrl={item.image800}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
+          )}
         </Box>
       </FlexBox>
     </Container>
