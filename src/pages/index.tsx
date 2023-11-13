@@ -33,6 +33,7 @@ import Product from "@models/product.model";
 import Service from "@models/service.model";
 import Category from "@models/category.model";
 import MainCarouselItem from "@models/market-1.model";
+import menuDropdown from "@models/menuDropdown.model";
 
 // =================================================================
 type Props = {
@@ -59,6 +60,7 @@ type Props = {
   bottomCategories?: Category[];
   mainCarouselData?: MainCarouselItem[];
   hotDealList: any[];
+  categorySetComputer?: menuDropdown[];
 };
 // =================================================================
 
@@ -66,34 +68,35 @@ const Home = (props: Props) => {
   const FIXED_ID = "services-area";
   return (
     <main>
+      {/* HERO CAROUSEL AREA */}
+      {/* <Herobanner data={props.mainCarouselData} /> */}
 
-       {/* HERO CAROUSEL AREA */}
-       {/* <Herobanner data={props.mainCarouselData} /> */}
-      
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
-      
+
       {/* BANNER1 OFFER BANNERS AREA */}
       <Banner1 />
-      
+
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />
-   
-       {/* DEAL OF THE DAY CAROUSEL AREA */}
-       <Hotdeal list={props.hotDealList} />
-       
-       
+
+      {/* DEAL OF THE DAY CAROUSEL AREA */}
+      <Hotdeal list={props.hotDealList} />
+
       {/* BIG DISCOUNT AREA */}
       <Section13 bigDiscountList={props.bigDiscountList} />
-      
-        {/* BANNER2BOX  BANNERS AREA */}
-        <Banner2box />
-     
+
+      {/* BANNER2BOX  BANNERS AREA */}
+      <Banner2box />
+
       {/* TOP CATEGORIES AREA */}
       <Section3 categoryList={props.topCategories} />
 
       {/* TOP RATING AND BRANDS AREA */}
-      <Section4 topRatedList={props.topRatedProducts} topRatedBrands={props.topRatedBrands} />
+      <Section4
+        topRatedList={props.topRatedProducts}
+        topRatedBrands={props.topRatedBrands}
+      />
 
       {/* NEW ARRIVALS AREA */}
       <Section5 newArrivalsList={props.newArrivalsList} />
@@ -101,8 +104,8 @@ const Home = (props: Props) => {
       {/* BIG DISCOUNT AREA */}
       <Section13 bigDiscountList={props.bigDiscountList} />
 
-        {/* BANNER2BOX  BANNERS AREA */}
-        <Banner2box />
+      {/* BANNER2BOX  BANNERS AREA */}
+      <Banner2box />
 
       {/* COM SET PHONES AREA */}
       <Section7
@@ -110,6 +113,7 @@ const Home = (props: Props) => {
         shops={props.mobileShops}
         brands={props.mobileBrands}
         productList={props.mobileList}
+        category={props.categorySetComputer}
       />
 
       {/* BANNER3BOX BANNERS AREA */}
@@ -118,15 +122,14 @@ const Home = (props: Props) => {
       {/* DIY LIST AREA */}
       <Diy carBrands={props.carBrands} carList={props.carList} />
 
-
       {/* DISCOUNT BANNERS AREA */}
       {/* <Section8 /> */}
 
       {/* BANNER SECTION 4 AREA */}
       {/* <Bannersection4 /> */}
 
-       {/* BANNER1 OFFER BANNERS AREA */}
-       <Banner1box />
+      {/* BANNER1 OFFER BANNERS AREA */}
+      <Banner1box />
 
       {/* OPTICS AND WATCH AREA */}
       {/* <Section7
@@ -136,10 +139,11 @@ const Home = (props: Props) => {
         productList={props.opticsList}
       /> */}
 
-      
       {/* OPTICS AND WATCH AREA */}
-      <Notebook notebookBrands={props.notebookBrands} notebookList={props.notebookList} />
-      
+      <Notebook
+        notebookBrands={props.notebookBrands}
+        notebookList={props.notebookList}
+      />
 
       {/* CATEGORIES AREA */}
       <Section10 categories={props.bottomCategories} />
@@ -153,10 +157,8 @@ const Home = (props: Props) => {
       {/* SERVICES AREA */}
       {/* <Section12 serviceList={props.serviceList} /> */}
 
-      
       {/* SERVICES AREA */}
       <Services id={FIXED_ID} services={props.serviceList} />
-      
     </main>
   );
 };
@@ -188,6 +190,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const bigDiscountList = await api.getBigDiscountList();
   const topRatedProducts = await api.getTopRatedProduct();
   const hotDealList = await api.getHotDealList();
+  const categorySetComputer = await api.getCategorySetComputer();
 
   return {
     props: {
@@ -213,6 +216,7 @@ export const getStaticProps: GetStaticProps = async () => {
       topRatedProducts,
       bottomCategories,
       hotDealList,
+      categorySetComputer,
     },
   };
 };

@@ -6,6 +6,7 @@ import Product from "@models/product.model";
 import Service from "@models/service.model";
 import Category from "@models/category.model";
 import MainCarouselItem from "@models/market-1.model";
+import menuDropdown from "@models/menuDropdown.model";
 
 const getTopRatedProduct = async (): Promise<Product[]> => {
   const response = await axios.get("/api/market-1/toprated-product");
@@ -116,10 +117,28 @@ const getHotDealList = async () => {
   return response.data;
 };
 
-
 const getServices = async (): Promise<Service[]> => {
   const response = await axios.get("/api/market-1/services");
   return response.data;
+};
+
+const getCategorySetComputer = async (): Promise<menuDropdown[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/menu/setComputer`
+    );
+
+    if (response.data.res_code === "00") {
+      console.log(response.data.res_result);
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching menu dropdown:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching menu dropdown:", error.message);
+    return [];
+  }
 };
 
 export default {
@@ -146,4 +165,5 @@ export default {
   getTopRatedProduct,
   getHotDealList,
   getServices,
+  getCategorySetComputer,
 };
