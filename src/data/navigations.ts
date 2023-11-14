@@ -1,18 +1,19 @@
 const navigations = [
   {
-    icon: "_pc-display",
+    icon: "arrange-computer",
     title: "จัดสเป็กคอม",
     href: "/product/search/music",
     menuComponent: "MegaMenu1",
   },
   {
-    icon: "_pc-display-horizontal",
+    //icon: "_pc-display-horizontal",
+    icon: "_pc-display",
     title: "คอมพิวเตอร์เซ็ค",
     href: "/product/search/bikes",
     menuComponent: "MegaMenu2",
     menuData: [
       {
-        icon: "_pc-display-horizontal",
+        icon: "_pc-display",
         title: "เซ็ต โปรโมชั่น",
         href: "/product/search/fashion",
         megaMenu: "MegaMenu1",
@@ -126,7 +127,7 @@ const navigations = [
         },
       },
       {
-        icon: "_pc-display-horizontal",
+        icon: "_pc-display",
         title: "เซ็ต ประจำเดือน",
         href: "/product/search/fashion",
         megaMenu: "MegaMenu1",
@@ -243,307 +244,187 @@ const navigations = [
     ],
   },
   {
-    icon: "_cpu",
+    icon: "cpu",
     title: "ซีพียู",
     href: "/fashion",
     menuComponent: "MegaMenu1",
     menuData: {
       categories: [
         {
-          title: "Man Clothes",
+          title: "Processor",
           href: "/product/search/man-clothes",
           subCategories: [
             {
-              title: "Shirt",
+              title: "AMD",
               href: "/product/search/shirt",
               imgUrl: "/assets/images/products/categories/shirt.png",
             },
             {
-              title: "T- shirt",
+              title: "INTEL",
               href: "/product/search/t-shirt",
-              imgUrl: "/assets/images/products/categories/t-shirt.png",
-            },
-            {
-              title: "Pant",
-              href: "/product/search/pant",
-              imgUrl: "/assets/images/products/categories/pant.png",
-            },
-            {
-              title: "Underwear",
-              href: "/product/search/underwear",
               imgUrl: "/assets/images/products/categories/t-shirt.png",
             },
           ],
         },
         {
-          title: "Accessories",
+          title: "Socket type",
           href: "/product/search/accessories",
           subCategories: [
             {
-              title: "Belt",
+              title: "AMD AM4",
               href: "/product/search/belt",
               imgUrl: "/assets/images/products/categories/belt.png",
             },
             {
-              title: "Hat",
+              title: "AMD AM5",
               href: "/product/search/Hat",
               imgUrl: "/assets/images/products/categories/hat.png",
             },
             {
-              title: "Watches",
+              title: "Intel LGA-1700",
               href: "/product/search/Watches",
               imgUrl: "/assets/images/products/categories/watch.png",
-            },
-            {
-              title: "Sunglasses",
-              href: "/product/search/Sunglasses",
-              imgUrl: "/assets/images/products/categories/sunglass.png",
             },
           ],
         },
         {
-          title: "Shoes",
+          title: "Series",
           href: "/product/search/shoes",
           subCategories: [
             {
-              title: "Sneakers",
+              title: "AMD Ryzen™ 5000 Series",
               href: "/product/search/Sneakers",
               imgUrl: "/assets/images/products/categories/sneaker.png",
             },
             {
-              title: "Sandals",
+              title: "AMD Ryzen™ 4000 Series",
               href: "/product/search/Sandals",
               imgUrl: "/assets/images/products/categories/sandal.png",
             },
             {
-              title: "Formal",
+              title: "AMD Ryzen™ 7000 Series",
               href: "/product/search/Formal",
               imgUrl: "/assets/images/products/categories/shirt.png",
             },
             {
-              title: "Casual",
+              title: "12th Gen Intel® Core™",
               href: "/product/search/Casual",
               imgUrl: "/assets/images/products/categories/t-shirt.png",
             },
-          ],
-        },
-        {
-          title: "Bags",
-          href: "/product/search/bags",
-          subCategories: [
             {
-              title: "Backpack",
-              href: "/product/search/backpack",
-              imgUrl: "/assets/images/products/categories/backpack.png",
-            },
-            {
-              title: "Crossbody Bags",
-              href: "/product/search/Crossbody Bags",
-              imgUrl: "/assets/images/products/categories/bag.png",
-            },
-            {
-              title: "Side Bags",
-              href: "/product/search/Side Bags",
-              imgUrl: "/assets/images/products/categories/mini-bag.png",
-            },
-            {
-              title: "Slides",
-              href: "/product/search/Slides",
-              imgUrl: "/assets/images/products/categories/belt.png",
-            },
-          ],
-        },
-        {
-          title: "Woman Clothes",
-          href: "/product/search/woman-clothes",
-          subCategories: [
-            {
-              title: "Shirt",
-              href: "/product/search/shirt",
-              imgUrl: "/assets/images/products/categories/shirt.png",
-            },
-            {
-              title: "T- shirt",
-              href: "/product/search/t-shirt",
-              imgUrl: "/assets/images/products/categories/t-shirt.png",
-            },
-            {
-              title: "Pant",
-              href: "/product/search/pant",
-              imgUrl: "/assets/images/products/categories/pant.png",
-            },
-            {
-              title: "Underwear",
-              href: "/product/search/underwear",
-              imgUrl: "/assets/images/products/categories/t-shirt.png",
-            },
-          ],
-        },
-        {
-          title: "Accessories",
-          href: "/product/search/accessories",
-          subCategories: [
-            {
-              title: "Belt",
-              href: "/product/search/belt",
-              imgUrl: "/assets/images/products/categories/belt.png",
-            },
-            {
-              title: "Hat",
-              href: "/product/search/Hat",
-              imgUrl: "/assets/images/products/categories/hat.png",
-            },
-            {
-              title: "Watches",
-              href: "/product/search/Watches",
-              imgUrl: "/assets/images/products/categories/watch.png",
-            },
-            {
-              title: "Sunglasses",
-              href: "/product/search/Sunglasses",
-              imgUrl: "/assets/images/products/categories/sunglass.png",
-            },
-          ],
-        },
-        {
-          title: "Shoes",
-          href: "/product/search/shoes",
-          subCategories: [
-            {
-              title: "Sneakers",
-              href: "/product/search/Sneakers",
-              imgUrl: "/assets/images/products/categories/sneaker.png",
-            },
-            {
-              title: "Sandals",
-              href: "/product/search/Sandals",
-              imgUrl: "/assets/images/products/categories/sandal.png",
-            },
-            {
-              title: "Formal",
-              href: "/product/search/Formal",
-              imgUrl: "/assets/images/products/categories/shirt.png",
-            },
-            {
-              title: "Casual",
+              title: "13th Gen Intel® Core™",
               href: "/product/search/Casual",
               imgUrl: "/assets/images/products/categories/t-shirt.png",
             },
-          ],
-        },
-        {
-          title: "Bags",
-          href: "/product/search/bags",
-          subCategories: [
             {
-              title: "Backpack",
-              href: "/product/search/backpack",
-              imgUrl: "/assets/images/products/categories/backpack.png",
-            },
-            {
-              title: "Crossbody Bags",
-              href: "/product/search/Crossbody Bags",
-              imgUrl: "/assets/images/products/categories/bag.png",
-            },
-            {
-              title: "Side Bags",
-              href: "/product/search/Side Bags",
-              imgUrl: "/assets/images/products/categories/mini-bag.png",
-            },
-            {
-              title: "Slides",
-              href: "/product/search/Slides",
-              imgUrl: "/assets/images/products/categories/belt.png",
+              title: "14th Gen Intel® Core™",
+              href: "/product/search/Casual",
+              imgUrl: "/assets/images/products/categories/t-shirt.png",
             },
           ],
         },
       ],
-      rightImage: {
-        imgUrl: "/assets/images/promotion/offer-1.png",
-        href: "/sale-page-1",
-      },
+      // rightImage: {
+      //   imgUrl: "/assets/images/promotion/offer-1.png",
+      //   href: "/sale-page-1",
+      // },
     },
   },
   {
-    icon: "_motherboard",
+    icon: "motherboard",
     title: "เมนบอร์ด",
     href: "/product/search/electronics",
     menuComponent: "MegaMenu1",
     menuData: {
       categories: [
         {
-          title: "Man Clothes",
+          title: "Brand",
           href: "/product/search/man-clothes",
           subCategories: [
             {
-              title: "Shirt",
+              title: "ASROCK",
               href: "/product/search/shirt",
               imgUrl: "/assets/images/products/categories/shirt.png",
             },
             {
-              title: "T- shirt",
+              title: "ASUS",
               href: "/product/search/t-shirt",
               imgUrl: "/assets/images/products/categories/t-shirt.png",
             },
             {
-              title: "Pant",
+              title: "GIGABYTE",
               href: "/product/search/pant",
               imgUrl: "/assets/images/products/categories/pant.png",
             },
             {
-              title: "Underwear",
+              title: "MSI",
+              href: "/product/search/underwear",
+              imgUrl: "/assets/images/products/categories/t-shirt.png",
+            },
+            {
+              title: "NZXT",
               href: "/product/search/underwear",
               imgUrl: "/assets/images/products/categories/t-shirt.png",
             },
           ],
         },
         {
-          title: "Accessories",
+          title: "Socket type",
           href: "/product/search/accessories",
           subCategories: [
             {
-              title: "Belt",
+              title: "AMD AM4",
               href: "/product/search/belt",
               imgUrl: "/assets/images/products/categories/belt.png",
             },
             {
-              title: "Hat",
+              title: "AMD AM5",
               href: "/product/search/Hat",
               imgUrl: "/assets/images/products/categories/hat.png",
             },
             {
-              title: "Watches",
+              title: "AMD sTRX4",
               href: "/product/search/Watches",
               imgUrl: "/assets/images/products/categories/watch.png",
             },
             {
-              title: "Sunglasses",
+              title: "Intel LGA-1700",
+              href: "/product/search/Sunglasses",
+              imgUrl: "/assets/images/products/categories/sunglass.png",
+            },
+            {
+              title: "Intel LGA-1200",
               href: "/product/search/Sunglasses",
               imgUrl: "/assets/images/products/categories/sunglass.png",
             },
           ],
         },
         {
-          title: "Shoes",
+          title: "Chipset",
           href: "/product/search/shoes",
           subCategories: [
             {
-              title: "Sneakers",
+              title: "AMD® B450",
               href: "/product/search/Sneakers",
               imgUrl: "/assets/images/products/categories/sneaker.png",
             },
             {
-              title: "Sandals",
+              title: "AMD® X670",
               href: "/product/search/Sandals",
               imgUrl: "/assets/images/products/categories/sandal.png",
             },
             {
-              title: "Formal",
+              title: "AMD® B650",
               href: "/product/search/Formal",
               imgUrl: "/assets/images/products/categories/shirt.png",
             },
             {
-              title: "Casual",
+              title: "AMD® TRX40",
+              href: "/product/search/Casual",
+              imgUrl: "/assets/images/products/categories/t-shirt.png",
+            },
+            {
+              title: "AMD® A520",
               href: "/product/search/Casual",
               imgUrl: "/assets/images/products/categories/t-shirt.png",
             },
@@ -1045,65 +926,25 @@ const navigations = [
     },
   },
   {
-    icon: "_device-hdd",
-    title: "ฮาร์ดดิสก์ และ เอสเอสดี",
+    icon: "device-hdd",
+    title: "ฮาร์ดไดร์ฟ",
     href: "/product/search/gifts",
     menuComponent: "MegaMenu2",
     menuData: [
       {
-        icon: "dress",
-        title: "Fashion",
+        icon: "device-hdd",
+        title: "ฮาร์ดิสก์",
         href: "/product/search/fashion",
       },
       {
-        icon: "laptop",
-        title: "Electronics",
+        icon: "device-hdd",
+        title: "เอสเอสดี",
         href: "/product/search/electronics",
       },
       {
-        icon: "plant-pot",
-        title: "Home & Garden",
+        icon: "device-hdd",
+        title: "การ์ด M.2",
         href: "/product/search/home&garden",
-      },
-      {
-        icon: "motorbike",
-        title: "Bikes",
-        href: "/product/search/bikes",
-      },
-      {
-        icon: "gift-1",
-        title: "Gifts",
-        href: "/product/search/gifts",
-      },
-      {
-        icon: "voice-recorder",
-        title: "Music",
-        href: "/product/search/music",
-      },
-      {
-        icon: "make-up",
-        title: "Health & Beauty",
-        href: "/product/search/health&beauty",
-      },
-      {
-        icon: "track",
-        title: "Pets",
-        href: "/product/search/pets",
-      },
-      {
-        icon: "teddy-bear",
-        title: "Baby Toys",
-        href: "/product/search/baby-toys",
-      },
-      {
-        icon: "food",
-        title: "Groceries",
-        href: "/product/search/groceries",
-      },
-      {
-        icon: "car",
-        title: "Automotive",
-        href: "/product/search/automotive",
       },
     ],
   },
@@ -1126,7 +967,7 @@ const navigations = [
     menuComponent: "MegaMenu1",
   },
   {
-    icon: "_mouse2",
+    icon: "mouse2",
     title: "เมาส์",
     href: "/product/search/pets",
     menuComponent: "MegaMenu1",
@@ -1144,7 +985,7 @@ const navigations = [
     menuComponent: "MegaMenu1",
   },
   {
-    icon: "_controller",
+    icon: "plugin",
     title: "อุปกรณ์เสริม",
     href: "/product/search/automotive",
     menuComponent: "MegaMenu1",
