@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { H3, H4, H5, H6 } from "@component/Typography";
+import { H3, H4, H6 } from "@component/Typography";
 import { Card1 } from "@component/Card1";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 import CustomerDashboardLayout from "@component/layout/customer-dashboard";
