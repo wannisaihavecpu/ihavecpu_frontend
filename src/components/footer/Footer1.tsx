@@ -96,7 +96,7 @@ const Footer1: FC = () => {
                 </Typography>
 
                 <Typography py="0.3rem" mb="1rem" color="gray.500">
-                  โทร: 086 838 5200
+                  โทร: 02 105 4757
                 </Typography>
 
                 <FlexBox className="flex" mx="-5px">
@@ -108,7 +108,7 @@ const Footer1: FC = () => {
                       rel="noreferrer noopenner"
                     >
                       <Box m="5px" p="10px" size="small" borderRadius="50%" bg="rgba(0,0,0,0.2)">
-                        <Icon size="18px" defaultcolor="auto">
+                        <Icon size="20px" defaultcolor="auto">
                           {item.iconName}
                         </Icon>
                       </Box>
@@ -141,9 +141,9 @@ const customerList = [
 
 const iconList = [
   { iconName: "facebook", url: "https://www.facebook.com/CPUCore2Duo" },
-  { iconName: "twitter", url: "/" },
+  { iconName: "line", url: "https://page.line.me/ihavecpu?openQrModal=true" },
   { iconName: "youtube", url: "https://www.youtube.com/@iHAVECPU_" },
-  { iconName: "google", url: "https://page.line.me/ihavecpu?openQrModal=true" },
+  // { iconName: "google", url: "https://page.line.me/ihavecpu?openQrModal=true" },
   { iconName: "instagram", url: "https://www.instagram.com/ihavecpu_official/" },
 ];
 
