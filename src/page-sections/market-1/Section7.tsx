@@ -5,15 +5,13 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
 import Typography from "@component/Typography";
-import { ProductCard1 } from "@component/product-cards";
+import { ProductCard1, ProductCard1Skeleton } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 import menuDropdown from "@models/menuDropdown.model";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 // ======================================================
 interface Props {
@@ -38,22 +36,31 @@ const Section7: FC<Props> = ({ title, category }) => {
   const setBase = category.find((cat) => cat.displayCategoryID === 1);
 
   const fetchProduct = (category_id: number) => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_PATH}/product/productSet?category_id=${category_id}`,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.res_code === "00" && Array.isArray(data.res_result)) {
-          setProduct(data.res_result);
-          setLoading(true);
+    setLoading(true);
+    setTimeout(() => {
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_PATH}/product/productSet?category_id=${category_id}`,
+        {
+          method: "GET",
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      )
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.res_code === "00" && Array.isArray(data.res_result)) {
+            setProduct(data.res_result);
+            setLoading(false);
+          } else {
+            console.error("Unexpected response:", data);
+            setLoading(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setLoading(false);
+        });
+    }, 800);
   };
   const handleCategoryClick = (category: string) => () => {
     if (selected.match(category)) {
@@ -172,26 +179,14 @@ const Section7: FC<Props> = ({ title, category }) => {
           <CategorySectionHeader title={title} seeMoreLink="#" />
 
           {loading ? (
-            <Grid item lg={3} sm={6} xs={12}>
-              <section>
-                <article className="item">
-                  <div className="item-img">
-                    <Skeleton width={140} height={140} />
-                  </div>
-                  <h3 className="item-title">
-                    <Skeleton count={4} />
-                  </h3>
-                  <div className="item-info">
-                    <Skeleton width={160} height={20} />
-                    <Skeleton width={30} height={20} />
-                    <Skeleton width={22} height={22} circle={true} />
-                  </div>
-                  <Skeleton height={48} count={2} className="skeleton" />
-                </article>
-              </section>
+            <Grid container spacing={6}>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Grid item lg={3} sm={6} xs={12} key={index}>
+                  <ProductCard1Skeleton />
+                </Grid>
+              ))}
             </Grid>
           ) : (
-            // Render the product grid when loading is false
             <Grid container spacing={6}>
               {product &&
                 product.map((item, ind) => (
