@@ -30,7 +30,7 @@ const Topbar: FC = () => {
             <img src="/assets/images/logo.svg" alt="logo" />
           </div>
 
-          <FlexBox alignItems="center">
+          {/* <FlexBox alignItems="center">
             <Icon size="14px">phone-call</Icon>
             <span>+66 86 838 5200</span>
           </FlexBox>
@@ -38,11 +38,10 @@ const Topbar: FC = () => {
           <FlexBox alignItems="center" ml="20px">
             <Icon size="14px">mail</Icon>
             <span>info@ihavecpu.com</span>
-          </FlexBox>
+          </FlexBox> */}
 
           <FlexBox alignItems="center" ml="20px">
-            <Icon size="14px">pin</Icon>
-            <span>ร้านค้าใกล้คุณ</span>
+            <span>iHAVECPU ถ้าคุณชอบคอมพิวเตอร์ เราคือเพื่อนกัน</span>
           </FlexBox>
         </FlexBox>
 
@@ -50,7 +49,7 @@ const Topbar: FC = () => {
 
         <FlexBox className="topbar-right" alignItems="center">
           <NavLink className="link" href="/">
-          ถ้าคุณชอบคอมพิวเตอร์ เราคือเพื่อนกัน
+           ร้านค้าใกล้คุณ
           </NavLink>
 
           {/* <NavLink className="link" href="/">
