@@ -5,7 +5,7 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
 import Typography from "@component/Typography";
-import { ProductCard1 } from "@component/product-cards";
+import { ProductCard1, ProductCard1Skeleton } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
 import Shop from "@models/shop.model";
@@ -16,7 +16,6 @@ import menuDropdown from "@models/menuDropdown.model";
 // ======================================================
 interface Props {
   shops: Shop[];
-  title: string;
   brands: Brand[];
   productList: Product[];
   category: menuDropdown[];
@@ -24,32 +23,47 @@ interface Props {
 
 // ======================================================
 
-const Section7: FC<Props> = ({ title, category }) => {
+const Section7: FC<Props> = ({ category }) => {
   const [list, setList] = useState<any[]>([]);
   const [selected, setSelected] = useState("");
   const [type, setType] = useState<"pro" | "base">("pro");
 
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const setPro = category.find((cat) => cat.displayCategoryID === 107);
   const setBase = category.find((cat) => cat.displayCategoryID === 1);
 
+  const [title, setTitle] = useState("");
+
   const fetchProduct = (category_id: number) => {
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_PATH}/product/productSet?category_id=${category_id}`,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.res_code === "00" && Array.isArray(data.res_result)) {
-          setProduct(data.res_result);
+    setLoading(true);
+    setTimeout(() => {
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_PATH}/product/productSet?category_id=${category_id}`,
+        {
+          method: "GET",
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      )
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.res_code === "00" && Array.isArray(data.res_result)) {
+            const fetchedTitle = type === "pro" ? "Set Promotion" : "Set Base";
+            setTitle(fetchedTitle);
+            setProduct(data.res_result);
+            setLoading(false);
+          } else {
+            console.error("Unexpected response:", data);
+            setLoading(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setLoading(false);
+        });
+    }, 800);
   };
   const handleCategoryClick = (category: string) => () => {
     if (selected.match(category)) {
@@ -167,24 +181,33 @@ const Section7: FC<Props> = ({ title, category }) => {
         <Box flex="1 1 0" minWidth="0px">
           <CategorySectionHeader title={title} seeMoreLink="#" />
 
-          <Grid container spacing={6}>
-            {product &&
-              product.map((item, ind) => (
-                <Grid item lg={3} sm={6} xs={12} key={ind}>
-                  <ProductCard1
-                    hoverEffect
-                    id={item.product_id}
-                    slug={item.product_id}
-                    title={item.name_th}
-                    price={parseInt(item.price_sale)}
-                    priceBefore={parseInt(item.price_before)}
-                    off={item.discount}
-                    // images={item.image}
-                    imgUrl={item.image800}
-                  />
+          {loading ? (
+            <Grid container spacing={6}>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Grid item lg={3} sm={6} xs={12} key={index}>
+                  <ProductCard1Skeleton />
                 </Grid>
               ))}
-          </Grid>
+            </Grid>
+          ) : (
+            <Grid container spacing={6}>
+              {product &&
+                product.map((item, ind) => (
+                  <Grid item lg={3} sm={6} xs={12} key={ind}>
+                    <ProductCard1
+                      hoverEffect
+                      id={item.product_id}
+                      slug={item.product_id}
+                      title={item.name_th}
+                      price={parseInt(item.price_sale)}
+                      priceBefore={parseInt(item.price_before)}
+                      off={item.discount}
+                      imgUrl={item.image800}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
+          )}
         </Box>
       </FlexBox>
     </Container>
