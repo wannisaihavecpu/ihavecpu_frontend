@@ -16,7 +16,6 @@ import menuDropdown from "@models/menuDropdown.model";
 // ======================================================
 interface Props {
   shops: Shop[];
-  title: string;
   brands: Brand[];
   productList: Product[];
   category: menuDropdown[];
@@ -24,7 +23,7 @@ interface Props {
 
 // ======================================================
 
-const Section7: FC<Props> = ({ title, category }) => {
+const Section7: FC<Props> = ({ category }) => {
   const [list, setList] = useState<any[]>([]);
   const [selected, setSelected] = useState("");
   const [type, setType] = useState<"pro" | "base">("pro");
@@ -34,6 +33,8 @@ const Section7: FC<Props> = ({ title, category }) => {
 
   const setPro = category.find((cat) => cat.displayCategoryID === 107);
   const setBase = category.find((cat) => cat.displayCategoryID === 1);
+
+  const [title, setTitle] = useState("");
 
   const fetchProduct = (category_id: number) => {
     setLoading(true);
@@ -49,6 +50,8 @@ const Section7: FC<Props> = ({ title, category }) => {
         })
         .then((data) => {
           if (data.res_code === "00" && Array.isArray(data.res_result)) {
+            const fetchedTitle = type === "pro" ? "Set Promotion" : "Set Base";
+            setTitle(fetchedTitle);
             setProduct(data.res_result);
             setLoading(false);
           } else {
