@@ -82,10 +82,10 @@ const linkList = [
   {
     title: "เกี่ยวกับเรา",
     list: [
-      { href: "/terms/Contactus", title: "ติดต่อ iHAVECPU", iconName: "customer-service"},
-      { href: "/terms/Aboutus", title: "เกี่ยวกับ iHAVECPU", iconName: "comment"},
-      { href: "/terms/Terms", title: "ข้อกำหนดและเงื่อนไข", iconName: "credit" },
-      { href: "/terms/Privacy", title: "นโยบายความเป็นส่วนตัว", iconName: "shield"},
+        { href: "/terms/Aboutus", title: "เกี่ยวกับ iHAVECPU", iconName: "comment"},
+        { href: "/terms/Contactus", title: "ติดต่อ iHAVECPU", iconName: "customer-service"},
+        { href: "/terms/Terms", title: "ข้อกำหนดและเงื่อนไข", iconName: "credit" },
+        { href: "/terms/Privacy", title: "นโยบายความเป็นส่วนตัว", iconName: "shield"},
     ],
   },
   {

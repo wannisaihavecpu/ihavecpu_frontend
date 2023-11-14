@@ -39,11 +39,18 @@ const Topbar: FC = () => {
             <Icon size="14px">mail</Icon>
             <span>info@ihavecpu.com</span>
           </FlexBox>
+
+          <FlexBox alignItems="center" ml="20px">
+            <Icon size="14px">pin</Icon>
+            <span>ร้านค้าใกล้คุณ</span>
+          </FlexBox>
         </FlexBox>
+
+        
 
         <FlexBox className="topbar-right" alignItems="center">
           <NavLink className="link" href="/">
-            ร้านค้าใกล้คุณ
+          ถ้าคุณชอบคอมพิวเตอร์ เราคือเพื่อนกัน
           </NavLink>
 
           {/* <NavLink className="link" href="/">
