@@ -125,15 +125,13 @@ const Footer1: FC = () => {
 };
 
 const aboutLink = [
-  { title: "ติดต่อ iHAVECPU", url: "/" },
-  { title: "เกี่ยวกับ iHAVECPU", url: "/terms/aboutus" },
-  // { title: "ความห่วงใยของเรา", url: "/vendor/account-settings" },
-  { title: "ข้อตกลงและเงื่อนไข", url: "/terms/Terms" },
+  { title: "ติดต่อ iHAVECPU", url: "/terms/Contactus" },
+  { title: "เกี่ยวกับ iHAVECPU", url: "/terms/Aboutus" },
+  { title: "ข้อกำหนดและเงื่อนไข", url: "/terms/Terms" },
   { title: "นโยบายความเป็นส่วนตัว", url: "/terms/Privacy" },
 ];
 
 const customerList = [
-  // { title: "ศูนย์ช่วยเหลือ", url: "https://www.ihavecpu.com/" },
   { title: "การจัดส่งสินค้า", url: "/terms/Shippings" },
   { title: "การรับประกันสินค้า", url: "/terms/Warrantys" },
   { title: "การยกเลิกการสั่งซื้อสินค้า", url: "/terms/Cancellations" },

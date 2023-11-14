@@ -2,15 +2,14 @@ import { Fragment } from "react";
 import { H3, H4, H6 } from "@component/Typography";
 import { Card1 } from "@component/Card1";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
-import CustomerDashboardLayout from "@component/layout/customer-dashboard";
-
+import TermsandConditionsLayout from "@component/layout/terms-and-conditions";
 // ====================================================
 // ====================================================
 
 const Terms = () => {
   return (
     <Fragment>
-      <DashboardPageHeader title="การยกเลิกการสั่งซื้อสินค้า" iconName="bag_filled" />
+      <DashboardPageHeader title="การยกเลิกการสั่งซื้อสินค้า" iconName="_close" />
 
 <Card1>
        <H3>การยกเลิกการสั่งซื้อสินค้า</H3> 
@@ -64,6 +63,6 @@ const Terms = () => {
   );
 };
 
-Terms.layout = CustomerDashboardLayout;
+Terms.layout = TermsandConditionsLayout;
 
 export default Terms;

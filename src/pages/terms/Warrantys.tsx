@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { H3, H4, H6 } from "@component/Typography";
 import { Card1 } from "@component/Card1";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
-import CustomerDashboardLayout from "@component/layout/customer-dashboard";
+import TermsandConditionsLayout from "@component/layout/terms-and-conditions";
 
 // ====================================================
 // ====================================================
@@ -10,7 +10,7 @@ import CustomerDashboardLayout from "@component/layout/customer-dashboard";
 const Warrantys = () => {
   return (
     <Fragment>
-      <DashboardPageHeader title="นโยบายการรับประกันสินค้า" iconName="bag_filled" />
+      <DashboardPageHeader title="นโยบายการรับประกันสินค้า" iconName="feedback-thumbs-up" />
 
 <Card1>
        <H3>นโยบายการรับประกันสินค้า</H3> 
@@ -50,6 +50,6 @@ const Warrantys = () => {
   );
 };
 
-Warrantys.layout = CustomerDashboardLayout;
+Warrantys.layout = TermsandConditionsLayout;
 
 export default Warrantys;
