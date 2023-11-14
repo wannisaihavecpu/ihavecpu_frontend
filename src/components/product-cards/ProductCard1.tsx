@@ -1,4 +1,4 @@
-import Link from "next/link";
+// import Link from "next/link";
 // import Image from "next/image";
 import { FC, Fragment, useCallback, useState } from "react";
 import styled from "styled-components";
@@ -207,21 +207,21 @@ const ProductCard1: FC<ProductCard1Props> = ({
         <div className="details">
           <FlexBox>
             <Box flex="1 1 0" minWidth="0px" mr="0.5rem">
-              <Link href={`/product/${slug}`}>
-                <a>
-                  <H3
-                    mb="10px"
-                    title={title}
-                    fontSize="14px"
-                    textAlign="left"
-                    fontWeight="600"
-                    className="title"
-                    color="text.secondary"
-                  >
-                    {title}
-                  </H3>
-                </a>
-              </Link>
+              {/* <Link href={`/product/${slug}`}> */}
+              <a>
+                <H3
+                  mb="10px"
+                  title={title}
+                  fontSize="14px"
+                  textAlign="left"
+                  fontWeight="600"
+                  className="title"
+                  color="text.secondary"
+                >
+                  {title}
+                </H3>
+              </a>
+              {/* </Link> */}
               <H6
                 fontSize="12px"
                 fontWeight="100"

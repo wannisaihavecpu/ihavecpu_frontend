@@ -109,7 +109,6 @@ const Home = (props: Props) => {
 
       {/* COM SET PHONES AREA */}
       <Section7
-        title="Set Promotiom"
         shops={props.mobileShops}
         brands={props.mobileBrands}
         productList={props.mobileList}
