@@ -15,19 +15,22 @@ import api from "@utils/__api__/products";
 import Shop from "@models/shop.model";
 import Product from "@models/product.model";
 import Products from "@models/products.model";
+import productView from "@models/productView.model";
+import listCouponProduct from "@models/listCouponProduct.model";
 
 // ===============================================================
 type Props = {
-  product: Products;
+  product: productView;
   shops: Shop[];
   sameBrandProducts: Products[];
   relatedProducts: Product[];
   frequentlyBought: Product[];
+  listCoupon: listCouponProduct[];
 };
 // ===============================================================
 
 const ProductDetails = (props: Props) => {
-  const { product, sameBrandProducts } = props;
+  const { product, listCoupon, sameBrandProducts } = props;
 
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("overview");
@@ -41,13 +44,7 @@ const ProductDetails = (props: Props) => {
 
   return (
     <Fragment>
-      <ProductIntro
-        id={product.product_code}
-        category_id={parseInt(product.cat_id)}
-        price={parseFloat(product.market_price)}
-        title={product.name_th}
-        images={product.images}
-      />
+      <ProductIntro product={product} couponList={listCoupon} />
 
       <FlexBox
         borderBottom="1px solid"
@@ -124,7 +121,9 @@ const ProductDetails = (props: Props) => {
         {selectedOption === "overview" && <Overview />}
         {selectedOption === "testResult" && <TestResult />}
         {selectedOption === "productDetail" && <ProductDetail />}
-        {selectedOption === "description" && <ProductDescription />}
+        {selectedOption === "description" && (
+          <ProductDescription product={product} />
+        )}
         {/* {selectedOption === "review" && <ProductReview />} */}
       </Box>
 
@@ -158,7 +157,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const sameBrandProducts = await api.getSameBrandProducts();
   const relatedProducts = await api.getRelatedProducts();
   const frequentlyBought = await api.getFrequentlyBought();
-  const product = await api.getProduct(params.slug as string);
+  // const product = await api.getProduct(params.slug as string);
+  const product = await api.getViewProduct(params.slug as string);
+  const listCoupon = await api.getListCouponProduct(params.slug as string);
 
   return {
     props: {
@@ -167,6 +168,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       product,
       shops,
       sameBrandProducts,
+      listCoupon,
     },
   };
 };

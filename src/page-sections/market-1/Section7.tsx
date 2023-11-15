@@ -12,6 +12,7 @@ import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 import menuDropdown from "@models/menuDropdown.model";
+import Link from "next/link";
 
 // ======================================================
 interface Props {
@@ -164,16 +165,17 @@ const Section7: FC<Props> = ({ category }) => {
                 </StyledProductCategory>
               ))}
 
-              <StyledProductCategory
-                mt="4rem"
-                onClick={handleCategoryClick(`all-${type}`)}
-                shadow={selected.match(`all-${type}`) ? 4 : null}
-                bg={selected.match(`all-${type}`) ? "white" : "gray.100"}
-              >
-                <span className="product-category-title show-all">
-                  View All Set {type}
-                </span>
-              </StyledProductCategory>
+              <Link href="#">
+                <StyledProductCategory
+                  mt="4rem"
+                  shadow={selected.match(`all-${type}`) ? 4 : null}
+                  bg={selected.match(`all-${type}`) ? "white" : "gray.100"}
+                >
+                  <span className="product-category-title show-all">
+                    View All Set {type}
+                  </span>
+                </StyledProductCategory>
+              </Link>
             </Box>
           )}
         </Hidden>

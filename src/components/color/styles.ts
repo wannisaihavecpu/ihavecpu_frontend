@@ -23,10 +23,10 @@ const StyledColor = styled.div<Props>`
   border-radius: ${(props) => props.size}px;
   transition: border 0.3s ease-in-out, transform 0.3s;
   box-sizing: border-box;
-
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.24);
   &:hover {
-    border: 5px solid white;
-    transform: scale(1.1);
+    border: 3px solid gray;
+    transform: scale(0.7);
   }
 
   &:focus {
@@ -34,8 +34,8 @@ const StyledColor = styled.div<Props>`
   }
 
   img {
-    width: 100%;
-    height: 100%;
+    width: 100px;
+    height: 100px;
     display: block;
   }
 
@@ -50,6 +50,12 @@ const StyledColor = styled.div<Props>`
     props.selected &&
     `
     border: 3px solid #c9c9c9; 
+  `}
+  ${(props) =>
+    props.disabled &&
+    `
+    cursor: not-allowed;
+
   `}
   ${color}
   ${space}

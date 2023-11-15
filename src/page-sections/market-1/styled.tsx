@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Box from "@component/Box";
 import { getTheme } from "@utils/utils";
 
-type StyledProductCategoryProps = { onClick: any };
+type StyledProductCategoryProps = { onClick?: any };
 
 const StyledProductCategory = styled(Box)<StyledProductCategoryProps>`
   display: flex;

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { FC } from "react";
 import { TableStyle } from "./styles";
+import productView from "@models/productView.model";
 
-const Table = () => {
+type TableProps = {
+  product: productView;
+};
+const Table: FC<TableProps> = ({ product }) => {
   const data = [
     {
       id: 1,
@@ -39,10 +43,11 @@ const Table = () => {
     <TableStyle>
       <table>
         <tbody>
-          {data.map((row) => (
-            <tr key={row.id}>
-              <td className="column1">{row.column1}</td>
-              <td className="column2">{row.column2}</td>
+          {product?.name_th}
+          {product?.property.map((row) => (
+            <tr key={row.filter_sub_id}>
+              <td className="column1">{row.name_th}</td>
+              {/* <td className="column2">{row.detail}</td> */}
             </tr>
           ))}
         </tbody>

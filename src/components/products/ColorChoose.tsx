@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import Grid from "@component/grid/Grid";
-import { ButtonChoice } from "@component/buttons";
+import { ColorCircle } from "@component/buttons";
 
 type Props = {
   open: boolean;
@@ -13,7 +13,7 @@ type Props = {
   disabled?: boolean;
 };
 
-const ChoiceDetail: FC<Props> = (props) => {
+const ColorChoose: FC<Props> = (props) => {
   const { choice, bg, selected, onClick, disabled } = props;
   const contentWidth = `${choice.length * 10}px`;
 
@@ -23,7 +23,7 @@ const ChoiceDetail: FC<Props> = (props) => {
 
   return (
     <Grid container style={containerStyle}>
-      <ButtonChoice
+      <ColorCircle
         mr="5px"
         size="extrasmall"
         color="ihavecpu"
@@ -40,9 +40,9 @@ const ChoiceDetail: FC<Props> = (props) => {
         disabled={disabled}
       >
         {choice}
-      </ButtonChoice>
+      </ColorCircle>
     </Grid>
   );
 };
 
-export default ChoiceDetail;
+export default ColorChoose;

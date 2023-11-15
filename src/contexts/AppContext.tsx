@@ -21,6 +21,7 @@ export type CartItem = {
   price: number;
   imgUrl?: string;
   id: string | number;
+  optionId?: number;
 };
 
 export type CustomerDetails = {
@@ -145,7 +146,18 @@ const reducer = (state: InitialState, action: ActionType) => {
     case "CHANGE_CART_AMOUNT":
       let cartList = state.cart;
       let cartItem = action.payload;
-      let existIndex = cartList.findIndex((item) => item.id === cartItem.id);
+      let existIndex;
+
+      if (cartItem.optionId) {
+        // If the item has an optionId, check both id and optionId
+        existIndex = cartList.findIndex(
+          (item) =>
+            item.id === cartItem.id && item.optionId === cartItem.optionId
+        );
+      } else {
+        // If the item doesn't have an optionId, check only id
+        existIndex = cartList.findIndex((item) => item.id === cartItem.id);
+      }
 
       if (cartItem.qty < 1) {
         // If quantity is less than 1, remove the item from the cart
@@ -162,8 +174,15 @@ const reducer = (state: InitialState, action: ActionType) => {
         // If the item exists in the cart, update the quantity
         cartList[existIndex].qty = cartItem.qty;
       } else {
-        // If the item doesn't exist, add it to the cart
-        cartList.push(cartItem);
+        // If the item doesn't exist, add it to the cart with a unique optionId
+        const newCartItem: CartItem = {
+          ...cartItem,
+          optionId:
+            cartItem.optionId !== undefined
+              ? parseInt(cartItem.optionId.toString())
+              : undefined,
+        };
+        cartList.push(newCartItem);
       }
 
       if (typeof window !== "undefined") {
