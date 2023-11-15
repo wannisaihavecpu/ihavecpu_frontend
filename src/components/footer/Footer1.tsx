@@ -125,8 +125,8 @@ const Footer1: FC = () => {
 };
 
 const aboutLink = [
-  { title: "ติดต่อ iHAVECPU", url: "/terms/Contactus" },
-  { title: "เกี่ยวกับ iHAVECPU", url: "/terms/Aboutus" },
+  { title: "ติดต่อเรา", url: "/terms/Contactus" },
+  { title: "เกี่ยวกับเรา", url: "/terms/Aboutus" },
   { title: "ข้อกำหนดและเงื่อนไข", url: "/terms/Terms" },
   { title: "นโยบายความเป็นส่วนตัว", url: "/terms/Privacy" },
 ];

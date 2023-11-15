@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 // import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
-import Section2 from "@sections/market-1/Section2";
+// import Section2 from "@sections/market-1/Section2";
 import Section3 from "@sections/market-1/Section3";
 import Section4 from "@sections/market-1/Section4";
 import Section5 from "@sections/market-1/Section5";
@@ -12,7 +12,7 @@ import Section7 from "@sections/market-1/Section7";
 import Notebook from "@sections/market-1/Notebook";
 // import Section8 from "@sections/market-1/Section8";
 import Section10 from "@sections/market-1/Section10";
-import Section11 from "@sections/market-1/Section11";
+// import Section11 from "@sections/market-1/Section11";
 // import Section12 from "@sections/market-1/Section12";
 import Section13 from "@sections/market-1/Section13";
 import Banner1 from "@sections/market-1/Banner1";
@@ -20,11 +20,14 @@ import Banner1box from "@sections/market-1/Banner1box";
 import Banner2box from "@sections/market-1/Banner2box";
 import Banner3box from "@sections/market-1/Banner3box";
 // import Bannersection4 from "@sections/market-1/Bannersection4";
+import Featureds from "@sections/market-1/Featureds";
+import Accessories from "@sections/market-1/Accessories";
 import Hotdeal from "@sections/market-1/Hotdeal";
 import Blogs from "@sections/market-1/Blogs";
 import Services from "@sections/market-1/Service";
+// API
 import api from "@utils/__api__/market-1";
-
+// import brand_api from "@utils/__api__/market-2";
 // data models
 import Blog from "@models/blog.model";
 import Shop from "@models/shop.model";
@@ -37,6 +40,7 @@ import menuDropdown from "@models/menuDropdown.model";
 
 // =================================================================
 type Props = {
+  brands: Brand[];
   blogs: Blog[];
   notebookList?: Product[];
   notebookBrands?: Brand[];
@@ -77,36 +81,25 @@ const Home = (props: Props) => {
       {/* BANNER1 OFFER BANNERS AREA */}
       <Banner1 />
 
-      {/* FLASH DEAL PRODUCTS AREA */}
-      <Section2 products={props.flashDealsData} />
+      
+        {/* FEATURES BRAND LIST AREA */}
+        <Featureds brands={props.brands} />
+
+      {/* CATEGORIES AREA */}
+      <Section10 categories={props.bottomCategories} />
 
       {/* DEAL OF THE DAY CAROUSEL AREA */}
       <Hotdeal list={props.hotDealList} />
-
+      
       {/* BIG DISCOUNT AREA */}
       <Section13 bigDiscountList={props.bigDiscountList} />
 
       {/* BANNER2BOX  BANNERS AREA */}
       <Banner2box />
-
-      {/* TOP CATEGORIES AREA */}
-      <Section3 categoryList={props.topCategories} />
-
-      {/* TOP RATING AND BRANDS AREA */}
-      <Section4
-        topRatedList={props.topRatedProducts}
-        topRatedBrands={props.topRatedBrands}
-      />
-
+      
       {/* NEW ARRIVALS AREA */}
       <Section5 newArrivalsList={props.newArrivalsList} />
-
-      {/* BIG DISCOUNT AREA */}
-      <Section13 bigDiscountList={props.bigDiscountList} />
-
-      {/* BANNER2BOX  BANNERS AREA */}
-      <Banner2box />
-
+      
       {/* COM SET PHONES AREA */}
       <Section7
         shops={props.mobileShops}
@@ -115,11 +108,26 @@ const Home = (props: Props) => {
         category={props.categorySetComputer}
       />
 
-      {/* BANNER3BOX BANNERS AREA */}
-      <Banner3box />
+      {/* TOP CATEGORIES AREA */}
+      <Section3 categoryList={props.topCategories} />
 
+      {/* BANNER3BOX  BANNERS AREA */}
+      <Banner3box />
+      
+      {/* TOP RATING AND BRANDS AREA */}
+      <Section4
+        topRatedList={props.topRatedProducts}
+        topRatedBrands={props.topRatedBrands}
+      />
+      
       {/* DIY LIST AREA */}
       <Diy carBrands={props.carBrands} carList={props.carList} />
+
+      {/* BANNER2BOX BANNERS AREA */}
+      <Banner2box />
+
+      {/* DIY LIST AREA */}
+      {/* <Diy carBrands={props.carBrands} carList={props.carList} /> */}
 
       {/* DISCOUNT BANNERS AREA */}
       {/* <Section8 /> */}
@@ -127,8 +135,7 @@ const Home = (props: Props) => {
       {/* BANNER SECTION 4 AREA */}
       {/* <Bannersection4 /> */}
 
-      {/* BANNER1 OFFER BANNERS AREA */}
-      <Banner1box />
+      
 
       {/* OPTICS AND WATCH AREA */}
       {/* <Section7
@@ -138,17 +145,23 @@ const Home = (props: Props) => {
         productList={props.opticsList}
       /> */}
 
-      {/* OPTICS AND WATCH AREA */}
+      {/* NOTEBOOK AND WATCH AREA */}
       <Notebook
         notebookBrands={props.notebookBrands}
         notebookList={props.notebookList}
       />
 
-      {/* CATEGORIES AREA */}
-      <Section10 categories={props.bottomCategories} />
-
       {/* MORE PRODUCTS AREA */}
-      <Section11 moreItems={props.moreItems} />
+      {/* <Section11 moreItems={props.moreItems} /> */}
+
+      {/* ACCESSORIES PRODUCTS AREA */}
+      <Accessories />
+
+      {/* FLASH DEAL PRODUCTS AREA */}
+      {/* <Section2 products={props.flashDealsData} /> */}
+
+      {/* BANNER1 OFFER BANNERS AREA */}
+      <Banner1box />
 
       {/* BLOG AREA */}
       <Blogs blogs={props.blogs} />
@@ -167,6 +180,7 @@ Home.layout = AppLayout;
 // ==============================================================
 
 export const getStaticProps: GetStaticProps = async () => {
+  const brands = await api.getBrands();
   const blogs = await api.getBlogs();
   const notebookList = await api.getNotebookList();
   const notebookBrands = await api.getNotebookBrands();
@@ -193,6 +207,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
+      brands,
       blogs,
       notebookList,
       notebookBrands,

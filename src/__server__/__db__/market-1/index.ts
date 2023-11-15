@@ -240,3 +240,13 @@ Mock.onGet("/api/market-1/services").reply(async () => {
     return [500, { message: "Internal server error" }];
   }
 });
+
+// get all brands
+Mock.onGet("/api/market-1/brand").reply(async () => {
+  try {
+    return [200, db.brandList];
+  } catch (err) {
+    console.error(err);
+    return [500, { message: "Internal server error" }];
+  }
+});
