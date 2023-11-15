@@ -16,12 +16,12 @@ import { useAppContext } from "@context/AppContext";
 
 // styled components
 const CardBox = styled(Box)({
-  borderRadius: "3px",
+  borderRadius: "10px",
   transition: "all 0.3s",
   backgroundColor: "white",
-  border: `1px solid ${theme.colors.gray[100]}`,
+  border: `0px solid ${theme.colors.gray[100]}`,
   ":hover": {
-    border: "1px solid #000",
+    border: "0px solid #000",
     "& .product-actions": { right: 5 },
     "& img": { transform: "scale(1.1)" },
   },

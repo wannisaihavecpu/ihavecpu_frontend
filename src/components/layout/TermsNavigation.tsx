@@ -82,8 +82,8 @@ const linkList = [
   {
     title: "เกี่ยวกับเรา",
     list: [
-        { href: "/terms/Aboutus", title: "เกี่ยวกับ iHAVECPU", iconName: "comment"},
-        { href: "/terms/Contactus", title: "ติดต่อ iHAVECPU", iconName: "customer-service"},
+        { href: "/terms/Contactus", title: "ติดต่อเรา", iconName: "customer-service"},
+        { href: "/terms/Aboutus", title: "เกี่ยวกับเรา", iconName: "comment"},
         { href: "/terms/Terms", title: "ข้อกำหนดและเงื่อนไข", iconName: "credit" },
         { href: "/terms/Privacy", title: "นโยบายความเป็นส่วนตัว", iconName: "shield"},
     ],
@@ -94,7 +94,7 @@ const linkList = [
       { href: "/terms/Shippings", title: "การจัดส่งสินค้า", iconName: "truck" },
       { href: "/terms/Warrantys", title: "การรับประกันสินค้า", iconName: "feedback-thumbs-up"},
     //   { href: "/terms/Warrantys", title: "การรับประกันสินค้า", iconName: "pin"},
-      { href: "/terms/Cancellations", title: "การยกเลิกการสั่งซื้อสินค้า", iconName: "_close" },
+      { href: "/terms/Cancellations", title: "การยกเลิกการสั่งซื้อสินค้า", iconName: "x-circle" },
       { href: "/terms/Returns", title: "การคืนสินค้าและการคืนเงิน", iconName: "credit-card-2" },
     ],
   },

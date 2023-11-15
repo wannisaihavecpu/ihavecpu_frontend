@@ -92,11 +92,11 @@ const Footer1: FC = () => {
                 </Typography>
 
                 <Typography py="0.3rem" color="gray.500">
-                  อีเมล: info@ihavecpu.com
+                  โทรศัพท์: 02 105 4757
                 </Typography>
 
-                <Typography py="0.3rem" mb="1rem" color="gray.500">
-                  โทร: 02 105 4757
+                <Typography py="0.3rem" mb="1rem"  color="gray.500">
+                  อีเมล: info@ihavecpu.com
                 </Typography>
 
                 <FlexBox className="flex" mx="-5px">
@@ -125,8 +125,8 @@ const Footer1: FC = () => {
 };
 
 const aboutLink = [
-  { title: "ติดต่อ iHAVECPU", url: "/terms/Contactus" },
-  { title: "เกี่ยวกับ iHAVECPU", url: "/terms/Aboutus" },
+  { title: "ติดต่อเรา", url: "/terms/Contactus" },
+  { title: "เกี่ยวกับเรา", url: "/terms/Aboutus" },
   { title: "ข้อกำหนดและเงื่อนไข", url: "/terms/Terms" },
   { title: "นโยบายความเป็นส่วนตัว", url: "/terms/Privacy" },
 ];
@@ -137,7 +137,6 @@ const customerList = [
   { title: "การยกเลิกการสั่งซื้อสินค้า", url: "/terms/Cancellations" },
   { title: "การคืนสินค้าและการคืนเงิน", url: "/terms/Returns" },
 ];
-
 
 const iconList = [
   { iconName: "facebook", url: "https://www.facebook.com/CPUCore2Duo" },

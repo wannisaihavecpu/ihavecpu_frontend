@@ -61,13 +61,13 @@ const Blogs: FC<BlogProps> = ({ blogs }) => {
   return (
     <Container mb="1rem">
       <H2 textAlign="center" mb={4}>
-        Latest Articles
+        บทความ
       </H2>
 
       <Grid container spacing={5}>
         {blogs.map((item) => (
           <Grid item md={4} xs={12} key={item.id}>
-            <Card style={{ borderRadius: 0, boxShadow: theme.shadows[3], padding: ".8rem" }}>
+            <Card style={{ borderRadius: 10, boxShadow: theme.shadows[3], padding: ".8rem" }}>
               <ImageBox p={2} maxHeight={220}>
                 <Image
                   width={580}
@@ -96,7 +96,7 @@ const Blogs: FC<BlogProps> = ({ blogs }) => {
                   {item.description}
                 </Paragraph>
 
-                <StyledLink href="#">Read More</StyledLink>
+                <StyledLink href="#">อ่านต่อทั้งหมด</StyledLink>
               </Box>
             </Card>
           </Grid>

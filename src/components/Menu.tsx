@@ -19,7 +19,7 @@ const StyledMenu = styled.div<{ direction: string }>(
     position: "relative",
     ".menu-item-holder": {
       zIndex: 100,
-      minWidth: "200px",
+      minWidth: "100px",
       borderRadius: "6px",
       paddingTop: "0.5rem",
       position: "absolute",

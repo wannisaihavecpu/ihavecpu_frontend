@@ -122,6 +122,11 @@ const getServices = async (): Promise<Service[]> => {
   return response.data;
 };
 
+const getBrands = async (): Promise<Brand> => {
+  const response = await axios.get("/api/market-1/brand");
+  return response.data;
+};
+
 const getCategorySetComputer = async (): Promise<menuDropdown[]> => {
   try {
     const response = await axios.get(
@@ -142,6 +147,7 @@ const getCategorySetComputer = async (): Promise<menuDropdown[]> => {
 };
 
 export default {
+  getBrands,
   getBlogs,
   getNotebookList,
   getNotebookBrands,
