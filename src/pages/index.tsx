@@ -2,27 +2,18 @@ import { GetStaticProps } from "next";
 // import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
-// import Section2 from "@sections/market-1/Section2";
 import Topcatrgories from "@sections/market-1/Topcatrgories";
 import Toprating from "@sections/market-1/Toprating";
 import Newproduct from "@sections/market-1/Newproduct";
-// import Section5 from "@sections/market-1/Section5";
-// import Section6 from "@sections/market-1/Section6";
-// import Diy from "@sections/market-1/Diy";
 import Diy from "@sections/market-1/Diy";
 import Computorset from "@sections/market-1/Computorset";
 import Notebook from "@sections/market-1/Notebook";
-// import Section8 from "@sections/market-1/Section8";
 import Categories from "@sections/market-1/Categories";
-// import Section11 from "@sections/market-1/Section11";
-// import Section12 from "@sections/market-1/Section12";
-// import Section13 from "@sections/market-1/Section13";
 import Discounts from "@sections/market-1/Discounts";
 import Banner1 from "@sections/market-1/Banner1";
 import Banner1box from "@sections/market-1/Banner1box";
 import Banner2box from "@sections/market-1/Banner2box";
 import Banner3box from "@sections/market-1/Banner3box";
-// import Bannersection4 from "@sections/market-1/Bannersection4";
 import Featureds from "@sections/market-1/Featureds";
 import Accessories from "@sections/market-1/Accessories";
 import Hotdeal from "@sections/market-1/Hotdeal";
@@ -77,9 +68,6 @@ const Home = (props: Props) => {
   return (
     <main>
       {/* HERO CAROUSEL AREA */}
-      {/* <Herobanner data={props.mainCarouselData} /> */}
-
-      {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
 
       {/* BANNER1 OFFER BANNERS AREA */}
@@ -122,31 +110,11 @@ const Home = (props: Props) => {
         topRatedList={props.topRatedProducts}
         topRatedBrands={props.topRatedBrands}
       />
-      
-      {/* DIY LIST AREA */}
-      {/* <Diy carBrands={props.carBrands} carList={props.carList} /> */}
 
       <Diy diyBrands={props.diyBrands} diyList={props.diyList} />
 
       {/* BANNER2BOX BANNERS AREA */}
       <Banner2box />
-
-      {/* DIY LIST AREA */}
-      {/* <Diy carBrands={props.carBrands} carList={props.carList} /> */}
-
-      {/* DISCOUNT BANNERS AREA */}
-      {/* <Section8 /> */}
-
-      {/* BANNER SECTION 4 AREA */}
-      {/* <Bannersection4 /> */}
-
-      {/* OPTICS AND WATCH AREA */}
-      {/* <Section7
-        title="Accessories"
-        shops={props.opticsShops}
-        brands={props.opticsBrands}
-        productList={props.opticsList}
-      /> */}
 
       {/* NOTEBOOK AND WATCH AREA */}
       <Notebook
@@ -154,23 +122,14 @@ const Home = (props: Props) => {
         notebookList={props.notebookList}
       />
 
-      {/* MORE PRODUCTS AREA */}
-      {/* <Section11 moreItems={props.moreItems} /> */}
-
       {/* ACCESSORIES PRODUCTS AREA */}
       <Accessories />
-
-      {/* FLASH DEAL PRODUCTS AREA */}
-      {/* <Section2 products={props.flashDealsData} /> */}
 
       {/* BANNER1 OFFER BANNERS AREA */}
       <Banner1box />
 
       {/* BLOG AREA */}
       <Blogs blogs={props.blogs} />
-
-      {/* SERVICES AREA */}
-      {/* <Section12 serviceList={props.serviceList} /> */}
 
       {/* SERVICES AREA */}
       <Services id={FIXED_ID} services={props.serviceList} />
