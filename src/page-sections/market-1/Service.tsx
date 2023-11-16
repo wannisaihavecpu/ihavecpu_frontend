@@ -13,7 +13,7 @@ type Props = { id: string; services: Service[] };
 
 const Service: FC<Props> = ({ id, services }) => {
   return (
-    <Container py={84} id={id}>
+    <Container py={40} id={id}>
       <Grid container spacing={6}>
         {services.map((item, ind) => (
           <Grid item lg={3} md={6} xs={12} key={ind}>

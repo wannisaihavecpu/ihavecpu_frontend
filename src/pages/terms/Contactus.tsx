@@ -10,10 +10,10 @@ import TermsandConditionsLayout from "@component/layout/terms-and-conditions";
 const Contactus = () => {
   return (
     <Fragment>
-      <DashboardPageHeader title="ติดต่อ iHAVECPU" iconName="customer-service" />
+      <DashboardPageHeader title="ติดต่อเรา" iconName="customer-service" />
 
 <Card1>
-       <H3>ติดต่อ iHAVECPU</H3> 
+       <H3>ช่องทางการติดต่อ</H3> 
          {/* <H4>ลูกค้าสามารถติดต่อ iHAVECPU ได้ในวันและเวลาทำการ ตั้งแต่เวลา 10.00 น. -17.00 น. (เว้นวันเสาร์)</H4> */}
          {/* <p></p> */}
          <H4>บริษัท ไอ แฮฟ ซีพียู จำกัด (สำนักงานใหญ่)</H4>
@@ -26,13 +26,16 @@ const Contactus = () => {
          <p></p>
          <H4>ช่องทางโซเชี่ยล</H4>
         <ul>
-            
             <li><H6>Facebook : CPUCore2Duo</H6></li>
             <li><H6>Instagrame : ihavecpu_official</H6></li>
             <li><H6>Youtube : @iHAVECPU_</H6></li>
             <li><H6>Tictok : @iHAVECPU</H6></li>
         </ul>
-        
+        <p></p>
+         <H4>ติดต่อฝ่ายการตลาด</H4>
+        <ul>
+        <li><H6>อีเมล : mkt@ihavecpu.com</H6></li>
+        </ul>
 
 
       </Card1>

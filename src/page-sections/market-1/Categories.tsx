@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Card from "@component/Card";
 import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
+// import Icon from "@component/icon/Icon";
 import Typography from "@component/Typography";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import Category from "@models/category.model";
@@ -20,7 +21,7 @@ type Props = { categories: Category[] };
 const Section10: FC<Props> = ({ categories }) => {
   return (
     <Container mb="70px">
-      <CategorySectionHeader title="Categories" iconName="categories" seeMoreLink="#" />
+      <CategorySectionHeader title="หมวดหมู่สินค้า" iconName="categories" seeMoreLink="#" />
 
       <Grid container spacing={6}>
         {categories.map((item) => (
@@ -36,13 +37,15 @@ const Section10: FC<Props> = ({ categories }) => {
                   alignItems="center"
                 >
                   <StyledImage
-                    width="52px"
-                    alt="fashion"
-                    height="52px"
+                    width="60px"
+                    alt="ihavecpu"
+                    height="60px"
                     src={item.image}
                     objectFit="contain"
                   />
-                  
+                  {/* <Icon size="25px" defaultcolor="auto">
+                          {item.icon}
+                        </Icon> */}
 
                   <Typography fontWeight="600" fontSize="14px" ml="10px">
                     {item.name}

@@ -96,8 +96,8 @@ const ProductSearchResult = () => {
         justifyContent="space-between"
       >
         <div>
-          <H5>Searching for “ mobile phone ”</H5>
-          <Paragraph color="text.muted">48 results found</Paragraph>
+          <H5>Searching for “ ซีพียู ”</H5>
+          <Paragraph color="text.muted">5 results found</Paragraph>
         </div>
 
         <FlexBox alignItems="center" flexWrap="wrap">
@@ -117,7 +117,7 @@ const ProductSearchResult = () => {
             View:
           </Paragraph>
 
-          <IconButton size="small" onClick={toggleView("grid")}>
+          <IconButton size="small" onClick={toggleView("grid")} ml="0.5rem">
             <Icon
               variant="small"
               defaultcolor="auto"
@@ -127,7 +127,7 @@ const ProductSearchResult = () => {
             </Icon>
           </IconButton>
 
-          <IconButton size="small" onClick={toggleView("list")}>
+          <IconButton size="small" onClick={toggleView("list")}  ml="0.5rem">
             <Icon
               variant="small"
               defaultcolor="auto"

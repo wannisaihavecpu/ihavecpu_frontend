@@ -5,7 +5,7 @@
 import * as db from "./data";
 import Mock from "../../mock";
 import shops from "../shop/data";
-
+import shuffle from "lodash/shuffle";
 
 Mock.onGet("/api/market-1/main-carousel").reply(async () => {
   try {
@@ -88,6 +88,27 @@ Mock.onGet("/api/market-1/car-brand-list").reply(async () => {
 
 
 Mock.onGet("/api/market-1/car-list").reply(async () => {
+  try {
+    const products = db.products.filter((item) => item.for.type === "cars");
+    return [200, products];
+  } catch (err) {
+    console.error(err);
+    return [500, { message: "Internal server error" }];
+  }
+});
+
+//DIY
+// Mock.onGet("/api/market-1/diy-brand-list").reply(async () => {
+//   try {
+//     const diyBrands = db.brands.filter((item) => item.for.type === "categories");
+//     return [200, diyBrands];
+//   } catch (err) {
+//     console.error(err);
+//     return [500, { message: "Internal server error" }];
+//   }
+// });
+
+Mock.onGet("/api/market-1/diy-list").reply(async () => {
   try {
     const products = db.products.filter((item) => item.for.type === "cars");
     return [200, products];
@@ -245,6 +266,20 @@ Mock.onGet("/api/market-1/services").reply(async () => {
 Mock.onGet("/api/market-1/brand").reply(async () => {
   try {
     return [200, db.brandList];
+  } catch (err) {
+    console.error(err);
+    return [500, { message: "Internal server error" }];
+  }
+});
+
+
+// get all products
+Mock.onGet("/api/market-1/products").reply((config) => {
+  try {
+    if (config?.params?.type) {
+      return [200, shuffle(db.products)];
+    }
+    return [200, db.products];
   } catch (err) {
     console.error(err);
     return [500, { message: "Internal server error" }];
