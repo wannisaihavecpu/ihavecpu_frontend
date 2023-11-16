@@ -118,13 +118,13 @@ const Section7: FC<Props> = ({ category }) => {
               <FlexBox mt="-0.5rem" mb="0.5rem">
                 <Typography
                   fontWeight="600"
-                  fontSize="20px"
+                  fontSize="18px"
                   padding="0.5rem 1rem"
                   style={{ cursor: "pointer" }}
                   color={type === "pro" ? "gray.900" : "gray.600"}
                   onClick={handleChangeType("pro")}
                 >
-                  Set Pro
+                  Set Promotion
                 </Typography>
 
                 <Typography
@@ -138,7 +138,7 @@ const Section7: FC<Props> = ({ category }) => {
                 </Typography>
 
                 <Typography
-                  fontSize="20px"
+                  fontSize="18px"
                   fontWeight="600"
                   padding="0.5rem 1rem"
                   style={{ cursor: "pointer" }}

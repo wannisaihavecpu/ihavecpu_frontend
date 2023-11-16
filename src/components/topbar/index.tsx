@@ -10,10 +10,10 @@ import { Small } from "../Typography";
 import StyledTopbar from "./styles";
 
 const Topbar: FC = () => {
-  const [currency, setCurrency] = useState(currencyList[0]);
+  // const [currency, setCurrency] = useState(currencyList[0]);
   const [language, setLanguage] = useState(languageList[0]);
 
-  const handleCurrencyClick = (curr: typeof currency) => () => setCurrency(curr);
+  // const handleCurrencyClick = (curr: typeof currency) => () => setCurrency(curr);
 
   const handleLanguageClick = (lang: typeof language) => () => setLanguage(lang);
 
@@ -32,18 +32,22 @@ const Topbar: FC = () => {
 
           <FlexBox alignItems="center">
             <Icon size="14px">phone-call</Icon>
-            <span>+66 123 456 7890</span>
+            <span>02 105 4757</span>
           </FlexBox>
 
           <FlexBox alignItems="center" ml="20px">
             <Icon size="14px">mail</Icon>
             <span>info@ihavecpu.com</span>
           </FlexBox>
+
+          <FlexBox alignItems="center" ml="20px">
+            <span>iHAVECPU ถ้าคุณชอบคอมพิวเตอร์ เราคือเพื่อนกัน</span>
+          </FlexBox>
         </FlexBox>
 
         <FlexBox className="topbar-right" alignItems="center">
           <NavLink className="link" href="/">
-            ร้านค้าใกล้คุณ
+           ร้านค้าใกล้คุณ
           </NavLink>
 
           {/* <NavLink className="link" href="/">
@@ -53,7 +57,7 @@ const Topbar: FC = () => {
           <Menu
             direction="right"
             handler={
-              <FlexBox className="dropdown-handler" alignItems="center" height="40px" mr="1.25rem">
+              <FlexBox className="dropdown-handler" alignItems="center" height="50px"  mr="1.25rem">
                 <Image src={language.imgUrl} alt={language.title} />
                 <Small fontWeight="600">{language.title}</Small>
                 <Icon size="1rem">chevron-down</Icon>
@@ -62,13 +66,13 @@ const Topbar: FC = () => {
           >
             {languageList.map((item) => (
               <MenuItem key={item.title} onClick={handleLanguageClick(item)}>
-                <Image src={item.imgUrl} borderRadius="2px" mr="0.5rem" alt={item.title} />
+                <Image src={item.imgUrl} borderRadius="50%" mr="0.5rem"  height="20px" alt={item.title} />
                 <Small fontWeight="600">{item.title}</Small>
               </MenuItem>
             ))}
           </Menu>
 
-          <Menu
+          {/* <Menu
             direction="right"
             handler={
               <FlexBox className="dropdown-handler" alignItems="center" height="40px">
@@ -80,11 +84,11 @@ const Topbar: FC = () => {
           >
             {currencyList.map((item) => (
               <MenuItem key={item.title} onClick={handleCurrencyClick(item)}>
-                <Image src={item.imgUrl} borderRadius="2px" mr="0.5rem" alt={item.title} />
+                <Image src={item.imgUrl} borderRadius="50%" mr="0.5rem"  height="20px" alt={item.title} />
                 <Small fontWeight="600">{item.title}</Small>
               </MenuItem>
             ))}
-          </Menu>
+          </Menu> */}
         </FlexBox>
       </Container>
     </StyledTopbar>
@@ -92,16 +96,13 @@ const Topbar: FC = () => {
 };
 
 const languageList = [
-  { title: "EN", imgUrl: "/assets/images/flags/usa.png" },
-  { title: "TH", imgUrl: "/assets/images/flags/bd.png" },
-  // { title: "HN", imgUrl: "/assets/images/flags/in.png" },
+  { title: "ไทย", imgUrl: "/assets/images/flags/thai.png" },
+  { title: "ENG", imgUrl: "/assets/images/flags/eng.png" },
 ];
 
-const currencyList = [
-  { title: "USD", imgUrl: "/assets/images/flags/usa.png" },
-  { title: "BHT", imgUrl: "/assets/images/flags/uk.png" },
-  // { title: "BDT", imgUrl: "/assets/images/flags/bd.png" },
-  // { title: "INR", imgUrl: "/assets/images/flags/in.png" },
-];
+// const currencyList = [
+//   { title: "บาท", imgUrl: "/assets/images/flags/thai.png" },
+//   { title: "USD", imgUrl: "/assets/images/flags/eng.png" },
+// ];
 
 export default Topbar;

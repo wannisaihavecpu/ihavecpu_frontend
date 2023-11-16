@@ -33,6 +33,17 @@ const getCarList = async (): Promise<Product[]> => {
   return response.data;
 };
 
+//DIY
+const getDiyBrands = async (): Promise<Category[]> => {
+  const response = await axios.get("/api/market-1/bottom-categories");
+  return response.data;
+};
+
+const getDiyList = async (): Promise<Product[]> => {
+  const response = await axios.get("/api/market-1/products");
+  return response.data;
+};
+
 const getNotebookBrands = async (): Promise<Brand[]> => {
   const response = await axios.get("/api/market-1/notebook-brand-list");
   return response.data;
@@ -122,6 +133,11 @@ const getServices = async (): Promise<Service[]> => {
   return response.data;
 };
 
+const getBrands = async (): Promise<Brand> => {
+  const response = await axios.get("/api/market-1/brand");
+  return response.data;
+};
+
 const getCategorySetComputer = async (): Promise<menuDropdown[]> => {
   try {
     const response = await axios.get(
@@ -142,9 +158,10 @@ const getCategorySetComputer = async (): Promise<menuDropdown[]> => {
 };
 
 export default {
+  getBrands,
   getBlogs,
-  getNotebookList,
-  getNotebookBrands,
+  getDiyList,
+  getDiyBrands,
   getCarList,
   getCarBrands,
   getMoreItems,
@@ -160,6 +177,8 @@ export default {
   getOpticsBrands,
   getTopCategories,
   getTopRatedBrand,
+  getNotebookList,
+  getNotebookBrands,
   getNewArrivalList,
   getBigDiscountList,
   getTopRatedProduct,

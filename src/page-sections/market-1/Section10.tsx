@@ -42,6 +42,7 @@ const Section10: FC<Props> = ({ categories }) => {
                     src={item.image}
                     objectFit="contain"
                   />
+                  
 
                   <Typography fontWeight="600" fontSize="14px" ml="10px">
                     {item.name}

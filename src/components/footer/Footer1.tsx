@@ -8,6 +8,7 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import AppStore from "@component/AppStore";
 import Container from "@component/Container";
+
 import Typography, { Paragraph } from "@component/Typography";
 import { getTheme } from "@utils/utils";
 
@@ -34,14 +35,12 @@ const Footer1: FC = () => {
               <Grid item lg={4} md={6} sm={6} xs={12}>
                 <Link href="/">
                   <a>
-                    <Image alt="logo" mb="1.25rem" src="/assets/images/logo_light.svg" height="70px" />
+                    <Image alt="logo" mb="1.25rem" src="/assets/images/logo_light.svg" height="50px" />
                   </a>
                 </Link>
 
                 <Paragraph mb="1.25rem" color="gray.500">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor libero id et, in
-                  gravida. Sit diam duis mauris nulla cursus. Erat et lectus vel ut sollicitudin
-                  elit at amet.
+                ถ้าคุณชอบคอมพิวเตอร์ เราคือเพื่อนกัน iHAVECPU ร้านจำหน่ายอุปกรณ์คอมพิวเตอร์ โน๊ตบุ๊ก อุปกรณ์ต่อพ่วง เกมมิ่งเกียร์ รับประกันทุกชิ้น บริการจัดสเปกคอมพิวเตอร์ ตามการใช้งานในงบประมาณที่ลูกค้าเลือกได้เอง
                 </Paragraph>
 
                 <AppStore />
@@ -49,47 +48,56 @@ const Footer1: FC = () => {
 
               <Grid item lg={2} md={6} sm={6} xs={12}>
                 <Typography mb="1.25rem" lineHeight="1" fontSize="25px" fontWeight="600">
-                  About Us
+                  เกี่ยวกับเรา
                 </Typography>
 
                 <div>
-                  {aboutLinks.map((item, ind) => (
-                    <Link href="/" key={ind}>
-                      <StyledLink>{item}</StyledLink>
-                    </Link>
+                  {aboutLink.map((item) => (
+                    <a
+                    href={item.url}
+                    target="_blank"
+                    key={item.title}
+                    rel="noreferrer noopenner"
+                  >
+                      <StyledLink>{item.title}</StyledLink>
+                    </a>
                   ))}
                 </div>
               </Grid>
 
               <Grid item lg={3} md={6} sm={6} xs={12}>
                 <Typography mb="1.25rem" lineHeight="1" fontSize="25px" fontWeight="600">
-                  Customer Care
+                  บริการลูกค้า
                 </Typography>
-
                 <div>
-                  {customerCareLinks.map((item, ind) => (
-                    <Link href="/" key={ind}>
-                      <StyledLink>{item}</StyledLink>
-                    </Link>
+                  {customerList.map((item) => (
+                    <a
+                    href={item.url}
+                    target="_blank"
+                    key={item.title}
+                    rel="noreferrer noopenner"
+                  >
+                      <StyledLink>{item.title}</StyledLink>
+                    </a>
                   ))}
                 </div>
               </Grid>
 
               <Grid item lg={3} md={6} sm={6} xs={12}>
                 <Typography mb="1.25rem" lineHeight="1" fontSize="25px" fontWeight="600">
-                  Contact Us
+                  ติดต่อเรา
                 </Typography>
 
                 <Typography py="0.3rem" color="gray.500">
-                เลขที่ 228 ตำบล หนองแสง อำเภอปากพลี นครนายก 26130
+                เลขที่ 252 ตำบล หนองแสง อำเภอปากพลี นครนายก 26130
                 </Typography>
 
                 <Typography py="0.3rem" color="gray.500">
+                  โทรศัพท์: 02 105 4757
+                </Typography>
+
+                <Typography py="0.3rem" mb="1rem"  color="gray.500">
                   อีเมล: info@ihavecpu.com
-                </Typography>
-
-                <Typography py="0.3rem" mb="1rem" color="gray.500">
-                  โทร: 086 838 5200
                 </Typography>
 
                 <FlexBox className="flex" mx="-5px">
@@ -101,7 +109,7 @@ const Footer1: FC = () => {
                       rel="noreferrer noopenner"
                     >
                       <Box m="5px" p="10px" size="small" borderRadius="50%" bg="rgba(0,0,0,0.2)">
-                        <Icon size="12px" defaultcolor="auto">
+                        <Icon size="20px" defaultcolor="auto">
                           {item.iconName}
                         </Icon>
                       </Box>
@@ -117,22 +125,26 @@ const Footer1: FC = () => {
   );
 };
 
-const aboutLinks = ["Careers", "Our Stores", "Our Cares", "Terms & Conditions", "Privacy Policy"];
+const aboutLink = [
+  { title: "ติดต่อเรา", url: "/terms/Contactus" },
+  { title: "เกี่ยวกับเรา", url: "/terms/Aboutus" },
+  { title: "ข้อกำหนดและเงื่อนไข", url: "/terms/Terms" },
+  { title: "นโยบายความเป็นส่วนตัว", url: "/terms/Privacy" },
+];
 
-const customerCareLinks = [
-  "Help Center",
-  "How to Buy",
-  "Track Your Order",
-  "Corporate & Bulk Purchasing",
-  "Returns & Refunds",
+const customerList = [
+  { title: "การจัดส่งสินค้า", url: "/terms/Shippings" },
+  { title: "การรับประกันสินค้า", url: "/terms/Warrantys" },
+  { title: "การยกเลิกการสั่งซื้อสินค้า", url: "/terms/Cancellations" },
+  { title: "การคืนสินค้าและการคืนเงิน", url: "/terms/Returns" },
 ];
 
 const iconList = [
-  { iconName: "facebook", url: "https://www.facebook.com/UILibOfficial" },
-  { iconName: "twitter", url: "/" },
-  { iconName: "youtube", url: "https://www.youtube.com/channel/UCsIyD-TSO1wQFz-n2Y4i3Rg" },
-  { iconName: "google", url: "/" },
-  { iconName: "instagram", url: "/" },
+  { iconName: "facebook", url: "https://www.facebook.com/CPUCore2Duo" },
+  { iconName: "line", url: "https://page.line.me/ihavecpu?openQrModal=true" },
+  { iconName: "youtube", url: "https://www.youtube.com/@iHAVECPU_" },
+  { iconName: "tiktok", url: "https://page.line.me/ihavecpu?openQrModal=true" },
+  { iconName: "instagram", url: "https://www.instagram.com/ihavecpu_official/" },
 ];
 
 export default Footer1;
