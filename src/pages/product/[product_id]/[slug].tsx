@@ -17,6 +17,8 @@ import Product from "@models/product.model";
 import Products from "@models/products.model";
 import productView from "@models/productView.model";
 import listCouponProduct from "@models/listCouponProduct.model";
+import ProductDetailNoSeemore from "@component/products/ProductDetailNoSeemore";
+import listProduct from "@models/listProduct.model";
 
 // ===============================================================
 type Props = {
@@ -26,18 +28,18 @@ type Props = {
   relatedProducts: Product[];
   frequentlyBought: Product[];
   listCoupon: listCouponProduct[];
+  sameBrandProduct: listProduct[];
 };
 // ===============================================================
 
 const ProductDetails = (props: Props) => {
-  const { product, listCoupon, sameBrandProducts } = props;
+  const { product, listCoupon, sameBrandProducts, sameBrandProduct } = props;
 
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("overview");
 
   const handleOptionClick = (opt) => () => setSelectedOption(opt);
 
-  // Show a loading state when the fallback is rendered
   if (router.isFallback) {
     return <h1>Loading...</h1>;
   }
@@ -64,45 +66,51 @@ const ProductDetails = (props: Props) => {
         >
           ทั้งหมด
         </H5>
-        <H5
-          mr="10px"
-          p="4px 10px"
-          className="cursor-pointer"
-          borderColor="primary.main"
-          onClick={handleOptionClick("testResult")}
-          borderBottom={selectedOption === "testResult" && "2px solid"}
-          color={
-            selectedOption === "testResult" ? "primary.main" : "text.muted"
-          }
-        >
-          ผลเทส
-        </H5>
-        <H5
-          mr="10px"
-          p="4px 10px"
-          className="cursor-pointer"
-          borderColor="primary.main"
-          onClick={handleOptionClick("productDetail")}
-          borderBottom={selectedOption === "productDetail" && "2px solid"}
-          color={
-            selectedOption === "productDetail" ? "primary.main" : "text.muted"
-          }
-        >
-          รายละเอียดสินค้า
-        </H5>
-        <H5
-          mr="25px"
-          p="4px 10px"
-          className="cursor-pointer"
-          borderColor="primary.main"
-          onClick={handleOptionClick("description")}
-          borderBottom={selectedOption === "description" && "2px solid"}
-          color={
-            selectedOption === "description" ? "primary.main" : "text.muted"
-          }
-        >
-          คุณสมบัติสินค้า
-        </H5>
+        {product.link_youtube && (
+          <H5
+            mr="10px"
+            p="4px 10px"
+            className="cursor-pointer"
+            borderColor="primary.main"
+            onClick={handleOptionClick("testResult")}
+            borderBottom={selectedOption === "testResult" && "2px solid"}
+            color={
+              selectedOption === "testResult" ? "primary.main" : "text.muted"
+            }
+          >
+            ผลเทส
+          </H5>
+        )}
+        {product.description_th && (
+          <H5
+            mr="10px"
+            p="4px 10px"
+            className="cursor-pointer"
+            borderColor="primary.main"
+            onClick={handleOptionClick("productDetail")}
+            borderBottom={selectedOption === "productDetail" && "2px solid"}
+            color={
+              selectedOption === "productDetail" ? "primary.main" : "text.muted"
+            }
+          >
+            รายละเอียดสินค้า
+          </H5>
+        )}
+        {product.property && product.property.length > 0 && (
+          <H5
+            mr="25px"
+            p="4px 10px"
+            className="cursor-pointer"
+            borderColor="primary.main"
+            onClick={handleOptionClick("description")}
+            borderBottom={selectedOption === "description" && "2px solid"}
+            color={
+              selectedOption === "description" ? "primary.main" : "text.muted"
+            }
+          >
+            คุณสมบัติสินค้า
+          </H5>
+        )}
 
         {/* <H5
           p="4px 10px"
@@ -118,9 +126,11 @@ const ProductDetails = (props: Props) => {
 
       {/* DESCRIPTION AND REVIEW TAB DETAILS */}
       <Box mb="50px">
-        {selectedOption === "overview" && <Overview />}
+        {selectedOption === "overview" && <Overview product={product} />}
         {selectedOption === "testResult" && <TestResult />}
-        {selectedOption === "productDetail" && <ProductDetail />}
+        {selectedOption === "productDetail" && (
+          <ProductDetailNoSeemore product={product} />
+        )}
         {selectedOption === "description" && (
           <ProductDescription product={product} />
         )}
@@ -134,7 +144,7 @@ const ProductDetails = (props: Props) => {
       {/* {shops && <AvailableShops shops={shops} />} */}
 
       {/* RELATED PRODUCTS */}
-      {sameBrandProducts && <SameBrandProducts products={sameBrandProducts} />}
+      {sameBrandProducts && <SameBrandProducts products={sameBrandProduct} />}
 
       {/* {relatedProducts && <RelatedProducts products={relatedProducts} />} */}
     </Fragment>
@@ -144,11 +154,13 @@ const ProductDetails = (props: Props) => {
 ProductDetails.layout = NavbarLayout;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await api.getSlugs();
-
+  const allProducts = await api.getAllProduct();
+  const paths = allProducts.map(({ product_id, name_th }) => ({
+    params: { product_id: product_id.toString(), slug: name_th },
+  }));
   return {
-    paths: paths, //indicates that no page needs be created at build time
-    fallback: "blocking", //indicates the type of fallback
+    paths,
+    fallback: "blocking",
   };
 };
 
@@ -157,18 +169,28 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const sameBrandProducts = await api.getSameBrandProducts();
   const relatedProducts = await api.getRelatedProducts();
   const frequentlyBought = await api.getFrequentlyBought();
-  // const product = await api.getProduct(params.slug as string);
-  const product = await api.getViewProduct(params.slug as string);
-  const listCoupon = await api.getListCouponProduct(params.slug as string);
+  const products = await api.getViewProduct(params.product_id as string);
+  const listCoupon = await api.getListCouponProduct(
+    params.product_id as string
+  );
+
+  const productsArray = Array.isArray(products) ? products : [products];
+  const catIds =
+    productsArray.length > 0
+      ? productsArray.map((product) => product.cat_id).filter(Boolean)
+      : [];
+
+  const sameBrandProduct = await api.getSameBrandProduct(catIds);
 
   return {
     props: {
       frequentlyBought,
       relatedProducts,
-      product,
+      product: products,
       shops,
       sameBrandProducts,
       listCoupon,
+      sameBrandProduct,
     },
   };
 };

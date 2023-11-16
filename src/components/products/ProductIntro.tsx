@@ -168,7 +168,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         }
       }
     } else {
-      // Clear the compare list and add the current product
+      // clear the compare list and add the current product
       notify("success", "added to compare");
       const updatedCompareList = [
         { id: productIdString, category_id: parseInt(productCategoryId) },
@@ -178,13 +178,13 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     }
   };
 
-  // Copy Link
+  // copy Link
   const handleCopyLinkClick = () => {
     navigator.clipboard.writeText(links);
     notify("success", "Copy Link!");
   };
 
-  // Keep Coupon
+  // keep Coupon
   const [isInCoupon, setisInCoupon] = useState(false);
   const handleInCoupleClick = () => {
     setisInCoupon(true);
@@ -596,11 +596,18 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
             <H6>(50)</H6>
           </FlexBox> */}
 
-          <Box mb="24px">
+          <FlexBox mb="24px" alignItems="center">
             <H1 color="ihavecpu.main" mb="4px" lineHeight="1">
-              <PriceFormat price={parseInt(product.market_price)} />
+              {/* <PriceFormat price={parseInt(product.market_price)} /> */}
             </H1>
-          </Box>
+            {product.sell_price > product.market_price && (
+              <H6 ml={2} color="grey" fontWeight={300}>
+                <del>
+                  {/* <PriceFormat price={parseInt(product.sell_price)} /> */}
+                </del>
+              </H6>
+            )}
+          </FlexBox>
           {/* FLASH SALES DEALS */}
           <Box mb="20px">
             <FlashSaleBar dateExpired="2023-10-05T23:59:59"></FlashSaleBar>

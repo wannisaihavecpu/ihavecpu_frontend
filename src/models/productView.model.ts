@@ -27,6 +27,7 @@ interface productView {
   how_to_th?: string;
   ecom_market_price?: string;
   ecom_special_price?: string;
+  link_youtube?: string;
   picture?: [
     {
       pic_150?: string;

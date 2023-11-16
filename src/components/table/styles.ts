@@ -50,6 +50,7 @@ export const TableStyle = styled.div`
     padding-left: 5%;
     padding-top: 1%;
     padding-bottom: 1%;
+    font-size: 14px;
     font-weight: 300;
     color: #010f1c;
     background-color: #f9f9f9;
@@ -62,7 +63,7 @@ export const TableStyle = styled.div`
     padding-left: 5%;
     padding-top: 1%;
     padding-bottom: 1%;
-
+    font-size: 14px;
     background-color: #fff;
     text-align: left;
   }

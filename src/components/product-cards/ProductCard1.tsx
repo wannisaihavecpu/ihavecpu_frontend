@@ -182,7 +182,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
             </Icon>
           </FlexBox>
 
-          <Link href={`/product/${slug}`}>
+          <Link href={`/product/${id}/${slug}`}>
             <a>
               {/* <Image
               alt={title}

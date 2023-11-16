@@ -36,6 +36,20 @@ const Section7: FC<Props> = ({ category }) => {
   const setBase = category.find((cat) => cat.displayCategoryID === 1);
 
   const [title, setTitle] = useState("");
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
 
   const fetchProduct = (category_id: number) => {
     setLoading(true);
@@ -199,7 +213,7 @@ const Section7: FC<Props> = ({ category }) => {
                     <ProductCard1
                       hoverEffect
                       id={item.product_id}
-                      slug={item.product_id}
+                      slug={formatSlug(item.name_th)}
                       title={item.name_th}
                       price={parseInt(item.price_sale)}
                       priceBefore={parseInt(item.price_before)}

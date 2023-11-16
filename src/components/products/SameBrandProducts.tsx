@@ -2,17 +2,33 @@ import { FC, useEffect, useState } from "react";
 import Box from "@component/Box";
 import { ProductCard21 } from "@component/product-cards";
 import Products from "@models/products.model";
+import listProduct from "@models/listProduct.model";
 import { CarouselProduct } from "@component/carousel";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import useWindowSize from "@hook/useWindowSize";
 
 // ============================================================
-type Props = { products: Products[] };
+type Props = { products: listProduct[] };
 // ============================================================
 
 const SameBrandProducts: FC<Props> = ({ products }) => {
   const width = useWindowSize();
   const [visibleSlides, setVisibleSlides] = useState(5);
+
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
 
   useEffect(() => {
     if (width < 500) setVisibleSlides(3);
@@ -20,6 +36,7 @@ const SameBrandProducts: FC<Props> = ({ products }) => {
     else if (width < 950) setVisibleSlides(3);
     else setVisibleSlides(5);
   }, [width]);
+  console.log(products[0]);
 
   return (
     <CategorySectionCreator
@@ -35,13 +52,13 @@ const SameBrandProducts: FC<Props> = ({ products }) => {
           {products.map((item, ind) => (
             <Box py="0.25rem" key={ind}>
               <ProductCard21
-                id={item.product_code}
-                slug={item.product_code}
-                price={parseFloat(item.market_price)}
+                id={item.product_id}
+                slug={formatSlug(item.name_th)}
+                priceSale={item.price_sale}
+                priceBefore={item.price_before}
                 title={item.name_th}
-                off={parseFloat(item.market_price)}
-                images={item.images}
-                imgUrl={item.description_th}
+                discount={item.discount}
+                imgUrl={item.image800}
               />
             </Box>
           ))}

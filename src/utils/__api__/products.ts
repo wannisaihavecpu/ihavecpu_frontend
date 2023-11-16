@@ -5,6 +5,8 @@ import Shop from "@models/shop.model";
 import productView from "@models/productView.model";
 import listCouponProduct from "@models/listCouponProduct.model";
 import myCouponAvaliable from "@models/myCouponAvaliable.model";
+import getAllProduct from "@models/getAllProduct.model";
+import listProduct from "@models/listProduct.model";
 
 // get all product slug
 const getSlugs = async (): Promise<{ params: { slug: string } }[]> => {
@@ -129,6 +131,47 @@ const getMyCoupon = async (slug: string): Promise<myCouponAvaliable[]> => {
   }
 };
 
+const getAllProduct = async (): Promise<getAllProduct[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/allProduct`
+    );
+    if (response.data.res_code === "00") {
+      console.log(response.data.res_result);
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching allProduct", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching allProduct", error.message);
+    return [];
+  }
+};
+const getSameBrandProduct = async (
+  categoryID: string[]
+): Promise<listProduct[]> => {
+  try {
+    console.log("getSameBrand");
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}`
+    );
+    if (response.data.res_code === "00") {
+      console.log(response.data.res_result);
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching getSameBrandProduct",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getSameBrandProduct", error.message);
+    return [];
+  }
+};
+
 export default {
   getSlugs,
   getProduct,
@@ -141,4 +184,6 @@ export default {
   getViewProduct,
   getListCouponProduct,
   getMyCoupon,
+  getAllProduct,
+  getSameBrandProduct,
 };

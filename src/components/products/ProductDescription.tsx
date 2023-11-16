@@ -5,15 +5,13 @@ import { FadeInUp } from "./styles";
 import productView from "@models/productView.model";
 
 type ProductDescriptionProps = {
-  product : productView;
+  product: productView;
 };
-const ProductDescription: FC<ProductDescriptionProps> = ({ product  }) => {
-  console.log(product ); // Log the product object to the console
-
+const ProductDescription: FC<ProductDescriptionProps> = ({ product }) => {
   return (
     <FadeInUp>
       <Box>
-        <Table product={product } />
+        <Table product={product} />
       </Box>
     </FadeInUp>
   );

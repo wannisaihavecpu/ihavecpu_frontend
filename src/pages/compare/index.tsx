@@ -62,13 +62,13 @@ const ComparePage = () => {
 
       const apiUrl = `${
         process.env.NEXT_PUBLIC_API_PATH
-      }/compare?product_ids=${productIds.join(",")}`;
+      }/comparetest?product_ids=${productIds.join(",")}`;
 
       if (productIds.length > 0) {
         axios
           .get(apiUrl)
           .then((response) => {
-            setApiResponse(response.data);
+            setApiResponse(response.data.res_result);
             if (updatedCompareList.length === 1) {
               setShouldRenderDeleteButton(false);
             }
@@ -105,13 +105,13 @@ const ComparePage = () => {
 
     const apiUrl = `${
       process.env.NEXT_PUBLIC_API_PATH
-    }/compare?product_ids=${productIds.join(",")}`;
+    }/comparetest?product_ids=${productIds.join(",")}`;
 
     if (productIds.length > 0) {
       axios
         .get(apiUrl)
         .then((response) => {
-          setApiResponse(response.data);
+          setApiResponse(response.data.res_result);
           setShouldRenderDeleteButton(updatedCompareList.length > 1);
           setShowAddProductBox(true);
         })
@@ -122,7 +122,7 @@ const ComparePage = () => {
       setApiResponse(null);
     }
   };
-
+  console.log("compareList", JSON.parse(localStorage.getItem("compareList")));
   const addProduct = () => {
     const categoryIdFromLocalStorage = JSON.parse(
       localStorage.getItem("compareList")
@@ -136,11 +136,11 @@ const ComparePage = () => {
     });
 
     const uniqueCategoryIds = Array.from(uniqueCategoryIdsSet);
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/productlist?category_id=${uniqueCategoryIds}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${uniqueCategoryIds}`;
     axios
       .get(apiUrl)
       .then((response) => {
-        setAddProductResponse(response.data);
+        setAddProductResponse(response.data.res_result);
         setShowAddProductBox(false);
       })
       .catch((error) => {
@@ -161,14 +161,14 @@ const ComparePage = () => {
     const productIds = storedCompareList.map((product) => product.id);
     const apiUrl = `${
       process.env.NEXT_PUBLIC_API_PATH
-    }/compare?product_ids=${productIds.join(",")}`;
+    }/comparetest?product_ids=${productIds.join(",")}`;
     if (productIds.length > 0) {
       axios
         .get(apiUrl)
         .then((response) => {
           setisLoading(false);
           setShouldRenderDeleteButton(storedCompareList.length > 1);
-          setApiResponse(response.data);
+          setApiResponse(response.data.res_result);
         })
         .catch((error) => {
           console.error("API Error:", error);
@@ -194,26 +194,24 @@ const ComparePage = () => {
 
           {isLoading && ""}
 
-          {apiResponse && (
+          {apiResponse ? (
             <Grid container spacing={6}>
               {[0, 1, 2, 3].map((index) => (
                 <Fragment key={index}>
-                  {apiResponse.data[index] ? (
+                  {apiResponse[index] ? (
                     <Section1
-                      productDetail={apiResponse.data[index]}
+                      productDetail={apiResponse[index]}
                       onRemoveFromCompare={() =>
-                        removeProductFromCompare(
-                          apiResponse.data[index].product_id
-                        )
+                        removeProductFromCompare(apiResponse[index].product_id)
                       }
                       shouldRenderDeleteButton={shouldRenderDeleteButton}
                       classStyle={`card ${
-                        apiResponse.data[index].product_id === removedProductId
+                        apiResponse[index].product_id === removedProductId
                           ? "hide"
                           : ""
                       }`}
                     />
-                  ) : index === 1 && apiResponse.data[0] ? (
+                  ) : index === 1 && apiResponse[0] ? (
                     <>
                       <Section2
                         onAddProduct={() => addProduct()}
@@ -225,7 +223,7 @@ const ComparePage = () => {
                         back={backtoMain}
                       />
                     </>
-                  ) : index === 2 && apiResponse.data[1] ? (
+                  ) : index === 2 && apiResponse[1] ? (
                     <Section2
                       onAddProduct={() => addProduct()}
                       productDetail={addProductResponse}
@@ -235,7 +233,7 @@ const ComparePage = () => {
                       }
                       back={backtoMain}
                     />
-                  ) : index === 3 && apiResponse.data[2] ? (
+                  ) : index === 3 && apiResponse[2] ? (
                     <Section2
                       onAddProduct={() => addProduct()}
                       productDetail={addProductResponse}
@@ -249,6 +247,8 @@ const ComparePage = () => {
                 </Fragment>
               ))}
             </Grid>
+          ) : (
+            <Box mt="20rem"></Box>
           )}
         </Box>
       </Container>
