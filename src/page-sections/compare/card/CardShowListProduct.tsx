@@ -112,8 +112,8 @@ const CardShowListProduct: FC<CardShowListProductProps> = ({
                     category_id={item.category_id}
                     product_id={item.product_id}
                     discount={item.discount}
-                    price_before={item.price_before}
-                    price_sale={item.price_sale}
+                    price_before={parseInt(item.price_before)}
+                    price_sale={parseInt(item.price_sale)}
                     onAddProductFromCompare={onAddProductFromCompare}
                   />
                 ))

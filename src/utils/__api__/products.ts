@@ -57,11 +57,6 @@ const getCompareMockUp = async (slug: any): Promise<Products[]> => {
   return response.data;
 };
 
-const getProductView = async (slug: string): Promise<Product[]> => {
-  const response = await axios.get("/api/products/slug", { params: { slug } });
-  return response.data;
-};
-
 const getViewProduct = async (slug: string): Promise<productView[]> => {
   try {
     const response = await axios.get(

@@ -1,6 +1,5 @@
 import { FC } from "react";
 import Box from "@component/Box";
-import Table from "@component/table";
 import { FadeInUp } from "./styles";
 import productView from "@models/productView.model";
 

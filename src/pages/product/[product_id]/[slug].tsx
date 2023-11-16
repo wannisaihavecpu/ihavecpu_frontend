@@ -10,7 +10,6 @@ import SameBrandProducts from "@component/products/SameBrandProducts";
 import ProductDescription from "@component/products/ProductDescription";
 import TestResult from "@component/products/TestResult";
 import Overview from "@component/products/Overview";
-import ProductDetail from "@component/products/ProductDetail";
 import api from "@utils/__api__/products";
 import Shop from "@models/shop.model";
 import Product from "@models/product.model";

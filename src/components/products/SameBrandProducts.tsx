@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import Box from "@component/Box";
 import { ProductCard21 } from "@component/product-cards";
-import Products from "@models/products.model";
 import listProduct from "@models/listProduct.model";
 import { CarouselProduct } from "@component/carousel";
 import CategorySectionCreator from "@component/CategorySectionCreator";
@@ -36,7 +35,6 @@ const SameBrandProducts: FC<Props> = ({ products }) => {
     else if (width < 950) setVisibleSlides(3);
     else setVisibleSlides(5);
   }, [width]);
-  console.log(products[0]);
 
   return (
     <CategorySectionCreator

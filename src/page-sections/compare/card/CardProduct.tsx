@@ -10,8 +10,11 @@ import { IconButton, Button } from "@component/buttons";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import PriceFormat from "@component/PriceFormat";
+import Link from "next/link";
 
 export interface CardProductProps {
+  id: number;
+  slug?: string;
   title?: string;
   brand?: string;
   priceBefore?: string;
@@ -34,7 +37,8 @@ export interface CardProductProps {
 const CardProduct: FC<CardProductProps> = ({
   imgUrl,
   title,
-
+  id,
+  slug,
   priceBefore,
   priceSale,
   discount,
@@ -149,17 +153,19 @@ const CardProduct: FC<CardProductProps> = ({
             </Box>
           </FlexBox>
           <Box mt="1rem">
-            <Button
-              width="100%"
-              color="primary"
-              bg="primary.light"
-              type="button"
-            >
-              ดูสินค้า
-              <Icon size="18px" ml="5px">
-                eye
-              </Icon>
-            </Button>
+            <Link href={`/product/${id}/${slug}`}>
+              <Button
+                width="100%"
+                color="primary"
+                bg="primary.light"
+                type="button"
+              >
+                ดูสินค้า
+                <Icon size="18px" ml="5px">
+                  eye
+                </Icon>
+              </Button>
+            </Link>
           </Box>
         </Box>
 

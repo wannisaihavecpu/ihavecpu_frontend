@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { FC, useCallback, useState } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import Box from "@component/Box";
 import { Chip } from "@component/Chip";
@@ -8,9 +8,8 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import Card, { CardProps } from "@component/Card";
 import { H3, SemiSpan, H6 } from "@component/Typography";
-import { currency, getTheme } from "@utils/utils";
+import { getTheme } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
-import ProductQuickView from "@component/products/ProductQuickView";
 import PriceFormat from "@component/PriceFormat";
 
 // styled component
@@ -124,9 +123,9 @@ const ProductCard21: FC<ProductCard21Props> = ({
   description,
   ...props
 }) => {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
-  const toggleDialog = useCallback(() => setOpen((open) => !open), []);
+  // const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
   return (
     <>

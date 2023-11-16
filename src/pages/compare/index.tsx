@@ -122,7 +122,6 @@ const ComparePage = () => {
       setApiResponse(null);
     }
   };
-  console.log("compareList", JSON.parse(localStorage.getItem("compareList")));
   const addProduct = () => {
     const categoryIdFromLocalStorage = JSON.parse(
       localStorage.getItem("compareList")

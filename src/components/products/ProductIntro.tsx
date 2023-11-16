@@ -4,18 +4,15 @@ import { useRouter } from "next/router";
 import Box from "@component/Box";
 import Image from "@component/Image";
 import Avatar from "@component/avatar";
-import ColorCircle from "@component/color";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
-import { H1, H3, H6, H5, SemiSpan, Small, Span } from "@component/Typography";
+import { H1, H3, H6, SemiSpan, Small, Span } from "@component/Typography";
 import { useAppContext } from "@context/AppContext";
-import { currency } from "@utils/utils";
 import { ShowStock } from "@component/products/ShowStock";
 import SectionVoucher from "@component/SectionVoucher";
 import { CarouselVoucher } from "@component/carousel";
-import { ProductCard20 } from "@component/product-cards";
 import ModalCoupon from "@component/products/ModalCoupon";
 import ChoiceDetails from "@component/products/ChoiceDetails";
 import Divider from "@component/Divider";
@@ -29,10 +26,8 @@ import CompareNotification from "@component/compare/CompareNotification";
 import productView from "@models/productView.model";
 import { CarouselViewProduct } from "@component/carousel";
 import PriceFormat from "@component/PriceFormat";
-import ColorChoose from "./ColorChoose";
 import Coupon from "./Coupon";
 import listCouponProduct from "@models/listCouponProduct.model";
-import myCouponAvaliable from "@models/myCouponAvaliable.model";
 
 // ========================================
 type ProductIntroProps = {
@@ -67,11 +62,11 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
   const [open, setOpen] = useState(false);
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
-  // Choose Color
-  const [selectedColor, setSelectedColor] = useState<string>("204");
-  const handleColorClick = (color: string) => {
-    setSelectedColor(color);
-  };
+  // // Choose Color
+  // const [selectedColor, setSelectedColor] = useState<string>("204");
+  // const handleColorClick = (color: string) => {
+  //   setSelectedColor(color);
+  // };
 
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
@@ -82,7 +77,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     // check available stock based on selected options
     const stockEntry = product.stock.find((entry) =>
       Object.entries({ ...selectedOptions, [optionName]: value }).every(
-        ([key, val]) => entry.choose.includes(val)
+        ([val]) => entry.choose.includes(val)
       )
     );
 
@@ -91,23 +86,19 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
     // update state  if stock is > 0
     setSelectedOptions((prevOptions) => {
-      const updatedOptions = {
-        ...prevOptions,
-        [optionName]: value,
-      };
       return {
         ...prevOptions,
         [optionName]: value,
       };
     });
   };
-  console.log("Selected Options:", selectedOptions);
+  // console.log("Selected Options:", selectedOptions);
 
-  // Choose Button
-  const [selectedSwitch, setSelectedSwitch] = useState(null);
-  const handleSwitchClick = (color) => {
-    setSelectedSwitch(color);
-  };
+  // // Choose Button
+  // const [selectedSwitch, setSelectedSwitch] = useState(null);
+  // const handleSwitchClick = (color) => {
+  //   setSelectedSwitch(color);
+  // };
   // Wishlist
   const [isInWishlist, setIsInWishlist] = useState(false);
   const handleWishlistClick = () => {
@@ -121,8 +112,10 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   };
   // Compare
   const [compareList, setCompareList] = useState<
-    { id: string; category_id: number }[]
+    { id: number; category_id: number }[]
   >([]);
+
+  // console.log("compareList", compareList);
   const maxCompareProducts = 4;
   useEffect(() => {
     const storedCompareList = localStorage.getItem("compareList");
@@ -132,7 +125,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   }, []);
 
   const handleCompareClick = () => {
-    const productIdString = product.product_id.toString();
+    const productIdString = product.product_id;
     const productCategoryId = product.cat_id;
 
     if (
@@ -185,10 +178,10 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   };
 
   // keep Coupon
-  const [isInCoupon, setisInCoupon] = useState(false);
-  const handleInCoupleClick = () => {
-    setisInCoupon(true);
-  };
+  // const [isInCoupon, setisInCoupon] = useState(false);
+  // const handleInCoupleClick = () => {
+  //   setisInCoupon(true);
+  // };
 
   const mapSelectedOptionsToOptionId = (
     selectedOptions: Record<string, string>,
@@ -197,7 +190,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     const selectedOptionsArray = Object.entries(selectedOptions);
 
     const matchingEntry = stock.find((entry) =>
-      selectedOptionsArray.every(([key, val]) => entry.choose?.includes(val))
+      selectedOptionsArray.every(([val]) => entry.choose?.includes(val))
     );
 
     return matchingEntry ? matchingEntry.option_id || null : null;
@@ -310,14 +303,14 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     setSelectedOptions({});
     setQuantity(1);
   };
-  console.log("state cart", state.cart);
+  // console.log("state cart", state.cart);
   const getAvailableStock = (
     selectedOptions: Record<string, string>
   ): number => {
     const selectedChoices = Object.entries(selectedOptions);
 
     const matchingEntry = product.stock.find((entry) =>
-      selectedChoices.every(([key, val]) => entry.choose.includes(val))
+      selectedChoices.every(([val]) => entry.choose.includes(val))
     );
 
     return matchingEntry ? matchingEntry.stock : 0;
@@ -345,7 +338,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     // check any stock matching the selected choice
     return product.stock.some(
       (entry) =>
-        selectedChoices.every(([key, val]) => entry.choose.includes(val)) &&
+        selectedChoices.every(([val]) => entry.choose.includes(val)) &&
         entry.stock > 0
     );
   };
@@ -376,8 +369,8 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
     for (const optionCombination of allOptionCombinations) {
       const isCombinationInStock = product.stock.some((entry) => {
-        const includesAll = entry.choose.every((val) =>
-          optionCombination.some(([optionId, subId]) =>
+        const includesAll = entry.choose.every(() =>
+          optionCombination.some(([subId]) =>
             entry.choose.includes(subId.toString())
           )
         );
@@ -598,12 +591,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
           <FlexBox mb="24px" alignItems="center">
             <H1 color="ihavecpu.main" mb="4px" lineHeight="1">
-              {/* <PriceFormat price={parseInt(product.market_price)} /> */}
+              <PriceFormat price={parseInt(product.market_price)} />
             </H1>
-            {product.sell_price > product.market_price && (
+            {parseInt(product.sell_price) > parseInt(product.market_price) && (
               <H6 ml={2} color="grey" fontWeight={300}>
                 <del>
-                  {/* <PriceFormat price={parseInt(product.sell_price)} /> */}
+                  <PriceFormat price={parseInt(product.sell_price)} />
                 </del>
               </H6>
             )}
@@ -762,7 +755,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
                     color={
                       compareList.some(
                         (products) =>
-                          products.id === product.product_id.toString() &&
+                          products.id === product.product_id &&
                           products.category_id === parseInt(product.cat_id)
                       )
                         ? "ihavecpu"
@@ -938,17 +931,4 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   );
 };
 
-const colorList = [
-  { id: "204", product_id: "SKU-67171", title: "#FF7A7A" },
-  { id: "205", product_id: "SKU-67171", title: "#FFC672" },
-  { id: "206", product_id: "SKU-67171", title: "#d4001a" },
-  { id: "207", product_id: "SKU-67171", title: "#6B7AFF" },
-];
-const switchList = [
-  { id: "209", product_id: "SKU-67171", title: "Red Switch" },
-  { id: "210", product_id: "SKU-67171", title: "Blue Switch" },
-  { id: "211", product_id: "SKU-67171", title: "Brown Switch" },
-  { id: "212", product_id: "SKU-67171", title: "Green Switch" },
-  { id: "213", product_id: "SKU-67171", title: "Black Switch" },
-];
 export default ProductIntro;

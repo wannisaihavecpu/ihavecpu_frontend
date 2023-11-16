@@ -13,6 +13,20 @@ const Section1 = ({
   shouldRenderDeleteButton,
 }) => {
   const [compareList, setCompareList] = useState([]);
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
 
   // const clearCompareList = () => {
   //   localStorage.removeItem("compareList");
@@ -42,6 +56,8 @@ const Section1 = ({
   return (
     <Grid item lg={3} md={6} xs={12} spacing={6}>
       <CardProduct
+        id={productDetail.product_id}
+        slug={formatSlug(productDetail.name_th)}
         title={productDetail.name_th}
         brand={productDetail.brand}
         priceBefore={productDetail.price_before}

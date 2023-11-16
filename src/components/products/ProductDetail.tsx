@@ -1,6 +1,5 @@
 import { FC, useState } from "react";
 import Box from "@component/Box";
-import Typography from "@component/Typography";
 import { FadeInUp } from "./styles";
 import productView from "@models/productView.model";
 import { Button } from "@component/buttons";
