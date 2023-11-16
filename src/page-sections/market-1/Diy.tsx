@@ -1,26 +1,26 @@
 import { FC, useState } from "react";
-import NextImage from "next/image";
 import Box from "@component/Box";
 import Hidden from "@component/hidden";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
+import Icon from "@component/icon/Icon";
 import Container from "@component/Container";
 import { ProductCard1 } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
 import Product from "@models/product.model";
-import Brand from "@models/Brand.model";
+import Category from "@models/category.model";
 
 // ==============================================================
-type Props = { carList: Product[]; carBrands: Brand[] };
+type Props = { diyList: Product[]; diyBrands: Category[]};
 // ==============================================================
 
-const Diy: FC<Props> = ({ carList, carBrands }) => {
+const Diy2: FC<Props> = ({ diyList, diyBrands }) => {
   const [selected, setSelected] = useState("");
 
-  const handleCategoryClick = (brand: Brand) => () => {
-    if (selected === brand.slug) setSelected("");
-    else setSelected(brand.slug);
+  const handleCategoryClick = (categories: Category) => () => {
+    if (selected === categories.slug) setSelected("");
+    else setSelected(categories.slug);
   };
 
   return (
@@ -28,25 +28,20 @@ const Diy: FC<Props> = ({ carList, carBrands }) => {
       <FlexBox>
         <Hidden down={768} mr="1.75rem">
           <Box shadow={6} borderRadius={10} padding="1.25rem" bg="white">
-            {carBrands.map((brand) => (
+            {diyBrands.map((categories) => (
               <StyledProductCategory
                 mb="0.75rem"
-                id={brand.id}
-                key={brand.id}
-                title={brand.name}
-                onClick={handleCategoryClick(brand)}
-                shadow={selected === brand.slug ? 4 : null}
-                bg={selected === brand.slug ? "white" : "gray.100"}
+                id={categories.id}
+                key={categories.id}
+                title={categories.name}
+                onClick={handleCategoryClick(categories)}
+                shadow={selected === categories.slug ? 4 : null}
+                bg={selected === categories.slug ? "white" : "gray.100"}
               >
-                <NextImage
-                  width={25}
-                  height={25}
-                  alt="apple"
-                  layout="fixed"
-                  objectFit="contain"
-                  src={brand.image}
-                />
-                <span className="product-category-title">{brand.name}</span>
+                <Icon size="20px" defaultcolor="auto">
+                          {categories.icon}
+                </Icon>
+                <span className="product-category-title">{categories.name}</span>
               </StyledProductCategory>
             ))}
 
@@ -57,18 +52,19 @@ const Diy: FC<Props> = ({ carList, carBrands }) => {
               shadow={selected.match("all") ? 4 : null}
               bg={selected.match("all") ? "white" : "gray.100"}
             >
-              <span id="all" className="product-category-title show-all">
-                ดูสินค้าทั้งหมด
+              <Icon size="20px" defaultcolor="auto">tools</Icon>
+              <span id="all" className="product-category-title">
+                จัดสเป็กคอมเอง
               </span>
             </StyledProductCategory>
           </Box>
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title="DIY" seeMoreLink="#" />
+          <CategorySectionHeader title="สินค้า DIY" seeMoreLink="#" />
 
           <Grid container spacing={6}>
-            {carList.map((item, ind) => (
+            {diyList.map((item, ind) => (
               <Grid item lg={3} sm={6} xs={12} key={ind}>
                 <ProductCard1
                   hoverEffect
@@ -90,4 +86,4 @@ const Diy: FC<Props> = ({ carList, carBrands }) => {
   );
 };
 
-export default Diy;
+export default Diy2;

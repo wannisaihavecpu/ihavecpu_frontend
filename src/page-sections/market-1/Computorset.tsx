@@ -23,7 +23,7 @@ interface Props {
 
 // ======================================================
 
-const Section7: FC<Props> = ({ category }) => {
+const Computorset: FC<Props> = ({ category }) => {
   const [list, setList] = useState<any[]>([]);
   const [selected, setSelected] = useState("");
   const [type, setType] = useState<"pro" | "base">("pro");
@@ -214,4 +214,4 @@ const Section7: FC<Props> = ({ category }) => {
   );
 };
 
-export default Section7;
+export default Computorset;

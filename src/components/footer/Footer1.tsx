@@ -8,6 +8,7 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import AppStore from "@component/AppStore";
 import Container from "@component/Container";
+
 import Typography, { Paragraph } from "@component/Typography";
 import { getTheme } from "@utils/utils";
 
@@ -34,7 +35,7 @@ const Footer1: FC = () => {
               <Grid item lg={4} md={6} sm={6} xs={12}>
                 <Link href="/">
                   <a>
-                    <Image alt="logo" mb="1.25rem" src="/assets/images/logo_light.svg" height="70px" />
+                    <Image alt="logo" mb="1.25rem" src="/assets/images/logo_light.svg" height="50px" />
                   </a>
                 </Link>
 
@@ -142,7 +143,7 @@ const iconList = [
   { iconName: "facebook", url: "https://www.facebook.com/CPUCore2Duo" },
   { iconName: "line", url: "https://page.line.me/ihavecpu?openQrModal=true" },
   { iconName: "youtube", url: "https://www.youtube.com/@iHAVECPU_" },
-  // { iconName: "google", url: "https://page.line.me/ihavecpu?openQrModal=true" },
+  { iconName: "tiktok", url: "https://page.line.me/ihavecpu?openQrModal=true" },
   { iconName: "instagram", url: "https://www.instagram.com/ihavecpu_official/" },
 ];
 

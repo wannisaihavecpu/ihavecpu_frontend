@@ -28,7 +28,7 @@ export const categories = [
     id: "51cc79e6-c0d8-40e6-b9a5-a3a0c5931242",
     name: "Toys",
     icon: null,
-    image: "/assets/images/categories/cat-1.jpg",
+    image: "/assets/images/categories/cat-1.png",
     slug: "toys",
     parent: [],
     description: null,

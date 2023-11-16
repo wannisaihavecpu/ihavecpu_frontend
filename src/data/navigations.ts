@@ -1,19 +1,19 @@
 const navigations = [
   {
-    icon: "arrange-computer",
+    icon: "tools",
     title: "จัดสเป็กคอม",
     href: "/product/search/music",
     menuComponent: "MegaMenu1",
   },
   {
-    //icon: "_pc-display-horizontal",
-    icon: "_pc-display",
+    //icon: "pc-display-horizontal",
+    icon: "pc-display",
     title: "คอมพิวเตอร์เซ็ค",
     href: "/product/search/bikes",
     menuComponent: "MegaMenu2",
     menuData: [
       {
-        icon: "_pc-display",
+        icon: "pc-display",
         title: "เซ็ต โปรโมชั่น",
         href: "/product/search/fashion",
         megaMenu: "MegaMenu1",
@@ -127,7 +127,7 @@ const navigations = [
         },
       },
       {
-        icon: "_pc-display",
+        icon: "pc-display",
         title: "เซ็ต ประจำเดือน",
         href: "/product/search/fashion",
         megaMenu: "MegaMenu1",
@@ -568,13 +568,13 @@ const navigations = [
     },
   },
   {
-    icon: "_gpu-card",
+    icon: "gpu-card",
     title: "การ์ดจอ",
     href: "/product/search/bikes",
     menuComponent: "MegaMenu2",
     menuData: [
       {
-        icon: "_gpu-card",
+        icon: "gpu-card",
         title: "AMD",
         href: "/product/search/fashion",
         megaMenu: "MegaMenu1",
@@ -688,13 +688,13 @@ const navigations = [
         },
       },
       {
-        icon: "_gpu-card",
+        icon: "gpu-card",
         title: "NVidia",
         href: "/product/search/electronics",
         megaMenu: 2,
       },
       {
-        icon: "_gpu-card",
+        icon: "gpu-card",
         title: "Intel",
         href: "/product/search/home&garden",
         megaMenu: 3,
@@ -708,7 +708,7 @@ const navigations = [
     ],
   },
   {
-    icon: "_memory",
+    icon: "memory",
     title: "แรม",
     href: "/product/search/home&garden",
     menuComponent: "MegaMenu1",
@@ -949,19 +949,19 @@ const navigations = [
     ],
   },
   {
-    icon: "_safe2",
+    icon: "safe2",
     title: "พาวเวอร์ซัพพลาย",
     href: "/product/search/music",
     menuComponent: "MegaMenu1",
   },
   {
-    icon: "_fan",
+    icon: "fan",
     title: "ชุดระบายความร้อน",
     href: "/product/search/automotive",
     menuComponent: "MegaMenu1",
   },
   {
-    icon: "_laptop",
+    icon: "laptop2",
     title: "โน๊ตบุ๊ก",
     href: "/product/search/health&beauty",
     menuComponent: "MegaMenu1",
@@ -973,14 +973,14 @@ const navigations = [
     menuComponent: "MegaMenu1",
   },
   {
-    icon: "_keyboard",
+    icon: "keyboard",
     title: "คีย์บอร์ด",
     href: "/product/search/baby-toys",
     menuComponent: "MegaMenu1",
   },
   {
-    icon: "_display",
-    title: "จอ คอมพิวเตอร์",
+    icon: "display",
+    title: "จอมอนิเตอร์",
     href: "/product/search/groceries",
     menuComponent: "MegaMenu1",
   },

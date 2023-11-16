@@ -27,7 +27,7 @@ const Accessories: FC = () => {
 
   useEffect(() => {
     axios
-      .get("/api/market-2/products", { params: { type: selected } })
+      .get("/api/market-1/products", { params: { type: selected } })
       .then(({ data }) => setProducts(data));
   }, [selected]);
 
@@ -36,9 +36,10 @@ const Accessories: FC = () => {
 
   const buttons = [
     { id: 1, title: "อุปกรณ์สำรองไฟ", type: "new" },
-    { id: 2, title: "ซาวด์การ์ด", type: "best" },
+    { id: 2, title: "ซาวด์การ์ด", type: "optics" },
     { id: 3, title: "อะแดปเตอร์และสาย", type: "popular" },
-    { id: 4, title: "ขายึดจอมอนิเตอร์", type: "view" },
+    { id: 4, title: "ลำโพง", type: "speeker" },
+    { id: 5, title: "ขายึดจอมอนิเตอร์", type: "view" },
   ];
 
   return (
@@ -62,8 +63,6 @@ const Accessories: FC = () => {
           ))}
         </ButtonsWrapper>
       </FlexBox>
-
-      {/* <CarouselWrapper color="dark"> */}
         <Carousel totalSlides={products.length} visibleSlides={visibleSlides}>
           {products.map((product) => (
             <ProductCard19
@@ -78,7 +77,6 @@ const Accessories: FC = () => {
             />
           ))}
         </Carousel>
-      {/* </CarouselWrapper> */}
     </Container>
   );
 };
