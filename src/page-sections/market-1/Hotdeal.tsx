@@ -56,136 +56,156 @@ const Hotdeal: FC<Props> = ({ list }) => {
 
   return (
     <Container>
-    <Box mb="3.75rem">
-      <SectionWrapper>
-        <Carousel
-          showDots={true}
-          visibleSlides={1}
-          showArrow={false}
-          dotClass="dot-group"
-          totalSlides={totalSlides}
-          currentSlide={currentSlide}
-        >
-          {list.map((item) => (
-            <Box py="0.35rem" key={item.id}>
-              <Card p="1rem" bg="secondary.100" overflow="hidden" position="relative">
-                <Grid container alignItems="center" spacing={6}>
-                  <Grid item md={6} xs={12}>
-                    <Image mx="auto" maxWidth="100%" src={item.imgUrl} />
+      <Box mb="3.75rem">
+        <SectionWrapper>
+          <Carousel
+            showDots={true}
+            visibleSlides={1}
+            showArrow={false}
+            dotClass="dot-group"
+            totalSlides={totalSlides}
+            currentSlide={currentSlide}
+          >
+            {list.map((item) => (
+              <Box py="0.35rem" key={item.id}>
+                <Card
+                  p="1rem"
+                  bg="secondary.100"
+                  overflow="hidden"
+                  position="relative"
+                >
+                  <Grid container alignItems="center" spacing={6}>
+                    <Grid item md={6} xs={12}>
+                      <Image
+                        mx="auto"
+                        maxWidth="100%"
+                        height={300}
+                        src="https://ihcupload.s3.ap-southeast-1.amazonaws.com/img/product/product12999_800.jpg"
+                      />
+                    </Grid>
+
+                    <Grid item md={6} xs={12}>
+                      <FlexBox mt="3rem" mb="1.125rem">
+                        <IconButton
+                          mr="0.5rem"
+                          color="primary"
+                          variant="contained"
+                          disabled={currentSlide === 0}
+                          onClick={handleSlideChange(currentSlide - 1)}
+                        >
+                          <Icon variant="small" defaultcolor="currentColor">
+                            arrow-left
+                          </Icon>
+                        </IconButton>
+
+                        <IconButton
+                          color="primary"
+                          variant="contained"
+                          disabled={currentSlide === totalSlides - 1}
+                          onClick={handleSlideChange(currentSlide + 1)}
+                        >
+                          <Icon variant="small" defaultcolor="currentColor">
+                            arrow-right
+                          </Icon>
+                        </IconButton>
+                      </FlexBox>
+
+                      <H3 mb="0.875rem" color="ihavecpu.main" lineHeight="1.3">
+                        Flash Deals !
+                      </H3>
+
+                      <H3 mb="0.5rem" fontSize="25px" lineHeight="1.2">
+                        {item.productName}
+                      </H3>
+
+                      <Paragraph mb="2rem" color="text.muted" maxWidth="400px">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Quis lobortis consequat eu, quam etiam at quis ut
+                        convallis.
+                      </Paragraph>
+
+                      <H4 mb="0.5rem" lineHeight="1.3" fontWeight="600">
+                        Fresh Deal Everyday, Get It Now!
+                      </H4>
+
+                      <FlexBox flexWrap="wrap" mb="2rem">
+                        <FlexBox alignItems="flex-end" mr="1.75rem">
+                          <H3 lineHeight="1.3" mr="0.25rem">
+                            25
+                          </H3>
+
+                          <SemiSpan fontWeight="600" lineHeight="1.7">
+                            วัน
+                          </SemiSpan>
+                        </FlexBox>
+
+                        <FlexBox alignItems="flex-end" mr="1.75rem">
+                          <H3 lineHeight="1.3" mr="0.25rem">
+                            22
+                          </H3>
+
+                          <SemiSpan fontWeight="600" lineHeight="1.7">
+                            ชั่วโมง
+                          </SemiSpan>
+                        </FlexBox>
+
+                        <FlexBox alignItems="flex-end" mr="1.75rem">
+                          <H3 lineHeight="1.3" mr="0.25rem">
+                            39
+                          </H3>
+
+                          <SemiSpan fontWeight="600" lineHeight="1.7">
+                            นาที
+                          </SemiSpan>
+                        </FlexBox>
+
+                        <FlexBox alignItems="flex-end">
+                          <H3 lineHeight="1.3" mr="0.25rem">
+                            42
+                          </H3>
+
+                          <SemiSpan fontWeight="600" lineHeight="1.7">
+                            วินาที
+                          </SemiSpan>
+                        </FlexBox>
+                      </FlexBox>
+
+                      <FlexBox alignItems="center" mb="3rem">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          borderRadius={8}
+                          mr="0.5rem"
+                        >
+                          ซื้อเลย
+                        </Button>
+
+                        <FlexBox
+                          size="40px"
+                          color="white"
+                          bg="gray.500"
+                          borderRadius={8}
+                          cursor="pointer"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          <Icon defaultcolor="currentColor">heart_filled</Icon>
+                        </FlexBox>
+                      </FlexBox>
+                    </Grid>
                   </Grid>
 
-                  <Grid item md={6} xs={12}>
-                    <FlexBox mt="3rem" mb="1.125rem">
-                      <IconButton
-                        mr="0.5rem"
-                        color="primary"
-                        variant="contained"
-                        disabled={currentSlide === 0}
-                        onClick={handleSlideChange(currentSlide - 1)}
-                      >
-                        <Icon variant="small" defaultcolor="currentColor">
-                          arrow-left
-                        </Icon>
-                      </IconButton>
-
-                      <IconButton
-                        color="primary"
-                        variant="contained"
-                        disabled={currentSlide === totalSlides - 1}
-                        onClick={handleSlideChange(currentSlide + 1)}
-                      >
-                        <Icon variant="small" defaultcolor="currentColor">
-                          arrow-right
-                        </Icon>
-                      </IconButton>
-                    </FlexBox>
-
-                    <H3 mb="0.875rem" color="primary.main" lineHeight="1.3">
-                      Deal Of The Day
-                    </H3>
-
-                    <H3 mb="0.5rem" fontSize="25px" lineHeight="1.2">
-                      {item.productName}
-                    </H3>
-
-                    <Paragraph mb="2rem" color="text.muted" maxWidth="400px">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis lobortis
-                      consequat eu, quam etiam at quis ut convallis.
-                    </Paragraph>
-
-                    <H4 mb="0.5rem" lineHeight="1.3" fontWeight="600">
-                      Fresh Deal Everyday, Get It Now!
-                    </H4>
-
-                    <FlexBox flexWrap="wrap" mb="2rem">
-                      <FlexBox alignItems="flex-end" mr="1.75rem">
-                        <H3 lineHeight="1.3" mr="0.25rem">
-                          25
-                        </H3>
-
-                        <SemiSpan fontWeight="600" lineHeight="1.7">
-                          วัน
-                        </SemiSpan>
-                      </FlexBox>
-
-                      <FlexBox alignItems="flex-end" mr="1.75rem">
-                        <H3 lineHeight="1.3" mr="0.25rem">
-                          22
-                        </H3>
-
-                        <SemiSpan fontWeight="600" lineHeight="1.7">
-                          ชั่วโมง
-                        </SemiSpan>
-                      </FlexBox>
-
-                      <FlexBox alignItems="flex-end" mr="1.75rem">
-                        <H3 lineHeight="1.3" mr="0.25rem">
-                          39
-                        </H3>
-
-                        <SemiSpan fontWeight="600" lineHeight="1.7">
-                          นาที
-                        </SemiSpan>
-                      </FlexBox>
-
-                      <FlexBox alignItems="flex-end">
-                        <H3 lineHeight="1.3" mr="0.25rem">
-                          42
-                        </H3>
-
-                        <SemiSpan fontWeight="600" lineHeight="1.7">
-                          วินาที
-                        </SemiSpan>
-                      </FlexBox>
-                    </FlexBox>
-
-                    <FlexBox alignItems="center" mb="3rem">
-                      <Button color="primary" variant="contained" borderRadius={8} mr="0.5rem">
-                        ซื้อเลย
-                      </Button>
-
-                      <FlexBox
-                        size="40px"
-                        color="white"
-                        bg="gray.500"
-                        borderRadius={8}
-                        cursor="pointer"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Icon defaultcolor="currentColor">heart_filled</Icon>
-                      </FlexBox>
-                    </FlexBox>
-                  </Grid>
-                </Grid>
-
-                <Image className="hot" maxWidth="100px" src="/assets/images/badges/hot.svg" />
-              </Card>
-            </Box>
-          ))}
-        </Carousel>
-      </SectionWrapper>
-    </Box>
+                  <Image
+                    className="hot"
+                    maxWidth="100px"
+                    src="/assets/images/badges/hot.svg"
+                  />
+                </Card>
+              </Box>
+            ))}
+          </Carousel>
+        </SectionWrapper>
+      </Box>
     </Container>
   );
 };

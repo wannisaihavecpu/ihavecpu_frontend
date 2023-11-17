@@ -11,6 +11,7 @@ import menuDropdown from "@models/menuDropdown.model";
 import banner from "@models/banner.model";
 import setBrand from "@models/setBrand.model";
 import listProduct from "@models/listProduct.model";
+import allBlog from "@models/allBlog.model";
 
 const getTopRatedProduct = async (): Promise<Product[]> => {
   const response = await axios.get("/api/market-1/toprated-product");
@@ -225,6 +226,23 @@ const getNewProduct = async (): Promise<listProduct[]> => {
     return [];
   }
 };
+const getNewBlog = async (): Promise<allBlog[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/blog/all?offset=0&limit3`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching New Blog:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching New Blog:", error.message);
+    return [];
+  }
+};
 const getBanner = async (): Promise<banner[]> => {
   try {
     const response = await axios.get(
@@ -275,5 +293,6 @@ export default {
   getCategoryDIY,
   getCategoryBrandNoteBook,
   getNewProduct,
+  getNewBlog,
   getBanner,
 };

@@ -36,6 +36,7 @@ import categoryDIYHome from "@models/categoryDIYHome.model";
 import setBrand from "@models/setBrand.model";
 import listProduct from "@models/listProduct.model";
 import Banners from "@models/Banners.model";
+import allBlog from "@models/allBlog.model";
 
 // =================================================================
 type Props = {
@@ -72,6 +73,7 @@ type Props = {
   categorySetBrandNotebook: setBrand[];
   newProduct: listProduct[];
   bannerHome: banner[];
+  newBlog: allBlog[];
 };
 // =================================================================
 
@@ -139,7 +141,7 @@ const Home = (props: Props) => {
       <Banner1box />
 
       {/* บทความ */}
-      <Blogs blogs={props.blogs} />
+      <Blogs blogs={props.newBlog} />
 
       {/* SERVICES AREA */}
       <Services id={FIXED_ID} services={props.serviceList} />
@@ -182,6 +184,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const categorySetDIY = await api.getCategoryDIY();
   const categorySetBrandNotebook = await api.getCategoryBrandNoteBook();
   const newProduct = await api.getNewProduct();
+  const newBlog = await api.getNewBlog();
   const bannerHome = await api.getBanner();
   return {
     props: {
@@ -215,6 +218,7 @@ export const getStaticProps: GetStaticProps = async () => {
       categorySetDIY,
       categorySetBrandNotebook,
       newProduct,
+      newBlog,
       bannerHome,
     },
   };

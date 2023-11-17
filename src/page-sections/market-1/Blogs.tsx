@@ -10,7 +10,7 @@ import NavLink from "@component/nav-link";
 import Container from "@component/Container";
 import { H2, H4, Paragraph } from "@component/Typography";
 import { theme } from "@utils/theme";
-import Blog from "@models/blog.model";
+import allBlog from "@models/allBlog.model";
 
 // styled components
 const ImageBox = styled(Box)({
@@ -54,7 +54,7 @@ const StyledLink = styled(NavLink)({
 });
 
 // ======================================================================
-type BlogProps = { blogs: Blog[] };
+type BlogProps = { blogs: allBlog[] };
 // ======================================================================
 
 const Blogs: FC<BlogProps> = ({ blogs }) => {
@@ -66,8 +66,14 @@ const Blogs: FC<BlogProps> = ({ blogs }) => {
 
       <Grid container spacing={5}>
         {blogs.map((item) => (
-          <Grid item md={4} xs={12} key={item.id}>
-            <Card style={{ borderRadius: 10, boxShadow: theme.shadows[3], padding: ".8rem" }}>
+          <Grid item md={4} xs={12} key={item.article_id}>
+            <Card
+              style={{
+                borderRadius: 10,
+                boxShadow: theme.shadows[3],
+                padding: ".8rem",
+              }}
+            >
               <ImageBox p={2} maxHeight={220}>
                 <Image
                   width={580}
@@ -75,12 +81,16 @@ const Blogs: FC<BlogProps> = ({ blogs }) => {
                   alt="blog-1"
                   objectFit="cover"
                   layout="responsive"
-                  src={item.thumbnail}
+                  src={item.article_img}
                 />
 
                 <DateBox>
-                  <Paragraph width="min-content" lineHeight={1} fontWeight={600}>
-                    {item.createdAt}
+                  <Paragraph
+                    width="min-content"
+                    lineHeight={1}
+                    fontWeight={600}
+                  >
+                    {item.create_date_th}
                   </Paragraph>
                 </DateBox>
               </ImageBox>
@@ -88,12 +98,12 @@ const Blogs: FC<BlogProps> = ({ blogs }) => {
               <Box p={0} pt={3}>
                 <Link href="#">
                   <a>
-                    <H4 fontWeight={700}>{item.title}</H4>
+                    <H4 fontWeight={700}>{item.article_name_th}</H4>
                   </a>
                 </Link>
 
                 <Paragraph mt={0.5} mb={3}>
-                  {item.description}
+                  {item.article_sdesc_th}
                 </Paragraph>
 
                 <StyledLink href="#">อ่านต่อทั้งหมด</StyledLink>
