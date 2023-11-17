@@ -139,6 +139,7 @@ export const CouponStyle = styled.div<CouponProps>`
     font-size: 15px;
     font-weight: thin;
     color: #d4001a;
+    text-wrap: nowrap;
   }
   .couponPrice {
     font-size: 15px;

@@ -7,6 +7,7 @@ export interface ColorCircleProps extends BorderProps, ColorProps {
   size?: number;
   children?: any;
   [key: string]: any;
+  disabled?: boolean;
 }
 
 const ColorCircle: FC<ColorCircleProps> = ({

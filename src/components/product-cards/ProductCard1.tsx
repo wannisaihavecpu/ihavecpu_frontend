@@ -1,4 +1,4 @@
-// import Link from "next/link";
+import Link from "next/link";
 // import Image from "next/image";
 import { FC, Fragment, useCallback, useState } from "react";
 import styled from "styled-components";
@@ -182,9 +182,9 @@ const ProductCard1: FC<ProductCard1Props> = ({
             </Icon>
           </FlexBox>
 
-          {/* <Link href={`/product/${slug}`}> */}
-          <a>
-            {/* <Image
+          <Link href={`/product/${id}/${slug}`}>
+            <a>
+              {/* <Image
               alt={title}
               width={100}
               src={imgUrl}
@@ -193,15 +193,15 @@ const ProductCard1: FC<ProductCard1Props> = ({
               layout="responsive"
               priority={true}
             /> */}
-            <img
-              alt={title}
-              width={100}
-              src={imgUrl}
-              height={100}
-              style={{ objectFit: "cover", width: "100%", height: "100%" }}
-            />
-          </a>
-          {/* </Link> */}
+              <img
+                alt={title}
+                width={100}
+                src={imgUrl}
+                height={100}
+                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+              />
+            </a>
+          </Link>
         </div>
 
         <div className="details">
@@ -278,7 +278,11 @@ const ProductCard1: FC<ProductCard1Props> = ({
 
               {!!cartItem?.qty && (
                 <Fragment>
-                  <SemiSpan color="text.ihavecpu" fontWeight="600">
+                  <SemiSpan
+                    color="text.ihavecpu"
+                    fontSize="13px"
+                    fontWeight="600"
+                  >
                     {cartItem.qty}
                   </SemiSpan>
 

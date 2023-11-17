@@ -4,18 +4,15 @@ import { useRouter } from "next/router";
 import Box from "@component/Box";
 import Image from "@component/Image";
 import Avatar from "@component/avatar";
-import ColorCircle from "@component/color";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import { H1, H3, H6, SemiSpan, Small, Span } from "@component/Typography";
 import { useAppContext } from "@context/AppContext";
-import { currency } from "@utils/utils";
 import { ShowStock } from "@component/products/ShowStock";
 import SectionVoucher from "@component/SectionVoucher";
 import { CarouselVoucher } from "@component/carousel";
-import { ProductCard20 } from "@component/product-cards";
 import ModalCoupon from "@component/products/ModalCoupon";
 import ChoiceDetails from "@component/products/ChoiceDetails";
 import Divider from "@component/Divider";
@@ -26,50 +23,82 @@ import FlashSaleBar from "@component/flashsale/FlashSaleBar";
 import { notify } from "@component/toast";
 import "react-toastify/dist/ReactToastify.css";
 import CompareNotification from "@component/compare/CompareNotification";
+import productView from "@models/productView.model";
+import { CarouselViewProduct } from "@component/carousel";
+import PriceFormat from "@component/PriceFormat";
+import Coupon from "./Coupon";
+import listCouponProduct from "@models/listCouponProduct.model";
 
 // ========================================
 type ProductIntroProps = {
-  price: number;
-  title: string;
-  images: string[];
-  id: string | number;
-  category_id: number;
+  product: productView;
+  couponList: listCouponProduct[];
 };
 // ========================================
 
-const ProductIntro: FC<ProductIntroProps> = ({
-  images,
-  title,
-  price,
-  id,
-  category_id,
-}) => {
+const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   const router = useRouter();
   const { state, dispatch } = useAppContext();
   const base = `${process.env.NEXT_PUBLIC_BASE_PATH}`;
   const links = base + router.asPath;
 
+  // image selected and hover
   const [selectedImage, setSelectedImage] = useState(0);
-  const handleImageClick = (ind: number) => () => setSelectedImage(ind);
+  const [hoveredImage, setHoveredImage] = useState(null);
+  const handleImageClick = (ind: number) => () => {
+    setSelectedImage(ind);
+    setHoveredImage(null);
+  };
+  const handleImageHover = (ind: number) => () => {
+    if (selectedImage !== ind && hoveredImage !== ind) {
+      setHoveredImage(ind);
+    }
+  };
+  const handleImageLeave = () => {
+    setHoveredImage(null);
+  };
 
   const routerId = router.query.id as string;
-  const cartItem = state.cart.find(
-    (item) => item.id === id || item.id === routerId
-  );
+
   const [open, setOpen] = useState(false);
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
+  // // Choose Color
+  // const [selectedColor, setSelectedColor] = useState<string>("204");
+  // const handleColorClick = (color: string) => {
+  //   setSelectedColor(color);
+  // };
 
-  // Choose Color
-  const [selectedColor, setSelectedColor] = useState<string>("204");
-  const handleColorClick = (color: string) => {
-    setSelectedColor(color);
-  };
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >({});
+  const [availableStock, setAvailableStock] = useState<number | null>(null);
 
-  // Choose Button
-  const [selectedSwitch, setSelectedSwitch] = useState(null);
-  const handleSwitchClick = (color) => {
-    setSelectedSwitch(color);
+  const handleOptionClick = (optionName: string, value: string) => {
+    // check available stock based on selected options
+    const stockEntry = product.stock.find((entry) =>
+      Object.entries({ ...selectedOptions, [optionName]: value }).every(
+        ([val]) => entry.choose.includes(val)
+      )
+    );
+
+    // set available stock or null if not found
+    setAvailableStock(stockEntry ? stockEntry.stock : null);
+
+    // update state  if stock is > 0
+    setSelectedOptions((prevOptions) => {
+      return {
+        ...prevOptions,
+        [optionName]: value,
+      };
+    });
   };
+  // console.log("Selected Options:", selectedOptions);
+
+  // // Choose Button
+  // const [selectedSwitch, setSelectedSwitch] = useState(null);
+  // const handleSwitchClick = (color) => {
+  //   setSelectedSwitch(color);
+  // };
   // Wishlist
   const [isInWishlist, setIsInWishlist] = useState(false);
   const handleWishlistClick = () => {
@@ -83,8 +112,10 @@ const ProductIntro: FC<ProductIntroProps> = ({
   };
   // Compare
   const [compareList, setCompareList] = useState<
-    { id: string; category_id: number }[]
+    { id: number; category_id: number }[]
   >([]);
+
+  // console.log("compareList", compareList);
   const maxCompareProducts = 4;
   useEffect(() => {
     const storedCompareList = localStorage.getItem("compareList");
@@ -94,12 +125,12 @@ const ProductIntro: FC<ProductIntroProps> = ({
   }, []);
 
   const handleCompareClick = () => {
-    const productIdString = id.toString();
-    const productCategoryId = category_id;
+    const productIdString = product.product_id;
+    const productCategoryId = product.cat_id;
 
     if (
       compareList.length === 0 ||
-      compareList[0].category_id === productCategoryId
+      compareList[0].category_id.toString() === productCategoryId
     ) {
       if (compareList.some((product) => product.id === productIdString)) {
         notify("error", "removed from compare");
@@ -116,7 +147,7 @@ const ProductIntro: FC<ProductIntroProps> = ({
           // add product to the comparison list
           const updatedCompareList = [
             ...compareList,
-            { id: productIdString, category_id: productCategoryId },
+            { id: productIdString, category_id: parseInt(productCategoryId) },
           ];
 
           // store the updated compareList in local storage
@@ -130,47 +161,159 @@ const ProductIntro: FC<ProductIntroProps> = ({
         }
       }
     } else {
-      // Clear the compare list and add the current product
+      // clear the compare list and add the current product
       notify("success", "added to compare");
       const updatedCompareList = [
-        { id: productIdString, category_id: productCategoryId },
+        { id: productIdString, category_id: parseInt(productCategoryId) },
       ];
       localStorage.setItem("compareList", JSON.stringify(updatedCompareList));
       setCompareList(updatedCompareList);
     }
   };
 
-  // Copy Link
+  // copy Link
   const handleCopyLinkClick = () => {
     navigator.clipboard.writeText(links);
     notify("success", "Copy Link!");
   };
 
-  // Keep Coupon
-  const [isInCoupon, setisInCoupon] = useState(false);
-  const handleInCoupleClick = () => {
-    setisInCoupon(true);
+  // keep Coupon
+  // const [isInCoupon, setisInCoupon] = useState(false);
+  // const handleInCoupleClick = () => {
+  //   setisInCoupon(true);
+  // };
+
+  const mapSelectedOptionsToOptionId = (
+    selectedOptions: Record<string, string>,
+    stock: { option_id?: number; stock?: number; choose?: string[] }[]
+  ): number | null => {
+    const selectedOptionsArray = Object.entries(selectedOptions);
+
+    const matchingEntry = stock.find((entry) =>
+      selectedOptionsArray.every(([val]) => entry.choose?.includes(val))
+    );
+
+    return matchingEntry ? matchingEntry.option_id || null : null;
   };
 
+  const cartItem = state.cart.find(
+    (item) =>
+      (item.id === product.product_id || item.id === routerId) &&
+      item.optionId ===
+        mapSelectedOptionsToOptionId(selectedOptions, product.stock)
+  );
+
+  const [quantity, setQuantity] = useState<number>(1);
+
   // Cart Amount
-  const handleCartAmountChange = (amount: number) => () => {
-    if (!isNaN(amount)) {
-      if (amount > 5) {
-        notify("error", "Out of Stock");
-        return;
+  const handleCartAmountChange = (newAmount: number) => {
+    newAmount = Math.max(newAmount, 1);
+    const availableStock = getAvailableStock(selectedOptions);
+    // check all required options are selected
+    const isAnyOptionRequired = product.option.some(
+      (option) => option.sub.length > 0
+    );
+
+    if (isAnyOptionRequired) {
+      const isAllOptionsSelected = product.option.every((option) =>
+        selectedOptions.hasOwnProperty(option.m_option_id)
+      );
+
+      if (!isAllOptionsSelected) {
+        notify("error", "กรุณาเลือกตัวเลือกสินค้า");
+      } else {
+        if (!isNaN(newAmount) && newAmount <= availableStock) {
+          setQuantity(newAmount);
+        } else {
+          notify("error", "สินค้าหมดคลัง");
+        }
+      }
+    }
+  };
+  const handleAddToCartClick = () => {
+    const availableStock = getAvailableStock(selectedOptions);
+    const optionId = mapSelectedOptionsToOptionId(
+      selectedOptions,
+      product.stock
+    );
+
+    if (cartItem?.qty >= availableStock) {
+      notify("error", "สินค้าหมดคลัง");
+    } else {
+      // check all required options are selected
+      const isAnyOptionRequired = product.option.some(
+        (option) => option.sub.length > 0
+      );
+
+      if (isAnyOptionRequired) {
+        const isAllOptionsSelected = product.option.every((option) =>
+          selectedOptions.hasOwnProperty(option.m_option_id)
+        );
+        if (!isAllOptionsSelected) {
+          notify("error", "กรุณาเลือกตัวเลือกสินค้า");
+          return;
+        }
       }
 
+      notify("success", "เพิ่มสินค้าลงตะกร้า");
       dispatch({
         type: "CHANGE_CART_AMOUNT",
         payload: {
-          price,
-          qty: amount,
-          name: title,
-          imgUrl: images[0],
-          id: id || routerId,
+          optionId: optionId,
+          price: parseInt(product.market_price),
+          qty: (cartItem?.qty || 0) + quantity,
+          name: product.name_th,
+          imgUrl: product.picture[0]?.pic_150 || "",
+          id: product.product_id || routerId,
         },
       });
     }
+
+    // reset quantity and selectedOption after adding to cart
+    setSelectedOptions({});
+    setQuantity(1);
+  };
+  const handleBuyNowClick = () => {
+    const isAnyOptionRequired = product.option.some(
+      (option) => option.sub.length > 0
+    );
+    const optionId = mapSelectedOptionsToOptionId(
+      selectedOptions,
+      product.stock
+    );
+
+    if (isAnyOptionRequired) {
+      const isAllOptionsSelected = product.option.every((option) =>
+        selectedOptions.hasOwnProperty(option.m_option_id)
+      );
+      if (!isAllOptionsSelected) {
+        notify("error", "กรุณาเลือกตัวเลือกสินค้า");
+        return;
+      } else {
+        router.push({
+          pathname: "/checkout",
+          query: {
+            product: product?.product_id || "",
+            option: optionId || "",
+            qty: quantity,
+          },
+        });
+      }
+    }
+    setSelectedOptions({});
+    setQuantity(1);
+  };
+  // console.log("state cart", state.cart);
+  const getAvailableStock = (
+    selectedOptions: Record<string, string>
+  ): number => {
+    const selectedChoices = Object.entries(selectedOptions);
+
+    const matchingEntry = product.stock.find((entry) =>
+      selectedChoices.every(([val]) => entry.choose.includes(val))
+    );
+
+    return matchingEntry ? matchingEntry.stock : 0;
   };
 
   // Get Color
@@ -189,11 +332,133 @@ const ProductIntro: FC<ProductIntroProps> = ({
     }
   };
 
-  // Style for IconButton (Social Media/Wishlist/Compare)
+  const isCombinationInStock = (options: Record<string, string>): boolean => {
+    const selectedChoices = Object.entries(options);
+
+    // check any stock matching the selected choice
+    return product.stock.some(
+      (entry) =>
+        selectedChoices.every(([val]) => entry.choose.includes(val)) &&
+        entry.stock > 0
+    );
+  };
+
+  const getAllOptionCombinations = (options) => {
+    const result = [[]];
+
+    options.forEach((option) => {
+      const currentCombinations = [];
+
+      result.forEach((combination) => {
+        option.sub.forEach((subItem) => {
+          currentCombinations.push([
+            ...combination,
+            [option.m_option_id, subItem.sub_id],
+          ]);
+        });
+      });
+
+      result.push(...currentCombinations);
+    });
+
+    return result.slice(1); // Remove the empty combination at the beginning
+  };
+
+  const isProductInStock = () => {
+    const allOptionCombinations = getAllOptionCombinations(product.option);
+
+    for (const optionCombination of allOptionCombinations) {
+      const isCombinationInStock = product.stock.some((entry) => {
+        const includesAll = entry.choose.every(() =>
+          optionCombination.some(([subId]) =>
+            entry.choose.includes(subId.toString())
+          )
+        );
+
+        if (includesAll && entry.stock > 0) {
+          return true;
+        }
+
+        return false;
+      });
+
+      if (isCombinationInStock) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // style for IconButton (Social Media/Wishlist/Compare)
   const iconButtonStyle = {
     borderColor: "#e6e7e8",
     border: "1px solid #e6e7e8",
   };
+  // check Stock
+  const isProductAvailable = isProductInStock();
+  const status = isProductAvailable ? "IN STOCK" : "OUT OF STOCK";
+
+  const [myCoupon, setMyCoupon] = useState([]);
+
+  const handleCollectCoupon = async (couponCode) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PATH}/coupons/collect`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            userid: "983",
+          },
+          body: JSON.stringify({
+            code: couponCode,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (data.res_code === "00" && data.res_text === "Success") {
+        notify("success", "เก็บโค้ดนี้แล้ว");
+        fetchMyCouponAvailable();
+      } else if (
+        data.res_code === "01" &&
+        data.res_text === "Already have this coupon"
+      ) {
+        notify("error", "คุณมีคูปองนี้อยู่แล้ว");
+      }
+    } catch (error) {
+      console.error("Error collecting coupon:", error);
+    }
+  };
+  const fetchMyCouponAvailable = () => {
+    const requestBody = {
+      product_id: [product.product_id.toString()],
+    };
+
+    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/coupons/mycouponAvaliable`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        userid: "983",
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.res_code === "00" && Array.isArray(data.res_result)) {
+          setMyCoupon(data.res_result);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  const filteredCoupons = couponList.filter(
+    (coupon) => !myCoupon.some((myCoupon) => myCoupon.code === coupon.code)
+  );
+  useEffect(() => {
+    fetchMyCouponAvailable();
+  }, []);
 
   return (
     <Box overflow="hidden">
@@ -204,58 +469,116 @@ const ProductIntro: FC<ProductIntroProps> = ({
         <Grid item md={4} xs={12} alignItems="center">
           <Box>
             <FlexBox justifyContent="center" mb="50px">
-              <Image
-                width={300}
-                height={300}
-                src={images[selectedImage]}
-                style={{ objectFit: "contain" }}
-              />
-            </FlexBox>
-            <FlexBox overflow="auto">
-              {images.map((url, ind) => (
-                <Box
-                  key={ind}
-                  size={70}
-                  bg="white"
-                  minWidth={70}
-                  display="flex"
-                  cursor="pointer"
-                  border="1px solid"
-                  borderRadius="10px"
-                  alignItems="center"
-                  justifyContent="center"
-                  ml={ind === 0 && "auto"}
-                  mr={ind === images.length - 1 ? "auto" : "10px"}
-                  borderColor={
-                    selectedImage === ind ? "primary.main" : "gray.400"
+              <Box width={300} height={300} borderRadius={20} overflow="hidden">
+                <Image
+                  width={300}
+                  height={300}
+                  src={
+                    hoveredImage !== null
+                      ? product.picture[hoveredImage]?.pic_800
+                      : product.picture[selectedImage]?.pic_800
                   }
-                  onClick={handleImageClick(ind)}
+                  style={{
+                    objectFit: "cover",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </Box>
+            </FlexBox>
+            <FlexBox>
+              {product.picture.length > 5 ? (
+                <CarouselViewProduct
+                  totalSlides={product.picture.length}
+                  visibleSlides={5}
                 >
-                  <Avatar src={url} borderRadius="10px" size={40} />
-                </Box>
-              ))}
+                  {product.picture.map((image, ind) => (
+                    <Box
+                      key={ind}
+                      size={70}
+                      bg="white"
+                      minWidth={70}
+                      display="flex"
+                      cursor="pointer"
+                      border="1px solid"
+                      borderRadius="10px"
+                      alignItems="center"
+                      justifyContent="center"
+                      ml={ind === 0 && "auto"}
+                      mr={ind === product.picture.length - 1 ? "auto" : "10px"}
+                      borderColor={
+                        selectedImage === ind ? "primary.main" : "gray.400"
+                      }
+                      onClick={handleImageClick(ind)}
+                      onMouseEnter={handleImageHover(ind)}
+                      onMouseLeave={handleImageLeave}
+                    >
+                      <Avatar
+                        src={image.pic_150}
+                        borderRadius="10px"
+                        size={40}
+                      />
+                    </Box>
+                  ))}
+                </CarouselViewProduct>
+              ) : (
+                product.picture.map((image, ind) => (
+                  <Box
+                    key={ind}
+                    size={70}
+                    bg="white"
+                    minWidth={70}
+                    display="flex"
+                    cursor="pointer"
+                    border="1px solid"
+                    borderRadius="10px"
+                    alignItems="center"
+                    justifyContent="center"
+                    ml={ind === 0 && "auto"}
+                    mr={ind === product.picture.length - 1 ? "auto" : "10px"}
+                    borderColor={
+                      selectedImage === ind ? "primary.main" : "gray.400"
+                    }
+                    onClick={handleImageClick(ind)}
+                    onMouseEnter={handleImageHover(ind)}
+                    onMouseLeave={handleImageLeave}
+                  >
+                    <Avatar src={image.pic_150} borderRadius="10px" size={40} />
+                  </Box>
+                ))
+              )}
             </FlexBox>
           </Box>
         </Grid>
         {/* PRODUCT DETAILS */}
         <Grid item lg={4.5} md={6} xs={12} alignItems="center">
           <Box mb="15px">
-            <ShowStock p="0.1rem 1rem" bg={`${getColor("Delivered")}.light`}>
-              <Small color={`${getColor("Delivered")}.main`} fontWeight={800}>
-                IN STOCK
+            <ShowStock
+              p="0.1rem 1rem"
+              bg={`${
+                isProductInStock() ? getColor("Delivered") : "error"
+              }.light`}
+            >
+              <Small
+                color={`${
+                  isProductInStock() ? getColor("Delivered") : "error"
+                }.main`}
+                fontWeight={800}
+              >
+                {status}
               </Small>
             </ShowStock>
           </Box>
-          <H3 mb="1rem">{title}</H3>
+          <H3 mb="1rem">{product.name_th}</H3>
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>แบรนด์:</SemiSpan>
-            <SemiSpan ml="8px">Ziaomi</SemiSpan>
+            <SemiSpan ml="8px">{product.brand_name_th}</SemiSpan>
             <SemiSpan ml="8px" mr="8px">
               |
             </SemiSpan>
             <SemiSpan>รหัสสินค้า:</SemiSpan>
-            <SemiSpan ml="8px">SKU-67665</SemiSpan>
+            <SemiSpan ml="8px">{product.product_code}</SemiSpan>
           </FlexBox>
 
           {/* <FlexBox alignItems="center" mb="1rem">
@@ -266,18 +589,25 @@ const ProductIntro: FC<ProductIntroProps> = ({
             <H6>(50)</H6>
           </FlexBox> */}
 
-          <Box mb="24px">
+          <FlexBox mb="24px" alignItems="center">
             <H1 color="ihavecpu.main" mb="4px" lineHeight="1">
-              {currency(price)}
+              <PriceFormat price={parseInt(product.market_price)} />
             </H1>
-          </Box>
+            {parseInt(product.sell_price) > parseInt(product.market_price) && (
+              <H6 ml={2} color="grey" fontWeight={300}>
+                <del>
+                  <PriceFormat price={parseInt(product.sell_price)} />
+                </del>
+              </H6>
+            )}
+          </FlexBox>
           {/* FLASH SALES DEALS */}
           <Box mb="20px">
             <FlashSaleBar dateExpired="2023-10-05T23:59:59"></FlashSaleBar>
           </Box>
 
           {/* COLOR */}
-          <Box mb="10px">
+          {/* <Box mb="10px">
             <Grid item lg={12} md={12} xs={12}>
               <H6 mb="0.8rem">Color : </H6>
               <Grid container>
@@ -299,26 +629,50 @@ const ProductIntro: FC<ProductIntroProps> = ({
                 </FlexBox>
               </Grid>
             </Grid>
-          </Box>
-          {/* SWITCH */}
+          </Box> */}
+          {/* OPTIONS */}
           <Box mb="20px">
             <Grid item lg={12} md={12} xs={12}>
-              <H6 mb="0.8rem">Switch : </H6>
-              <Grid container>
-                {switchList.map((item, ind) => (
-                  <Grid item lg={3} md={3} xs={6} key={item.id}>
-                    <ChoiceDetails
-                      key={ind}
-                      open={open}
-                      title="colors"
-                      product_id={item.id}
-                      choice={item.title}
-                      selected={selectedColor === item.id}
-                      onClick={() => handleColorClick(item.id)}
-                    />
+              {product.option.map((item) => (
+                <Box key={item.m_option_id}>
+                  <H6 mb="0.8rem">{item.m_option_name_th} :</H6>
+                  <Grid container>
+                    {item.sub.map((subItem) => (
+                      <Grid item lg={3} md={3} xs={6} key={subItem.sub_id}>
+                        <ChoiceDetails
+                          key={subItem.sub_id}
+                          open={open}
+                          title={item.m_option_name_th}
+                          product_id={subItem.sub_id.toString()}
+                          choice={subItem.sub_text}
+                          selected={
+                            selectedOptions[item.m_option_id] ===
+                            subItem.sub_id.toString()
+                          }
+                          disabled={
+                            !isCombinationInStock({
+                              ...selectedOptions,
+                              [item.m_option_id]: subItem.sub_id.toString(),
+                            })
+                          }
+                          onClick={() =>
+                            handleOptionClick(
+                              item.m_option_id.toString(),
+                              subItem.sub_id.toString()
+                            )
+                          }
+                        />
+                      </Grid>
+                    ))}
                   </Grid>
-                ))}
-              </Grid>
+                </Box>
+              ))}
+
+              {availableStock !== null && (
+                <Typography variant="body2">
+                  Available Stock: {availableStock}
+                </Typography>
+              )}
             </Grid>
           </Box>
 
@@ -331,14 +685,15 @@ const ProductIntro: FC<ProductIntroProps> = ({
                   size="small"
                   color="ihavecpu"
                   variant="outlined"
-                  onClick={handleCartAmountChange(cartItem?.qty - 1)}
+                  disabled={!isProductInStock()}
+                  onClick={() => handleCartAmountChange(quantity - 1)}
                   style={{ flex: 1 }}
                 >
                   <Icon variant="small">minus</Icon>
                 </Button>
 
                 <H3 fontWeight="600" mx="10px">
-                  {cartItem ? cartItem?.qty.toString().padStart(2, "0") : "00"}
+                  {quantity.toString().padStart(2, "0")}
                 </H3>
 
                 <Button
@@ -346,7 +701,8 @@ const ProductIntro: FC<ProductIntroProps> = ({
                   size="small"
                   color="ihavecpu"
                   variant="outlined"
-                  onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}
+                  disabled={!isProductInStock()}
+                  onClick={() => handleCartAmountChange(quantity + 1)}
                   style={{ flex: 1 }}
                 >
                   <Icon variant="small">plus</Icon>
@@ -358,12 +714,30 @@ const ProductIntro: FC<ProductIntroProps> = ({
                 mb="25px"
                 size="small"
                 color="ihavecpu"
-                variant="contained"
+                variant="outlined"
                 width="100%"
+                disabled={!isProductInStock()}
+                onClick={handleAddToCartClick}
               >
-                ซื้อเลย
+                <Icon defaultcolor="auto" size="20px" ml="5px">
+                  cart
+                </Icon>
+                ใส่รถเข็น
               </Button>
             </Grid>
+          </Grid>
+          <Grid item lg={12} md={7}>
+            <Button
+              mb="25px"
+              size="small"
+              color="ihavecpu"
+              variant="contained"
+              width="100%"
+              onClick={handleBuyNowClick}
+              disabled={!isProductInStock()}
+            >
+              ซื้อเลย
+            </Button>
           </Grid>
           <Divider height={1} style={{ backgroundColor: "#DAE1E7" }} />
           <Box mt="15px" display="flex" justifyContent="space-between">
@@ -380,9 +754,9 @@ const ProductIntro: FC<ProductIntroProps> = ({
                     variant="small"
                     color={
                       compareList.some(
-                        (product) =>
-                          product.id === id.toString() &&
-                          product.category_id === category_id
+                        (products) =>
+                          products.id === product.product_id &&
+                          products.category_id === parseInt(product.cat_id)
                       )
                         ? "ihavecpu"
                         : "social"
@@ -453,23 +827,35 @@ const ProductIntro: FC<ProductIntroProps> = ({
         {/* VOUCHER */}
         <Grid item lg={3} md={12} xs={12} alignItems="left">
           <Grid item lg={12} md={12} xs={12}>
-            <SectionVoucher
-              iconName="coupon"
-              title="คูปองส่วนลด"
-              onClickSeeMore={() => {
-                toggleDialog();
-              }}
-            >
-              <CarouselVoucher totalSlides={2} visibleSlides={1}>
-                <ProductCard20
-                  onClick={handleInCoupleClick}
-                  checked={isInCoupon}
-                  topic="Notebook MSI"
-                  description="เมื่อช้อปครบ 50,000.-"
-                  dateExpired="2023-07-29 18:46:56"
-                />
-              </CarouselVoucher>
-            </SectionVoucher>
+            {filteredCoupons.length > 0 && (
+              <SectionVoucher
+                iconName="coupon"
+                title="คูปองส่วนลด"
+                onClickSeeMore={() => {
+                  toggleDialog();
+                }}
+              >
+                <CarouselVoucher
+                  totalSlides={filteredCoupons.length}
+                  visibleSlides={1}
+                >
+                  {filteredCoupons.map((coupon, index) => (
+                    <Coupon
+                      key={index}
+                      id={coupon.id}
+                      topic={coupon.title}
+                      highlight1={coupon.highlight.highlight1}
+                      highlight2={coupon.highlight.highlight2}
+                      description={coupon.description}
+                      code={coupon.code}
+                      dateExpired={coupon.endDate}
+                      color="#f9f9f9"
+                      onClick={handleCollectCoupon}
+                    />
+                  ))}
+                </CarouselVoucher>
+              </SectionVoucher>
+            )}
           </Grid>
           {/* BELOW VOUCHER */}
           <Grid item lg={12}>
@@ -545,17 +931,4 @@ const ProductIntro: FC<ProductIntroProps> = ({
   );
 };
 
-const colorList = [
-  { id: "204", product_id: "SKU-67171", title: "#FF7A7A" },
-  { id: "205", product_id: "SKU-67171", title: "#FFC672" },
-  { id: "205", product_id: "SKU-67171", title: "#d4001a" },
-  { id: "205", product_id: "SKU-67171", title: "#6B7AFF" },
-];
-const switchList = [
-  { id: "209", product_id: "SKU-67171", title: "Red Switch" },
-  { id: "210", product_id: "SKU-67171", title: "Blue Switch" },
-  { id: "211", product_id: "SKU-67171", title: "Brown Switch" },
-  { id: "212", product_id: "SKU-67171", title: "Green Switch" },
-  { id: "213", product_id: "SKU-67171", title: "Black Switch" },
-];
 export default ProductIntro;

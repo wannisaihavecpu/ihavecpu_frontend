@@ -15,7 +15,7 @@ const clearExpirationCompare = () => {
       const timestamp = localStorage.getItem("compareListTimestamp");
       if (timestamp) {
         const now = new Date().getTime();
-        return now - parseInt(timestamp) > 3000;
+        return now - parseInt(timestamp) > 3600000; // 1hour
       }
       return true;
     };

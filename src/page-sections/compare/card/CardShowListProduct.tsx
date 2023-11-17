@@ -25,9 +25,7 @@ export interface CardShowListProductProps {
     }[];
   };
   onAddProduct?: () => void;
-  productDetail?: {
-    data: any[];
-  };
+  productDetail?: any;
   onAddProductFromCompare?: () => void;
   back?: () => void;
 }
@@ -61,13 +59,13 @@ const CardShowListProduct: FC<CardShowListProductProps> = ({
   useEffect(() => {
     const compareListIds = compareList.map((item) => item.id);
 
-    const productsToShow = productDetail.data.filter(
+    const productsToShow = productDetail.filter(
       (product) => !compareListIds.includes(product.product_id)
     );
 
     setAllProduct(productsToShow);
     setFilteredResults(productsToShow);
-  }, [productDetail.data, compareList]);
+  }, [productDetail, compareList]);
   return (
     <a>
       <Box
@@ -114,8 +112,8 @@ const CardShowListProduct: FC<CardShowListProductProps> = ({
                     category_id={item.category_id}
                     product_id={item.product_id}
                     discount={item.discount}
-                    price_before={item.price_before}
-                    price_sale={item.price_sale}
+                    price_before={parseInt(item.price_before)}
+                    price_sale={parseInt(item.price_sale)}
                     onAddProductFromCompare={onAddProductFromCompare}
                   />
                 ))
@@ -129,8 +127,8 @@ const CardShowListProduct: FC<CardShowListProductProps> = ({
                   category_id={item.category_id}
                   product_id={item.product_id}
                   discount={item.discount}
-                  price_before={item.price_before}
-                  price_sale={item.price_sale}
+                  price_before={parseInt(item.price_before)}
+                  price_sale={parseInt(item.price_sale)}
                   onAddProductFromCompare={onAddProductFromCompare}
                 />
               ))

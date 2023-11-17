@@ -23,6 +23,7 @@ export interface CardShowProductProps {
 
 const CardShowProduct: FC<CardShowProductProps> = ({
   title,
+  discount,
   image,
   price_sale,
   price_before,
@@ -64,14 +65,16 @@ const CardShowProduct: FC<CardShowProductProps> = ({
             </H6>
           </Box>
           <Box>
-            <Small
-              fontSize={10}
-              fontWeight={500}
-              color="inherit.main"
-              className={styles.beforePrice}
-            >
-              <PriceFormat price={price_before} />
-            </Small>
+            {discount != "0%" && (
+              <Small
+                fontSize={10}
+                fontWeight={500}
+                color="inherit.main"
+                className={styles.beforePrice}
+              >
+                <PriceFormat price={price_before} />
+              </Small>
+            )}
           </Box>
           <Box flex={1}></Box>
           <Box>

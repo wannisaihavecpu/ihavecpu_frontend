@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { FC, useCallback, useState } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import Box from "@component/Box";
 import { Chip } from "@component/Chip";
@@ -8,9 +8,9 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import Card, { CardProps } from "@component/Card";
 import { H3, SemiSpan, H6 } from "@component/Typography";
-import { currency, getTheme } from "@utils/utils";
+import { getTheme } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
-import ProductQuickView from "@component/products/ProductQuickView";
+import PriceFormat from "@component/PriceFormat";
 
 // styled component
 const Wrapper = styled(Card)`
@@ -98,13 +98,14 @@ const Wrapper = styled(Card)`
 
 // =======================================================================
 interface ProductCard21Props extends CardProps {
-  off?: number;
   slug: string;
   title: string;
-  price: number;
+  priceSale: string;
+  priceBefore: string;
+  discount: string;
   imgUrl?: string;
   rating?: number;
-  images?: string[];
+  images?: string;
   id?: string | number;
   description?: string;
 }
@@ -112,24 +113,25 @@ interface ProductCard21Props extends CardProps {
 
 const ProductCard21: FC<ProductCard21Props> = ({
   id,
-  off,
   slug,
   title,
-  price,
+  priceSale,
+  priceBefore,
+  discount,
   imgUrl,
   images,
   description,
   ...props
 }) => {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
-  const toggleDialog = useCallback(() => setOpen((open) => !open), []);
+  // const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
   return (
     <>
       <Wrapper {...props}>
         <div className="image-holder">
-          {!!off && (
+          {discount != "0%" && (
             <Chip
               top="10px"
               left="10px"
@@ -141,7 +143,7 @@ const ProductCard21: FC<ProductCard21Props> = ({
               color="primary.text"
               zIndex={1}
             >
-              {off}% off
+              {discount}
             </Chip>
           )}
 
@@ -160,7 +162,7 @@ const ProductCard21: FC<ProductCard21Props> = ({
             </Icon>
           </FlexBox>
 
-          <Link href={`/product/${slug}`}>
+          <Link href={`/product/${id}/${slug}`}>
             <a>
               <Image
                 alt={title}
@@ -213,12 +215,14 @@ const ProductCard21: FC<ProductCard21Props> = ({
               <FlexBox alignItems="center" mt="10px">
                 <SemiSpan pr="0.5rem" fontWeight="600" color="primary.main">
                   {/* {calculateDiscount(price, off)} */}
-                  {currency(price)}
+                  <PriceFormat price={parseInt(priceSale)} />
                 </SemiSpan>
 
-                {!!off && (
+                {discount != "0%" && (
                   <SemiSpan color="text.muted" fontWeight="600">
-                    <del>{currency(price)}</del>
+                    <del>
+                      <PriceFormat price={parseInt(priceBefore)} />
+                    </del>
                   </SemiSpan>
                 )}
               </FlexBox>
@@ -227,11 +231,11 @@ const ProductCard21: FC<ProductCard21Props> = ({
         </div>
       </Wrapper>
 
-      <ProductQuickView
+      {/* <ProductQuickView
         open={open}
         onClose={toggleDialog}
         product={{ images, title, price, id, slug }}
-      />
+      /> */}
     </>
   );
 };

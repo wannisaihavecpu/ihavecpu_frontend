@@ -108,13 +108,13 @@
   align-items: center;
 }
 .couponTitlePrice {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: thin;
   color: #d4001a;
 }
 .couponPrice {
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: thin;
   color: #d4001a;
 }
 .couponRightContainer {

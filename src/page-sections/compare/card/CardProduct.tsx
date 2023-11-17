@@ -9,8 +9,12 @@ import styles from "./styles.module.css";
 import { IconButton, Button } from "@component/buttons";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
+import PriceFormat from "@component/PriceFormat";
+import Link from "next/link";
 
 export interface CardProductProps {
+  id: number;
+  slug?: string;
   title?: string;
   brand?: string;
   priceBefore?: string;
@@ -33,7 +37,8 @@ export interface CardProductProps {
 const CardProduct: FC<CardProductProps> = ({
   imgUrl,
   title,
-
+  id,
+  slug,
   priceBefore,
   priceSale,
   discount,
@@ -81,10 +86,6 @@ const CardProduct: FC<CardProductProps> = ({
           <Grid item lg={12}>
             <div className={styles.imageContainer}>
               <Box justifyContent="right" className={styles.extraIcons}>
-                <Icon color="secondary" variant="small" mb="0.5rem">
-                  eye
-                </Icon>
-
                 <Icon
                   color="secondary"
                   className="favorite-icon outlined-icon"
@@ -120,42 +121,51 @@ const CardProduct: FC<CardProductProps> = ({
           </H6>
           <FlexBox>
             <Box>
-              <Chip
-                mr="5px"
-                p="4px 5px"
-                fontSize="10px"
-                fontWeight={800}
-                bg="ihavecpu.main"
-                color="primary.text"
-              >
-                {discount}
-              </Chip>
+              {discount != "0%" && (
+                <Chip
+                  mr="5px"
+                  p="4px 5px"
+                  fontSize="10px"
+                  fontWeight={800}
+                  bg="ihavecpu.main"
+                  color="primary.text"
+                >
+                  {discount}
+                </Chip>
+              )}
             </Box>
             <Box>
               <H4 fontWeight={800} color="ihavecpu.main" mr="5px">
-                ฿{priceSale}
+                <PriceFormat price={parseInt(priceSale)} />
               </H4>
             </Box>
             <Box>
-              <Small
-                fontSize={11}
-                fontWeight={500}
-                color="inherit.main"
-                className={styles.beforePrice}
-              >
-                ฿{priceBefore}
-              </Small>
+              {discount != "0%" && (
+                <Small
+                  fontSize={11}
+                  fontWeight={500}
+                  color="inherit.main"
+                  className={styles.beforePrice}
+                >
+                  <PriceFormat price={parseInt(priceBefore)} />
+                </Small>
+              )}
             </Box>
           </FlexBox>
           <Box mt="1rem">
-            <Button
-              width="100%"
-              color="primary"
-              bg="primary.light"
-              type="button"
-            >
-              หยิบใส่ตะกร้า<Icon>shopping-cart</Icon>
-            </Button>
+            <Link href={`/product/${id}/${slug}`}>
+              <Button
+                width="100%"
+                color="primary"
+                bg="primary.light"
+                type="button"
+              >
+                ดูสินค้า
+                <Icon size="18px" ml="5px">
+                  eye
+                </Icon>
+              </Button>
+            </Link>
           </Box>
         </Box>
 
