@@ -8,6 +8,9 @@ import Service from "@models/service.model";
 import Category from "@models/category.model";
 import MainCarouselItem from "@models/market-1.model";
 import menuDropdown from "@models/menuDropdown.model";
+import banner from "@models/banner.model";
+import setBrand from "@models/setBrand.model";
+import listProduct from "@models/listProduct.model";
 
 const getTopRatedProduct = async (): Promise<Product[]> => {
   const response = await axios.get("/api/market-1/toprated-product");
@@ -152,14 +155,90 @@ const getCategorySetComputer = async (): Promise<menuDropdown[]> => {
     );
 
     if (response.data.res_code === "00") {
-      console.log(response.data.res_result);
       return response.data.res_result;
     } else {
-      console.error("Error fetching menu dropdown:", response.data.res_text);
+      console.error(
+        "Error fetching Category Set Computer:",
+        response.data.res_text
+      );
       return [];
     }
   } catch (error) {
-    console.error("Error fetching menu dropdown:", error.message);
+    console.error("Error fetching Category Set Computer:", error.message);
+    return [];
+  }
+};
+const getCategoryDIY = async (): Promise<menuDropdown[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/menu/setDIY`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching Category Set DIY:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching Category Set DIY:", error.message);
+    return [];
+  }
+};
+const getCategoryBrandNoteBook = async (): Promise<setBrand[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/menu/setBrand?category_id=13`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching setBrand Notebook DIY:",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching setBrand Notebook:", error.message);
+    return [];
+  }
+};
+const getNewProduct = async (): Promise<listProduct[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/latestProduct`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching setBrand getNewProduct:",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getNewProduct:", error.message);
+    return [];
+  }
+};
+const getBanner = async (): Promise<banner[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/home/banner`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching get Banner:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching get Banner:", error.message);
     return [];
   }
 };
@@ -193,4 +272,8 @@ export default {
   getHotDealList,
   getServices,
   getCategorySetComputer,
+  getCategoryDIY,
+  getCategoryBrandNoteBook,
+  getNewProduct,
+  getBanner,
 };

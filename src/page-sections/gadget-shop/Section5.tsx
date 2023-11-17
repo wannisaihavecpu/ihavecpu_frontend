@@ -1,7 +1,7 @@
 import { FC } from "react";
-import Box from "@component/Box";
+// import Box from "@component/Box";
 import { Carousel } from "@component/carousel";
-import { ProductCard2 } from "@component/product-cards";
+// import { ProductCard2 } from "@component/product-cards";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import useVisibleSilde from "./hooks/useVisibleSilde";
 import Product from "@models/product.model";
@@ -11,12 +11,17 @@ type Props = { products: Product[] };
 // =============================================
 
 const Section5: FC<Props> = ({ products }) => {
-  const { visibleSlides } = useVisibleSilde({ initialSlide: 6, xs: 2, sm: 3, md: 4 });
+  const { visibleSlides } = useVisibleSilde({
+    initialSlide: 6,
+    xs: 2,
+    sm: 3,
+    md: 4,
+  });
 
   return (
     <CategorySectionCreator title="New Arrivals">
       <Carousel totalSlides={products.length} visibleSlides={visibleSlides}>
-        {products.map((item) => (
+        {/* {products.map((item) => (
           <Box key={item.id}>
             <ProductCard2
               slug={item.slug}
@@ -25,7 +30,7 @@ const Section5: FC<Props> = ({ products }) => {
               imgUrl={item.thumbnail}
             />
           </Box>
-        ))}
+        ))} */}
       </Carousel>
     </CategorySectionCreator>
   );

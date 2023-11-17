@@ -31,6 +31,10 @@ import Service from "@models/service.model";
 import Category from "@models/category.model";
 import MainCarouselItem from "@models/market-1.model";
 import menuDropdown from "@models/menuDropdown.model";
+import banner from "@models/banner.model";
+import categoryDIYHome from "@models/categoryDIYHome.model";
+import setBrand from "@models/setBrand.model";
+import listProduct from "@models/listProduct.model";
 import Banners from "@models/Banners.model";
 
 // =================================================================
@@ -63,7 +67,11 @@ type Props = {
   bottomCategories?: Category[];
   mainCarouselData?: MainCarouselItem[];
   hotDealList: any[];
-  categorySetComputer?: menuDropdown[];
+  categorySetComputer: menuDropdown[];
+  categorySetDIY: categoryDIYHome[];
+  categorySetBrandNotebook: setBrand[];
+  newProduct: listProduct[];
+  bannerHome: banner[];
 };
 // =================================================================
 
@@ -72,63 +80,57 @@ const Home = (props: Props) => {
   return (
     <main>
       {/* HERO CAROUSEL AREA */}
-      <Section1 carouselData={props.mainCarouselData} />
+      <Section1
+        carouselData={props.mainCarouselData}
+        banner={props.bannerHome}
+      />
 
       {/* BANNER SLIDE */}
       <BannerSlide BannerList={props.bannerSlides} />
 
       {/* BANNER1 OFFER BANNERS AREA */}
       {/* <Banner1 /> */}
-      
-        {/* FEATURES BRAND LIST AREA */}
-        <Featureds brands={props.brands} />
+
+      {/* FEATURES BRAND LIST AREA */}
+      <Featureds brands={props.brands} />
 
       {/* หมวดหมู่สินค้า */}
       <Categories categories={props.bottomCategories} />
-      
+
       {/* DEAL OF THE DAY CAROUSEL AREA */}
       <Hotdeal list={props.hotDealList} />
 
       {/* สินค้าลดราคา */}
       <Discounts bigDiscountList={props.bigDiscountList} />
 
-
       {/* BANNER2BOX  BANNERS AREA */}
       <Banner2box />
-      
-      {/* สินค้ามาใหม่ */}
-      <Newproduct newArrivalsList={props.newArrivalsList} />
-      
+
+      {/* NEW ARRIVALS AREA */}
+      <Newproduct product={props.newProduct} />
+
       {/* COMPUTOR SET AREA */}
-      <Computorset
-        shops={props.mobileShops}
-        brands={props.mobileBrands}
-        productList={props.mobileList}
-        category={props.categorySetComputer}
-      />
+      <Computorset category={props.categorySetComputer} />
 
       {/* อุปกรณ์เสริม เกมเมอร์ */}
       <Topcatrgories categoryList={props.topCategories} />
 
       {/* BANNER3BOX  BANNERS AREA */}
       <Banner3box />
-      
-      {/* สินค้าขายดี  อุกรณ์เสริมมาใหม่ */}
+
+      {/* TOP RATING AND BRANDS AREA */}
       <Toprating
         topRatedList={props.topRatedProducts}
         topRatedBrands={props.topRatedBrands}
       />
       {/* สินค้า DIY */}
-      <Diy diyBrands={props.diyBrands} diyList={props.diyList} />
+      <Diy category={props.categorySetDIY} />
 
       {/* BANNER2BOX BANNERS AREA */}
       <Banner2box />
 
-      {/* โน๊ตบุ๊ก*/}
-      <Notebook
-        notebookBrands={props.notebookBrands}
-        notebookList={props.notebookList}
-      />
+      {/* NOTEBOOK AND WATCH AREA */}
+      <Notebook category={props.categorySetBrandNotebook} />
 
       {/* อุปกรณ์ต่อพ่วง */}
       <Accessories />
@@ -177,7 +179,10 @@ export const getStaticProps: GetStaticProps = async () => {
   const topRatedProducts = await api.getTopRatedProduct();
   const hotDealList = await api.getHotDealList();
   const categorySetComputer = await api.getCategorySetComputer();
-
+  const categorySetDIY = await api.getCategoryDIY();
+  const categorySetBrandNotebook = await api.getCategoryBrandNoteBook();
+  const newProduct = await api.getNewProduct();
+  const bannerHome = await api.getBanner();
   return {
     props: {
       bannerSlides,
@@ -207,6 +212,10 @@ export const getStaticProps: GetStaticProps = async () => {
       bottomCategories,
       hotDealList,
       categorySetComputer,
+      categorySetDIY,
+      categorySetBrandNotebook,
+      newProduct,
+      bannerHome,
     },
   };
 };
