@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import Box from "@component/Box";
 import { Carousel } from "@component/carousel";
-import { ProductCard2 } from "@component/product-cards";
+// import { ProductCard2 } from "@component/product-cards";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
@@ -22,10 +22,14 @@ const Section4: FC<Props> = ({ products }) => {
   }, [width]);
 
   return (
-    <CategorySectionCreator iconName="new-product-1" title="New Arrivals" seeMoreLink="#">
+    <CategorySectionCreator
+      iconName="new-product-1"
+      title="New Arrivals"
+      seeMoreLink="#"
+    >
       <Box mt="-0.25rem" mb="-0.25rem">
         <Carousel totalSlides={products.length} visibleSlides={visibleSlides}>
-          {products.map((item) => (
+          {/* {products.map((item) => (
             <Box py="0.25rem" key={item.id}>
               <ProductCard2
                 slug={item.slug}
@@ -34,7 +38,7 @@ const Section4: FC<Props> = ({ products }) => {
                 imgUrl={item.thumbnail}
               />
             </Box>
-          ))}
+          ))} */}
         </Carousel>
       </Box>
     </CategorySectionCreator>

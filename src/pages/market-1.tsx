@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import AppLayout from "@component/layout/AppLayout";
-import Section1 from "@sections/market-1/Section1";
+// import Section1 from "@sections/market-1/Section1";
 import Section2 from "@sections/market-1/Section2";
 import Section3 from "@sections/market-1/Section3";
 import Section4 from "@sections/market-1/Section4";
@@ -50,7 +50,7 @@ const Market1 = (props: Props) => {
   return (
     <main>
       {/* HERO CAROUSEL AREA */}
-      <Section1 carouselData={props.mainCarouselData} />
+      {/* <Section1 carouselData={props.mainCarouselData} /> */}
 
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 products={props.flashDealsData} />

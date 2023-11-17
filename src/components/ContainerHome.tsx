@@ -13,7 +13,7 @@ import {
 } from "styled-system";
 import { layoutConstant } from "utils/constants";
 
-const Container = styled.div<
+const ContainerHome = styled.div<
   LayoutProps & ColorProps & PositionProps & SpaceProps & FlexboxProps
 >`
   margin-left: auto;
@@ -24,6 +24,10 @@ const Container = styled.div<
     margin-left: 1rem;
     margin-right: 1rem;
   }
+  @media only screen and (max-width: 900px) {
+    margin-left: 0rem;
+    margin-right: 0rem;
+  }
 
   ${color}
   ${position}
@@ -32,4 +36,4 @@ const Container = styled.div<
   ${space}
 `;
 
-export default Container;
+export default ContainerHome;

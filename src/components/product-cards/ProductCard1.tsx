@@ -1,13 +1,11 @@
 import Link from "next/link";
 // import Image from "next/image";
-import { FC, Fragment, useCallback, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import styled from "styled-components";
-import { useAppContext } from "@context/AppContext";
 import Box from "@component/Box";
 import { Chip } from "@component/Chip";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
-import { Button } from "@component/buttons";
 import Card, { CardProps } from "@component/Card";
 import { H3, SemiSpan, H6 } from "@component/Typography";
 import { getTheme } from "@utils/utils";
@@ -128,24 +126,8 @@ const ProductCard1: FC<ProductCard1Props> = ({
   ...props
 }) => {
   const [open, setOpen] = useState(false);
-  const { state, dispatch } = useAppContext();
-  const cartItem = state.cart.find((item) => item.id === id);
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
-
-  const handleCartAmountChange = (amount: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: {
-        id,
-        slug,
-        price,
-        imgUrl,
-        name: title,
-        qty: amount,
-      },
-    });
-  };
 
   return (
     <>
@@ -163,7 +145,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
               color="ihavecpu.text"
               zIndex={1}
             >
-              {off}% off
+              {off}%
             </Chip>
           )}
 
@@ -259,7 +241,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
               </FlexBox>
             </Box>
 
-            <FlexBox
+            {/* <FlexBox
               width="30px"
               alignItems="center"
               flexDirection="column-reverse"
@@ -298,7 +280,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
                   </Button>
                 </Fragment>
               )}
-            </FlexBox>
+            </FlexBox> */}
           </FlexBox>
         </div>
       </Wrapper>

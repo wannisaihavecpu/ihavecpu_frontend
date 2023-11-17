@@ -126,7 +126,7 @@ const ProductCard1Skeleton = () => {
               </FlexBox>
             </Box>
 
-            <FlexBox
+            {/* <FlexBox
               width="30px"
               alignItems="center"
               flexDirection="column-reverse"
@@ -135,7 +135,7 @@ const ProductCard1Skeleton = () => {
               <div className="item-img">
                 <Skeleton width={28} height={28} />
               </div>
-            </FlexBox>
+            </FlexBox> */}
           </FlexBox>
         </div>
       </Wrapper>

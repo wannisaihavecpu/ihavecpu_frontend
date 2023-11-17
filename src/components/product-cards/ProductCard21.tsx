@@ -131,14 +131,14 @@ const ProductCard21: FC<ProductCard21Props> = ({
     <>
       <Wrapper {...props}>
         <div className="image-holder">
-          {discount != "0%" && (
+          {discount && (
             <Chip
               top="10px"
               left="10px"
               p="5px 10px"
               fontSize="10px"
               fontWeight="600"
-              bg="primary.main"
+              bg="ihavecpu.main"
               position="absolute"
               color="primary.text"
               zIndex={1}
@@ -218,7 +218,7 @@ const ProductCard21: FC<ProductCard21Props> = ({
                   <PriceFormat price={parseInt(priceSale)} />
                 </SemiSpan>
 
-                {discount != "0%" && (
+                {discount && (
                   <SemiSpan color="text.muted" fontWeight="600">
                     <del>
                       <PriceFormat price={parseInt(priceBefore)} />

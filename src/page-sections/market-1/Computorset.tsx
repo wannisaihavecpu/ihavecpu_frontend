@@ -8,16 +8,10 @@ import Typography from "@component/Typography";
 import { ProductCard1, ProductCard1Skeleton } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
-import Shop from "@models/shop.model";
-import Brand from "@models/Brand.model";
-import Product from "@models/product.model";
 import menuDropdown from "@models/menuDropdown.model";
 
 // ======================================================
 interface Props {
-  shops: Shop[];
-  brands: Brand[];
-  productList: Product[];
   category: menuDropdown[];
 }
 
