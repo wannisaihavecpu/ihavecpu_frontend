@@ -89,20 +89,19 @@ const Home = (props: Props) => {
       <BannerSlide BannerList={props.bannerSlides} />
 
       {/* BANNER1 OFFER BANNERS AREA */}
-      <Banner1 />
+      {/* <Banner1 /> */}
 
       {/* FEATURES BRAND LIST AREA */}
       <Featureds brands={props.brands} />
 
       {/* หมวดหมู่สินค้า */}
       <Categories categories={props.bottomCategories} />
-      
+
       {/* DEAL OF THE DAY CAROUSEL AREA */}
       <Hotdeal list={props.hotDealList} />
 
       {/* สินค้าลดราคา */}
       <Discounts bigDiscountList={props.bigDiscountList} />
-
 
       {/* BANNER2BOX  BANNERS AREA */}
       <Banner2box />
