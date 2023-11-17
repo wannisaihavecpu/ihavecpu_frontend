@@ -2,6 +2,7 @@ import { GetStaticProps } from "next";
 // import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
+import BannerSlide from "@sections/market-1/BannerSlide";
 import Topcatrgories from "@sections/market-1/Topcatrgories";
 import Toprating from "@sections/market-1/Toprating";
 import Newproduct from "@sections/market-1/Newproduct";
@@ -10,7 +11,7 @@ import Computorset from "@sections/market-1/Computorset";
 import Notebook from "@sections/market-1/Notebook";
 import Categories from "@sections/market-1/Categories";
 import Discounts from "@sections/market-1/Discounts";
-import Banner1 from "@sections/market-1/Banner1";
+// import Banner1 from "@sections/market-1/Banner1";
 import Banner1box from "@sections/market-1/Banner1box";
 import Banner2box from "@sections/market-1/Banner2box";
 import Banner3box from "@sections/market-1/Banner3box";
@@ -30,6 +31,7 @@ import Service from "@models/service.model";
 import Category from "@models/category.model";
 import MainCarouselItem from "@models/market-1.model";
 import menuDropdown from "@models/menuDropdown.model";
+import Banners from "@models/Banners.model";
 
 // =================================================================
 type Props = {
@@ -37,8 +39,8 @@ type Props = {
   blogs: Blog[];
   notebookList?: Product[];
   notebookBrands?: Brand[];
-  carList?: Product[];
-  carBrands?: Brand[];
+  // carList?: Product[];
+  // carBrands?: Brand[];
   diyList?: Product[];
   diyBrands?: Category[];
   opticsShops?: Shop[];
@@ -51,6 +53,8 @@ type Props = {
   opticsBrands?: Brand[];
   serviceList?: Service[];
   topRatedBrands?: Brand[];
+  bannerSlides?: Banners[];
+
   topCategories?: Category[];
   flashDealsData?: Product[];
   newArrivalsList?: Product[];
@@ -70,25 +74,29 @@ const Home = (props: Props) => {
       {/* HERO CAROUSEL AREA */}
       <Section1 carouselData={props.mainCarouselData} />
 
+      {/* BANNER SLIDE */}
+      <BannerSlide BannerList={props.bannerSlides} />
+
       {/* BANNER1 OFFER BANNERS AREA */}
-      <Banner1 />
+      {/* <Banner1 /> */}
       
         {/* FEATURES BRAND LIST AREA */}
         <Featureds brands={props.brands} />
 
-      {/* CATEGORIES AREA */}
+      {/* หมวดหมู่สินค้า */}
       <Categories categories={props.bottomCategories} />
-
-      {/* BIG DISCOUNT AREA */}
-      <Discounts bigDiscountList={props.bigDiscountList} />
-
+      
       {/* DEAL OF THE DAY CAROUSEL AREA */}
       <Hotdeal list={props.hotDealList} />
+
+      {/* สินค้าลดราคา */}
+      <Discounts bigDiscountList={props.bigDiscountList} />
+
 
       {/* BANNER2BOX  BANNERS AREA */}
       <Banner2box />
       
-      {/* NEW ARRIVALS AREA */}
+      {/* สินค้ามาใหม่ */}
       <Newproduct newArrivalsList={props.newArrivalsList} />
       
       {/* COMPUTOR SET AREA */}
@@ -99,36 +107,36 @@ const Home = (props: Props) => {
         category={props.categorySetComputer}
       />
 
-      {/* TOP CATEGORIES AREA */}
+      {/* อุปกรณ์เสริม เกมเมอร์ */}
       <Topcatrgories categoryList={props.topCategories} />
 
       {/* BANNER3BOX  BANNERS AREA */}
       <Banner3box />
       
-      {/* TOP RATING AND BRANDS AREA */}
+      {/* สินค้าขายดี  อุกรณ์เสริมมาใหม่ */}
       <Toprating
         topRatedList={props.topRatedProducts}
         topRatedBrands={props.topRatedBrands}
       />
-
+      {/* สินค้า DIY */}
       <Diy diyBrands={props.diyBrands} diyList={props.diyList} />
 
       {/* BANNER2BOX BANNERS AREA */}
       <Banner2box />
 
-      {/* NOTEBOOK AND WATCH AREA */}
+      {/* โน๊ตบุ๊ก*/}
       <Notebook
         notebookBrands={props.notebookBrands}
         notebookList={props.notebookList}
       />
 
-      {/* ACCESSORIES PRODUCTS AREA */}
+      {/* อุปกรณ์ต่อพ่วง */}
       <Accessories />
 
       {/* BANNER1 OFFER BANNERS AREA */}
       <Banner1box />
 
-      {/* BLOG AREA */}
+      {/* บทความ */}
       <Blogs blogs={props.blogs} />
 
       {/* SERVICES AREA */}
@@ -142,12 +150,13 @@ Home.layout = AppLayout;
 // ==============================================================
 
 export const getStaticProps: GetStaticProps = async () => {
+  const bannerSlides = await api.getBanners();
   const brands = await api.getBrands();
   const blogs = await api.getBlogs();
   const notebookList = await api.getNotebookList();
   const notebookBrands = await api.getNotebookBrands();
-  const carList = await api.getCarList();
-  const carBrands = await api.getCarBrands();
+  // const carList = await api.getCarList();
+  // const carBrands = await api.getCarBrands();
   const diyList = await api.getCarList();
   const diyBrands = await api.getDiyBrands();
   const moreItems = await api.getMoreItems();
@@ -171,13 +180,14 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
+      bannerSlides,
       brands,
       blogs,
       notebookList,
       notebookBrands,
       diyList,
-      carList,
-      carBrands,
+      // carList,
+      // carBrands,
       diyBrands,
       moreItems,
       mobileList,

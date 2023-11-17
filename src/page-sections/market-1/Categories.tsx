@@ -18,7 +18,7 @@ const StyledImage = styled(NextImage)`
 type Props = { categories: Category[] };
 // ============================================================
 
-const Section10: FC<Props> = ({ categories }) => {
+const Categories: FC<Props> = ({ categories }) => {
   return (
     <Container mb="70px">
       <CategorySectionHeader title="หมวดหมู่สินค้า" iconName="categories" seeMoreLink="#" />
@@ -60,4 +60,4 @@ const Section10: FC<Props> = ({ categories }) => {
   );
 };
 
-export default Section10;
+export default Categories;

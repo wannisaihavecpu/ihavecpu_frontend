@@ -26,6 +26,18 @@ Mock.onGet("/api/market-1/top-categories").reply(async () => {
   }
 });
 
+// Banner
+Mock.onGet("/api/market-1/banners").reply(async () => {
+  try {
+    const bannerSlides = db.banners.filter((item) => item.for.type === "banners");
+    return [200, bannerSlides];
+  } catch (err) {
+    console.error(err);
+    return [500, { message: "Internal server error" }];
+  }
+});
+
+
 Mock.onGet("/api/market-1/flash-deals").reply(async () => {
   try {
     const products = db.products.filter((item) => item.for.type === "flash-deals");

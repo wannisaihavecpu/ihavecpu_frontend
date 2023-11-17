@@ -19,7 +19,7 @@ const Toprating: FC<Props> = ({ topRatedBrands, topRatedList }) => {
       <Container>
         <Grid container spacing={6}>
           <Grid item lg={6} xs={12}>
-            <CategorySectionHeader iconName="ranking-1" title="Top Ratings" seeMoreLink="#" />
+            <CategorySectionHeader iconName="ranking-1" title="สินค้าขายดี" seeMoreLink="#" />
 
             <Card p="1rem">
               <Grid container spacing={4}>
@@ -43,7 +43,7 @@ const Toprating: FC<Props> = ({ topRatedBrands, topRatedList }) => {
           </Grid>
 
           <Grid item md={6} xs={12}>
-            <CategorySectionHeader iconName="Group" title="Featured Brands" seeMoreLink="#" />
+            <CategorySectionHeader iconName="Group" title="อุกรณ์เสริมมาใหม่" seeMoreLink="#" />
 
             <Card p="1rem">
               <Grid container spacing={4}>
