@@ -32,7 +32,7 @@ const Featureds: FC<Props> = ({ brands }) => {
               key={item.id}
               height="100%"
               margin="auto"
-              maxWidth={50}
+              maxWidth={90}
               alignItems="center"
               justifyContent="center"
             >

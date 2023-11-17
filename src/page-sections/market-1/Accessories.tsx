@@ -38,7 +38,7 @@ const Accessories: FC = () => {
     { id: 1, title: "อุปกรณ์สำรองไฟ", type: "new" },
     { id: 2, title: "ซาวด์การ์ด", type: "optics" },
     { id: 3, title: "อะแดปเตอร์และสาย", type: "popular" },
-    { id: 4, title: "ลำโพง", type: "speeker" },
+    { id: 4, title: "ลำโพง", type: "cpu" },
     { id: 5, title: "ขายึดจอมอนิเตอร์", type: "view" },
   ];
 
@@ -46,7 +46,7 @@ const Accessories: FC = () => {
     <Container mb="4rem">
       <FlexBox alignItems="center" justifyContent="space-between" flexWrap="wrap" mb="1.5rem">
         <Box>
-          <H2 fontSize={20}>Accessories</H2>
+          <H2 fontSize={20}>อุปกรณ์ต่อพ่วง</H2>
           <Paragraph>All our new arrivals in a exclusive brand selection</Paragraph>
         </Box>
 

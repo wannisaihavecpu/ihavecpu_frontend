@@ -4,6 +4,8 @@ import Hidden from "@component/hidden";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
+// import { H2, Paragraph } from "@component/Typography";
+import Icon from "@component/icon/Icon";
 import { ProductCard1, ProductCard1Skeleton } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
@@ -121,7 +123,8 @@ const Notebook: FC<Props> = ({ category }) => {
               shadow={selected.match("all") ? 4 : null}
               bg={selected.match("all") ? "white" : "gray.100"}
             >
-              <span id="all" className="product-category-title show-all">
+              <Icon size="20px" defaultcolor="auto">plus-circle</Icon>
+              <span id="all" className="product-category-title">
                 ดูสินค้าทั้งหมด
               </span>
             </StyledProductCategory>
@@ -129,35 +132,25 @@ const Notebook: FC<Props> = ({ category }) => {
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title={title} seeMoreLink="#" />
+          <CategorySectionHeader title="Notebooks" seeMoreLink="#" />
 
-          {loading ? (
-            <Grid container spacing={6}>
-              {Array.from({ length: 8 }).map((_, index) => (
-                <Grid item lg={3} sm={6} xs={12} key={index}>
-                  <ProductCard1Skeleton />
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
-            <Grid container spacing={6}>
-              {product &&
-                product.map((item, ind) => (
-                  <Grid item lg={3} sm={6} xs={12} key={ind}>
-                    <ProductCard1
-                      hoverEffect
-                      id={item.product_id}
-                      slug={formatSlug(item.name_th)}
-                      title={item.name_th}
-                      price={parseInt(item.price_sale)}
-                      priceBefore={parseInt(item.price_before)}
-                      off={item.discount}
-                      imgUrl={item.image800}
-                    />
-                  </Grid>
-                ))}
-            </Grid>
-          )}
+          <Grid container spacing={6}>
+            {notebookList.map((item, ind) => (
+              <Grid item lg={3} sm={6} xs={12} key={ind}>
+                <ProductCard1
+                  hoverEffect
+                  id={item.id}
+                  slug={item.slug}
+                  title={item.title}
+                  price={item.price}
+                  off={item.discount}
+                  rating={item.rating}
+                  images={item.images}
+                  imgUrl={item.thumbnail}
+                />
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       </FlexBox>
     </Container>
