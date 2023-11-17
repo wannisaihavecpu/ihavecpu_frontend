@@ -63,7 +63,6 @@ const getViewProduct = async (slug: string): Promise<productView[]> => {
       `${process.env.NEXT_PUBLIC_API_PATH}/product/view/${slug}`
     );
     if (response.data.res_code === "00") {
-      console.log(response.data.res_result);
       return response.data.res_result;
     } else {
       console.error("Error fetching view product", response.data.res_text);
@@ -85,7 +84,6 @@ const getListCouponProduct = async (
       { product: productIds }
     );
     if (response.data.res_code === "00") {
-      console.log(response.data.res_result);
       return response.data.res_result;
     } else {
       console.error(
@@ -114,7 +112,6 @@ const getMyCoupon = async (slug: string): Promise<myCouponAvaliable[]> => {
       }
     );
     if (response.data.res_code === "00") {
-      console.log(response.data.res_result);
       return response.data.res_result;
     } else {
       console.error("Error fetching mycouponAvaliable", response.data.res_text);
@@ -132,7 +129,6 @@ const getAllProduct = async (): Promise<getAllProduct[]> => {
       `${process.env.NEXT_PUBLIC_API_PATH}/product/allProduct`
     );
     if (response.data.res_code === "00") {
-      console.log(response.data.res_result);
       return response.data.res_result;
     } else {
       console.error("Error fetching allProduct", response.data.res_text);
@@ -147,12 +143,10 @@ const getSameBrandProduct = async (
   categoryID: string[]
 ): Promise<listProduct[]> => {
   try {
-    console.log("getSameBrand");
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}`
     );
     if (response.data.res_code === "00") {
-      console.log(response.data.res_result);
       return response.data.res_result;
     } else {
       console.error(

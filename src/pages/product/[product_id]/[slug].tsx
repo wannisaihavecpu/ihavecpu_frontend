@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
@@ -152,18 +152,18 @@ const ProductDetails = (props: Props) => {
 
 ProductDetails.layout = NavbarLayout;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const allProducts = await api.getAllProduct();
-  const paths = allProducts.map(({ product_id, name_th }) => ({
-    params: { product_id: product_id.toString(), slug: name_th },
-  }));
-  return {
-    paths,
-    fallback: "blocking",
-  };
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   // const allProducts = await api.getAllProduct();
+//   // const paths = allProducts.map(({ product_id, name_th }) => ({
+//   //   params: { product_id: product_id.toString(), slug: name_th },
+//   // }));
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const shops = await api.getAvailableShop();
   const sameBrandProducts = await api.getSameBrandProducts();
   const relatedProducts = await api.getRelatedProducts();
