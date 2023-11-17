@@ -2,16 +2,16 @@ import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import Card from "@component/Card";
 import { Carousel } from "@component/carousel";
-import { ProductCard6 } from "@component/product-cards";
+import { ProductCard22 } from "@component/product-cards";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import useWindowSize from "@hook/useWindowSize";
-import Category from "@models/category.model";
+import Banners from "@models/Banners.model";
 
 // =====================================================
-type Props = { categoryList: Category[] };
+type Props = { BannerList: Banners[] };
 // =====================================================
 
-const Topcatrgories: FC<Props> = ({ categoryList }) => {
+const BannerSlide: FC<Props> = ({ BannerList }) => {
   const width = useWindowSize();
   const [visibleSlides, setVisibleSlides] = useState(3);
 
@@ -23,16 +23,16 @@ const Topcatrgories: FC<Props> = ({ categoryList }) => {
 
   return (
     <CategorySectionCreator
-      iconName="categories"
-      title="อุปกรณ์เสริม เกมเมอร์"
-      seeMoreLink="#"
+      // iconName="categories"
+      // title="อุปกรณ์เสริม เกมเมอร์"
+      // seeMoreLink="#"
     >
-      <Carousel totalSlides={categoryList.length} visibleSlides={visibleSlides}>
-        {categoryList.map((item, ind) => (
+      <Carousel totalSlides={BannerList.length} visibleSlides={visibleSlides}>
+        {BannerList.map((item, ind) => (
           <Link href={`/product/search/${item.slug}`} key={ind}>
             <a>
-              <Card p="1rem">
-                <ProductCard6
+              <Card p="0rem">
+                <ProductCard22
                   title={item.name}
                   subtitle={item.description}
                   imgUrl={item.image}
@@ -46,4 +46,4 @@ const Topcatrgories: FC<Props> = ({ categoryList }) => {
   );
 };
 
-export default Topcatrgories;
+export default BannerSlide;

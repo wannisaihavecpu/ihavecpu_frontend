@@ -2,6 +2,7 @@ import axios from "axios";
 import Blog from "models/blog.model";
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
+import Banners from "@models/Banners.model";
 import Product from "@models/product.model";
 import Service from "@models/service.model";
 import Category from "@models/category.model";
@@ -109,6 +110,12 @@ const getFlashDeals = async (): Promise<Product[]> => {
   return response.data;
 };
 
+//Banner
+const getBanners = async (): Promise<Banners[]> => {
+  const response = await axios.get("/api/market-1/banners");
+  return response.data;
+};
+
 const getTopCategories = async (): Promise<Category[]> => {
   const response = await axios.get("/api/market-1/top-categories");
   return response.data;
@@ -158,6 +165,7 @@ const getCategorySetComputer = async (): Promise<menuDropdown[]> => {
 };
 
 export default {
+  getBanners,
   getBrands,
   getBlogs,
   getDiyList,

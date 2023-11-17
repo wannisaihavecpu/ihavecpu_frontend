@@ -5,6 +5,8 @@ import Hidden from "@component/hidden";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
+// import { H2, Paragraph } from "@component/Typography";
+import Icon from "@component/icon/Icon";
 import { ProductCard1 } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
@@ -57,7 +59,8 @@ const Notebook: FC<Props> = ({ notebookList, notebookBrands }) => {
               shadow={selected.match("all") ? 4 : null}
               bg={selected.match("all") ? "white" : "gray.100"}
             >
-              <span id="all" className="product-category-title show-all">
+              <Icon size="20px" defaultcolor="auto">plus-circle</Icon>
+              <span id="all" className="product-category-title">
                 ดูสินค้าทั้งหมด
               </span>
             </StyledProductCategory>
@@ -65,8 +68,7 @@ const Notebook: FC<Props> = ({ notebookList, notebookBrands }) => {
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title="Notebooks" seeMoreLink="#" />
-
+          <CategorySectionHeader title="โน๊ตบุ๊ก" seeMoreLink="#" />
           <Grid container spacing={6}>
             {notebookList.map((item, ind) => (
               <Grid item lg={3} sm={6} xs={12} key={ind}>
