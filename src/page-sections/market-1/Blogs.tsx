@@ -98,12 +98,15 @@ const Blogs: FC<BlogProps> = ({ blogs }) => {
               <Box p={0} pt={3}>
                 <Link href="#">
                   <a>
-                    <H4 fontWeight={700}>{item.article_name_th}</H4>
+                    <H4 fontWeight={700}>
+                    {item.article_name_th.length > 35 ? item.article_name_th.slice(0, 35) + "..." : item.article_name_th}
+                    </H4>
                   </a>
                 </Link>
 
                 <Paragraph mt={0.5} mb={3}>
-                  {item.article_sdesc_th}
+                  {item.article_sdesc_th.length > 120 ? item.article_sdesc_th.slice(0,120) + "..." : item.article_sdesc_th}
+                  {/* {item.article_sdesc_th} */}
                 </Paragraph>
 
                 <StyledLink href="#">อ่านต่อทั้งหมด</StyledLink>
