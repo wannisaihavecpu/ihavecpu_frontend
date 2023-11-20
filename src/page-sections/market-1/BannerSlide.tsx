@@ -23,9 +23,9 @@ const BannerSlide: FC<Props> = ({ BannerList }) => {
 
   return (
     <CategorySectionCreator
-      // iconName="categories"
-      // title="อุปกรณ์เสริม เกมเมอร์"
-      // seeMoreLink="#"
+    // iconName="categories"
+    // title="อุปกรณ์เสริม เกมเมอร์"
+    // seeMoreLink="#"
     >
       <Carousel totalSlides={BannerList.length} visibleSlides={visibleSlides}>
         {BannerList.map((item, ind) => (

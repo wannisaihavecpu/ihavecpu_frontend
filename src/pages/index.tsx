@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 // import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
@@ -36,6 +36,7 @@ import categoryDIYHome from "@models/categoryDIYHome.model";
 import setBrand from "@models/setBrand.model";
 import listProduct from "@models/listProduct.model";
 import Banners from "@models/Banners.model";
+import allBlog from "@models/allBlog.model";
 
 // =================================================================
 type Props = {
@@ -72,6 +73,7 @@ type Props = {
   categorySetBrandNotebook: setBrand[];
   newProduct: listProduct[];
   bannerHome: banner[];
+  newBlog: allBlog[];
 };
 // =================================================================
 
@@ -139,7 +141,7 @@ const Home = (props: Props) => {
       <Banner1box />
 
       {/* บทความ */}
-      <Blogs blogs={props.blogs} />
+      <Blogs blogs={props.newBlog} />
 
       {/* SERVICES AREA */}
       <Services id={FIXED_ID} services={props.serviceList} />
@@ -151,7 +153,7 @@ Home.layout = AppLayout;
 
 // ==============================================================
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const bannerSlides = await api.getBanners();
   const brands = await api.getBrands();
   const blogs = await api.getBlogs();
@@ -182,6 +184,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const categorySetDIY = await api.getCategoryDIY();
   const categorySetBrandNotebook = await api.getCategoryBrandNoteBook();
   const newProduct = await api.getNewProduct();
+  const newBlog = await api.getNewBlog();
   const bannerHome = await api.getBanner();
   return {
     props: {
@@ -215,6 +218,7 @@ export const getStaticProps: GetStaticProps = async () => {
       categorySetDIY,
       categorySetBrandNotebook,
       newProduct,
+      newBlog,
       bannerHome,
     },
   };
