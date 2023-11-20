@@ -1,16 +1,15 @@
 import { FC, useEffect, useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import Container from "@component/Container";
-import { H2, Paragraph } from "@component/Typography";
-import { ProductCard19 } from "@component/product-cards";
+import { H2 } from "@component/Typography";
 import { Carousel } from "@component/carousel";
 import { deviceSize } from "@utils/constants";
 import useVisibleSlide from "./hooks/useVisibleSlide";
-import Product from "@models/product.model";
+import menuDropdown from "@models/menuDropdown.model";
+import { ProductCard1, ProductCard1Skeleton } from "@component/product-cards";
 
 // styled component
 const ButtonsWrapper = styled(FlexBox)({
@@ -20,63 +19,123 @@ const ButtonsWrapper = styled(FlexBox)({
   [`@media (max-width: ${deviceSize.md}px)`]: { marginTop: "1rem" },
 });
 
-const Accessories: FC = () => {
+interface Props {
+  category: menuDropdown[];
+}
+
+const Accessories: FC<Props> = ({ category }) => {
   const { visibleSlides } = useVisibleSlide();
-  const [selected, setSelected] = useState("new");
-  const [products, setProducts] = useState<Product[]>([]);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(null);
+  const fetchProduct = (addition: number) => {
+    setLoading(true);
+    setTimeout(() => {
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=50&addition=${addition}&offset=0&limit=8`,
+        {
+          method: "GET",
+        }
+      )
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.res_code === "00" && Array.isArray(data.res_result)) {
+            setProduct(data.res_result);
+            setLoading(false);
+          } else {
+            console.error("Unexpected response:", data);
+            setLoading(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setLoading(false);
+        });
+    }, 800);
+  };
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
 
   useEffect(() => {
-    axios
-      .get("/api/market-1/products", { params: { type: selected } })
-      .then(({ data }) => setProducts(data));
-  }, [selected]);
+    const defaultCategoryID = category[0].subCategory[0].categoryID;
+    fetchProduct(defaultCategoryID);
+    setSelected(defaultCategoryID.toString());
+  }, []);
 
-  const handleSelected = (item: string) => () => setSelected(item);
-  const activeColor = (item: string) => (item === selected ? "error" : "dark");
-
-  const buttons = [
-    { id: 1, title: "อุปกรณ์สำรองไฟ", type: "new" },
-    { id: 2, title: "ซาวด์การ์ด", type: "optics" },
-    { id: 3, title: "อะแดปเตอร์และสาย", type: "popular" },
-    { id: 4, title: "ลำโพง", type: "cpu" },
-    { id: 5, title: "ขายึดจอมอนิเตอร์", type: "view" },
-  ];
+  const handleCategoryClick = (category: string) => () => {
+    if (selected.match(category)) {
+      setSelected("");
+    } else {
+      fetchProduct(parseInt(category));
+      setSelected(category);
+    }
+  };
+  const activeColor = (item: string) =>
+    item === selected ? "ihavecpu" : "dark";
 
   return (
     <Container mb="4rem">
-      <FlexBox alignItems="center" justifyContent="space-between" flexWrap="wrap" mb="1.5rem">
+      <FlexBox
+        alignItems="center"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        mb="1.5rem"
+      >
         <Box>
-          <H2 fontSize={20}>อุปกรณ์ต่อพ่วง</H2>
-          <Paragraph>All our new arrivals in a exclusive brand selection</Paragraph>
+          <H2 fontSize={20}>{category[0]?.title_th}</H2>
         </Box>
 
         <ButtonsWrapper>
-          {buttons.map(({ id, title, type }) => (
+          {category[0]?.subCategory?.map((subCat) => (
             <Button
-              key={id}
+              key={subCat.categoryID}
               variant="outlined"
-              color={activeColor(type)}
-              onClick={handleSelected(type)}
+              color={activeColor(subCat.categoryID.toString())}
+              onClick={handleCategoryClick(subCat.categoryID.toString())}
             >
-              {title}
+              {subCat.title_th}
             </Button>
           ))}
         </ButtonsWrapper>
       </FlexBox>
-        <Carousel totalSlides={products.length} visibleSlides={visibleSlides}>
-          {products.map((product) => (
-            <ProductCard19
-              id={product.id}
-              key={product.id}
-              slug={product.slug}
-              name={product.title}
-              price={product.price}
-              images={product.images}
-              img={product.thumbnail}
-              reviews={product.reviews.length || 15}
-            />
-          ))}
-        </Carousel>
+      <Carousel
+        key={selected}
+        totalSlides={loading ? 5 : product ? product.length : 5}
+        visibleSlides={visibleSlides}
+      >
+        {loading
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <ProductCard1Skeleton key={index} />
+            ))
+          : product &&
+            product.map((item, ind) => (
+              <ProductCard1
+                key={ind}
+                hoverEffect
+                id={item.product_id}
+                slug={formatSlug(item.name_th)}
+                title={item.name_th}
+                price={parseInt(item.price_sale)}
+                priceBefore={parseInt(item.price_before)}
+                off={item.discount}
+                imgUrl={item.image800}
+              />
+            ))}
+      </Carousel>
     </Container>
   );
 };

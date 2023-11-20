@@ -12,6 +12,7 @@ import { getTheme } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
 import ProductQuickView from "@component/products/ProductQuickView";
 import PriceFormat from "@component/PriceFormat";
+import { IconButton } from "@component/buttons";
 
 // styled component
 const Wrapper = styled(Card)`
@@ -113,6 +114,42 @@ interface ProductCard1Props extends CardProps {
 }
 // =======================================================================
 
+const CardMedia = styled(Box)({
+  width: "100%",
+  maxHeight: 300,
+  cursor: "pointer",
+  overflow: "hidden",
+  position: "relative",
+  "& img": { transition: "0.3s" },
+});
+
+const CardBox = styled(Box)({
+  borderRadius: "10px",
+  transition: "all 0.3s",
+  backgroundColor: "white",
+  ":hover": {
+    border: "0px solid #000",
+    "& .product-actions": { right: 5 },
+    "& img": { transform: "scale(1.1)" },
+  },
+});
+
+const FavouriteButton = styled(IconButton)({
+  top: 45,
+  right: -40,
+  position: "absolute",
+  background: "transparent",
+  transition: "right 0.3s .2s",
+});
+
+const AddToCartButton = styled(IconButton)({
+  top: 10,
+  right: -40,
+  position: "absolute",
+  transition: "right 0.3s .1s",
+  background: "transparent",
+});
+
 const ProductCard1: FC<ProductCard1Props> = ({
   id,
   off,
@@ -148,42 +185,36 @@ const ProductCard1: FC<ProductCard1Props> = ({
               {off}%
             </Chip>
           )}
+          <CardBox>
+            <CardMedia>
+              <Link href={`/product/${id}/${slug}`}>
+                {/* <Image
+                  src={imgUrl}
+                  width={100}
+                  height={100}
+                  alt={title}
+                  objectFit="cover"
+                  layout="responsive"
+                  className="product-img"
+                /> */}
+                <img
+                  alt={title}
+                  width={100}
+                  src={imgUrl}
+                  height={100}
+                  style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                />
+              </Link>
 
-          <FlexBox className="extra-icons">
-            <Icon
-              color="secondary"
-              variant="small"
-              mb="0.5rem"
-              // onClick={toggleDialog}
-            >
-              eye-alt
-            </Icon>
+              <AddToCartButton className="product-actions">
+                <Icon size="18px">eye</Icon>
+              </AddToCartButton>
 
-            <Icon className="favorite-icon outlined-icon" variant="small">
-              heart
-            </Icon>
-          </FlexBox>
-
-          <Link href={`/product/${id}/${slug}`}>
-            <a>
-              {/* <Image
-              alt={title}
-              width={100}
-              src={imgUrl}
-              height={100}
-              objectFit="cover"
-              layout="responsive"
-              priority={true}
-            /> */}
-              <img
-                alt={title}
-                width={100}
-                src={imgUrl}
-                height={100}
-                style={{ objectFit: "cover", width: "100%", height: "100%" }}
-              />
-            </a>
-          </Link>
+              <FavouriteButton className="product-actions">
+                <Icon size="18px">heart</Icon>
+              </FavouriteButton>
+            </CardMedia>
+          </CardBox>
         </div>
 
         <div className="details">

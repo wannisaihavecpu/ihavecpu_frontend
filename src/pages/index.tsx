@@ -73,7 +73,11 @@ type Props = {
   categorySetBrandNotebook: setBrand[];
   newProduct: listProduct[];
   bannerHome: banner[];
+  bannerSlide: banner[];
+  bannerTwo: banner[];
+  bannerBottom: banner[];
   newBlog: allBlog[];
+  categorySpecific: menuDropdown[];
 };
 // =================================================================
 
@@ -88,7 +92,7 @@ const Home = (props: Props) => {
       />
 
       {/* BANNER SLIDE */}
-      <BannerSlide BannerList={props.bannerSlides} />
+      <BannerSlide banner={props.bannerSlide} />
 
       {/* BANNER1 OFFER BANNERS AREA */}
       {/* <Banner1 /> */}
@@ -106,7 +110,7 @@ const Home = (props: Props) => {
       <Discounts bigDiscountList={props.bigDiscountList} />
 
       {/* BANNER2BOX  BANNERS AREA */}
-      <Banner2box />
+      <Banner2box banner={props.bannerTwo} />
 
       {/* NEW ARRIVALS AREA */}
       <Newproduct product={props.newProduct} />
@@ -118,7 +122,7 @@ const Home = (props: Props) => {
       <Topcatrgories categoryList={props.topCategories} />
 
       {/* BANNER3BOX  BANNERS AREA */}
-      <Banner3box />
+      <Banner3box banner={props.bannerSlide} />
 
       {/* TOP RATING AND BRANDS AREA */}
       <Toprating
@@ -129,16 +133,16 @@ const Home = (props: Props) => {
       <Diy category={props.categorySetDIY} />
 
       {/* BANNER2BOX BANNERS AREA */}
-      <Banner2box />
+      <Banner2box banner={props.bannerTwo} />
 
       {/* NOTEBOOK AND WATCH AREA */}
       <Notebook category={props.categorySetBrandNotebook} />
 
       {/* อุปกรณ์ต่อพ่วง */}
-      <Accessories />
+      <Accessories category={props.categorySpecific} />
 
       {/* BANNER1 OFFER BANNERS AREA */}
-      <Banner1box />
+      <Banner1box banner={props.bannerBottom} />
 
       {/* บทความ */}
       <Blogs blogs={props.newBlog} />
@@ -186,6 +190,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const newProduct = await api.getNewProduct();
   const newBlog = await api.getNewBlog();
   const bannerHome = await api.getBanner();
+  const bannerSlide = await api.getBannerSlide();
+  const bannerTwo = await api.getBannerTwo();
+  const bannerBottom = await api.getBannerBottom();
+  const categorySpecific = await api.getCategorySpecific();
   return {
     props: {
       bannerSlides,
@@ -220,6 +228,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
       newProduct,
       newBlog,
       bannerHome,
+      bannerSlide,
+      bannerTwo,
+      bannerBottom,
+      categorySpecific,
     },
   };
 };

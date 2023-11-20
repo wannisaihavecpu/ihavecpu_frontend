@@ -111,12 +111,19 @@ const ProductCard19: FC<ProductCard19Props> = (props) => {
             </a>
           </Link>
 
-          <AddToCartButton className="product-actions" onClick={() => setOpenDialog(true)}>
+          <AddToCartButton
+            className="product-actions"
+            onClick={() => setOpenDialog(true)}
+          >
             <Icon size="18px">eye</Icon>
           </AddToCartButton>
 
           <FavouriteButton className="product-actions" onClick={handleFavorite}>
-            {isFavorite ? <Icon size="18px">heart-filled</Icon> : <Icon size="18px">heart</Icon>}
+            {isFavorite ? (
+              <Icon size="18px">heart-filled</Icon>
+            ) : (
+              <Icon size="18px">heart</Icon>
+            )}
           </FavouriteButton>
         </CardMedia>
 
@@ -133,7 +140,12 @@ const ProductCard19: FC<ProductCard19Props> = (props) => {
             </Small>
           </FlexBox>
 
-          <Button fullwidth color="dark" variant="outlined" onClick={handleAddToCart}>
+          <Button
+            fullwidth
+            color="dark"
+            variant="outlined"
+            onClick={handleAddToCart}
+          >
             Add To Cart
           </Button>
         </Box>

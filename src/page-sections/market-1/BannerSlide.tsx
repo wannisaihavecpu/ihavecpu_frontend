@@ -5,13 +5,13 @@ import { Carousel } from "@component/carousel";
 import { ProductCard22 } from "@component/product-cards";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import useWindowSize from "@hook/useWindowSize";
-import Banners from "@models/Banners.model";
+import banner from "@models/banner.model";
 
 // =====================================================
-type Props = { BannerList: Banners[] };
+type Props = { banner: banner[] };
 // =====================================================
 
-const BannerSlide: FC<Props> = ({ BannerList }) => {
+const BannerSlide: FC<Props> = ({ banner }) => {
   const width = useWindowSize();
   const [visibleSlides, setVisibleSlides] = useState(3);
 
@@ -22,25 +22,27 @@ const BannerSlide: FC<Props> = ({ BannerList }) => {
   }, [width]);
 
   return (
-    <CategorySectionCreator
-    // iconName="categories"
-    // title="อุปกรณ์เสริม เกมเมอร์"
-    // seeMoreLink="#"
-    >
-      <Carousel totalSlides={BannerList.length} visibleSlides={visibleSlides}>
-        {BannerList.map((item, ind) => (
-          <Link href={`/product/search/${item.slug}`} key={ind}>
-            <a>
-              <Card p="0rem">
-                <ProductCard22
-                  title={item.name}
-                  subtitle={item.description}
-                  imgUrl={item.image}
-                />
-              </Card>
-            </a>
-          </Link>
-        ))}
+    <CategorySectionCreator>
+      <Carousel
+        totalSlides={banner.length}
+        visibleSlides={visibleSlides}
+        showArrow={false}
+      >
+        {banner.map((item, ind) =>
+          item.link ? (
+            <Link href={item.link} key={ind}>
+              <a>
+                <Card p="0rem">
+                  <ProductCard22 imgUrl={item.imgUrl} />
+                </Card>
+              </a>
+            </Link>
+          ) : (
+            <Card p="0rem" key={ind}>
+              <ProductCard22 imgUrl={item.imgUrl} />
+            </Card>
+          )
+        )}
       </Carousel>
     </CategorySectionCreator>
   );

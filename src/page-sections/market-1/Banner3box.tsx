@@ -1,40 +1,20 @@
 import { FC } from "react";
 import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
-import { BannerCard1, BannerCard2 } from "@component/banners";
+import { BannerCardNoText1 } from "@component/banners";
+import banner from "@models/banner.model";
 
-const Banner3box: FC = () => {
+type Props = { banner: banner[] };
+
+const Banner3box: FC<Props> = ({ banner }) => {
   return (
     <Container mb="4rem">
       <Grid container spacing={5}>
-        <Grid item md={4} xs={12}>
-          <BannerCard1
-            url="#"
-            title="GIGABYE"
-            subTitle="Starting At  50%"
-            img="/assets/images/banners/men's-fashion.jpg"
-          />
-        </Grid>
-
-        <Grid item md={4} xs={12}>
-          <BannerCard2
-            url="#"
-            text3="Sale"
-            text2="Black Friday"
-            text1="Up to 20% Off"
-            img="/assets/images/banners/banner2.jpg"
-          />
-        </Grid>
-
-        <Grid item md={4} xs={12}>
-          <BannerCard1
-            url="#"
-            title="For Member"
-            subTitle="25% Off"
-            img="/assets/images/banners/womens-fashion.jpg"
-            contentPosition="right"
-          />
-        </Grid>
+        {banner?.map((item, index) => (
+          <Grid item md={4} xs={12} key={index}>
+            <BannerCardNoText1 img={item.imgUrl} />
+          </Grid>
+        ))}
       </Grid>
     </Container>
   );

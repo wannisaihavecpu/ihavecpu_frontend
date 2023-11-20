@@ -1,7 +1,13 @@
 import { Children, FC, Fragment } from "react";
 import clsx from "clsx";
 import { CSSProperties } from "styled-components";
-import { ButtonBack, ButtonNext, DotGroup, Slide, Slider } from "pure-react-carousel";
+import {
+  ButtonBack,
+  ButtonNext,
+  DotGroup,
+  Slide,
+  Slider,
+} from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import { colorOptions } from "interfaces";
 import Icon from "../icon/Icon";
@@ -130,7 +136,13 @@ const Carousel: FC<CarouselProps> = ({
   );
 };
 
-const renderDots = ({ step, currentSlide, visibleSlides, totalSlides, carouselStore }) => {
+const renderDots = ({
+  step,
+  currentSlide,
+  visibleSlides,
+  totalSlides,
+  carouselStore,
+}) => {
   const dots = [];
   const total = totalSlides - visibleSlides + 1;
 
@@ -139,7 +151,9 @@ const renderDots = ({ step, currentSlide, visibleSlides, totalSlides, carouselSt
       <div
         key={i}
         className={clsx({ dot: true, "dot-active": currentSlide === i })}
-        onClick={() => carouselStore.setStoreState({ currentSlide: i, autoPlay: false })}
+        onClick={() =>
+          carouselStore.setStoreState({ currentSlide: i, autoPlay: false })
+        }
       />
     );
 
