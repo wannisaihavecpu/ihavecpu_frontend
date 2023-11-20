@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 // import Container from "@component/Container";
 import AppLayout from "@component/layout/AppLayout";
 import Section1 from "@sections/market-1/Section1";
@@ -153,7 +153,7 @@ Home.layout = AppLayout;
 
 // ==============================================================
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const bannerSlides = await api.getBanners();
   const brands = await api.getBrands();
   const blogs = await api.getBlogs();

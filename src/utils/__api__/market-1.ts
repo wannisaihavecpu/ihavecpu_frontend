@@ -246,7 +246,7 @@ const getNewBlog = async (): Promise<allBlog[]> => {
 const getBanner = async (): Promise<banner[]> => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_PATH}/home/banner`
+      `${process.env.NEXT_PUBLIC_API_PATH}/home/banner?type=P`
     );
 
     if (response.data.res_code === "00") {
