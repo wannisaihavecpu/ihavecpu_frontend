@@ -80,7 +80,7 @@ const Hotdeal: FC<Props> = ({ list }) => {
                         mx="auto"
                         maxWidth="100%"
                         height={300}
-                        src="https://ihcupload.s3.ap-southeast-1.amazonaws.com/img/product/product12999_800.jpg"
+                        src="/assets/images/products/apple-watch-2.png"
                       />
                     </Grid>
 

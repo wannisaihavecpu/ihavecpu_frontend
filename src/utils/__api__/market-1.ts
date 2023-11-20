@@ -261,6 +261,81 @@ const getBanner = async (): Promise<banner[]> => {
   }
 };
 
+const getBannerSlide = async (): Promise<banner[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/home/banner?type=C&offset=0&limit=3`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching getBannerSlide:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getBannerSlide:", error.message);
+    return [];
+  }
+};
+
+const getBannerTwo = async (): Promise<banner[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/home/banner?type=C&offset=3&limit=2`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching getBannerTwo:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getBannerTwo:", error.message);
+    return [];
+  }
+};
+
+const getBannerBottom = async (): Promise<banner[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/home/banner?type=B&offset=0&limit=1`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching getBannerBottom:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getBannerBottom:", error.message);
+    return [];
+  }
+};
+
+const getCategorySpecific = async (): Promise<menuDropdown[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/menu/menuCategory?category_id=50&offset=0&limit=5`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching getCategorySpecific:",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getCategorySpecific:", error.message);
+    return [];
+  }
+};
+
 export default {
   getBanners,
   getBrands,
@@ -295,4 +370,8 @@ export default {
   getNewProduct,
   getNewBlog,
   getBanner,
+  getBannerSlide,
+  getBannerTwo,
+  getBannerBottom,
+  getCategorySpecific,
 };
