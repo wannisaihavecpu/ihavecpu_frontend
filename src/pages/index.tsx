@@ -37,6 +37,7 @@ import setBrand from "@models/setBrand.model";
 import listProduct from "@models/listProduct.model";
 import Banners from "@models/Banners.model";
 import allBlog from "@models/allBlog.model";
+import flashsale from "@models/flashsale.model";
 
 // =================================================================
 type Props = {
@@ -78,6 +79,7 @@ type Props = {
   bannerBottom: banner[];
   newBlog: allBlog[];
   categorySpecific: menuDropdown[];
+  productFlashSale: flashsale[];
 };
 // =================================================================
 
@@ -104,7 +106,7 @@ const Home = (props: Props) => {
       <Categories categories={props.bottomCategories} />
 
       {/* DEAL OF THE DAY CAROUSEL AREA */}
-      <Hotdeal list={props.hotDealList} />
+      <Hotdeal product={props.productFlashSale} />
 
       {/* สินค้าลดราคา */}
       <Discounts bigDiscountList={props.bigDiscountList} />
@@ -194,6 +196,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const bannerTwo = await api.getBannerTwo();
   const bannerBottom = await api.getBannerBottom();
   const categorySpecific = await api.getCategorySpecific();
+  const productFlashSale = await api.getFlashSaleProduct();
   return {
     props: {
       bannerSlides,
@@ -232,6 +235,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       bannerTwo,
       bannerBottom,
       categorySpecific,
+      productFlashSale,
     },
   };
 };

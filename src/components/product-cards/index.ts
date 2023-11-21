@@ -23,6 +23,8 @@ import ProductCard22 from "./ProductCard22";
 
 import ProductCard1Skeleton from "./ProductCard1Skeleton";
 
+import ProductCard1FlashSale from "./ProductCard1FlashSale";
+
 export {
   ProductCard1,
   ProductCard2,
@@ -47,4 +49,5 @@ export {
   ProductCard21,
   ProductCard22,
   ProductCard1Skeleton,
+  ProductCard1FlashSale,
 };
