@@ -2,7 +2,7 @@ import { FC } from "react";
 import FlexBox from "@component/FlexBox";
 import Grid from "@component/grid/Grid";
 import Pagination from "@component/pagination";
-import { ProductCard1 } from "@component/product-cards";
+// import { ProductCard1 } from "@component/product-cards";
 import { SemiSpan } from "@component/Typography";
 import listProduct from "@models/listProduct.model";
 
@@ -42,7 +42,7 @@ const ProductCard1List: FC<Props> = ({
   return (
     <div>
       <Grid container spacing={6}>
-        {products.map((item) => (
+        {/* {products.map((item) => (
           <Grid item lg={3} sm={6} xs={12} key={item.product_id}>
             <ProductCard1
               id={item.product_id}
@@ -53,7 +53,7 @@ const ProductCard1List: FC<Props> = ({
               // description={item.meta_description_th}
             />
           </Grid>
-        ))}
+        ))} */}
       </Grid>
 
       <FlexBox

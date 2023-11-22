@@ -2,7 +2,7 @@ import { FC } from "react";
 import Card from "@component/Card";
 // import SettingSearch from "./SettingSearch";
 import Divider from "@component/Divider";
-// import FlexBox from "@component/FlexBox";
+import FlexBox from "@component/FlexBox";
 // import CheckBox from "@component/CheckBox";
 // import ButtonText from "@component/buttons/ButtonText";
 // import TextField from "@component/text-field";
@@ -40,8 +40,8 @@ const ProductFilterCard: FC<ProductFilterCardProps> = (
     // clearSocket,
   }
 ) => {
-  // const [low, setLow] = useState(minPrice);
-  // const [high, setHigh] = useState(maxPrice);
+  // const [low, setLow] = useState("0");
+  // const [high, setHigh] = useState("1000");
   // // get selected items names
   // const getSelectedItemsNames = () => {
   //   const selectedItems = [...selectedBrands, ...selectedSocketType];
@@ -75,8 +75,8 @@ const ProductFilterCard: FC<ProductFilterCardProps> = (
 
       {/* PRICE RANGE FILTER */}
       <H6 mb="16px">ช่วงราคา</H6>
-      {/* <FlexBox justifyContent="space-between" alignItems="center">
-        <TextField
+      <FlexBox justifyContent="space-between" alignItems="center">
+        {/* <TextField
           placeholder="0"
           type="number"
           fullwidth
@@ -84,7 +84,6 @@ const ProductFilterCard: FC<ProductFilterCardProps> = (
           onChange={(e) => {
             const value = e.target.value;
             setLow(String(e.target.value));
-            onMinPriceChange(value);
           }}
         />
 
@@ -100,11 +99,10 @@ const ProductFilterCard: FC<ProductFilterCardProps> = (
           onChange={(e) => {
             const value = e.target.value;
             setHigh(String(e.target.value));
-            onMaxPriceChange(value);
           }}
-        />
+        /> */}
       </FlexBox>
-      <RangeSlider
+      {/* <RangeSlider
         min={0}
         max={12000}
         step={50}

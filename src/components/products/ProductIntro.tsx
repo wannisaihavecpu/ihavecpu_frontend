@@ -480,8 +480,8 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
                   height={300}
                   src={
                     hoveredImage !== null
-                      ? product.picture[hoveredImage]?.pic_800
-                      : product.picture[selectedImage]?.pic_800
+                      ? product?.picture[hoveredImage]?.pic_800
+                      : product?.picture[selectedImage]?.pic_800
                   }
                   style={{
                     objectFit: "cover",
@@ -492,12 +492,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
               </Box>
             </FlexBox>
             <FlexBox>
-              {product.picture.length > 5 ? (
+              {product?.picture.length > 5 ? (
                 <CarouselViewProduct
                   totalSlides={product.picture.length}
                   visibleSlides={5}
                 >
-                  {product.picture.map((image, ind) => (
+                  {product?.picture?.map((image, ind) => (
                     <Box
                       key={ind}
                       size={70}
@@ -527,7 +527,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
                   ))}
                 </CarouselViewProduct>
               ) : (
-                product.picture.map((image, ind) => (
+                product?.picture?.map((image, ind) => (
                   <Box
                     key={ind}
                     size={70}
@@ -574,7 +574,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
               </Small>
             </ShowStock>
           </Box>
-          <H3 mb="1rem">{product.name_th}</H3>
+          <H3 mb="1rem">{product?.name_th}</H3>
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>แบรนด์:</SemiSpan>
