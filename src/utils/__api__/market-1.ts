@@ -13,6 +13,7 @@ import setBrand from "@models/setBrand.model";
 import listProduct from "@models/listProduct.model";
 import allBlog from "@models/allBlog.model";
 import flashsale from "@models/flashsale.model";
+import productShelf from "@models/productShelf";
 
 const getTopRatedProduct = async (): Promise<Product[]> => {
   const response = await axios.get("/api/market-1/toprated-product");
@@ -369,6 +370,34 @@ const getFlashSaleProduct = async (): Promise<flashsale[]> => {
   }
 };
 
+const getBestSeller = async (): Promise<productShelf[]> => {
+  try {
+    const formData = new FormData();
+    formData.append("lang", "th");
+    formData.append("id", "4");
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/product_shelf`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching getBestSeller:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getBestSeller:", error.message);
+    return [];
+  }
+};
+
 export default {
   getBanners,
   getBrands,
@@ -408,4 +437,5 @@ export default {
   getBannerBottom,
   getCategorySpecific,
   getFlashSaleProduct,
+  getBestSeller,
 };

@@ -7,6 +7,8 @@ import listCouponProduct from "@models/listCouponProduct.model";
 import myCouponAvaliable from "@models/myCouponAvaliable.model";
 import getAllProduct from "@models/getAllProduct.model";
 import listProduct from "@models/listProduct.model";
+import menuDropdown from "@models/menuDropdown.model";
+import detailCategory from "@models/detailCategory.model";
 
 // get all product slug
 const getSlugs = async (): Promise<{ params: { slug: string } }[]> => {
@@ -160,6 +162,65 @@ const getSameBrandProduct = async (
     return [];
   }
 };
+const getCategoryNameById = async (): Promise<menuDropdown[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/menu/dropdown`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching getCategoryNameById:",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getCategoryNameById:", error.message);
+    return [];
+  }
+};
+const getProductOfCategory = async (
+  categoryID: string
+): Promise<listProduct[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}`
+    );
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching getProductOfCategory",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getProductOfCategory", error.message);
+    return [];
+  }
+};
+const getDetailCategory = async (
+  categoryID: string
+): Promise<detailCategory[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/category/detail?category_id=${categoryID}`
+    );
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching getDetailCategory", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getDetailCategory", error.message);
+    return [];
+  }
+};
 
 export default {
   getSlugs,
@@ -175,4 +236,7 @@ export default {
   getMyCoupon,
   getAllProduct,
   getSameBrandProduct,
+  getCategoryNameById,
+  getProductOfCategory,
+  getDetailCategory,
 };

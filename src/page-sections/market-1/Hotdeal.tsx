@@ -96,126 +96,7 @@ const Hotdeal: FC<Props> = ({ product }) => {
                   color="ihavecpu"
                   dateTimeExpired={product[0]?.campaign_end_datetime}
                 />
-                {/* <Grid container alignItems="center" spacing={6}>
-                    <Grid item md={6} xs={12}>
-                      <Image
-                        mx="auto"
-                        maxWidth="100%"
-                        height={300}
-                        src="/assets/images/products/apple-watch-2.png"
-                      />
-                    </Grid>
 
-                    <Grid item md={6} xs={12}>
-                      <FlexBox mt="3rem" mb="1.125rem">
-                        <IconButton
-                          mr="0.5rem"
-                          color="primary"
-                          variant="contained"
-                          disabled={currentSlide === 0}
-                          onClick={handleSlideChange(currentSlide - 1)}
-                        >
-                          <Icon variant="small" defaultcolor="currentColor">
-                            arrow-left
-                          </Icon>
-                        </IconButton>
-
-                        <IconButton
-                          color="primary"
-                          variant="contained"
-                          disabled={currentSlide === totalSlides - 1}
-                          onClick={handleSlideChange(currentSlide + 1)}
-                        >
-                          <Icon variant="small" defaultcolor="currentColor">
-                            arrow-right
-                          </Icon>
-                        </IconButton>
-                      </FlexBox>
-
-                      <H3 mb="0.875rem" color="ihavecpu.main" lineHeight="1.3">
-                        Flash Deals !
-                      </H3>
-
-                      <H3 mb="0.5rem" fontSize="25px" lineHeight="1.2">
-                        s
-                      </H3>
-
-                      <Paragraph mb="2rem" color="text.muted" maxWidth="400px">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Quis lobortis consequat eu, quam etiam at quis ut
-                        convallis.
-                      </Paragraph>
-
-                      <H4 mb="0.5rem" lineHeight="1.3" fontWeight="600">
-                        Fresh Deal Everyday, Get It Now!
-                      </H4>
-
-                      <FlexBox flexWrap="wrap" mb="2rem">
-                        <FlexBox alignItems="flex-end" mr="1.75rem">
-                          <H3 lineHeight="1.3" mr="0.25rem">
-                            25
-                          </H3>
-
-                          <SemiSpan fontWeight="600" lineHeight="1.7">
-                            วัน
-                          </SemiSpan>
-                        </FlexBox>
-
-                        <FlexBox alignItems="flex-end" mr="1.75rem">
-                          <H3 lineHeight="1.3" mr="0.25rem">
-                            22
-                          </H3>
-
-                          <SemiSpan fontWeight="600" lineHeight="1.7">
-                            ชั่วโมง
-                          </SemiSpan>
-                        </FlexBox>
-
-                        <FlexBox alignItems="flex-end" mr="1.75rem">
-                          <H3 lineHeight="1.3" mr="0.25rem">
-                            39
-                          </H3>
-
-                          <SemiSpan fontWeight="600" lineHeight="1.7">
-                            นาที
-                          </SemiSpan>
-                        </FlexBox>
-
-                        <FlexBox alignItems="flex-end">
-                          <H3 lineHeight="1.3" mr="0.25rem">
-                            42
-                          </H3>
-
-                          <SemiSpan fontWeight="600" lineHeight="1.7">
-                            วินาที
-                          </SemiSpan>
-                        </FlexBox>
-                      </FlexBox>
-
-                      <FlexBox alignItems="center" mb="3rem">
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          borderRadius={8}
-                          mr="0.5rem"
-                        >
-                          ซื้อเลย
-                        </Button>
-
-                        <FlexBox
-                          size="40px"
-                          color="white"
-                          bg="gray.500"
-                          borderRadius={8}
-                          cursor="pointer"
-                          alignItems="center"
-                          justifyContent="center"
-                        >
-                          <Icon defaultcolor="currentColor">heart_filled</Icon>
-                        </FlexBox>
-                      </FlexBox>
-                    </Grid>
-                  </Grid> */}
                 <Carousel
                   showDots={width > 900 ? false : true}
                   step={2}
@@ -224,10 +105,10 @@ const Hotdeal: FC<Props> = ({ product }) => {
                   dotColor="#d4001a"
                   autoPlay={true}
                   infinite={true}
-                  totalSlides={product[0].product.length}
+                  totalSlides={product[0]?.product.length}
                   visibleSlides={visibleSlides}
                 >
-                  {product[0].product?.map((item) => (
+                  {product[0]?.product?.map((item) => (
                     <Box py="0.25rem" key={item.product_id}>
                       <ProductCard1FlashSale
                         key={item.product_id}

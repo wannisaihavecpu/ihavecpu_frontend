@@ -4,6 +4,8 @@ interface menuDropdown {
   title_th: string;
   title_gb: string;
   icon: string;
+  link: string;
+  schema_link: string;
   subCategory: [
     {
       categoryID: number;
