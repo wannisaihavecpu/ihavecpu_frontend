@@ -8,12 +8,31 @@ import CategorySectionHeader from "@component/CategorySectionHeader";
 import { ProductCard4, ProductCard5 } from "@component/product-cards";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
+import productShelf from "@models/productShelf";
 
 // ===================================================================
-type Props = { topRatedBrands: Brand[]; topRatedList: Product[] };
+type Props = {
+  topRatedBrands: Brand[];
+  topRatedList: Product[];
+  bestSeller: productShelf[];
+};
 // ===================================================================
 
-const Toprating: FC<Props> = ({ topRatedBrands, topRatedList }) => {
+const Toprating: FC<Props> = ({ topRatedBrands, bestSeller }) => {
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
   return (
     <Box mb="3.75rem">
       <Container>
@@ -27,21 +46,29 @@ const Toprating: FC<Props> = ({ topRatedBrands, topRatedList }) => {
 
             <Card p="1rem">
               <Grid container spacing={4}>
-                {topRatedList.map((item) => (
-                  <Grid item md={3} sm={6} xs={6} key={item.title}>
-                    <Link href={`/product/search/${item.slug}`} passHref>
-                      <a>
-                        <ProductCard4
-                          title={item.title}
-                          price={item.price}
-                          imgUrl={item.thumbnail}
-                          rating={item.rating || 4}
-                          reviewCount={item.reviews.length || 12}
-                        />
-                      </a>
-                    </Link>
-                  </Grid>
-                ))}
+                {bestSeller.map((shelf) =>
+                  shelf.product.map((item) => (
+                    <Grid item md={3} sm={6} xs={6} key={item.product_id}>
+                      <Link
+                        href={`/product/${item.product_id}/${formatSlug(
+                          item.name
+                        )}`}
+                        passHref
+                      >
+                        <a>
+                          <ProductCard4
+                            key={item.product_id}
+                            title={item.name}
+                            price={parseInt(item.sell_price)}
+                            priceBefore={parseInt(item.sell_price)}
+                            imgUrl={item.img}
+                            off={item.ecom_market_price}
+                          />
+                        </a>
+                      </Link>
+                    </Grid>
+                  ))
+                )}
               </Grid>
             </Card>
           </Grid>

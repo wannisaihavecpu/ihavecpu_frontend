@@ -6,6 +6,7 @@ import { H4 } from "@component/Typography";
 import PriceFormat from "@component/PriceFormat";
 import FlexBox from "@component/FlexBox";
 import { Chip } from "@component/Chip";
+
 // ========================================================
 type ProductCard2Props = {
   slug: string;

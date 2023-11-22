@@ -1,15 +1,35 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import Card from "@component/Card";
-import Grid from "@component/grid/Grid";
-import { ProductCard2 } from "@component/product-cards";
+// import Grid from "@component/grid/Grid";
+// import { ProductCard2 } from "@component/product-cards";
+import { Chip } from "@component/Chip";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import listProduct from "@models/listProduct.model";
+import Box from "@component/Box";
+import Link from "next/link";
+import HoverBox from "@component/HoverBox";
+import NextImage from "next/image";
+import { H4 } from "@component/Typography";
+import { Carousel } from "@component/carousel";
+import FlexBox from "@component/FlexBox";
+import PriceFormat from "@component/PriceFormat";
+import useWindowSize from "@hook/useWindowSize";
 
 // =======================================================
 type Props = { product: listProduct[] };
 // =======================================================
 
 const Newproduct: FC<Props> = ({ product }) => {
+  const width = useWindowSize();
+
+  const [visibleSlides, setVisibleSlides] = useState(6);
+
+  useEffect(() => {
+    if (width < 370) setVisibleSlides(1);
+    else if (width < 650) setVisibleSlides(2);
+    else if (width < 950) setVisibleSlides(4);
+    else setVisibleSlides(6);
+  }, [width]);
   const formatSlug = (name) => {
     let formattedSlug = name.replace(/\s+/g, "-");
 
@@ -30,23 +50,68 @@ const Newproduct: FC<Props> = ({ product }) => {
       title="สินค้ามาใหม่"
       seeMoreLink="#"
     >
-      <Card p="1rem">
-        <Grid container spacing={6}>
+      <Box my="-0.25rem">
+        <Carousel totalSlides={product.length} visibleSlides={visibleSlides}>
           {product.map((item) => (
-            <Grid item lg={2} md={3} sm={4} xs={6} key={item.product_id}>
-              <ProductCard2
-                id={item.product_id}
-                discount={item.discount}
-                slug={formatSlug(item.name_th)}
-                title={item.name_th}
-                priceSale={item.price_sale}
-                priceBefore={item.price_before}
-                imgUrl={item.image800}
-              />
-            </Grid>
+            <Box py="0.25rem" key={item.product_id}>
+              <Card p="1rem">
+                <Link href={`/product/${formatSlug(item.name_th)}`} passHref>
+                  <a>
+                    <HoverBox borderRadius={8} mb="0.5rem">
+                      {item.discount && (
+                        <Chip
+                          top="10px"
+                          left="10px"
+                          p="5px 10px"
+                          fontSize="10px"
+                          fontWeight="600"
+                          bg="ihavecpu.main"
+                          position="absolute"
+                          color="primary.text"
+                          zIndex={1}
+                        >
+                          {item.discount}
+                        </Chip>
+                      )}
+                      <NextImage
+                        width={100}
+                        height={100}
+                        alt={item.name_th}
+                        src={item.image800}
+                        layout="responsive"
+                      />
+                    </HoverBox>
+
+                    <H4 fontWeight="600" fontSize="14px" mb="0.25rem">
+                      {item.name_th.length > 15
+                        ? item.name_th.slice(0, 15) + "..."
+                        : item.name_th}
+                    </H4>
+
+                    <FlexBox>
+                      <H4
+                        fontWeight="600"
+                        fontSize="14px"
+                        color="primary.main"
+                        mr="0.5rem"
+                      >
+                        <PriceFormat price={parseInt(item.price_sale)} />
+                      </H4>
+                      {item.discount && (
+                        <H4 fontWeight="600" fontSize="14px" color="text.muted">
+                          <del>
+                            <PriceFormat price={parseInt(item.price_before)} />
+                          </del>
+                        </H4>
+                      )}
+                    </FlexBox>
+                  </a>
+                </Link>
+              </Card>
+            </Box>
           ))}
-        </Grid>
-      </Card>
+        </Carousel>
+      </Box>
     </CategorySectionCreator>
   );
 };

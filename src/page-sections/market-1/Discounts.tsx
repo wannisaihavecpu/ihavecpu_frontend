@@ -28,9 +28,16 @@ const Discounts: FC<Props> = ({ bigDiscountList }) => {
   }, [width]);
 
   return (
-    <CategorySectionCreator iconName="gift" title="สินค้าลดราคา" seeMoreLink="#">
+    <CategorySectionCreator
+      iconName="gift"
+      title="สินค้าลดราคา"
+      seeMoreLink="#"
+    >
       <Box my="-0.25rem">
-        <Carousel totalSlides={bigDiscountList.length} visibleSlides={visibleSlides}>
+        <Carousel
+          totalSlides={bigDiscountList.length}
+          visibleSlides={visibleSlides}
+        >
           {bigDiscountList.map((item) => (
             <Box py="0.25rem" key={item.id}>
               <Card p="1rem">
@@ -51,7 +58,12 @@ const Discounts: FC<Props> = ({ bigDiscountList }) => {
                     </H4>
 
                     <FlexBox>
-                      <H4 fontWeight="600" fontSize="14px" color="primary.main" mr="0.5rem">
+                      <H4
+                        fontWeight="600"
+                        fontSize="14px"
+                        color="primary.main"
+                        mr="0.5rem"
+                      >
                         {calculateDiscount(item.price, item.discount)}
                       </H4>
 
