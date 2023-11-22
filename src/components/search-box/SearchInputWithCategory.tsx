@@ -1,40 +1,55 @@
 import { FC, useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+// import Link from "next/link";
 import { debounce } from "lodash";
 import Box from "../Box";
-import Menu from "../Menu";
+// import Menu from "../Menu";
 import Card from "../Card";
 import Icon from "../icon/Icon";
-import FlexBox from "../FlexBox";
-import MenuItem from "../MenuItem";
-import { Span } from "../Typography";
+// import FlexBox from "../FlexBox";
+// import MenuItem from "../MenuItem";
+// import { Span } from "../Typography";
 import TextField from "../text-field";
 import StyledSearchBox from "./styled";
+import { useRouter } from "next/router";
 
 const SearchInputWithCategory: FC = () => {
+  const router = useRouter();
   const [resultList, setResultList] = useState([]);
-  const [category, setCategory] = useState("All Categories");
+  // const [category, setCategory] = useState("All Categories");
+  const [searchValue, setSearchValue] = useState("");
 
-  const handleCategoryChange = (cat) => () => setCategory(cat);
+  // const handleCategoryChange = (cat) => () => setCategory(cat);
 
-  const search = debounce((e) => {
-    const value = e.target?.value;
-
+  const search = debounce((value) => {
     if (!value) setResultList([]);
     else setResultList(dummySearchResult);
   }, 200);
-
-  const hanldeSearch = useCallback((event) => {
-    event.persist();
-    search(event);
-  }, []);
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchValue(value);
+    search(value);
+  };
 
   const handleDocumentClick = () => setResultList([]);
+  const handleEnterKeyPress = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        router.push(`/product/search/${searchValue}`);
+        setSearchValue("");
+      }
+    },
+    [router, searchValue]
+  );
 
   useEffect(() => {
     window.addEventListener("click", handleDocumentClick);
-    return () => window.removeEventListener("click", handleDocumentClick);
-  }, []);
+    window.addEventListener("keydown", handleEnterKeyPress);
+
+    return () => {
+      window.removeEventListener("click", handleDocumentClick);
+      window.removeEventListener("keydown", handleEnterKeyPress);
+    };
+  }, [handleEnterKeyPress]);
 
   return (
     <Box position="relative" flex="1 1 0" maxWidth="670px" mx="auto">
@@ -45,12 +60,13 @@ const SearchInputWithCategory: FC = () => {
 
         <TextField
           fullwidth
-          onChange={hanldeSearch}
+          onChange={handleSearchChange}
+          value={searchValue}
           className="search-field"
-          placeholder="Search and hit enter..."
+          placeholder="ค้นหาสินค้า"
         />
 
-        <Menu
+        {/* <Menu
           direction="right"
           className="category-dropdown"
           handler={
@@ -65,35 +81,36 @@ const SearchInputWithCategory: FC = () => {
               {item}
             </MenuItem>
           ))}
-        </Menu>
+        </Menu> */}
       </StyledSearchBox>
 
       {!!resultList.length && (
-        <Card position="absolute" top="100%" py="0.5rem" width="100%" boxShadow="large" zIndex={99}>
-          {resultList.map((item) => (
+        <Card
+          position="absolute"
+          top="100%"
+          py="0.5rem"
+          width="100%"
+          boxShadow="large"
+          zIndex={99}
+        >
+          {/* {resultList.map((item) => (
             <Link href={`/product/search/${item}`} key={item}>
               <MenuItem key={item}>
                 <Span fontSize="14px">{item}</Span>
               </MenuItem>
             </Link>
-          ))}
+          ))} */}
         </Card>
       )}
     </Box>
   );
 };
 
-const categories = [
-  "All Categories",
-  "Car",
-  "Clothes",
-  "Electronics",
-  "Laptop",
-  "Desktop",
-  "Camera",
-  "Toys",
+const dummySearchResult = [
+  "Macbook Air 13",
+  "Ksus K555LA",
+  "Acer Aspire X453",
+  "iPad Mini 3",
 ];
-
-const dummySearchResult = ["Macbook Air 13", "Ksus K555LA", "Acer Aspire X453", "iPad Mini 3"];
 
 export default SearchInputWithCategory;

@@ -43,7 +43,7 @@ const SearchInput: FC = () => {
           fullwidth
           onChange={hanldeSearch}
           className="search-field"
-          placeholder="Search and hit enter..."
+          placeholder="ค้นหา"
         />
 
         <Button className="search-button" variant="contained" color="primary">
@@ -56,7 +56,14 @@ const SearchInput: FC = () => {
       </SearchBoxStyle>
 
       {!!resultList.length && (
-        <Card position="absolute" top="100%" py="0.5rem" width="100%" boxShadow="large" zIndex={99}>
+        <Card
+          position="absolute"
+          top="100%"
+          py="0.5rem"
+          width="100%"
+          boxShadow="large"
+          zIndex={99}
+        >
           {resultList.map((item) => (
             <Link href={`/product/search/${item}`} key={item}>
               <MenuItem key={item}>
@@ -70,6 +77,11 @@ const SearchInput: FC = () => {
   );
 };
 
-const dummySearchResult = ["Macbook Air 13", "Ksus K555LA", "Acer Aspire X453", "iPad Mini 3"];
+const dummySearchResult = [
+  "Macbook Air 13",
+  "Ksus K555LA",
+  "Acer Aspire X453",
+  "iPad Mini 3",
+];
 
 export default SearchInput;

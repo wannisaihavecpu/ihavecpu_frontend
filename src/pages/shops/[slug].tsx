@@ -7,7 +7,7 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import Sidenav from "@component/sidenav/Sidenav";
 import NavbarLayout from "@component/layout/NavbarLayout";
-import ProductCardList from "@component/products/ProductCard1List";
+// import ProductCardList from "@component/products/ProductCard1List";
 import ProductFilterCard from "@component/products/ProductFilterCard";
 import ShopIntroCard from "@sections/shop/ShopIntroCard";
 import useWindowSize from "@hook/useWindowSize";
@@ -18,7 +18,7 @@ import api from "@utils/__api__/shops";
 type Props = { shop: Shop };
 // ============================================================
 
-const ShopDetails = ({ shop }: Props) => {
+const ShopDetails = ({}: Props) => {
   const router = useRouter();
   const width = useWindowSize();
   const isTablet = width < 1025;
@@ -52,7 +52,7 @@ const ShopDetails = ({ shop }: Props) => {
               <ProductFilterCard />
             </Sidenav>
           )}
-          <ProductCardList products={shop.products.slice(0, 9)} />
+          {/* <ProductCardList products={shop.products.slice(0, 9)} /> */}
         </Grid>
       </Grid>
     </Fragment>
@@ -66,7 +66,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: paths, //indicates that no page needs be created at build time
-    fallback: "blocking", //indicates the type of fallback
+    fallback: "blocking",
   };
 };
 

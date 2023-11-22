@@ -1,15 +1,15 @@
 import { FC } from "react";
 import Card from "@component/Card";
-import SettingSearch from "./SettingSearch";
+// import SettingSearch from "./SettingSearch";
 import Divider from "@component/Divider";
-import FlexBox from "@component/FlexBox";
-import CheckBox from "@component/CheckBox";
-import ButtonText from "@component/buttons/ButtonText";
-import TextField from "@component/text-field";
-import { H5, H6, SemiSpan } from "@component/Typography";
-import { useState } from "react";
-import Box from "@component/Box";
-import { RangeSlider } from "next-range-slider";
+// import FlexBox from "@component/FlexBox";
+// import CheckBox from "@component/CheckBox";
+// import ButtonText from "@component/buttons/ButtonText";
+// import TextField from "@component/text-field";
+import { H6 } from "@component/Typography";
+// import { useState } from "react";
+// import Box from "@component/Box";
+// import { RangeSlider } from "next-range-slider";
 type ProductFilterCardProps = {
   selectedBrands?: string[];
   onBrandCheckboxChange?: (brand: string) => void;
@@ -24,32 +24,34 @@ type ProductFilterCardProps = {
   clearBrands?: () => void;
   clearSocket?: () => void;
 };
-const ProductFilterCard: FC<ProductFilterCardProps> = ({
-  selectedBrands,
-  onBrandCheckboxChange,
-  selectedSocketType,
-  onSocketTypeCheckboxChange,
-  minPrice,
-  onMinPriceChange,
-  maxPrice,
-  onMaxPriceChange,
-  clearFilters,
-  handleItemRemove,
-  clearBrands,
-  clearSocket,
-}) => {
-  const [low, setLow] = useState(minPrice);
-  const [high, setHigh] = useState(maxPrice);
-  // get selected items names
-  const getSelectedItemsNames = () => {
-    const selectedItems = [...selectedBrands, ...selectedSocketType];
-    return selectedItems.join(", ");
-  };
+const ProductFilterCard: FC<ProductFilterCardProps> = (
+  {
+    // selectedBrands,
+    // onBrandCheckboxChange,
+    // selectedSocketType,
+    // onSocketTypeCheckboxChange,
+    // minPrice,
+    // onMinPriceChange,
+    // maxPrice,
+    // onMaxPriceChange,
+    // clearFilters,
+    // handleItemRemove,
+    // clearBrands,
+    // clearSocket,
+  }
+) => {
+  // const [low, setLow] = useState(minPrice);
+  // const [high, setHigh] = useState(maxPrice);
+  // // get selected items names
+  // const getSelectedItemsNames = () => {
+  //   const selectedItems = [...selectedBrands, ...selectedSocketType];
+  //   return selectedItems.join(", ");
+  // };
 
   return (
     <Card p="18px 27px" elevation={5}>
       {/* SHOW SELECTED ITEMS */}
-      {getSelectedItemsNames().length > 0 ? (
+      {/* {getSelectedItemsNames().length > 0 ? (
         <>
           <div
             style={{
@@ -69,11 +71,11 @@ const ProductFilterCard: FC<ProductFilterCardProps> = ({
           </Box>
           <Divider mt="18px" mb="24px" />
         </>
-      ) : null}
+      ) : null} */}
 
       {/* PRICE RANGE FILTER */}
       <H6 mb="16px">ช่วงราคา</H6>
-      <FlexBox justifyContent="space-between" alignItems="center">
+      {/* <FlexBox justifyContent="space-between" alignItems="center">
         <TextField
           placeholder="0"
           type="number"
@@ -124,12 +126,12 @@ const ProductFilterCard: FC<ProductFilterCardProps> = ({
             },
           },
         }}
-      />
+      /> */}
 
       <Divider my="24px" />
 
       {/* CPU BRANDS FILTER MOCKUP */}
-      <div
+      {/* <div
         style={{
           display: "flex",
           alignItems: "center",
@@ -154,12 +156,12 @@ const ProductFilterCard: FC<ProductFilterCardProps> = ({
           onChange={() => onBrandCheckboxChange(item.id)}
           checked={selectedBrands.includes(item.id)}
         />
-      ))}
+      ))} */}
 
       <Divider my="24px" />
 
       {/* SOCKET TYPE FILTER MOCKUP */}
-      <div
+      {/* <div
         style={{
           display: "flex",
           alignItems: "center",
@@ -183,7 +185,7 @@ const ProductFilterCard: FC<ProductFilterCardProps> = ({
           onChange={() => onSocketTypeCheckboxChange(item.id)}
           checked={selectedSocketType.includes(item.id)}
         />
-      ))}
+      ))} */}
 
       <Divider my="24px" />
     </Card>
@@ -191,16 +193,16 @@ const ProductFilterCard: FC<ProductFilterCardProps> = ({
 };
 
 // mock up cpu socket type
-const otherOptions = [
-  { id: "AMD AM4", title: "AMD AM4" },
-  { id: "Intel LGA-1200", title: "Intel LGA-1200" },
-  { id: "Intel LGA-1700", title: "Intel LGA-1700" },
-  { id: "AMD AM5", title: "AMD AM5" },
-];
-// mock up cpu brands
-const brandList = [
-  { id: "204", title: "AMD" },
-  { id: "205", title: "Intel" },
-];
+// const otherOptions = [
+//   { id: "AMD AM4", title: "AMD AM4" },
+//   { id: "Intel LGA-1200", title: "Intel LGA-1200" },
+//   { id: "Intel LGA-1700", title: "Intel LGA-1700" },
+//   { id: "AMD AM5", title: "AMD AM5" },
+// ];
+// // mock up cpu brands
+// const brandList = [
+//   { id: "204", title: "AMD" },
+//   { id: "205", title: "Intel" },
+// ];
 
 export default ProductFilterCard;
