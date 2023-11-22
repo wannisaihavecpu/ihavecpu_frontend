@@ -105,10 +105,10 @@ const Hotdeal: FC<Props> = ({ product }) => {
                   dotColor="#d4001a"
                   autoPlay={true}
                   infinite={true}
-                  totalSlides={product[0].product.length}
+                  totalSlides={product[0]?.product.length}
                   visibleSlides={visibleSlides}
                 >
-                  {product[0].product?.map((item) => (
+                  {product[0]?.product?.map((item) => (
                     <Box py="0.25rem" key={item.product_id}>
                       <ProductCard1FlashSale
                         key={item.product_id}
