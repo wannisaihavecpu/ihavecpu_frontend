@@ -10,11 +10,12 @@ import { IconButton } from "@component/buttons";
 import Sidenav from "@component/sidenav/Sidenav";
 import { H5, Paragraph } from "@component/Typography";
 import NavbarLayout from "@component/layout/NavbarLayout";
-import ProductCard1List from "@component/products/ProductCard1List";
-import ProductCard9List from "@component/products/ProductCard9List";
+// import ProductCard1List from "@component/products/ProductCard1List";
+// import ProductCard9List from "@component/products/ProductCard9List";
 import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
-import product from "@data/product";
+// import product from "@data/product";
+import { useRouter } from "next/router";
 
 const ProductSearchResult = () => {
   const width = useWindowSize();
@@ -28,6 +29,11 @@ const ProductSearchResult = () => {
   // price range
   const [minPrice, setMinPrice] = useState<string | null>("0"); // 0 = mock up
   const [maxPrice, setMaxPrice] = useState<string | null>("12000"); // "12000" = mock up
+
+  const router = useRouter();
+  const { query } = router;
+
+  const productName = query.slug?.toString() || "";
 
   // handle changes in CPU brands filters
   const handleBrandCheckboxChange = (brand: string) => {
@@ -96,7 +102,8 @@ const ProductSearchResult = () => {
         justifyContent="space-between"
       >
         <div>
-          <H5>Searching for “ ซีพียู ”</H5>
+          <H5>Searching for {productName}</H5>
+
           <Paragraph color="text.muted">5 results found</Paragraph>
         </div>
 
@@ -127,7 +134,7 @@ const ProductSearchResult = () => {
             </Icon>
           </IconButton>
 
-          <IconButton size="small" onClick={toggleView("list")}  ml="0.5rem">
+          <IconButton size="small" onClick={toggleView("list")} ml="0.5rem">
             <Icon
               variant="small"
               defaultcolor="auto"
@@ -185,7 +192,7 @@ const ProductSearchResult = () => {
           />
         </Hidden>
         {/* PRODUCTS */}
-        <Grid item lg={9} xs={12}>
+        {/* <Grid item lg={9} xs={12}>
           {view === "grid" ? (
             <ProductCard1List
               products={product}
@@ -197,7 +204,7 @@ const ProductSearchResult = () => {
           ) : (
             <ProductCard9List products={product} />
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
   );

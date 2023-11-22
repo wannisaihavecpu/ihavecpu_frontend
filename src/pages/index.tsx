@@ -10,7 +10,7 @@ import Diy from "@sections/market-1/Diy";
 import Computorset from "@sections/market-1/Computorset";
 import Notebook from "@sections/market-1/Notebook";
 import Categories from "@sections/market-1/Categories";
-import Discounts from "@sections/market-1/Discounts";
+// import Discounts from "@sections/market-1/Discounts";
 // import Banner1 from "@sections/market-1/Banner1";
 import Banner1box from "@sections/market-1/Banner1box";
 import Banner2box from "@sections/market-1/Banner2box";
@@ -38,6 +38,7 @@ import listProduct from "@models/listProduct.model";
 import Banners from "@models/Banners.model";
 import allBlog from "@models/allBlog.model";
 import flashsale from "@models/flashsale.model";
+import productShelf from "@models/productShelf";
 
 // =================================================================
 type Props = {
@@ -68,18 +69,19 @@ type Props = {
   topRatedProducts?: Product[];
   bottomCategories?: Category[];
   mainCarouselData?: MainCarouselItem[];
-  hotDealList: any[];
-  categorySetComputer: menuDropdown[];
-  categorySetDIY: categoryDIYHome[];
-  categorySetBrandNotebook: setBrand[];
-  newProduct: listProduct[];
-  bannerHome: banner[];
-  bannerSlide: banner[];
-  bannerTwo: banner[];
-  bannerBottom: banner[];
-  newBlog: allBlog[];
-  categorySpecific: menuDropdown[];
-  productFlashSale: flashsale[];
+  hotDealList?: any[];
+  categorySetComputer?: menuDropdown[];
+  categorySetDIY?: categoryDIYHome[];
+  categorySetBrandNotebook?: setBrand[];
+  newProduct?: listProduct[];
+  bannerHome?: banner[];
+  bannerSlide?: banner[];
+  bannerTwo?: banner[];
+  bannerBottom?: banner[];
+  newBlog?: allBlog[];
+  categorySpecific?: menuDropdown[];
+  productFlashSale?: flashsale[];
+  productBestSeller?: productShelf[];
 };
 // =================================================================
 
@@ -109,7 +111,7 @@ const Home = (props: Props) => {
       <Hotdeal product={props.productFlashSale} />
 
       {/* สินค้าลดราคา */}
-      <Discounts bigDiscountList={props.bigDiscountList} />
+      {/* <Discounts bigDiscountList={props.bigDiscountList} /> */}
 
       {/* BANNER2BOX  BANNERS AREA */}
       <Banner2box banner={props.bannerTwo} />
@@ -130,6 +132,7 @@ const Home = (props: Props) => {
       <Toprating
         topRatedList={props.topRatedProducts}
         topRatedBrands={props.topRatedBrands}
+        bestSeller={props.productBestSeller}
       />
       {/* สินค้า DIY */}
       <Diy category={props.categorySetDIY} />
@@ -197,6 +200,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const bannerBottom = await api.getBannerBottom();
   const categorySpecific = await api.getCategorySpecific();
   const productFlashSale = await api.getFlashSaleProduct();
+  const productBestSeller = await api.getBestSeller();
   return {
     props: {
       bannerSlides,
@@ -236,6 +240,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       bannerBottom,
       categorySpecific,
       productFlashSale,
+      productBestSeller,
     },
   };
 };

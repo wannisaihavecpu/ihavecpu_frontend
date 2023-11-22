@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useState } from "react";
+import { FC, Fragment } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import Box from "../Box";
@@ -14,7 +14,6 @@ import NavLink from "../nav-link";
 import { Button } from "../buttons";
 import { H5, SemiSpan } from "../Typography";
 import { calculateDiscount, currency, getTheme } from "@utils/utils";
-import ProductQuickView from "@component/products/ProductQuickView";
 import { useAppContext } from "@context/AppContext";
 
 // styled component
@@ -99,7 +98,7 @@ type ProductCard9Props = {
   price: number;
   imgUrl: string;
   rating?: number;
-  images: string[];
+  // images: string[];
   id: string | number;
   categories?: string[];
   [key: string]: unknown;
@@ -114,15 +113,15 @@ const ProductCard9: FC<ProductCard9Props> = ({
   price,
   imgUrl,
   rating,
-  images,
+  // images,
   categories,
   ...props
 }) => {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const { state, dispatch } = useAppContext();
   const cartItem = state.cart.find((item) => item.id === id);
 
-  const toggleDialog = useCallback(() => setOpen((open) => !open), []);
+  // const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
   const handleCartAmountChange = (qty: number) => () => {
     dispatch({
@@ -155,7 +154,7 @@ const ProductCard9: FC<ProductCard9Props> = ({
               color="secondary"
               variant="small"
               className="quick-view"
-              onClick={toggleDialog}
+              // onClick={toggleDialog}
             >
               eye-alt
             </Icon>
@@ -311,12 +310,12 @@ const ProductCard9: FC<ProductCard9Props> = ({
           </FlexBox>
         </Hidden>
       </Grid>
-
+      {/* 
       <ProductQuickView
         open={open}
         onClose={toggleDialog}
         product={{ id, images, price, title, slug }}
-      />
+      /> */}
     </Wrapper>
   );
 };

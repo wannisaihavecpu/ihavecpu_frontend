@@ -7,9 +7,9 @@ import Container from "@component/Container";
 import { H2 } from "@component/Typography";
 import { Carousel } from "@component/carousel";
 import { deviceSize } from "@utils/constants";
-import useVisibleSlide from "./hooks/useVisibleSlide";
 import menuDropdown from "@models/menuDropdown.model";
 import { ProductCard1, ProductCard1Skeleton } from "@component/product-cards";
+import useWindowSize from "@hook/useWindowSize";
 
 // styled component
 const ButtonsWrapper = styled(FlexBox)({
@@ -24,15 +24,44 @@ interface Props {
 }
 
 const Accessories: FC<Props> = ({ category }) => {
-  const { visibleSlides } = useVisibleSlide();
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
+  const width = useWindowSize();
+
+  const [visibleSlides, setVisibleSlides] = useState(6);
   const fetchProduct = (addition: number) => {
     setLoading(true);
     setTimeout(() => {
       fetch(
         `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=50&addition=${addition}&offset=0&limit=8`,
+        {
+          method: "GET",
+        }
+      )
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.res_code === "00" && Array.isArray(data.res_result)) {
+            setProduct(data.res_result);
+            setLoading(false);
+          } else {
+            console.error("Unexpected response:", data);
+            setLoading(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setLoading(false);
+        });
+    }, 800);
+  };
+  const fetchProductAll = () => {
+    setLoading(true);
+    setTimeout(() => {
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=50&offset=0&limit=8`,
         {
           method: "GET",
         }
@@ -70,22 +99,31 @@ const Accessories: FC<Props> = ({ category }) => {
     return formattedSlug.toLowerCase();
   };
 
-  useEffect(() => {
-    const defaultCategoryID = category[0].subCategory[0].categoryID;
-    fetchProduct(defaultCategoryID);
-    setSelected(defaultCategoryID.toString());
-  }, []);
-
   const handleCategoryClick = (category: string) => () => {
-    if (selected.match(category)) {
+    if (selected === category) {
       setSelected("");
+      fetchProductAll();
     } else {
       fetchProduct(parseInt(category));
       setSelected(category);
     }
   };
+
   const activeColor = (item: string) =>
     item === selected ? "ihavecpu" : "dark";
+
+  useEffect(() => {
+    // const defaultCategoryID = category[0].subCategory[0].categoryID;
+    // fetchProduct(defaultCategoryID);
+    // setSelected(defaultCategoryID.toString());
+    fetchProductAll();
+  }, []);
+  useEffect(() => {
+    if (width < 370) setVisibleSlides(1);
+    else if (width < 650) setVisibleSlides(2);
+    else if (width < 950) setVisibleSlides(4);
+    else setVisibleSlides(6);
+  }, [width]);
 
   return (
     <Container mb="4rem">
@@ -114,11 +152,11 @@ const Accessories: FC<Props> = ({ category }) => {
       </FlexBox>
       <Carousel
         key={selected}
-        totalSlides={loading ? 5 : product ? product.length : 5}
+        totalSlides={loading ? 6 : product ? product.length : 6}
         visibleSlides={visibleSlides}
       >
         {loading
-          ? Array.from({ length: 5 }).map((_, index) => (
+          ? Array.from({ length: 6 }).map((_, index) => (
               <ProductCard1Skeleton key={index} />
             ))
           : product &&

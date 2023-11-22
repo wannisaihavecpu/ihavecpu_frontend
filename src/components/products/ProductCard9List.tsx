@@ -3,9 +3,9 @@ import FlexBox from "@component/FlexBox";
 import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
 import { ProductCard9 } from "@component/product-cards";
-import Products from "@models/products.model";
+import listProduct from "@models/listProduct.model";
 // ==========================================================
-type Props = { products: Products[] };
+type Props = { products: listProduct[] };
 // ==========================================================
 
 const ProductCard9List: FC<Props> = ({ products }) => {
@@ -16,12 +16,11 @@ const ProductCard9List: FC<Props> = ({ products }) => {
           mb="1.25rem"
           id={item.product_id}
           key={item.product_id}
-          slug={item.product_code}
-          price={parseInt(item.market_price)}
+          slug={item.name_th}
+          price={parseInt(item.price_sale)}
           title={item.name_th}
-          off={parseFloat(item.cost_price)}
-          images={item.images}
-          imgUrl={item.images[0]}
+          off={parseFloat(item.discount)}
+          imgUrl={item.image800}
         />
       ))}
 

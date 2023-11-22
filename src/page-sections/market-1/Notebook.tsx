@@ -9,6 +9,7 @@ import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
 import setBrand from "@models/setBrand.model";
 import NextImage from "next/image";
+import Link from "next/link";
 
 // ==============================================================
 interface Props {
@@ -24,14 +25,19 @@ const Notebook: FC<Props> = ({ category }) => {
   const [title, setTitle] = useState("");
 
   const handleCategoryClick = (categoryId) => () => {
-    const clickedCategory = category.find(
-      (value) => value.brandID.toString() === categoryId
-    );
-
-    if (clickedCategory && selected !== categoryId) {
-      fetchProduct(parseInt(categoryId));
-      setSelected(categoryId);
-      setTitle(clickedCategory.brand_name_th);
+    if (categoryId === "all") {
+      fetchProductAll();
+      setSelected("all");
+      setTitle("All Products");
+    } else {
+      const clickedCategory = category.find(
+        (value) => value.brandID.toString() === categoryId
+      );
+      if (clickedCategory && selected !== categoryId) {
+        fetchProduct(parseInt(categoryId));
+        setSelected(categoryId);
+        setTitle(clickedCategory.brand_name_th);
+      }
     }
   };
 
@@ -76,12 +82,32 @@ const Notebook: FC<Props> = ({ category }) => {
         });
     }, 800);
   };
+  const fetchProductAll = () => {
+    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=13`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.res_code === "00" && Array.isArray(data.res_result)) {
+          setProduct(data.res_result);
+          setLoading(false);
+        } else {
+          console.error("Unexpected response:", data);
+          setLoading(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setLoading(false);
+      });
+  };
   useEffect(() => {
     // set default (first category in api)
-    const defaultCategoryID = category[0].brandID;
-    fetchProduct(defaultCategoryID);
-    setSelected(defaultCategoryID.toString());
-    setTitle(category[0].brand_name_th);
+    // const defaultCategoryID = category[0].brandID;
+    // fetchProduct(defaultCategoryID);
+    fetchProductAll();
+    // setSelected(defaultCategoryID.toString());
+    setTitle("Notebook");
   }, []);
 
   return (
@@ -121,15 +147,20 @@ const Notebook: FC<Props> = ({ category }) => {
               shadow={selected.match("all") ? 4 : null}
               bg={selected.match("all") ? "white" : "gray.100"}
             >
-              <span id="all" className="product-category-title show-all">
-                ดูสินค้าทั้งหมด
-              </span>
+              <Link href="/category/notebook">
+                <span id="all" className="product-category-title show-all">
+                  ดูสินค้าทั้งหมด
+                </span>
+              </Link>
             </StyledProductCategory>
           </Box>
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title={title} seeMoreLink="#" />
+          <CategorySectionHeader
+            title={title}
+            seeMoreLink="/category/notebook"
+          />
 
           {loading ? (
             <Grid container spacing={6}>

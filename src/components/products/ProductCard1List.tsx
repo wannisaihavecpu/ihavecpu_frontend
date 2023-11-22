@@ -4,11 +4,11 @@ import Grid from "@component/grid/Grid";
 import Pagination from "@component/pagination";
 import { ProductCard1 } from "@component/product-cards";
 import { SemiSpan } from "@component/Typography";
-import Products from "@models/products.model";
+import listProduct from "@models/listProduct.model";
 
 // ==========================================================
 type Props = {
-  products?: Products[];
+  products?: listProduct[];
   selectedBrands?: string[];
   selectedSocketType?: string[];
   minPrice?: string;
@@ -18,39 +18,39 @@ type Props = {
 
 const ProductCard1List: FC<Props> = ({
   products,
-  selectedBrands,
-  selectedSocketType,
-  minPrice,
-  maxPrice,
+  // selectedBrands,
+  // selectedSocketType,
+  // minPrice,
+  // maxPrice,
 }) => {
   // filter products based on selected
-  const filteredProducts = products.filter((item) => {
-    const brandMatch =
-      selectedBrands.length === 0 || selectedBrands.includes(item.brand_id);
-    const unitMatch =
-      selectedSocketType.length === 0 ||
-      selectedSocketType.includes(item.product_code);
-    const priceMatch =
-      minPrice === null ||
-      maxPrice === null ||
-      (parseFloat(item.market_price) >= parseFloat(minPrice) &&
-        parseFloat(item.market_price) <= parseFloat(maxPrice));
+  // const filteredProducts = products.filter((item) => {
+  //   const brandMatch =
+  //     selectedBrands.length === 0 || selectedBrands.includes(item.brand_id);
+  //   const unitMatch =
+  //     selectedSocketType.length === 0 ||
+  //     selectedSocketType.includes(item.product_code);
+  //   const priceMatch =
+  //     minPrice === null ||
+  //     maxPrice === null ||
+  //     (parseFloat(item.market_price) >= parseFloat(minPrice) &&
+  //       parseFloat(item.market_price) <= parseFloat(maxPrice));
 
-    return brandMatch && unitMatch && priceMatch;
-  });
+  //   return brandMatch && unitMatch && priceMatch;
+  // });
 
   return (
     <div>
       <Grid container spacing={6}>
-        {filteredProducts.map((item) => (
+        {products.map((item) => (
           <Grid item lg={3} sm={6} xs={12} key={item.product_id}>
             <ProductCard1
-              id={item.product_code}
-              slug={item.product_code}
-              price={parseFloat(item.market_price)}
+              id={item.product_id}
+              slug={item.name_th}
+              price={parseFloat(item.price_sale)}
               title={item.name_th}
-              imgUrl={item.description_th}
-              description={item.meta_description_th}
+              imgUrl={item.image800}
+              // description={item.meta_description_th}
             />
           </Grid>
         ))}

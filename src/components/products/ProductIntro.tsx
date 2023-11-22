@@ -344,13 +344,18 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   };
 
   const getAllOptionCombinations = (options) => {
+    if (!Array.isArray(options)) {
+      console.error("invalid options");
+      return [];
+    }
+
     const result = [[]];
 
     options.forEach((option) => {
       const currentCombinations = [];
 
-      result.forEach((combination) => {
-        option.sub.forEach((subItem) => {
+      option.sub.forEach((subItem) => {
+        result.forEach((combination) => {
           currentCombinations.push([
             ...combination,
             [option.m_option_id, subItem.sub_id],
@@ -361,7 +366,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
       result.push(...currentCombinations);
     });
 
-    return result.slice(1); // Remove the empty combination at the beginning
+    return result.slice(1);
   };
 
   const isProductInStock = () => {
