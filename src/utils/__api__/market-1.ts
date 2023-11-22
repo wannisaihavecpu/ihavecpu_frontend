@@ -12,6 +12,7 @@ import banner from "@models/banner.model";
 import setBrand from "@models/setBrand.model";
 import listProduct from "@models/listProduct.model";
 import allBlog from "@models/allBlog.model";
+import flashsale from "@models/flashsale.model";
 
 const getTopRatedProduct = async (): Promise<Product[]> => {
   const response = await axios.get("/api/market-1/toprated-product");
@@ -336,6 +337,38 @@ const getCategorySpecific = async (): Promise<menuDropdown[]> => {
   }
 };
 
+const getFlashSaleProduct = async (): Promise<flashsale[]> => {
+  try {
+    const formData = new FormData();
+    formData.append("show_status", "F");
+    formData.append("offset", "0");
+    formData.append("limit", "12");
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/flashsale`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching getCategorySpecific:",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getCategorySpecific:", error.message);
+    return [];
+  }
+};
+
 export default {
   getBanners,
   getBrands,
@@ -374,4 +407,5 @@ export default {
   getBannerTwo,
   getBannerBottom,
   getCategorySpecific,
+  getFlashSaleProduct,
 };
