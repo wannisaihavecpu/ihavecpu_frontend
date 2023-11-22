@@ -4,7 +4,7 @@ import Card from "@component/Card";
 // import { ProductCard2 } from "@component/product-cards";
 import { Chip } from "@component/Chip";
 import CategorySectionCreator from "@component/CategorySectionCreator";
-import listProduct from "@models/listProduct.model";
+// import listProduct from "@models/listProduct.model";
 import Box from "@component/Box";
 import Link from "next/link";
 import HoverBox from "@component/HoverBox";
@@ -16,7 +16,7 @@ import PriceFormat from "@component/PriceFormat";
 import useWindowSize from "@hook/useWindowSize";
 
 // =======================================================
-type Props = { product: listProduct[] };
+type Props = { product };
 // =======================================================
 
 const Newproduct: FC<Props> = ({ product }) => {
@@ -55,7 +55,12 @@ const Newproduct: FC<Props> = ({ product }) => {
           {product.map((item) => (
             <Box py="0.25rem" key={item.product_id}>
               <Card p="1rem">
-                <Link href={`/product/${formatSlug(item.name_th)}`} passHref>
+                <Link
+                  href={`/product/${item.product_id}/${formatSlug(
+                    item.name_th
+                  )}`}
+                  passHref
+                >
                   <a>
                     <HoverBox borderRadius={8} mb="0.5rem">
                       {item.discount && (

@@ -10,8 +10,8 @@ import { IconButton } from "@component/buttons";
 // import Sidenav from "@component/sidenav/Sidenav";
 import { H5, Paragraph } from "@component/Typography";
 import NavbarLayout from "@component/layout/NavbarLayout";
-import ProductCard1List from "@component/products/ProductCard1List";
-import ProductCard9List from "@component/products/ProductCard9List";
+// import ProductCard1List from "@component/products/ProductCard1List";
+// import ProductCard9List from "@component/products/ProductCard9List";
 import ProductFilterCard from "@component/products/ProductFilterCard";
 // import useWindowSize from "@hook/useWindowSize";
 // import product from "@data/product";
@@ -21,6 +21,7 @@ import api from "@utils/__api__/products";
 import listProduct from "@models/listProduct.model";
 // import { ProductCard1 } from "@component/product-cards";
 import detailCategory from "@models/detailCategory.model";
+// import Container from "@component/Container";
 
 type Props = {
   categoryId: string;
@@ -31,7 +32,6 @@ type Props = {
 };
 
 const ProductCategory: FC<Props> & { layout: React.FC } = ({
-  product,
   categoriesDetail,
 }) => {
   // const width = useWindowSize();
@@ -39,7 +39,7 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
 
   // const isTablet = width < 1025;
   const toggleView = useCallback((v) => () => setView(v), []);
-  console.log(product);
+  // console.log(product);
   const router = useRouter();
   const { query } = router;
   // const categoryId = query.id?.toString() || "";
@@ -69,9 +69,9 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
         justifyContent="space-between"
       >
         <div>
-          <H5>Searching for {productName}</H5>
+          <H5>"{productName}"</H5>
 
-          <Paragraph color="text.muted">5 Result</Paragraph>
+          <Paragraph color="text.muted">จำนวน 5 รายการ</Paragraph>
         </div>
 
         <FlexBox alignItems="center" flexWrap="wrap">
@@ -132,7 +132,7 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
         </Hidden>
         {/* PRODUCTS */}
         <Grid item lg={9} xs={12}>
-          {view === "grid" ? (
+          {/* {view === "grid" ? (
             <ProductCard1List
               products={product}
               // selectedBrands={selectedBrands}
@@ -142,7 +142,7 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
             />
           ) : (
             <ProductCard9List products={product} />
-          )}
+          )} */}
           {/* {product &&
             product.map((item, ind) => (
               <ProductCard1
@@ -170,14 +170,13 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const categories = categoriesResponse;
 
     const category = categories.find((c) => c.link === `/category/${slug}`);
+    const categoryID = category?.categoryID.toString();
 
-    const productResponse = await api.getProductOfCategory(
-      category?.categoryID.toString()
-    );
-
-    const categoriesDetail = await api.getDetailCategory(
-      category?.categoryID.toString()
-    );
+    const categoriesDetail = await api.getDetailCategory(categoryID);
+    const productResponse = await api.getProductOfCategory(categoryID);
+    // const filterProductCategory = await api.getFilterProductCategory(
+    //   categoryID
+    // );
 
     return {
       props: {

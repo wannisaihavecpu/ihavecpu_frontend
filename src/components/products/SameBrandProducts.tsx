@@ -1,19 +1,18 @@
 import { FC, useEffect, useState } from "react";
 import Box from "@component/Box";
 import { ProductCard21 } from "@component/product-cards";
-import listProduct from "@models/listProduct.model";
+// import listProduct from "@models/listProduct.model";
 import { CarouselProduct } from "@component/carousel";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import useWindowSize from "@hook/useWindowSize";
 
 // ============================================================
-type Props = { products: listProduct[] };
+type Props = { products };
 // ============================================================
 
 const SameBrandProducts: FC<Props> = ({ products }) => {
   const width = useWindowSize();
   const [visibleSlides, setVisibleSlides] = useState(5);
-
   const formatSlug = (name) => {
     let formattedSlug = name.replace(/\s+/g, "-");
 
@@ -39,7 +38,7 @@ const SameBrandProducts: FC<Props> = ({ products }) => {
   return (
     <CategorySectionCreator
       iconName=""
-      title="จากแบรนด์เดียวกัน"
+      title="จากหมวดหมู่เดียวกัน"
       seeMoreLink="#"
     >
       <Box mt="-0.25rem" mb="-0.25rem">
@@ -47,7 +46,7 @@ const SameBrandProducts: FC<Props> = ({ products }) => {
           totalSlides={products.length}
           visibleSlides={visibleSlides}
         >
-          {products.map((item, ind) => (
+          {products.data.map((item, ind) => (
             <Box py="0.25rem" key={ind}>
               <ProductCard21
                 id={item.product_id}

@@ -2,16 +2,16 @@ import { FC, Fragment } from "react";
 import FlexBox from "@component/FlexBox";
 import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
-import { ProductCard9 } from "@component/product-cards";
+// import { ProductCard9 } from "@component/product-cards";
 import listProduct from "@models/listProduct.model";
 // ==========================================================
 type Props = { products: listProduct[] };
 // ==========================================================
 
-const ProductCard9List: FC<Props> = ({ products }) => {
+const ProductCard9List: FC<Props> = ({}) => {
   return (
     <Fragment>
-      {products.map((item) => (
+      {/* {products.map((item) => (
         <ProductCard9
           mb="1.25rem"
           id={item.product_id}
@@ -22,7 +22,7 @@ const ProductCard9List: FC<Props> = ({ products }) => {
           off={parseFloat(item.discount)}
           imgUrl={item.image800}
         />
-      ))}
+      ))} */}
 
       <FlexBox
         flexWrap="wrap"
