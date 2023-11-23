@@ -10,7 +10,10 @@ interface product {
   brand_name_th: string;
   product_guide: string;
   total_stock: string;
+  price_sale: string;
+  price_before: string;
   img: string;
+  discount: string;
 }
 
 interface productShelf {

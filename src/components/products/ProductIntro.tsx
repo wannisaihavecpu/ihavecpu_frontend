@@ -460,6 +460,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   const filteredCoupons = couponList.filter(
     (coupon) => !myCoupon.some((myCoupon) => myCoupon.code === coupon.code)
   );
+
   useEffect(() => {
     fetchMyCouponAvailable();
   }, []);
@@ -929,7 +930,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
           </Grid>
         </Grid>
 
-        <ModalCoupon open={open} onClose={toggleDialog} />
+        <ModalCoupon
+          open={open}
+          onClose={toggleDialog}
+          product={product.product_id}
+          listCoupon={couponList}
+        />
       </Grid>
     </Box>
   );
