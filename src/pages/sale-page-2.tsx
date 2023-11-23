@@ -1,10 +1,10 @@
 import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import axios from "axios";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
 import SaleLayout2 from "@component/layout/SaleLayout2";
 import { ProductCard1 } from "@component/product-cards";
@@ -17,8 +17,8 @@ type Props = { products: Product[]; meta: Meta };
 // ===================================================
 
 const SalePage2 = ({ products, meta }: Props) => {
-  const { push } = useRouter();
-  const handlePageChange = (page: number) => push(`?page=${page + 1}`);
+  // const { push } = useRouter();
+  // const handlePageChange = (page: number) => push(`?page=${page + 1}`);
 
   return (
     <Container mt="2rem">
@@ -39,9 +39,16 @@ const SalePage2 = ({ products, meta }: Props) => {
         ))}
       </Grid>
 
-      <FlexBox flexWrap="wrap" justifyContent="space-between" alignItems="center" my="4rem">
-        <SemiSpan>{renderProductCount(meta.page - 1, meta.pageSize, meta.total)}</SemiSpan>
-        <Pagination onChange={handlePageChange} pageCount={meta.totalPage} />
+      <FlexBox
+        flexWrap="wrap"
+        justifyContent="space-between"
+        alignItems="center"
+        my="4rem"
+      >
+        <SemiSpan>
+          {renderProductCount(meta.page - 1, meta.pageSize, meta.total)}
+        </SemiSpan>
+        {/* <Pagination onChange={handlePageChange} pageCount={meta.totalPage} /> */}
       </FlexBox>
     </Container>
   );

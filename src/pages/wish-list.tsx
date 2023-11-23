@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import Grid from "@component/grid/Grid";
-import FlexBox from "@component/FlexBox";
+// import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import { ProductCard1 } from "@component/product-cards";
 import DashboardLayout from "@component/layout/customer-dashboard";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
@@ -39,9 +39,9 @@ const WishList = () => {
       </Grid>
 
       {/* PAGINATION AREA */}
-      <FlexBox justifyContent="center" mt="2.5rem">
+      {/* <FlexBox justifyContent="center" mt="2.5rem">
         <Pagination pageCount={5} onChange={(data) => console.log(data)} />
-      </FlexBox>
+      </FlexBox> */}
     </Fragment>
   );
 };

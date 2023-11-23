@@ -9,7 +9,7 @@ import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import TextField from "@component/text-field";
 import { Button, IconButton } from "@component/buttons";
-import { H3, H5, H6, SemiSpan, Small, Span } from "@component/Typography";
+import { H3, H6, SemiSpan, Small, Span } from "@component/Typography";
 import { StyledSessionCard } from "./styles";
 
 const Login: FC = () => {
@@ -36,8 +36,8 @@ const Login: FC = () => {
     <StyledSessionCard mx="auto" my="2rem" boxShadow="large">
       <IconButton
         // position="absolute"
-        top="1rem"
-        right="1rem"
+        // top="1rem"
+        // right="1rem"
         onClick={() => router.push("/")}
         color="gray.600"
       >

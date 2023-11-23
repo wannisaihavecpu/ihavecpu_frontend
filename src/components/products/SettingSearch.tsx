@@ -17,9 +17,9 @@ const SettingSearch: React.FC<SettingSearchProps> = ({
   items,
   handleItemRemove,
 }) => {
-  const handleRemoveClick = (itemToRemove: string) => {
-    handleItemRemove(itemToRemove);
-  };
+  // const handleRemoveClick = (itemToRemove: string) => {
+  //   handleItemRemove(itemToRemove);
+  // };
 
   return (
     <div style={{ marginTop: "15px" }}>

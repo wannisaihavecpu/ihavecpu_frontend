@@ -6,7 +6,7 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import TableRow from "@component/TableRow";
 import { Button } from "@component/buttons";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import Typography from "@component/Typography";
 import { IconButton } from "@component/buttons";
 import DashboardLayout from "@component/layout/customer-dashboard";
@@ -22,14 +22,23 @@ const AddressList = ({ addressList }: AddressListProps) => {
   const handleNavigate = () => Router.push("/address/create");
 
   const HEADER_LINK = (
-    <Button color="primary" bg="primary.light" px="2rem" onClick={handleNavigate}>
+    <Button
+      color="primary"
+      bg="primary.light"
+      px="2rem"
+      onClick={handleNavigate}
+    >
       Add New Address
     </Button>
   );
 
   return (
     <Fragment>
-      <DashboardPageHeader title="My Addresses" iconName="pin_filled" button={HEADER_LINK} />
+      <DashboardPageHeader
+        title="My Addresses"
+        iconName="pin_filled"
+        button={HEADER_LINK}
+      />
 
       {addressList.map((item) => (
         <TableRow my="1rem" padding="6px 18px" key={item.id}>
@@ -66,10 +75,10 @@ const AddressList = ({ addressList }: AddressListProps) => {
       ))}
 
       <FlexBox justifyContent="center" mt="2.5rem">
-        <Pagination
+        {/* <Pagination
           onChange={(data) => console.log(data)}
           pageCount={Math.ceil(addressList.length / 5)}
-        />
+        /> */}
       </FlexBox>
     </Fragment>
   );

@@ -5,7 +5,7 @@ import Box from "../Box";
 import Card from "../Card";
 import Icon from "../icon/Icon";
 import MenuItem from "../MenuItem";
-import { Span, H6 } from "../Typography";
+import { Span } from "../Typography";
 import TextField from "../text-field";
 import StyledSearchBox from "./styled";
 import { useRouter } from "next/router";

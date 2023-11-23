@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import FlexBox from "@component/FlexBox";
 import Grid from "@component/grid/Grid";
 import Pagination from "@component/pagination";

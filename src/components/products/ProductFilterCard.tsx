@@ -12,14 +12,9 @@ import Box from "@component/Box";
 import { RangeSlider } from "next-range-slider";
 import getGroupSearch from "@models/getGroupSearch";
 
-// ... (previous imports)
-
-// ... (previous imports)
-
 type ProductFilterCardProps = {
   groupSearch?: getGroupSearch[];
-  onCheckboxChange?: (filterId: string, isSelected: boolean) => void; // Replace 'checked' with the correct property name
-  minPrice?: string | null;
+  onCheckboxChange?: (filterId: string, isSelected: boolean) => void; 
   onMinPriceChange?: (value: string) => void;
   maxPrice?: string | null;
   onMaxPriceChange?: (value: string) => void;
@@ -28,10 +23,10 @@ type ProductFilterCardProps = {
 };
 
 const ProductFilterCard: FC<ProductFilterCardProps> = ({
-  onCheckboxChange,
-  minPrice,
+  // onCheckboxChange,
+  // minPrice,
   onMinPriceChange,
-  maxPrice,
+  // maxPrice,
   onMaxPriceChange,
   clearFilters,
 

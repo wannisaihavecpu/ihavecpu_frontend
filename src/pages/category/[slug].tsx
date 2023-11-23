@@ -19,7 +19,7 @@ import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import api from "@utils/__api__/products";
 import listProduct from "@models/listProduct.model";
-import { ProductCard1 } from "@component/product-cards";
+// import { ProductCard1 } from "@component/product-cards";
 import detailCategory from "@models/detailCategory.model";
 import getGroupSearch from "@models/getGroupSearch";
 // import Container from "@component/Container";
@@ -50,29 +50,29 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
   const productName = query.slug?.toString() || "";
 
   // price range
-  const [minPrice, setMinPrice] = useState<string | null>("0"); // 0 = mock up
-  const [maxPrice, setMaxPrice] = useState<string | null>("12000"); // "12000" = mock up
+  // const [minPrice, setMinPrice] = useState<string | null>("0"); // 0 = mock up
+  // const [maxPrice, setMaxPrice] = useState<string | null>("12000"); // "12000" = mock up
 
   // handle changes in Price Range filters
-  const handleMinPriceChange = (value: string) => {
-    setMinPrice(value);
-  };
-  const handleMaxPriceChange = (value: string) => {
-    setMaxPrice(value);
-  };
+  // const handleMinPriceChange = (value: string) => {
+  //   setMinPrice(value);
+  // };
+  // const handleMaxPriceChange = (value: string) => {
+  //   setMaxPrice(value);
+  // };
 
   // clear all Filters
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  // const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  const handleCheckboxChange = (filterId: string, isChecked: boolean) => {
-    setSelectedItems((prevSelectedItems) => {
-      if (isChecked) {
-        return [...prevSelectedItems, filterId];
-      } else {
-        return prevSelectedItems.filter((item) => item !== filterId);
-      }
-    });
-  };
+  // const handleCheckboxChange = (filterId: string, isChecked: boolean) => {
+  //   // setSelectedItems((prevSelectedItems) => {
+  //   //   if (isChecked) {
+  //   //     return [...prevSelectedItems, filterId];
+  //   //   } else {
+  //   //     return prevSelectedItems.filter((item) => item !== filterId);
+  //   //   }
+  //   // });
+  // };
 
   const [selectedSortOption, setSelectedSortOption] = useState(null);
 
@@ -170,11 +170,11 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
         <Hidden as={Grid} item lg={3} xs={12} down={1024}>
           <ProductFilterCard
             groupSearch={filterProduct}
-            onCheckboxChange={handleCheckboxChange}
-            minPrice={minPrice}
-            onMinPriceChange={handleMinPriceChange}
-            maxPrice={maxPrice}
-            onMaxPriceChange={handleMaxPriceChange}
+            // onCheckboxChange={handleCheckboxChange}
+            // // minPrice={minPrice}
+            // onMinPriceChange={handleMinPriceChange}
+            // maxPrice={maxPrice}
+            // onMaxPriceChange={handleMaxPriceChange}
           />
         </Hidden>
         {/* PRODUCTS */}

@@ -1,34 +1,36 @@
-import { Fragment, useEffect, useState } from "react";
-import Link from "next/link";
-import axios from "axios";
-import Avatar from "@component/avatar";
+import { Fragment } from "react";
+// import Link from "next/link";
+// import axios from "axios";
+// import Avatar from "@component/avatar";
 import Hidden from "@component/hidden";
-import Icon from "@component/icon/Icon";
+// import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import TableRow from "@component/TableRow";
-import Pagination from "@component/pagination";
-import { IconButton } from "@component/buttons";
-import Typography, { H5 } from "@component/Typography";
+// import Pagination from "@component/pagination";
+// import { IconButton } from "@component/buttons";
+import { H5 } from "@component/Typography";
 import VendorDashboardLayout from "@component/layout/vendor-dashboard";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
-import { Meta } from "interfaces";
-import Product from "@models/product.model";
-import { calculateDiscount, currency } from "@utils/utils";
+// import { Meta } from "interfaces";
+// import Product from "@models/product.model";
+// import { calculateDiscount, currency } from "@utils/utils";
 
 const Products = () => {
-  const [page, setPage] = useState(1);
-  const [meta, setMeta] = useState<Meta>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+  // const [page, setPage] = useState(1);
+  // const [meta, setMeta] = useState<Meta>(null);
+  // const [products, setProducts] = useState<Product[]>([]);
 
-  const getProducts = async () => {
-    const { data } = await axios.get("/api/products", { params: { pageSize: 10, page } });
-    setProducts(data.result);
-    setMeta(data.meta);
-  };
+  // const getProducts = async () => {
+  //   const { data } = await axios.get("/api/products", {
+  //     params: { pageSize: 10, page },
+  //   });
+  //   setProducts(data.result);
+  //   setMeta(data.meta);
+  // };
 
-  useEffect(() => {
-    getProducts();
-  }, [page]);
+  // useEffect(() => {
+  //   getProducts();
+  // }, [page]);
 
   return (
     <Fragment>
@@ -54,7 +56,7 @@ const Products = () => {
         </TableRow>
       </Hidden>
 
-      {products.map((item) => (
+      {/* {products.map((item) => (
         <Link href={`/vendor/products/${item.slug}`} key={item.id} passHref>
           <TableRow as="a" my="1rem" padding="6px 18px">
             <FlexBox alignItems="center" m="6px" flex="2 2 220px !important">
@@ -83,11 +85,14 @@ const Products = () => {
             </Hidden>
           </TableRow>
         </Link>
-      ))}
+      ))} */}
 
-      <FlexBox justifyContent="center" mt="2.5rem">
-        <Pagination pageCount={meta?.totalPage || 1} onChange={(data) => setPage(data + 1)} />
-      </FlexBox>
+      {/* <FlexBox justifyContent="center" mt="2.5rem">
+        <Pagination
+          pageCount={meta?.totalPage || 1}
+          onChange={(data) => setPage(data + 1)}
+        />
+      </FlexBox> */}
     </Fragment>
   );
 };
