@@ -4,9 +4,12 @@ import { Small } from "@component/Typography";
 import { ButtonSearch } from "@component/buttons/ButtonSearch";
 import ButtonDeleteLoading from "@component/buttons/ButtonDeleteLoading";
 import Icon from "../icon/Icon";
-
+type Item = {
+  id: string;
+  name: string;
+};
 type SettingSearchProps = {
-  items: string;
+  items: Item[];
   handleItemRemove: (itemToRemove: string) => void;
 };
 
@@ -14,39 +17,15 @@ const SettingSearch: React.FC<SettingSearchProps> = ({
   items,
   handleItemRemove,
 }) => {
-  const itemArray = items.split(", ");
-
   const handleRemoveClick = (itemToRemove: string) => {
     handleItemRemove(itemToRemove);
-  };
-  // mock up cpu brand
-  const brandList = [
-    { id: "204", title: "AMD" },
-    { id: "205", title: "Intel" },
-  ];
-  // mock up socket type
-  const socketTypeList = [
-    { id: "AMD AM4", title: "AMD AM4" },
-    { id: "Intel LGA-1200", title: "Intel LGA-1200" },
-    { id: "Intel LGA-1700", title: "Intel LGA-1700" },
-    { id: "AMD AM5", title: "AMD AM5" },
-  ];
-
-  const getTitleById = (itemId, ...arrays) => {
-    for (const array of arrays) {
-      const item = array.find((item) => item.id === itemId);
-      if (item) {
-        return item.title;
-      }
-    }
-    return "";
   };
 
   return (
     <div style={{ marginTop: "15px" }}>
-      {itemArray.map((itemId) => (
+      {items.map((item) => (
         <ButtonSearch
-          key={itemId}
+          key={item.id}
           p="0.30rem 2rem"
           bg={`error.light`}
           style={{
@@ -57,13 +36,13 @@ const SettingSearch: React.FC<SettingSearchProps> = ({
             alignItems: "center",
             overflow: "hidden",
             whiteSpace: "nowrap",
-            textOverflow: "ellipsis", // Add ellipsis for text overflow
+            textOverflow: "ellipsis",
           }}
         >
           <Small color={`error.main`} style={{ flex: 1 }}>
-            {getTitleById(itemId, brandList, socketTypeList)}
+            {item.name}
           </Small>
-          <ButtonDeleteLoading onClick={() => handleRemoveClick(itemId)}>
+          <ButtonDeleteLoading onClick={() => handleItemRemove(item.id)}>
             <Icon defaultcolor="auto" pl="3px" size="10px" color={`error`}>
               _close
             </Icon>

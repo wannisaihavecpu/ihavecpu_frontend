@@ -1,7 +1,7 @@
 import { useCallback, useState, FC } from "react";
 import Box from "@component/Box";
 import Card from "@component/Card";
-// import Select from "@component/Select";
+import Select from "@component/Select";
 import Hidden from "@component/hidden";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
@@ -10,8 +10,8 @@ import { IconButton } from "@component/buttons";
 // import Sidenav from "@component/sidenav/Sidenav";
 import { H5, Paragraph } from "@component/Typography";
 import NavbarLayout from "@component/layout/NavbarLayout";
-// import ProductCard1List from "@component/products/ProductCard1List";
-// import ProductCard9List from "@component/products/ProductCard9List";
+import ProductCard1List from "@component/products/ProductCard1List";
+import ProductCard9List from "@component/products/ProductCard9List";
 import ProductFilterCard from "@component/products/ProductFilterCard";
 // import useWindowSize from "@hook/useWindowSize";
 // import product from "@data/product";
@@ -19,20 +19,24 @@ import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import api from "@utils/__api__/products";
 import listProduct from "@models/listProduct.model";
-// import { ProductCard1 } from "@component/product-cards";
+import { ProductCard1 } from "@component/product-cards";
 import detailCategory from "@models/detailCategory.model";
+import getGroupSearch from "@models/getGroupSearch";
 // import Container from "@component/Container";
 
 type Props = {
   categoryId: string;
   categoryName: string;
-  product: listProduct[];
+  product: listProduct;
   categoryLink: string;
   categoriesDetail: detailCategory;
+  filterProduct: getGroupSearch[];
 };
 
 const ProductCategory: FC<Props> & { layout: React.FC } = ({
   categoriesDetail,
+  product,
+  filterProduct,
 }) => {
   // const width = useWindowSize();
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -44,6 +48,54 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
   const { query } = router;
   // const categoryId = query.id?.toString() || "";
   const productName = query.slug?.toString() || "";
+
+  // price range
+  const [minPrice, setMinPrice] = useState<string | null>("0"); // 0 = mock up
+  const [maxPrice, setMaxPrice] = useState<string | null>("12000"); // "12000" = mock up
+
+  // handle changes in Price Range filters
+  const handleMinPriceChange = (value: string) => {
+    setMinPrice(value);
+  };
+  const handleMaxPriceChange = (value: string) => {
+    setMaxPrice(value);
+  };
+
+  // clear all Filters
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+  const handleCheckboxChange = (filterId: string, isChecked: boolean) => {
+    setSelectedItems((prevSelectedItems) => {
+      if (isChecked) {
+        return [...prevSelectedItems, filterId];
+      } else {
+        return prevSelectedItems.filter((item) => item !== filterId);
+      }
+    });
+  };
+
+  const [selectedSortOption, setSelectedSortOption] = useState(null);
+
+  const handleSortChange = (value: string) => {
+    setSelectedSortOption(value);
+    fetchProducts(value);
+  };
+
+  const fetchProducts = async (sortOption: string | { value: string }) => {
+    const actualValue =
+      typeof sortOption === "string" ? sortOption : sortOption.value;
+
+    const currentQuery = { ...router.query };
+    currentQuery.page = "1";
+    currentQuery.sort = actualValue;
+
+    const newUrl = {
+      pathname: router.pathname,
+      query: currentQuery,
+    };
+
+    router.push(newUrl);
+  };
 
   return (
     <Box pt="20px">
@@ -80,11 +132,12 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
           </Paragraph>
 
           <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
-            {/* <Select
+            <Select
               placeholder="Short by"
-              // defaultValue={sortOptions[0]}
-              // options={sortOptions}
-            /> */}
+              value={selectedSortOption}
+              onChange={handleSortChange}
+              options={sortOptions}
+            />
           </Box>
 
           <Paragraph color="text.muted" mr="0.5rem">
@@ -116,54 +169,38 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
         {/* FILTER */}
         <Hidden as={Grid} item lg={3} xs={12} down={1024}>
           <ProductFilterCard
-          // selectedBrands={selectedBrands}
-          // onBrandCheckboxChange={handleBrandCheckboxChange}
-          // selectedSocketType={selectedSocketType}
-          // onSocketTypeCheckboxChange={handleSocketTypeCheckboxChange}
-          // minPrice={minPrice}
-          // onMinPriceChange={handleMinPriceChange}
-          // maxPrice={maxPrice}
-          // onMaxPriceChange={handleMaxPriceChange}
-          // clearFilters={clearFilters}
-          // handleItemRemove={handleItemRemove}
-          // clearBrands={clearBrands}
-          // clearSocket={clearSocket}
+            groupSearch={filterProduct}
+            onCheckboxChange={handleCheckboxChange}
+            minPrice={minPrice}
+            onMinPriceChange={handleMinPriceChange}
+            maxPrice={maxPrice}
+            onMaxPriceChange={handleMaxPriceChange}
           />
         </Hidden>
         {/* PRODUCTS */}
         <Grid item lg={9} xs={12}>
-          {/* {view === "grid" ? (
-            <ProductCard1List
-              products={product}
-              // selectedBrands={selectedBrands}
-              // selectedSocketType={selectedSocketType}
-              // minPrice={minPrice}
-              // maxPrice={maxPrice}
-            />
+          {view === "grid" ? (
+            <ProductCard1List products={product} />
           ) : (
             <ProductCard9List products={product} />
-          )} */}
-          {/* {product &&
-            product.map((item, ind) => (
-              <ProductCard1
-                hoverEffect
-                id={item.product_id}
-                slug={item.name_th}
-                title={item.name_th}
-                price={parseInt(item.price_sale)}
-                priceBefore={parseInt(item.price_before)}
-                off={parseInt(item.discount)}
-                imgUrl={item.image800}
-              />
-            ))} */}
+          )}
         </Grid>
       </Grid>
     </Box>
   );
 };
+const sortOptions = [
+  { label: "ราคาต่ำ-สูง", label_en: "Price Low to High", value: "asc" },
+  { label: "ราคาสูง-ต่ำ", label_en: "Price High to Low", value: "desc" },
+];
 ProductCategory.layout = NavbarLayout;
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  query,
+}) => {
   const slug = params?.slug as string;
+  const page = parseInt(query.page as string) || 1;
+  const sort = (query.sort as string) || "";
 
   try {
     const categoriesResponse = await api.getCategoryNameById();
@@ -173,10 +210,18 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const categoryID = category?.categoryID.toString();
 
     const categoriesDetail = await api.getDetailCategory(categoryID);
-    const productResponse = await api.getProductOfCategory(categoryID);
-    // const filterProductCategory = await api.getFilterProductCategory(
-    //   categoryID
-    // );
+
+    const offset = (page - 1) * 12;
+    const productResponse = await api.getProductOfCategory(
+      categoryID,
+      offset,
+      12,
+      sort
+    );
+
+    const filterProductCategory = await api.getFilterProductCategory(
+      categoryID
+    );
 
     return {
       props: {
@@ -184,6 +229,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
         categoryName: category?.title_gb || "",
         categoriesDetail,
         product: productResponse,
+        filterProduct: filterProductCategory,
       },
     };
   } catch (error) {
@@ -194,6 +240,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
         categoryName: "",
         categoriesDetail: "",
         product: null,
+        filterProduct: null,
       },
     };
   }
