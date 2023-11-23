@@ -25,22 +25,30 @@ const Login: FC = () => {
     console.log(values);
   };
 
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    onSubmit: handleFormSubmit,
-    initialValues,
-    validationSchema: formSchema,
-  });
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      onSubmit: handleFormSubmit,
+      initialValues,
+      validationSchema: formSchema,
+    });
 
   return (
     <StyledSessionCard mx="auto" my="2rem" boxShadow="large">
+      <IconButton
+        // position="absolute"
+        top="1rem"
+        right="1rem"
+        onClick={() => router.push("/")}
+        color="gray.600"
+      >
+        close
+      </IconButton>
       <form className="content" onSubmit={handleSubmit}>
-        <H3 textAlign="center" mb="0.5rem">
-          Welcome To Ecommerce
-        </H3>
-
-        <H5 fontWeight="600" fontSize="12px" color="gray.800" textAlign="center" mb="2.25rem">
-          Log in with email & password
-        </H5>
+        <Box mb="2rem">
+          <H3 textAlign="center" mb="0.5rem">
+            เข้าสู่ระบบ
+          </H3>
+        </Box>
 
         <TextField
           fullwidth
@@ -51,7 +59,7 @@ const Login: FC = () => {
           onChange={handleChange}
           value={values.email || ""}
           placeholder="exmple@mail.com"
-          label="Email or Phone Number"
+          // label="Email or Phone Number"
           errorText={touched.email && errors.email}
         />
 
@@ -59,7 +67,7 @@ const Login: FC = () => {
           mb="1rem"
           fullwidth
           name="password"
-          label="Password"
+          // label="Password"
           autoComplete="on"
           onBlur={handleBlur}
           onChange={handleChange}
@@ -70,7 +78,7 @@ const Login: FC = () => {
           endAdornment={
             <IconButton
               p="0.25rem"
-              size="small"
+              // size="small"
               mr="0.25rem"
               type="button"
               onClick={togglePasswordVisibility}
@@ -83,7 +91,13 @@ const Login: FC = () => {
           }
         />
 
-        <Button mb="1.65rem" variant="contained" color="primary" type="submit" fullwidth>
+        <Button
+          mb="1.65rem"
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullwidth
+        >
           Login
         </Button>
 
