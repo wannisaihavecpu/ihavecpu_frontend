@@ -148,19 +148,19 @@ const reducer = (state: InitialState, action: ActionType) => {
       let cartItem = action.payload;
       let existIndex;
 
-      if (cartItem.optionId) {
-        // If the item has an optionId, check both id and optionId
+      if (cartItem.optionId !== undefined && cartItem.optionId !== null) {
+        // if the item have optionId  check both id and optionId
         existIndex = cartList.findIndex(
           (item) =>
             item.id === cartItem.id && item.optionId === cartItem.optionId
         );
       } else {
-        // If the item doesn't have an optionId, check only id
+        //if the item doesnt have an optionId check only id
         existIndex = cartList.findIndex((item) => item.id === cartItem.id);
       }
 
       if (cartItem.qty < 1) {
-        // If quantity is less than 1, remove the item from the cart
+        // quantity < 1 remove the item from the cart
         if (existIndex !== -1) {
           cartList.splice(existIndex, 1);
           if (typeof window !== "undefined") {
@@ -170,18 +170,17 @@ const reducer = (state: InitialState, action: ActionType) => {
         return { ...state, cart: [...cartList] };
       }
 
+      const newCartItem: CartItem = {
+        ...cartItem,
+        optionId:
+          cartItem.optionId !== undefined && cartItem.optionId !== null
+            ? parseInt(cartItem.optionId.toString(), 10)
+            : undefined,
+      };
+
       if (existIndex !== -1) {
-        // If the item exists in the cart, update the quantity
         cartList[existIndex].qty = cartItem.qty;
       } else {
-        // If the item doesn't exist, add it to the cart with a unique optionId
-        const newCartItem: CartItem = {
-          ...cartItem,
-          optionId:
-            cartItem.optionId !== undefined
-              ? parseInt(cartItem.optionId.toString())
-              : undefined,
-        };
         cartList.push(newCartItem);
       }
 
