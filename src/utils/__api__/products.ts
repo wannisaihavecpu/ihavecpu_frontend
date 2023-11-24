@@ -212,7 +212,7 @@ const getFilterProductCategory = async (
   categoryID: string
 ): Promise<getGroupSearch[]> => {
   try {
-    const response = await axios.get(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`
     );
     if (response.data.res_code === "00") {

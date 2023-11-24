@@ -5,12 +5,12 @@ import FlexBox from "@component/FlexBox";
 import MiniCart from "@component/mini-cart";
 import Container from "@component/Container";
 import { Tiny } from "@component/Typography";
-import Login from "@component/sessions/Login";
+// import Login from "@component/sessions/Login";
 import { IconButton } from "@component/buttons";
 import Sidenav from "@component/sidenav/Sidenav";
 import { SearchInput } from "@component/search-box";
 import { useAppContext } from "@context/AppContext";
-import UserLoginDialog from "./LoginDialog";
+// import UserLoginDialog from "./LoginDialog";
 import StyledHeader from "./styles";
 
 // ========================================================================
@@ -47,15 +47,20 @@ const HeaderTwo: FC<HeaderProps> = ({ className }) => {
     </FlexBox>
   );
 
-  const LOGIN_HANDLE = (
-    <IconButton ml="1rem" bg="gray.200" p="8px">
-      <Icon size="28px">user</Icon>
-    </IconButton>
-  );
+  // const LOGIN_HANDLE = (
+  //   <IconButton ml="1rem" bg="gray.200" p="8px">
+  //     <Icon size="28px">user</Icon>
+  //   </IconButton>
+  // );
 
   return (
     <StyledHeader className={className}>
-      <Container display="flex" alignItems="center" justifyContent="space-between" height="100%">
+      <Container
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        height="100%"
+      >
         <FlexBox className="logo" alignItems="center" mr="1rem">
           <Link href="/">
             <a>
@@ -69,9 +74,9 @@ const HeaderTwo: FC<HeaderProps> = ({ className }) => {
         </FlexBox>
 
         <FlexBox className="header-right" alignItems="center">
-          <UserLoginDialog handle={LOGIN_HANDLE}>
+          {/* <UserLoginDialog handle={LOGIN_HANDLE}>
             <Login />
-          </UserLoginDialog>
+          </UserLoginDialog> */}
 
           <Sidenav
             open={open}

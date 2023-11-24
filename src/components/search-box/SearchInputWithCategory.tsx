@@ -57,11 +57,13 @@ const SearchInputWithCategory: FC = () => {
     (event) => {
       if (event.key === "Enter") {
         router.push(`/product/search/${searchValue}`);
+        setResultList([]);
         setSearchValue("");
       }
     },
     [router, searchValue]
   );
+
   const formatSlug = (name) => {
     let formattedSlug = name.replace(/\s+/g, "-");
 
@@ -75,6 +77,11 @@ const SearchInputWithCategory: FC = () => {
     formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
 
     return formattedSlug.toLowerCase();
+  };
+  const handleProductClick = (item) => {
+    console.log(item);
+    setResultList([]);
+    setSearchValue("");
   };
 
   useEffect(() => {
@@ -122,7 +129,7 @@ const SearchInputWithCategory: FC = () => {
               passHref
               key={item.id}
             >
-              <MenuItem key={item.id}>
+              <MenuItem key={item.id} onClick={() => handleProductClick(item)}>
                 {item.type === "category" && (
                   <>
                     <img

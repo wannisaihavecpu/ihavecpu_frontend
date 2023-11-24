@@ -40,18 +40,18 @@ const ProductCard1List: FC<Props> = ({
   //   return brandMatch && unitMatch && priceMatch;
   // });
   const router = useRouter();
-
+  // const { push } = useRouter();
   const { query } = router;
 
   const { page = "1" } = query;
   const currentPage = parseInt(page as string, 10);
 
-  const handlePageChange = (selectedPage: number) => {
-    router.push({
-      pathname: router.pathname,
-      query: { ...query, page: selectedPage.toString() },
-    });
-  };
+  // const handlePageChange = (selectedPage: number) => {
+  //   router.push({
+  //     pathname: router.pathname,
+  //     query: { ...query, page: selectedPage.toString() },
+  //   });
+  // };
 
   return (
     <div>
@@ -85,7 +85,7 @@ const ProductCard1List: FC<Props> = ({
         <Pagination
           pageCount={Math.ceil(products.row / 12)}
           currentPage={currentPage}
-          onPageChange={handlePageChange}
+          // onPageChange={handlePageChange}
           marginPagesDisplayed={1}
           pageRangeDisplayed={2}
         />

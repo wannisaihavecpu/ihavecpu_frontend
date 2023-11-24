@@ -5,12 +5,12 @@ import { ButtonSearch } from "@component/buttons/ButtonSearch";
 import ButtonDeleteLoading from "@component/buttons/ButtonDeleteLoading";
 import Icon from "../icon/Icon";
 type Item = {
-  id: string;
+  id: number;
   name: string;
 };
 type SettingSearchProps = {
   items: Item[];
-  handleItemRemove: (itemToRemove: string) => void;
+  handleItemRemove: (itemToRemove: number) => void;
 };
 
 const SettingSearch: React.FC<SettingSearchProps> = ({
@@ -40,7 +40,7 @@ const SettingSearch: React.FC<SettingSearchProps> = ({
           }}
         >
           <Small color={`error.main`} style={{ flex: 1 }}>
-            {item.name}
+            {item.name.length > 15 ? item.name.slice(0, 15) + "..." : item.name}
           </Small>
           <ButtonDeleteLoading onClick={() => handleItemRemove(item.id)}>
             <Icon defaultcolor="auto" pl="3px" size="10px" color={`error`}>

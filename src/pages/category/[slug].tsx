@@ -2,17 +2,18 @@ import { useCallback, useState, FC } from "react";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Select from "@component/Select";
-import Hidden from "@component/hidden";
-import Grid from "@component/grid/Grid";
+// import Hidden from "@component/hidden";
+// import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
 // import Sidenav from "@component/sidenav/Sidenav";
 import { H5, Paragraph } from "@component/Typography";
 import NavbarLayout from "@component/layout/NavbarLayout";
-import ProductCard1List from "@component/products/ProductCard1List";
-import ProductCard9List from "@component/products/ProductCard9List";
-import ProductFilterCard from "@component/products/ProductFilterCard";
+// import ProductCard1List from "@component/products/ProductCard1List";
+// import ProductCard9List from "@component/products/ProductCard9List";
+// import ProductFilterCard from "@component/products/ProductFilterCard";
+import ProductsCategory from "@component/products/ProductCategory";
 // import useWindowSize from "@hook/useWindowSize";
 // import product from "@data/product";
 import { useRouter } from "next/router";
@@ -31,12 +32,15 @@ type Props = {
   categoryLink: string;
   categoriesDetail: detailCategory;
   filterProduct: getGroupSearch[];
+  page;
 };
 
-const ProductCategory: FC<Props> & { layout: React.FC } = ({
+const Category: FC<Props> & { layout: React.FC } = ({
   categoriesDetail,
   product,
   filterProduct,
+  categoryId,
+  // page,
 }) => {
   // const width = useWindowSize();
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -48,31 +52,6 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
   const { query } = router;
   // const categoryId = query.id?.toString() || "";
   const productName = query.slug?.toString() || "";
-
-  // price range
-  // const [minPrice, setMinPrice] = useState<string | null>("0"); // 0 = mock up
-  // const [maxPrice, setMaxPrice] = useState<string | null>("12000"); // "12000" = mock up
-
-  // handle changes in Price Range filters
-  // const handleMinPriceChange = (value: string) => {
-  //   setMinPrice(value);
-  // };
-  // const handleMaxPriceChange = (value: string) => {
-  //   setMaxPrice(value);
-  // };
-
-  // clear all Filters
-  // const [selectedItems, setSelectedItems] = useState<string[]>([]);
-
-  // const handleCheckboxChange = (filterId: string, isChecked: boolean) => {
-  //   // setSelectedItems((prevSelectedItems) => {
-  //   //   if (isChecked) {
-  //   //     return [...prevSelectedItems, filterId];
-  //   //   } else {
-  //   //     return prevSelectedItems.filter((item) => item !== filterId);
-  //   //   }
-  //   // });
-  // };
 
   const [selectedSortOption, setSelectedSortOption] = useState(null);
 
@@ -96,6 +75,7 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
 
     router.push(newUrl);
   };
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   return (
     <Box pt="20px">
@@ -121,19 +101,19 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
         justifyContent="space-between"
       >
         <div>
-          <H5>"{productName}"</H5>
+          <H5>{productName}</H5>
 
           <Paragraph color="text.muted">จำนวน 5 รายการ</Paragraph>
         </div>
 
         <FlexBox alignItems="center" flexWrap="wrap">
           <Paragraph color="text.muted" mr="1rem">
-            Short by:
+            Sort by:
           </Paragraph>
 
           <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
             <Select
-              placeholder="Short by"
+              placeholder="Sort by"
               value={selectedSortOption}
               onChange={handleSortChange}
               options={sortOptions}
@@ -165,27 +145,29 @@ const ProductCategory: FC<Props> & { layout: React.FC } = ({
           </IconButton>
         </FlexBox>
       </FlexBox>
-      <Grid container spacing={6}>
-        {/* FILTER */}
-        <Hidden as={Grid} item lg={3} xs={12} down={1024}>
+
+      <ProductsCategory
+        groupSearch={filterProduct}
+        categoryID={categoryId}
+        products={product}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+      {/* FILTER */}
+      {/* <Hidden as={Grid} item lg={3} xs={12} down={1024}>
           <ProductFilterCard
             groupSearch={filterProduct}
-            // onCheckboxChange={handleCheckboxChange}
-            // // minPrice={minPrice}
-            // onMinPriceChange={handleMinPriceChange}
-            // maxPrice={maxPrice}
-            // onMaxPriceChange={handleMaxPriceChange}
+            categoryID={categoryId}
           />
-        </Hidden>
-        {/* PRODUCTS */}
-        <Grid item lg={9} xs={12}>
+        </Hidden> */}
+      {/* PRODUCTS */}
+      {/* <Grid item lg={9} xs={12}>
           {view === "grid" ? (
             <ProductCard1List products={product} />
           ) : (
             <ProductCard9List products={product} />
           )}
-        </Grid>
-      </Grid>
+        </Grid> */}
     </Box>
   );
 };
@@ -193,7 +175,7 @@ const sortOptions = [
   { label: "ราคาต่ำ-สูง", label_en: "Price Low to High", value: "asc" },
   { label: "ราคาสูง-ต่ำ", label_en: "Price High to Low", value: "desc" },
 ];
-ProductCategory.layout = NavbarLayout;
+Category.layout = NavbarLayout;
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   query,
@@ -230,6 +212,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         categoriesDetail,
         product: productResponse,
         filterProduct: filterProductCategory,
+        page,
       },
     };
   } catch (error) {
@@ -246,4 +229,4 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 };
 
-export default ProductCategory;
+export default Category;

@@ -44,8 +44,8 @@ const CardShowListProduct: FC<CardShowListProductProps> = ({
     filteredProducts: CardShowProductProps[],
     term: string
   ) => {
-    console.log("Filtered Products:", filteredProducts);
-    console.log("Search Term:", term);
+    // console.log("Filtered Products:", filteredProducts);
+    // console.log("Search Term:", term);
     setFilteredResults(filteredProducts);
     setSearchTerm(term);
   };

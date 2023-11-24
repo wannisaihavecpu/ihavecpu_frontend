@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import Card from "@component/Card";
 import SettingSearch from "./SettingSearch";
 import Divider from "@component/Divider";
@@ -10,11 +10,13 @@ import { H6, H5, SemiSpan } from "@component/Typography";
 import { useState } from "react";
 import Box from "@component/Box";
 import { RangeSlider } from "next-range-slider";
+// import axios from "axios";
 import getGroupSearch from "@models/getGroupSearch";
 
 type ProductFilterCardProps = {
+  categoryID?: string;
   groupSearch?: getGroupSearch[];
-  onCheckboxChange?: (filterId: string, isSelected: boolean) => void; 
+  onCheckboxChange?: (filterId: string, isSelected: boolean) => void;
   onMinPriceChange?: (value: string) => void;
   maxPrice?: string | null;
   onMaxPriceChange?: (value: string) => void;
@@ -29,34 +31,132 @@ const ProductFilterCard: FC<ProductFilterCardProps> = ({
   // maxPrice,
   onMaxPriceChange,
   clearFilters,
+  categoryID,
 
   groupSearch,
 }) => {
   const [low, setLow] = useState("0");
   const [high, setHigh] = useState("1000");
   const [selectedItems, setSelectedItems] = useState<
-    { id: string; name: string }[]
+    { id: number; name: string }[]
   >([]);
+
+  const [filters, setFilter] = useState(groupSearch);
 
   const getSelectedItemsNames = () => {
     return selectedItems;
   };
+  const handleCheckboxChange = (filterId: number, itemName: string) => {
+    setSelectedItems((prevItems) => {
+      const selectedItem = prevItems.find((item) => item.id === filterId);
 
-  const handleCheckboxChange = (filterId: string, itemName: string) => {
-    const selectedItem = selectedItems.find((item) => item.id === filterId);
-
-    if (selectedItem) {
-      setSelectedItems((prevItems) =>
-        prevItems.filter((item) => item.id !== filterId)
-      );
-    } else {
-      setSelectedItems((prevItems) => [
-        ...prevItems,
-        { id: filterId, name: itemName },
-      ]);
-    }
+      if (selectedItem) {
+        // Remove item if already selected
+        return prevItems.filter((item) => item.id !== filterId);
+      } else {
+        // Add item if not selected
+        return [...prevItems, { id: filterId, name: itemName }];
+      }
+    });
   };
-  const handleItemRemove = (itemId: string) => {
+
+  useEffect(() => {
+    // Fetch data when selectedItems change
+    const fetchData = async () => {
+      console.log("fetchData");
+      try {
+        const filterIds = selectedItems.map((item) => item.id);
+        console.log("filterIds", filterIds);
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body:
+              filterIds.length > 0
+                ? JSON.stringify({ filter: filterIds })
+                : undefined,
+          }
+        );
+
+        const data = await response.json();
+
+        if (data.res_code === "00") {
+          setFilter(data.res_result);
+        } else {
+          console.error("failed");
+        }
+      } catch (error) {
+        console.error("Error", error);
+      }
+    };
+
+    // Call the fetch operation when selectedItems change
+    fetchData();
+  }, [selectedItems]); // Add selectedItems as a dependency to useEffect
+
+  // const handleCheckboxChange = async (filterId: number, itemName: string) => {
+  //   const selectedItem = selectedItems.find((item) => item.id === filterId);
+
+  //   if (selectedItem) {
+  //     setSelectedItems((prevItems) =>
+  //       prevItems.filter((item) => item.id !== filterId)
+  //     );
+  //   } else {
+  //     setSelectedItems((prevItems) => [
+  //       ...prevItems,
+  //       { id: filterId, name: itemName },
+  //     ]);
+
+  //     // Find the corresponding groupSearch item
+  //     const selectedFilter = groupSearch.find((filter) =>
+  //       filter.sub_filter.some((item) => item.filter_id === filterId)
+  //     );
+  //     const subFilterId = selectedFilter.sub_filter.find(
+  //       (item) => item.filter_id === filterId
+  //     )?.filter_id;
+  //     const filterIds = selectedItems.map((item) => item.id);
+  //     console.log(filterIds);
+
+  //     // if (selectedFilter) {
+  //     //   // Extract the sub_filter ID
+  //     //   const subFilterId = selectedFilter.sub_filter.find(
+  //     //     (item) => item.filter_id === filterId
+  //     //   )?.filter_id;
+  //     //   const filterIds = selectedItems.map((item) => item.id);
+
+  //     //   if (subFilterId) {
+  //     //     try {
+  //     //       console.log("filterIds", filterIds);
+  //     //       const response = await fetch(
+  //     //         `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/13`,
+  //     //         {
+  //     //           method: "POST",
+  //     //           headers: {
+  //     //             "Content-Type": "application/json",
+  //     //           },
+  //     //           body: JSON.stringify({ filter: filterIds }),
+  //     //         }
+  //     //       );
+  //     //       const data = await response.json();
+
+  //     //       if (data.res_code === "00") {
+  //     //         setFilter(data.res_result);
+  //     //       } else {
+  //     //         console.error("failed");
+  //     //       }
+  //     //     } catch (error) {
+  //     //       console.error("Error", error);
+  //     //     }
+  //     //   }
+  //     // }
+  //   }
+  // };
+
+  const handleItemRemove = (itemId: number) => {
     setSelectedItems((prevItems) =>
       prevItems.filter((item) => item.id !== itemId)
     );
@@ -137,25 +237,29 @@ const ProductFilterCard: FC<ProductFilterCardProps> = ({
         }}
       />
       <Divider my="24px" />
-      {groupSearch?.map((filter) => (
+      {filters?.map((filter) => (
         <div key={filter.filter_id} style={{ marginBottom: "16px" }}>
           <H6>{filter.name_th}</H6>
-          {filter.sub_filter.map((item) => (
-            <CheckBox
-              my="10px"
-              key={item.filter_id}
-              name={item.name_th}
-              value={item.filter_id.toString()}
-              color="ihavecpu"
-              label={<SemiSpan color="inherit">{item.name_th}</SemiSpan>}
-              onChange={() =>
-                handleCheckboxChange(item.filter_id.toString(), item.name_th)
-              }
-              checked={selectedItems.some(
-                (selected) => selected.id === item.filter_id.toString()
-              )}
-            />
-          ))}
+          {filter.sub_filter.length > 0 ? (
+            filter.sub_filter.map((item) => (
+              <CheckBox
+                my="10px"
+                key={item.filter_id}
+                name={item.name_th}
+                value={item.filter_id.toString()}
+                color="ihavecpu"
+                label={<SemiSpan color="inherit">{item.name_th}</SemiSpan>}
+                onChange={() =>
+                  handleCheckboxChange(item.filter_id, item.name_th)
+                }
+                checked={selectedItems.some(
+                  (selected) => selected.id === item.filter_id
+                )}
+              />
+            ))
+          ) : (
+            <p>No sub-filters available</p>
+          )}
           <Divider my="24px" />
         </div>
       ))}
