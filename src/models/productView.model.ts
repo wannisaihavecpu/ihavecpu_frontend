@@ -28,6 +28,8 @@ interface productView {
   ecom_market_price?: string;
   ecom_special_price?: string;
   link_youtube?: string;
+  price_sale?: string;
+  price_before?: string;
   picture?: [
     {
       pic_150?: string;

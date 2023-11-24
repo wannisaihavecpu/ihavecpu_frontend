@@ -6,7 +6,7 @@ import Box from "@component/Box";
 import HoverBox from "@component/HoverBox";
 import { H4, SemiSpan } from "@component/Typography";
 import PriceFormat from "@component/PriceFormat";
-// import { Chip } from "@component/Chip";
+import { Chip } from "@component/Chip";
 import FlexBox from "@component/FlexBox";
 
 // =======================================================
@@ -22,12 +22,12 @@ type ProductCard4Props = {
 // =======================================================
 
 const ProductCard4: FC<ProductCard4Props> = (props) => {
-  const { imgUrl, title, price } = props;
+  const { imgUrl, title, price, priceBefore, off } = props;
 
   return (
     <Box>
       <HoverBox mb="1rem" mx="auto" borderRadius={8}>
-        {/* {!!off && (
+        {!!off && (
           <Chip
             top="10px"
             left="10px"
@@ -39,9 +39,9 @@ const ProductCard4: FC<ProductCard4Props> = (props) => {
             color="ihavecpu.text"
             zIndex={1}
           >
-            {off}%
+            {off}
           </Chip>
-        )} */}
+        )}
         <NextImage
           src={imgUrl}
           width={100}
@@ -76,13 +76,13 @@ const ProductCard4: FC<ProductCard4Props> = (props) => {
           <PriceFormat price={price ?? 0} />
         </SemiSpan>
 
-        {/* {!!off && (
+        {!!off && (
           <SemiSpan color="text.muted" fontWeight="100" fontSize="0.75rem">
             <del>
               <PriceFormat price={priceBefore ?? 0} />
             </del>
           </SemiSpan>
-        )} */}
+        )}
       </FlexBox>
     </Box>
   );

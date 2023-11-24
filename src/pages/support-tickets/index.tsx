@@ -8,7 +8,7 @@ import Hidden from "@component/hidden";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import TableRow from "@component/TableRow";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import { IconButton } from "@component/buttons";
 import Typography, { SemiSpan, Small } from "@component/Typography";
 import DashboardLayout from "@component/layout/customer-dashboard";
@@ -62,10 +62,10 @@ const TicketList = ({ ticketList }: TicketListProps) => {
       ))}
 
       <FlexBox justifyContent="center" mt="2.5rem">
-        <Pagination
+        {/* <Pagination
           onChange={(data) => console.log(data)}
           pageCount={Math.ceil(ticketList.length / 10)}
-        />
+        /> */}
       </FlexBox>
     </Fragment>
   );

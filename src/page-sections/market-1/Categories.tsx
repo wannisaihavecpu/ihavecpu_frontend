@@ -21,12 +21,16 @@ type Props = { categories: Category[] };
 const Categories: FC<Props> = ({ categories }) => {
   return (
     <Container mb="70px">
-      <CategorySectionHeader title="หมวดหมู่สินค้า" iconName="categories" seeMoreLink="#" />
+      <CategorySectionHeader
+        title="หมวดหมู่สินค้า"
+        iconName="categories"
+        seeMoreLink="#"
+      />
 
       <Grid container spacing={6}>
         {categories.map((item) => (
           <Grid item lg={2} md={3} sm={4} xs={12} key={item.id}>
-            <Link href="/">
+            <Link href={`/category/${item.slug}`}>
               <a>
                 <Card
                   hoverEffect

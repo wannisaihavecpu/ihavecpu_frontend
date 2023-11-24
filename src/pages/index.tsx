@@ -46,8 +46,6 @@ type Props = {
   blogs: Blog[];
   notebookList?: Product[];
   notebookBrands?: Brand[];
-  // carList?: Product[];
-  // carBrands?: Brand[];
   diyList?: Product[];
   diyBrands?: Category[];
   opticsShops?: Shop[];
@@ -90,13 +88,17 @@ const Home = (props: Props) => {
   return (
     <main>
       {/* HERO CAROUSEL AREA */}
-      <Section1
-        carouselData={props.mainCarouselData}
-        banner={props.bannerHome}
-      />
+      {props.bannerHome && props.bannerHome.length > 0 && (
+        <Section1
+          carouselData={props.mainCarouselData}
+          banner={props.bannerHome}
+        />
+      )}
 
       {/* BANNER SLIDE */}
-      <BannerSlide banner={props.bannerSlide} />
+      {props.bannerSlide && props.bannerSlide.length > 0 && (
+        <BannerSlide banner={props.bannerSlide} />
+      )}
 
       {/* BANNER1 OFFER BANNERS AREA */}
       {/* <Banner1 /> */}
@@ -108,25 +110,37 @@ const Home = (props: Props) => {
       <Categories categories={props.bottomCategories} />
 
       {/* DEAL OF THE DAY CAROUSEL AREA */}
-      <Hotdeal product={props.productFlashSale} />
+      {props.productFlashSale && props.productFlashSale.length > 0 && (
+        <Hotdeal product={props.productFlashSale} />
+      )}
 
       {/* สินค้าลดราคา */}
       {/* <Discounts bigDiscountList={props.bigDiscountList} /> */}
 
       {/* BANNER2BOX  BANNERS AREA */}
-      <Banner2box banner={props.bannerTwo} />
+      {props.bannerTwo && props.bannerTwo.length > 0 && (
+        <Banner2box banner={props.bannerTwo} />
+      )}
 
       {/* NEW ARRIVALS AREA */}
-      <Newproduct product={props.newProduct} />
+      {props.newProduct && props.newProduct.length > 0 && (
+        <Newproduct product={props.newProduct} />
+      )}
 
       {/* COMPUTOR SET AREA */}
-      <Computorset category={props.categorySetComputer} />
+      {props.categorySetComputer && props.categorySetComputer.length > 0 && (
+        <Computorset category={props.categorySetComputer} />
+      )}
 
       {/* อุปกรณ์เสริม เกมเมอร์ */}
-      <Topcatrgories categoryList={props.topCategories} />
+      {props.topCategories && props.topCategories.length > 0 && (
+        <Topcatrgories categoryList={props.topCategories} />
+      )}
 
       {/* BANNER3BOX  BANNERS AREA */}
-      <Banner3box banner={props.bannerSlide} />
+      {props.bannerSlide && props.bannerSlide.length > 0 && (
+        <Banner3box banner={props.bannerSlide} />
+      )}
 
       {/* TOP RATING AND BRANDS AREA */}
       <Toprating
@@ -135,22 +149,35 @@ const Home = (props: Props) => {
         bestSeller={props.productBestSeller}
       />
       {/* สินค้า DIY */}
-      <Diy category={props.categorySetDIY} />
+      {props.categorySetDIY && props.categorySetDIY.length > 0 && (
+        <Diy category={props.categorySetDIY} />
+      )}
 
       {/* BANNER2BOX BANNERS AREA */}
-      <Banner2box banner={props.bannerTwo} />
+      {props.bannerTwo && props.bannerTwo.length > 0 && (
+        <Banner2box banner={props.bannerTwo} />
+      )}
 
       {/* NOTEBOOK AND WATCH AREA */}
-      <Notebook category={props.categorySetBrandNotebook} />
+      {props.categorySetBrandNotebook &&
+        props.categorySetBrandNotebook.length > 0 && (
+          <Notebook category={props.categorySetBrandNotebook} />
+        )}
 
       {/* อุปกรณ์ต่อพ่วง */}
-      <Accessories category={props.categorySpecific} />
+      {props.categorySpecific && props.categorySpecific.length > 0 && (
+        <Accessories category={props.categorySpecific} />
+      )}
 
       {/* BANNER1 OFFER BANNERS AREA */}
-      <Banner1box banner={props.bannerBottom} />
+      {props.bannerBottom && props.bannerBottom.length > 0 && (
+        <Banner1box banner={props.bannerBottom} />
+      )}
 
       {/* บทความ */}
-      <Blogs blogs={props.newBlog} />
+      {props.newBlog && props.newBlog.length > 0 && (
+        <Blogs blogs={props.newBlog} />
+      )}
 
       {/* SERVICES AREA */}
       <Services id={FIXED_ID} services={props.serviceList} />
@@ -163,86 +190,127 @@ Home.layout = AppLayout;
 // ==============================================================
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const bannerSlides = await api.getBanners();
-  const brands = await api.getBrands();
-  const blogs = await api.getBlogs();
-  const notebookList = await api.getNotebookList();
-  const notebookBrands = await api.getNotebookBrands();
-  // const carList = await api.getCarList();
-  // const carBrands = await api.getCarBrands();
-  const diyList = await api.getCarList();
-  const diyBrands = await api.getDiyBrands();
-  const moreItems = await api.getMoreItems();
-  const mobileList = await api.getMobileList();
-  const opticsList = await api.getOpticsList();
-  const mobileShops = await api.getMobileShops();
-  const opticsShops = await api.getOpticsShops();
-  const serviceList = await api.getServiceList();
-  const mobileBrands = await api.getMobileBrands();
-  const flashDealsData = await api.getFlashDeals();
-  const opticsBrands = await api.getOpticsBrands();
-  const bottomCategories = await api.getCategories();
-  const topCategories = await api.getTopCategories();
-  const topRatedBrands = await api.getTopRatedBrand();
-  const mainCarouselData = await api.getMainCarousel();
-  const newArrivalsList = await api.getNewArrivalList();
-  const bigDiscountList = await api.getBigDiscountList();
-  const topRatedProducts = await api.getTopRatedProduct();
-  const hotDealList = await api.getHotDealList();
-  const categorySetComputer = await api.getCategorySetComputer();
-  const categorySetDIY = await api.getCategoryDIY();
-  const categorySetBrandNotebook = await api.getCategoryBrandNoteBook();
-  const newProduct = await api.getNewProduct();
-  const newBlog = await api.getNewBlog();
-  const bannerHome = await api.getBanner();
-  const bannerSlide = await api.getBannerSlide();
-  const bannerTwo = await api.getBannerTwo();
-  const bannerBottom = await api.getBannerBottom();
-  const categorySpecific = await api.getCategorySpecific();
-  const productFlashSale = await api.getFlashSaleProduct();
-  const productBestSeller = await api.getBestSeller();
-  return {
-    props: {
-      bannerSlides,
-      brands,
-      blogs,
-      notebookList,
-      notebookBrands,
-      diyList,
-      // carList,
-      // carBrands,
-      diyBrands,
-      moreItems,
-      mobileList,
-      opticsList,
-      serviceList,
-      mobileShops,
-      opticsShops,
-      mobileBrands,
-      opticsBrands,
-      topCategories,
-      flashDealsData,
-      topRatedBrands,
-      newArrivalsList,
-      bigDiscountList,
-      mainCarouselData,
-      topRatedProducts,
-      bottomCategories,
-      hotDealList,
-      categorySetComputer,
-      categorySetDIY,
-      categorySetBrandNotebook,
-      newProduct,
-      newBlog,
-      bannerHome,
-      bannerSlide,
-      bannerTwo,
-      bannerBottom,
-      categorySpecific,
-      productFlashSale,
-      productBestSeller,
-    },
-  };
+  try {
+    const bannerSlides = await api.getBanners();
+    const brands = await api.getBrands();
+    const blogs = await api.getBlogs();
+    const notebookList = await api.getNotebookList();
+    const notebookBrands = await api.getNotebookBrands();
+    const diyList = await api.getCarList();
+    const diyBrands = await api.getDiyBrands();
+    const moreItems = await api.getMoreItems();
+    const mobileList = await api.getMobileList();
+    const opticsList = await api.getOpticsList();
+    const mobileShops = await api.getMobileShops();
+    const opticsShops = await api.getOpticsShops();
+    const serviceList = await api.getServiceList();
+    const mobileBrands = await api.getMobileBrands();
+    const flashDealsData = await api.getFlashDeals();
+    const opticsBrands = await api.getOpticsBrands();
+    const bottomCategories = await api.getCategories();
+    const topCategories = await api.getTopCategories();
+    const topRatedBrands = await api.getTopRatedBrand();
+    const mainCarouselData = await api.getMainCarousel();
+    const newArrivalsList = await api.getNewArrivalList();
+    const bigDiscountList = await api.getBigDiscountList();
+    const topRatedProducts = await api.getTopRatedProduct();
+    const hotDealList = await api.getHotDealList();
+    const categorySetComputer = await api.getCategorySetComputer();
+    const categorySetDIY = await api.getCategoryDIY();
+    const categorySetBrandNotebook = await api.getCategoryBrandNoteBook();
+    const newProduct = await api.getNewProduct();
+    const newBlog = await api.getNewBlog();
+    const bannerHome = await api.getBanner();
+    const bannerSlide = await api.getBannerSlide();
+    const bannerTwo = await api.getBannerTwo();
+    const bannerBottom = await api.getBannerBottom();
+    const categorySpecific = await api.getCategorySpecific();
+    const productFlashSale = await api.getFlashSaleProduct();
+    const productBestSeller = await api.getBestSeller();
+
+    return {
+      props: {
+        bannerSlides,
+        brands,
+        blogs,
+        notebookList,
+        notebookBrands,
+        diyList,
+        diyBrands,
+        moreItems,
+        mobileList,
+        opticsList,
+        serviceList,
+        mobileShops,
+        opticsShops,
+        mobileBrands,
+        opticsBrands,
+        topCategories,
+        flashDealsData,
+        topRatedBrands,
+        newArrivalsList,
+        bigDiscountList,
+        mainCarouselData,
+        topRatedProducts,
+        bottomCategories,
+        hotDealList,
+        categorySetComputer,
+        categorySetDIY,
+        categorySetBrandNotebook,
+        newProduct,
+        newBlog,
+        bannerHome,
+        bannerSlide,
+        bannerTwo,
+        bannerBottom,
+        categorySpecific,
+        productFlashSale,
+        productBestSeller,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+    return {
+      props: {
+        bannerSlides: null,
+        brands: null,
+        blogs: null,
+        notebookList: null,
+        notebookBrands: null,
+        diyList: null,
+        diyBrands: null,
+        moreItems: null,
+        mobileList: null,
+        opticsList: null,
+        serviceList: null,
+        mobileShops: null,
+        opticsShops: null,
+        mobileBrands: null,
+        opticsBrands: null,
+        topCategories: null,
+        flashDealsData: null,
+        topRatedBrands: null,
+        newArrivalsList: null,
+        bigDiscountList: null,
+        mainCarouselData: null,
+        topRatedProducts: null,
+        bottomCategories: null,
+        hotDealList: null,
+        categorySetComputer: null,
+        categorySetDIY: null,
+        categorySetBrandNotebook: null,
+        newProduct: null,
+        newBlog: null,
+        bannerHome: null,
+        bannerSlide: null,
+        bannerTwo: null,
+        bannerBottom: null,
+        categorySpecific: null,
+        productFlashSale: null,
+        productBestSeller: null,
+      },
+    };
+  }
 };
 
 export default Home;

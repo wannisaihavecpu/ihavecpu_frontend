@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FC, useState } from "react";
+import { FC, useState, useCallback } from "react";
 import Box from "@component/Box";
 import Image from "@component/Image";
 import Icon from "@component/icon/Icon";
@@ -14,7 +14,8 @@ import Categories from "@component/categories/Categories";
 import { SearchInputWithCategory } from "@component/search-box";
 import { useAppContext } from "@context/AppContext";
 import StyledHeader from "./styles";
-import UserLoginDialog from "./LoginDialog";
+// import UserLoginDialog from "./LoginDialog";
+// import Modal from "@component/Modal";
 
 // ====================================================================
 type HeaderProps = { isFixed?: boolean; className?: string };
@@ -24,6 +25,12 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
   const { state } = useAppContext();
   const [open, setOpen] = useState(false);
   const toggleSidenav = () => setOpen(!open);
+
+  const [openModal, setOpenModal] = useState(false);
+  const toggleDialog = useCallback(
+    () => setOpenModal((openModal) => !openModal),
+    []
+  );
 
   const CART_HANDLE = (
     <Box ml="20px" position="relative">
@@ -51,19 +58,24 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
     </Box>
   );
 
-  const LOGIN_HANDLE = (
-    <IconButton ml="1rem" bg="gray.200" p="8px">
-      <Icon size="28px">user</Icon>
-    </IconButton>
-  );
+  // const LOGIN_HANDLE = (
+  //   <IconButton ml="1rem" bg="gray.200" p="8px">
+  //     <Icon size="28px">user</Icon>
+  //   </IconButton>
+  // );
 
   return (
     <StyledHeader className={className}>
-      <Container display="flex" alignItems="center" justifyContent="space-between" height="100%">
+      <Container
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        height="100%"
+      >
         <FlexBox className="logo" alignItems="center" mr="1rem">
           <Link href="/">
             <a>
-              <Image src="/assets/images/logo.svg" alt="logo" height="50px"/>
+              <Image src="/assets/images/logo.svg" alt="logo" height="50px" />
             </a>
           </Link>
 
@@ -84,9 +96,14 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
         </FlexBox>
 
         <FlexBox className="header-right" alignItems="center">
-          <UserLoginDialog handle={LOGIN_HANDLE}>
+          {/* <UserLoginDialog handle={LOGIN_HANDLE}>
             <Login />
-          </UserLoginDialog>
+          </UserLoginDialog> */}
+          <IconButton ml="1rem" bg="gray.200" p="8px" onClick={toggleDialog}>
+            <Icon size="28px">user</Icon>
+          </IconButton>
+
+          <Login open={openModal} onClose={toggleDialog} />
 
           <Sidenav
             open={open}

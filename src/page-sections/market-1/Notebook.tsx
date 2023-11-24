@@ -83,9 +83,12 @@ const Notebook: FC<Props> = ({ category }) => {
     }, 800);
   };
   const fetchProductAll = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=13`, {
-      method: "GET",
-    })
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=13&offset=0&limit=8`,
+      {
+        method: "GET",
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         if (

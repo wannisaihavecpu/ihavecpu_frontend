@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { GetStaticProps } from "next";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import ShopCard1 from "@sections/shop/ShopCard1";
 import { H2, SemiSpan } from "@component/Typography";
 import NavbarLayout from "@component/layout/NavbarLayout";
@@ -34,9 +34,14 @@ const ShopList = ({ shopList }: Props) => {
         ))}
       </Grid>
 
-      <FlexBox flexWrap="wrap" justifyContent="space-between" alignItems="center" mt="32px">
+      <FlexBox
+        flexWrap="wrap"
+        justifyContent="space-between"
+        alignItems="center"
+        mt="32px"
+      >
         <SemiSpan>Showing 1-9 of {shopList.length} Shops</SemiSpan>
-        <Pagination pageCount={Math.ceil(shopList.length / 9)} />
+        {/* <Pagination pageCount={Math.ceil(shopList.length / 9)} /> */}
       </FlexBox>
     </Fragment>
   );

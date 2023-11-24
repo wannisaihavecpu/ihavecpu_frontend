@@ -4,7 +4,7 @@ import Card from "@component/Card";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import TableRow from "@component/TableRow";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import Typography, { H5 } from "@component/Typography";
 import { Button, IconButton } from "@component/buttons";
 import DashboardLayout from "@component/layout/customer-dashboard";
@@ -14,7 +14,12 @@ const AddressList = () => {
   const handleNavigate = () => Router.push("/payment-methods/add");
 
   const HEADER_LINK = (
-    <Button color="primary" bg="primary.light" px="2rem" onClick={handleNavigate}>
+    <Button
+      color="primary"
+      bg="primary.light"
+      px="2rem"
+      onClick={handleNavigate}
+    >
       Add New Payment Method
     </Button>
   );
@@ -52,7 +57,10 @@ const AddressList = () => {
           </Typography>
 
           <Typography className="pre" textAlign="center" color="text.muted">
-            <IconButton size="small" onClick={() => Router.push("/payment-methods/xkssThds6h37sd")}>
+            <IconButton
+              size="small"
+              onClick={() => Router.push("/payment-methods/xkssThds6h37sd")}
+            >
               <Icon variant="small" defaultcolor="currentColor">
                 edit
               </Icon>
@@ -68,7 +76,7 @@ const AddressList = () => {
       ))}
 
       <FlexBox justifyContent="center" mt="2.5rem">
-        <Pagination pageCount={5} onChange={(data) => console.log(data)} />
+        {/* <Pagination pageCount={5} onChange={(data) => console.log(data)} /> */}
       </FlexBox>
     </Fragment>
   );

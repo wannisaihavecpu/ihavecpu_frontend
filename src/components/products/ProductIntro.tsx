@@ -260,7 +260,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         type: "CHANGE_CART_AMOUNT",
         payload: {
           optionId: optionId,
-          price: parseInt(product.market_price),
+          price: parseInt(product.price_sale),
           qty: (cartItem?.qty || 0) + quantity,
           name: product.name_th,
           imgUrl: product.picture[0]?.pic_150 || "",
@@ -310,7 +310,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     const selectedChoices = Object.entries(selectedOptions);
 
     const matchingEntry = product.stock.find((entry) =>
-      selectedChoices.every(([val]) => entry.choose.includes(val))
+      selectedChoices.every(([_, val]) => entry.choose.includes(val))
     );
 
     return matchingEntry ? matchingEntry.stock : 0;
@@ -338,7 +338,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     // check any stock matching the selected choice
     return product.stock.some(
       (entry) =>
-        selectedChoices.every(([val]) => entry.choose.includes(val)) &&
+        selectedChoices.every(([_, val]) => entry.choose.includes(val)) &&
         entry.stock > 0
     );
   };
@@ -374,10 +374,8 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
     for (const optionCombination of allOptionCombinations) {
       const isCombinationInStock = product.stock.some((entry) => {
-        const includesAll = entry.choose.every(() =>
-          optionCombination.some(([subId]) =>
-            entry.choose.includes(subId.toString())
-          )
+        const includesAll = optionCombination.every(([_, subId]) =>
+          entry.choose.includes(subId.toString())
         );
 
         if (includesAll && entry.stock > 0) {
@@ -391,6 +389,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         return true;
       }
     }
+
     return false;
   };
 
@@ -461,6 +460,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   const filteredCoupons = couponList.filter(
     (coupon) => !myCoupon.some((myCoupon) => myCoupon.code === coupon.code)
   );
+
   useEffect(() => {
     fetchMyCouponAvailable();
   }, []);
@@ -596,12 +596,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
           <FlexBox mb="24px" alignItems="center">
             <H1 color="ihavecpu.main" mb="4px" lineHeight="1">
-              <PriceFormat price={parseInt(product.market_price)} />
+              <PriceFormat price={parseInt(product.price_sale)} />
             </H1>
-            {parseInt(product.sell_price) > parseInt(product.market_price) && (
+            {parseInt(product.price_sale) < parseInt(product.price_before) && (
               <H6 ml={2} color="grey" fontWeight={300}>
                 <del>
-                  <PriceFormat price={parseInt(product.sell_price)} />
+                  <PriceFormat price={parseInt(product.price_before)} />
                 </del>
               </H6>
             )}
@@ -930,7 +930,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
           </Grid>
         </Grid>
 
-        <ModalCoupon open={open} onClose={toggleDialog} />
+        <ModalCoupon
+          open={open}
+          onClose={toggleDialog}
+          product={product.product_id}
+          listCoupon={couponList}
+        />
       </Grid>
     </Box>
   );

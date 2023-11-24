@@ -1,13 +1,11 @@
 import { FC, useCallback, useEffect, useState } from "react";
-// import Link from "next/link";
+import Link from "next/link";
 import { debounce } from "lodash";
 import Box from "../Box";
-// import Menu from "../Menu";
 import Card from "../Card";
 import Icon from "../icon/Icon";
-// import FlexBox from "../FlexBox";
-// import MenuItem from "../MenuItem";
-// import { Span } from "../Typography";
+import MenuItem from "../MenuItem";
+import { Span } from "../Typography";
 import TextField from "../text-field";
 import StyledSearchBox from "./styled";
 import { useRouter } from "next/router";
@@ -15,19 +13,43 @@ import { useRouter } from "next/router";
 const SearchInputWithCategory: FC = () => {
   const router = useRouter();
   const [resultList, setResultList] = useState([]);
-  // const [category, setCategory] = useState("All Categories");
   const [searchValue, setSearchValue] = useState("");
 
-  // const handleCategoryChange = (cat) => () => setCategory(cat);
+  const search = debounce(async (value) => {
+    if (!value) {
+      setResultList([]);
+    } else {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_PATH}/search/auto?lang=gb&keyword=${value}`
+        );
+        const data = await response.json();
+        if (data.res_result) {
+          setResultList(data.res_result.data);
+        } else {
+          setResultList([]);
+        }
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setResultList([]);
+      }
+    }
+  }, 500);
 
-  const search = debounce((value) => {
-    if (!value) setResultList([]);
-    else setResultList(dummySearchResult);
-  }, 200);
+  let debounceTimeout;
+
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchValue(value);
-    search(value);
+    setResultList([]);
+    clearTimeout(debounceTimeout);
+
+    debounceTimeout = setTimeout(
+      () => {
+        search(value);
+      },
+      value.length < 3 ? 0 : 500
+    );
   };
 
   const handleDocumentClick = () => setResultList([]);
@@ -35,11 +57,32 @@ const SearchInputWithCategory: FC = () => {
     (event) => {
       if (event.key === "Enter") {
         router.push(`/product/search/${searchValue}`);
+        setResultList([]);
         setSearchValue("");
       }
     },
     [router, searchValue]
   );
+
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
+  const handleProductClick = (item) => {
+    console.log(item);
+    setResultList([]);
+    setSearchValue("");
+  };
 
   useEffect(() => {
     window.addEventListener("click", handleDocumentClick);
@@ -65,23 +108,6 @@ const SearchInputWithCategory: FC = () => {
           className="search-field"
           placeholder="ค้นหาสินค้า"
         />
-
-        {/* <Menu
-          direction="right"
-          className="category-dropdown"
-          handler={
-            <FlexBox className="dropdown-handler" alignItems="center">
-              <span>{category}</span>
-              <Icon variant="small">chevron-down</Icon>
-            </FlexBox>
-          }
-        >
-          {categories.map((item) => (
-            <MenuItem key={item} onClick={handleCategoryChange(item)}>
-              {item}
-            </MenuItem>
-          ))}
-        </Menu> */}
       </StyledSearchBox>
 
       {!!resultList.length && (
@@ -93,24 +119,42 @@ const SearchInputWithCategory: FC = () => {
           boxShadow="large"
           zIndex={99}
         >
-          {/* {resultList.map((item) => (
-            <Link href={`/product/search/${item}`} key={item}>
-              <MenuItem key={item}>
-                <Span fontSize="14px">{item}</Span>
+          {resultList.map((item) => (
+            <Link
+              href={
+                item.type === "category"
+                  ? `/category/${formatSlug(item.name_gb)}`
+                  : `/product/${item.id}/${formatSlug(item.name_gb)}`
+              }
+              passHref
+              key={item.id}
+            >
+              <MenuItem key={item.id} onClick={() => handleProductClick(item)}>
+                {item.type === "category" && (
+                  <>
+                    <img
+                      src={item.img}
+                      alt={item.name_gb}
+                      style={{
+                        marginRight: "8px",
+                        width: "50px",
+                        height: "50px",
+                        borderRadius: "5px",
+                      }}
+                    />
+                    <Span fontSize="14px">{item.name_gb}</Span>
+                  </>
+                )}
+                {item.type === "product" && (
+                  <Span fontSize="14px">{item.name_gb}</Span>
+                )}
               </MenuItem>
             </Link>
-          ))} */}
+          ))}
         </Card>
       )}
     </Box>
   );
 };
-
-const dummySearchResult = [
-  "Macbook Air 13",
-  "Ksus K555LA",
-  "Acer Aspire X453",
-  "iPad Mini 3",
-];
 
 export default SearchInputWithCategory;

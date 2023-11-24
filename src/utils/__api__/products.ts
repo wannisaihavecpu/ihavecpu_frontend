@@ -184,14 +184,17 @@ const getCategoryNameById = async (): Promise<menuDropdown[]> => {
   }
 };
 const getProductOfCategory = async (
-  categoryID: string
+  categoryID: string,
+  offset: number,
+  limit: number,
+  sort: string
 ): Promise<listProduct[]> => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}`
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${offset}&limit=${limit}&sort=${sort}`
     );
     if (response.data.res_code === "00") {
-      return response.data.res_result.data;
+      return response.data.res_result;
     } else {
       console.error(
         "Error fetching getProductOfCategory",
@@ -209,7 +212,7 @@ const getFilterProductCategory = async (
   categoryID: string
 ): Promise<getGroupSearch[]> => {
   try {
-    const response = await axios.get(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`
     );
     if (response.data.res_code === "00") {

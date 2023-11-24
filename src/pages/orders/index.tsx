@@ -4,7 +4,7 @@ import Hidden from "@component/hidden";
 import FlexBox from "@component/FlexBox";
 import TableRow from "@component/TableRow";
 import { H5 } from "@component/Typography";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import OrderRow from "@component/orders/OrderRow";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 import CustomerDashboardLayout from "@component/layout/customer-dashboard";
@@ -47,10 +47,10 @@ const OrderList = ({ orderList }: OrderListProps) => {
       ))}
 
       <FlexBox justifyContent="center" mt="2.5rem">
-        <Pagination
+        {/* <Pagination
           onChange={(data) => console.log(data)}
           pageCount={Math.ceil(orderList.length / 10)}
-        />
+        /> */}
       </FlexBox>
     </Fragment>
   );
