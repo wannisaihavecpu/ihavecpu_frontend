@@ -125,12 +125,13 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   }, []);
 
   const handleCompareClick = () => {
+    console.log(product.cat_id);
     const productIdString = product.product_id;
     const productCategoryId = product.cat_id;
 
     if (
       compareList.length === 0 ||
-      compareList[0].category_id.toString() === productCategoryId
+      compareList[0]?.category_id === parseInt(productCategoryId)
     ) {
       if (compareList.some((product) => product.id === productIdString)) {
         notify("error", "removed from compare");
@@ -143,6 +144,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         if (compareList.length >= maxCompareProducts) {
           notify("error", "เลือกเปรียบเทียบสินค้าได้สูงสุด 4 สินค้าเท่านั้น");
         } else {
+             console.log("case 3");
           notify("success", "added to compare");
           // add product to the comparison list
           const updatedCompareList = [
@@ -158,9 +160,11 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
           // update the state with the new compareList
           setCompareList(updatedCompareList);
+
         }
       }
     } else {
+      console.log("case 3");
       // clear the compare list and add the current product
       notify("success", "added to compare");
       const updatedCompareList = [
@@ -170,6 +174,8 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
       setCompareList(updatedCompareList);
     }
   };
+  // console.log(compareList);
+
 
   // copy Link
   const handleCopyLinkClick = () => {
@@ -205,31 +211,33 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
   const [quantity, setQuantity] = useState<number>(1);
 
-  // Cart Amount
   const handleCartAmountChange = (newAmount: number) => {
     newAmount = Math.max(newAmount, 1);
-    const availableStock = getAvailableStock(selectedOptions);
-    // check all required options are selected
+  
     const isAnyOptionRequired = product.option.some(
       (option) => option.sub.length > 0
     );
-
+  
     if (isAnyOptionRequired) {
       const isAllOptionsSelected = product.option.every((option) =>
         selectedOptions.hasOwnProperty(option.m_option_id)
       );
-
+  
       if (!isAllOptionsSelected) {
         notify("error", "กรุณาเลือกตัวเลือกสินค้า");
-      } else {
-        if (!isNaN(newAmount) && newAmount <= availableStock) {
-          setQuantity(newAmount);
-        } else {
-          notify("error", "สินค้าหมดคลัง");
-        }
+        return; 
       }
     }
+  
+    const availableStock = getAvailableStock(selectedOptions);
+  
+    if (!isNaN(newAmount) && newAmount <= availableStock) {
+      setQuantity(newAmount);
+    } else {
+      notify("error", "สินค้าหมดคลัง");
+    }
   };
+  
   const handleAddToCartClick = () => {
     const availableStock = getAvailableStock(selectedOptions);
     const optionId = mapSelectedOptionsToOptionId(
@@ -277,10 +285,10 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     const isAnyOptionRequired = product.option.some(
       (option) => option.sub.length > 0
     );
-    const optionId = mapSelectedOptionsToOptionId(
-      selectedOptions,
-      product.stock
-    );
+    // const optionId = mapSelectedOptionsToOptionId(
+    //   selectedOptions,
+    //   product.stock
+    // );
 
     if (isAnyOptionRequired) {
       const isAllOptionsSelected = product.option.every((option) =>
@@ -290,14 +298,14 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         notify("error", "กรุณาเลือกตัวเลือกสินค้า");
         return;
       } else {
-        router.push({
-          pathname: "/checkout",
-          query: {
-            product: product?.product_id || "",
-            option: optionId || "",
-            qty: quantity,
-          },
-        });
+        // router.push({
+        //   pathname: "/checkout",
+        //   query: {
+        //     product: product?.product_id || "",
+        //     option: optionId || "",
+        //     qty: quantity,
+        //   },
+        // });
       }
     }
     setSelectedOptions({});
@@ -370,6 +378,9 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   };
 
   const isProductInStock = () => {
+    if (Array.isArray(product.option)) {
+      return product.stock.some((entry) => entry.stock > 0);
+    }
     const allOptionCombinations = getAllOptionCombinations(product.option);
 
     for (const optionCombination of allOptionCombinations) {
@@ -467,7 +478,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
   return (
     <Box overflow="hidden">
-      <CompareNotification count={compareList.length} />
+      <CompareNotification count={compareList.length} category={compareList[0]?.category_id} />
 
       <Grid container justifyContent="center" spacing={16}>
         {/* PRODUCT IMAGE */}
