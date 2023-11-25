@@ -66,6 +66,21 @@ const ProductCard7: FC<ProductCard7Props> = (props) => {
     });
   };
 
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
+
   return (
     <Wrapper {...others}>
       <Image
@@ -82,7 +97,7 @@ const ProductCard7: FC<ProductCard7Props> = (props) => {
         className="product-details"
         justifyContent="space-between"
       >
-        <Link href={`/product/${slug}`}>
+        <Link href={`/product/${id}/${formatSlug(name)}`}>
           <a>
             <Typography
               className="title"
@@ -123,6 +138,7 @@ const ProductCard7: FC<ProductCard7Props> = (props) => {
               padding="5px"
               color="ihavecpu"
               variant="outlined"
+              type="button"
               disabled={qty === 1}
               borderColor="ihavecpu.main"
               onClick={handleCartAmountChange(qty - 1)}
@@ -138,6 +154,7 @@ const ProductCard7: FC<ProductCard7Props> = (props) => {
               size="none"
               padding="5px"
               color="ihavecpu"
+              type="button"
               variant="outlined"
               borderColor="ihavecpu.main"
               onClick={handleCartAmountChange(qty + 1)}

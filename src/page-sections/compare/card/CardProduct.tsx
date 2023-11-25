@@ -96,8 +96,7 @@ const CardProduct: FC<CardProductProps> = ({
               </Box>
               <NextImage
                 width={140}
-                height={120}
-                alt="shoes"
+                height={140}
                 layout="responsive"
                 objectFit="cover"
                 src={imgUrl}

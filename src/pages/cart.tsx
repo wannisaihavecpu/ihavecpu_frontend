@@ -37,7 +37,7 @@ const Cart = () => {
 
     router.push("/checkout");
   };
-
+console.log(state.cart);
   return (
     <Formik
       initialValues={state.customerDetail[0] || initialValues}

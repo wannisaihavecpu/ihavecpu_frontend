@@ -163,6 +163,7 @@ const ComparePage = () => {
     const apiUrl = `${
       process.env.NEXT_PUBLIC_API_PATH
     }/comparetest?product_ids=${productIds.join(",")}`;
+    console.log(apiUrl);
     if (productIds.length > 0) {
       axios
         .get(apiUrl)
