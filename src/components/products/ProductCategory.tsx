@@ -55,7 +55,7 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
   const [productFilter, setProductFilter] = useState(products);
   // const [offset, setOffset] = useState(0);
   const [selectedSortOption, setSelectedSortOption] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"grid" | "list">("grid");
 
   const router = useRouter();
@@ -80,44 +80,44 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
     });
   };
 
-  // const fetchProductData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const filterIds = selectedItems.map((item) => item.id);
-  //     // const page = currentPage;
-  //     const limit = 12;
-  //     const newOffset = 0;
-  //     // setOffset(newOffset);
+  const fetchProductData = async () => {
+    setLoading(true);
+    try {
+      const filterIds = selectedItems.map((item) => item.id);
+      // const page = currentPage;
+      const limit = 12;
+      const newOffset = 0;
+      // setOffset(newOffset);
 
-  //     let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
+      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
 
-  //     if (filterIds.length > 0) {
-  //       apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-  //     }
+      if (filterIds.length > 0) {
+        apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      }
 
-  //     apiUrl += `&min=${low}&max=${high}`;
+      apiUrl += `&min=${low}&max=${high}`;
 
-  //     // console.log(apiUrl);
+      // console.log(apiUrl);
 
-  //     await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
-  //     const productResponse = await fetch(apiUrl);
-  //     const productData = await productResponse.json();
+      const productResponse = await fetch(apiUrl);
+      const productData = await productResponse.json();
 
-  //     if (productData.res_code === "00") {
-  //       setProductFilter(productData.res_result);
-  //       setLoading(false);
-  //       setCurrentPage(1);
-  //     } else {
-  //       setProductFilter(null);
-  //       setLoading(false);
-  //       console.error("failed to fetch products");
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.error("Error fetching products", error);
-  //   }
-  // };
+      if (productData.res_code === "00") {
+        setProductFilter(productData.res_result);
+        setLoading(false);
+        setCurrentPage(1);
+      } else {
+        setProductFilter(null);
+        setLoading(false);
+        console.error("failed to fetch products");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching products", error);
+    }
+  };
 
   const fetchProductDataForRangeSlider = async (
     priceLow: string,
@@ -256,51 +256,50 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
     }
   };
 
-  // useEffect(() => {
-  //   const fetchFilterData = async () => {
-  //     try {
-  //       const filterIds = selectedItems.map((item) => item.id);
-
-  //       const filterResponse = await fetch(
-  //         `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`,
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body:
-  //             filterIds.length > 0
-  //               ? JSON.stringify({ filter: filterIds })
-  //               : undefined,
-  //         }
-  //       );
-
-  //       const filterData = await filterResponse.json();
-
-  //       if (filterData.res_code === "00") {
-  //         setFilter(filterData.res_result);
-  //       } else {
-  //         console.error("failed to fetch filters");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching filters", error);
-  //     }
-  //   };
-
-  //   setLow(parseInt(products.minPrice, 10));
-  //   setHigh(parseInt(products.maxPrice, 10));
-
-  //   fetchFilterData();
-  //   fetchProductData();
-  // }, [currentPage, categoryID]); // Include currentPage in the dependency array
   useEffect(() => {
-    setProductFilter(products);
-    setSelectedSortOption(null);
-    setSelectedItems([]);
+    const fetchFilterData = async () => {
+      try {
+        const filterIds = selectedItems.map((item) => item.id);
+
+        const filterResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body:
+              filterIds.length > 0
+                ? JSON.stringify({ filter: filterIds })
+                : undefined,
+          }
+        );
+
+        const filterData = await filterResponse.json();
+
+        if (filterData.res_code === "00") {
+          setFilter(filterData.res_result);
+        } else {
+          console.error("failed to fetch filters");
+        }
+      } catch (error) {
+        console.error("Error fetching filters", error);
+      }
+    };
     setLow(parseInt(products.minPrice, 10));
     setHigh(parseInt(products.maxPrice, 10));
-    setFilter(groupSearch);
-  }, [currentPage, categoryID]);
+    // setSelectedItems([]);
+    fetchFilterData();
+    fetchProductData();
+  }, [selectedItems, categoryID]);
+  // useEffect(() => {
+  //   setProductFilter(products);
+  //   setSelectedSortOption(null);
+  //   setSelectedItems([]);
+  //   setLow(parseInt(products.minPrice, 10));
+  //   setHigh(parseInt(products.maxPrice, 10));
+  //   setFilter(groupSearch);
+  // }, [currentPage, categoryID]);
 
   return (
     <Fragment>
