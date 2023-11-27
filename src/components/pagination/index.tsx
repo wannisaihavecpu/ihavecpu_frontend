@@ -75,6 +75,7 @@ const Pagination: FC<PaginationProps> = ({
         onPageChange={handlePageChange}
         pageRangeDisplayed={pageRangeDisplayed}
         marginPagesDisplayed={marginPagesDisplayed}
+        forcePage={currentPage - 1}
       />
     </StyledPagination>
   );

@@ -1,12 +1,11 @@
 import { FC } from "react";
 import Grid from "@component/grid/Grid";
 import { ProductCard1 } from "@component/product-cards";
-import listProduct from "@models/listProduct.model";
 // import { useRouter } from "next/router";
 
 // ==========================================================
 type Props = {
-  products?: listProduct;
+  products?;
   selectedBrands?: string[];
   selectedSocketType?: string[];
   minPrice?: string;
@@ -21,27 +20,6 @@ const ProductCard1List: FC<Props> = ({
   // minPrice,
   // maxPrice,
 }) => {
-  // filter products based on selected
-  // const filteredProducts = products.filter((item) => {
-  //   const brandMatch =
-  //     selectedBrands.length === 0 || selectedBrands.includes(item.brand_id);
-  //   const unitMatch =
-  //     selectedSocketType.length === 0 ||
-  //     selectedSocketType.includes(item.product_code);
-  //   const priceMatch =
-  //     minPrice === null ||
-  //     maxPrice === null ||
-  //     (parseFloat(item.market_price) >= parseFloat(minPrice) &&
-  //       parseFloat(item.market_price) <= parseFloat(maxPrice));
-
-  //   return brandMatch && unitMatch && priceMatch;
-  // });
-  // const router = useRouter();
-  // const { push } = useRouter();
-  // const { query } = router;
-
-  // const { page = "1" } = query;
-  // const currentPage = parseInt(page as string, 10);
   const formatSlug = (name) => {
     let formattedSlug = name.replace(/\s+/g, "-");
 
@@ -57,17 +35,10 @@ const ProductCard1List: FC<Props> = ({
     return formattedSlug.toLowerCase();
   };
 
-  // const handlePageChange = (selectedPage: number) => {
-  //   router.push({
-  //     pathname: router.pathname,
-  //     query: { ...query, page: selectedPage.toString() },
-  //   });
-  // };
-
   return (
     <div>
       <Grid container spacing={6}>
-        {products.data.map((item) => (
+        {products?.data.map((item) => (
           <Grid item lg={3} sm={6} xs={12} key={item.product_id}>
             <ProductCard1
               key={item.product_id}

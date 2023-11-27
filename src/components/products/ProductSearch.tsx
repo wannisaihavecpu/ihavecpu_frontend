@@ -1,9 +1,6 @@
 import { FC, Fragment, useEffect, useCallback } from "react";
 import Card from "@component/Card";
-import SettingSearch from "./SettingSearch";
-import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
-import CheckBox from "@component/CheckBox";
 // import ButtonText from "@component/buttons/ButtonText";
 import TextField from "@component/text-field";
 import { H6, H5, SemiSpan, Paragraph } from "@component/Typography";
@@ -12,112 +9,43 @@ import { IconButton } from "@component/buttons";
 import { useState } from "react";
 import Box from "@component/Box";
 // import axios from "axios";
-import getGroupSearch from "@models/getGroupSearch";
 import Hidden from "@component/hidden";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 // import { Fragment } from "react";
 import ProductCard1List from "@component/products/ProductCard1List";
 import ProductCard9List from "@component/products/ProductCard9List";
-import listProduct from "@models/listProduct.model";
 import { ProductCard1Skeleton } from "@component/product-cards";
 import Pagination from "@component/pagination";
 import Slider from "rc-slider";
 import StyledRcSlide from "./rcSlideStyle";
-import styles from "./scroll.module.css";
 import { useRouter } from "next/router";
 import Select from "@component/Select";
+import search from "@models/search.model";
 
 type ProductCategoryProps = {
-  products?: listProduct;
-  categoryID?: string;
-  groupSearch?: getGroupSearch[];
-  onCheckboxChange?: (filterId: string, isSelected: boolean) => void;
-  clearFilters?: () => void;
+  products?: search;
   currentPage;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const ProductsCategory: FC<ProductCategoryProps> = ({
+const ProductSearch: FC<ProductCategoryProps> = ({
   currentPage,
-  // clearFilters,
-  categoryID,
   products,
-  groupSearch,
   setCurrentPage,
 }) => {
   const [low, setLow] = useState(parseInt(products.minPrice, 10));
   const [high, setHigh] = useState(parseInt(products.maxPrice, 10));
-  const [selectedItems, setSelectedItems] = useState<
-    { id: number; name: string }[]
-  >([]);
-  const [filters, setFilter] = useState(groupSearch);
+
   const [productFilter, setProductFilter] = useState(products);
-  // const [offset, setOffset] = useState(0);
   const [selectedSortOption, setSelectedSortOption] = useState(null);
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
 
   const router = useRouter();
   const { query } = router;
-  const productName = query.slug?.toString() || "";
-
+  const searchProduct = query.slug?.toString() || "";
   const toggleView = useCallback((v) => () => setView(v), []);
-
-  const getSelectedItemsNames = () => {
-    return selectedItems;
-  };
-
-  const handleCheckboxChange = (filterId: number, itemName: string) => {
-    setSelectedItems((prevItems) => {
-      const selectedItem = prevItems.find((item) => item.id === filterId);
-
-      if (selectedItem) {
-        return prevItems.filter((item) => item.id !== filterId);
-      } else {
-        return [...prevItems, { id: filterId, name: itemName }];
-      }
-    });
-  };
-
-  // const fetchProductData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const filterIds = selectedItems.map((item) => item.id);
-  //     // const page = currentPage;
-  //     const limit = 12;
-  //     const newOffset = 0;
-  //     // setOffset(newOffset);
-
-  //     let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
-
-  //     if (filterIds.length > 0) {
-  //       apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-  //     }
-
-  //     apiUrl += `&min=${low}&max=${high}`;
-
-  //     // console.log(apiUrl);
-
-  //     await new Promise((resolve) => setTimeout(resolve, 800));
-
-  //     const productResponse = await fetch(apiUrl);
-  //     const productData = await productResponse.json();
-
-  //     if (productData.res_code === "00") {
-  //       setProductFilter(productData.res_result);
-  //       setLoading(false);
-  //       setCurrentPage(1);
-  //     } else {
-  //       setProductFilter(null);
-  //       setLoading(false);
-  //       console.error("failed to fetch products");
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.error("Error fetching products", error);
-  //   }
-  // };
 
   const fetchProductDataForRangeSlider = async (
     priceLow: string,
@@ -125,24 +53,32 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
   ) => {
     setLoading(true);
     try {
-      const filterIds = selectedItems.map((item) => item.id);
-      // const page = currentPage;
       const limit = 12;
       const newOffset = 0;
-      // setOffset(newOffset);
-      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/search`;
 
-      if (filterIds.length > 0) {
-        apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-      }
-
-      apiUrl += `&min=${priceLow}&max=${priceHigh}`;
-
-      // console.log(apiUrl);
+      const requestBody = {
+        min: priceLow,
+        max: priceHigh,
+        search: searchProduct,
+        lang: "th",
+        field: "sell_price",
+        sort: selectedSortOption?.value ?? "asc",
+        offset: newOffset,
+        limit: limit,
+      };
+      console.log("requestBodyFetchProductDataRange", requestBody);
 
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      const productResponse = await fetch(apiUrl);
+      const productResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
@@ -160,45 +96,32 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
     }
   };
 
-  const handleItemRemove = (itemId: number) => {
-    setSelectedItems((prevItems) =>
-      prevItems.filter((item) => item.id !== itemId)
-    );
-  };
-
   const handlePageChange = async (newPage: number) => {
     try {
-      const filterIds = selectedItems.map((item) => item.id);
       const limit = 12;
       const newOffset = (newPage - 1) * 12;
-      // setOffset(newOffset);
 
-      let findNumberPage = newOffset / limit;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/search`;
 
-      // console.log("findNumberPage", findNumberPage);
+      const requestBody = {
+        min: low,
+        max: high,
+        search: searchProduct,
+        lang: "th",
+        field: "sell_price",
+        sort: selectedSortOption?.value ?? "asc",
+        offset: newOffset,
+        limit: limit,
+      };
+      console.log("handlePagechangebody", requestBody);
 
-      if (findNumberPage === 0) {
-        findNumberPage = 1;
-      }
-
-      if (filterIds.length > 0) {
-        setCurrentPage(1);
-      }
-
-      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
-
-      if (filterIds.length > 0) {
-        apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-      }
-
-      if (
-        low.toString() !== products.minPrice ||
-        high.toString() !== products.maxPrice
-      ) {
-        apiUrl += `&min=${low}&max=${high}`;
-      }
-
-      const productResponse = await fetch(apiUrl);
+      const productResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
@@ -225,26 +148,36 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
     setLoading(true);
 
     try {
-      const filterIds = selectedItems.map((item) => item.id);
+      console.log("handleSortChange");
       const limit = 12;
       const newOffset = (currentPage - 1) * 12;
 
-      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&field=cost_price`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/search`;
 
-      if (filterIds.length > 0) {
-        apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-      }
+      const requestBody = {
+        min: low,
+        max: high,
+        search: searchProduct,
+        lang: "th",
+        field: "sell_price",
+        sort: value.value,
+        offset: newOffset,
+        limit: limit,
+      };
 
-      apiUrl += `&min=${low}&max=${high}`;
-
-      apiUrl += `&sort=${value.value}`;
-
-      const productResponse = await fetch(apiUrl);
+      const productResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
         setProductFilter(productData.res_result);
         setLoading(false);
+        setCurrentPage(1);
       } else {
         setProductFilter(null);
         setLoading(false);
@@ -256,51 +189,13 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
     }
   };
 
-  // useEffect(() => {
-  //   const fetchFilterData = async () => {
-  //     try {
-  //       const filterIds = selectedItems.map((item) => item.id);
-
-  //       const filterResponse = await fetch(
-  //         `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`,
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body:
-  //             filterIds.length > 0
-  //               ? JSON.stringify({ filter: filterIds })
-  //               : undefined,
-  //         }
-  //       );
-
-  //       const filterData = await filterResponse.json();
-
-  //       if (filterData.res_code === "00") {
-  //         setFilter(filterData.res_result);
-  //       } else {
-  //         console.error("failed to fetch filters");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching filters", error);
-  //     }
-  //   };
-
-  //   setLow(parseInt(products.minPrice, 10));
-  //   setHigh(parseInt(products.maxPrice, 10));
-
-  //   fetchFilterData();
-  //   fetchProductData();
-  // }, [currentPage, categoryID]); // Include currentPage in the dependency array
   useEffect(() => {
     setProductFilter(products);
+    setCurrentPage(1);
     setSelectedSortOption(null);
-    setSelectedItems([]);
     setLow(parseInt(products.minPrice, 10));
     setHigh(parseInt(products.maxPrice, 10));
-    setFilter(groupSearch);
-  }, [currentPage, categoryID]);
+  }, [searchProduct]);
 
   return (
     <Fragment>
@@ -314,10 +209,10 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
         justifyContent="space-between"
       >
         <div>
-          <H5>{productName}</H5>
+          <H5>การค้นหา "{searchProduct}"</H5>
 
           <Paragraph color="text.muted">
-            จำนวน {products?.row ?? "0"} รายการ
+            จำนวน {productFilter?.count ?? "0"} รายการ
           </Paragraph>
         </div>
 
@@ -328,7 +223,7 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
 
           <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
             <Select
-              placeholder="Sort by"
+              placeholder="เรียงลำดับ"
               value={selectedSortOption}
               onChange={handleSortChange}
               options={sortOptions}
@@ -364,38 +259,18 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
       <Grid container spacing={6}>
         <Hidden as={Grid} item lg={3} xs={12} down={1024}>
           <Card p="18px 27px" elevation={5}>
-            {getSelectedItemsNames().length > 0 ? (
-              <>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <H5>การค้นหา</H5>
-                  {/* <ButtonText>ล้างทั้งหมด</ButtonText> */}
-                </div>
-                <Box m="6px">
-                  <SettingSearch
-                    items={getSelectedItemsNames()}
-                    handleItemRemove={handleItemRemove}
-                  />
-                </Box>
-                <Divider mt="18px" mb="24px" />
-              </>
-            ) : null}
             <H6 mb="16px">ช่วงราคา</H6>
             <FlexBox justifyContent="space-between" alignItems="center">
               <TextField
-                disabled
                 //   placeholder="0"
+                disabled
                 type="number"
                 fullwidth
                 value={low}
                 onChange={(e) => {
                   const value = e.target.value;
                   setLow(parseInt(value));
+
                   // fetchProductData();
                 }}
               />
@@ -403,8 +278,8 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
                 -
               </H5>
               <TextField
-                disabled
                 //   placeholder="250"
+                disabled
                 type="number"
                 fullwidth
                 value={high}
@@ -422,7 +297,7 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
                   range
                   min={parseInt(products.minPrice)}
                   max={parseInt(products.maxPrice)}
-                  step={50}
+                  step={1000}
                   value={[low, high]}
                   onChange={(values) => {
                     const [newLow, newHigh] = Array.isArray(values)
@@ -442,50 +317,6 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
                 />
               </StyledRcSlide>
             </Box>
-
-            <Divider my="24px" />
-            {filters?.map((filter) => (
-              <div
-                key={filter.filter_id}
-                style={{
-                  marginBottom: "10px",
-                  maxHeight: "300px",
-                  overflowY: "auto",
-                }}
-                className={styles.scroll}
-              >
-                <H6>{filter.name_th}</H6>
-                {filter.sub_filter.length > 0 ? (
-                  <div>
-                    {filter.sub_filter.map((item) => (
-                      <CheckBox
-                        my="10px"
-                        key={item.filter_id}
-                        name={item.name_th}
-                        value={item.filter_id.toString()}
-                        color="ihavecpu"
-                        label={
-                          <SemiSpan color="inherit">
-                            {item.name_th.length > 21
-                              ? item.name_th.slice(0, 21) + "..."
-                              : item.name_th}
-                          </SemiSpan>
-                        }
-                        onChange={() =>
-                          handleCheckboxChange(item.filter_id, item.name_th)
-                        }
-                        checked={selectedItems.some(
-                          (selected) => selected.id === item.filter_id
-                        )}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p>No sub-filters available</p>
-                )}
-                <Divider my="24px" />
-              </div>
-            ))}
           </Card>
         </Hidden>
         <Grid item lg={9} xs={12}>
@@ -513,15 +344,14 @@ const ProductsCategory: FC<ProductCategoryProps> = ({
               {productFilter && (
                 <SemiSpan>{`Showing ${Math.min(
                   (currentPage - 1) * 12 + 1,
-                  products.row
-                )} - ${Math.min(currentPage * 12, products.row)} of ${
-                  products.row
+                  productFilter.count
+                )} - ${Math.min(currentPage * 12, productFilter.count)} of ${
+                  productFilter.count
                 } Products`}</SemiSpan>
               )}
-
-              {productFilter && (
+              {products && (
                 <Pagination
-                  pageCount={Math.max(1, Math.ceil(productFilter.row / 12))}
+                  pageCount={Math.max(1, Math.ceil(productFilter.count / 12))}
                   currentPage={currentPage}
                   onPageChange={handlePageChange}
                   marginPagesDisplayed={1}
@@ -539,4 +369,4 @@ const sortOptions = [
   { label: "ราคาต่ำ-สูง", label_en: "Price Low to High", value: "asc" },
   { label: "ราคาสูง-ต่ำ", label_en: "Price High to Low", value: "desc" },
 ];
-export default ProductsCategory;
+export default ProductSearch;

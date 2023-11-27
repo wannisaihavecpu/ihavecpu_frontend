@@ -200,7 +200,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
                 <img
                   alt={title}
                   width={100}
-                  src={imgUrl}
+                  src={imgUrl || "/assets/images/products/nophoto.jpg"}
                   height={100}
                   style={{ objectFit: "cover", width: "100%", height: "100%" }}
                 />
