@@ -67,7 +67,6 @@ const ProductSearch: FC<ProductCategoryProps> = ({
         offset: newOffset,
         limit: limit,
       };
-      console.log("requestBodyFetchProductDataRange", requestBody);
 
       await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -113,7 +112,6 @@ const ProductSearch: FC<ProductCategoryProps> = ({
         offset: newOffset,
         limit: limit,
       };
-      console.log("handlePagechangebody", requestBody);
 
       const productResponse = await fetch(apiUrl, {
         method: "POST",
@@ -148,7 +146,6 @@ const ProductSearch: FC<ProductCategoryProps> = ({
     setLoading(true);
 
     try {
-      console.log("handleSortChange");
       const limit = 12;
       const newOffset = (currentPage - 1) * 12;
 
