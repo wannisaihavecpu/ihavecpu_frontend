@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { debounce } from "lodash";
 import Box from "../Box";
 import Card from "../Card";
 import Icon from "../icon/Icon";
@@ -15,7 +14,7 @@ const SearchInputWithCategory: FC = () => {
   const [resultList, setResultList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
-  const search = debounce(async (value) => {
+  const search = async (value) => {
     if (!value) {
       setResultList([]);
     } else {
@@ -34,24 +33,24 @@ const SearchInputWithCategory: FC = () => {
         setResultList([]);
       }
     }
-  }, 500);
+  };
 
-  let debounceTimeout;
+  useEffect(() => {
+    let debounceTimeout;
+
+    debounceTimeout = setTimeout(() => {
+      search(searchValue);
+    }, 500);
+
+    return () => {
+      clearTimeout(debounceTimeout);
+    };
+  }, [searchValue]);
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchValue(value);
-    setResultList([]);
-    clearTimeout(debounceTimeout);
-
-    debounceTimeout = setTimeout(
-      () => {
-        search(value);
-      },
-      value.length < 3 ? 0 : 500
-    );
   };
-
   const handleDocumentClick = () => setResultList([]);
   const handleEnterKeyPress = useCallback(
     (event) => {
@@ -78,8 +77,7 @@ const SearchInputWithCategory: FC = () => {
 
     return formattedSlug.toLowerCase();
   };
-  const handleProductClick = (item) => {
-    console.log(item);
+  const handleProductClick = () => {
     setResultList([]);
     setSearchValue("");
   };
@@ -129,7 +127,7 @@ const SearchInputWithCategory: FC = () => {
               passHref
               key={item.id}
             >
-              <MenuItem key={item.id} onClick={() => handleProductClick(item)}>
+              <MenuItem key={item.id} onClick={() => handleProductClick()}>
                 {item.type === "category" && (
                   <>
                     <img

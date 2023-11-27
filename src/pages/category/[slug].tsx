@@ -27,29 +27,6 @@ const Category: FC<Props> & { layout: React.FC } = ({
   categoryId,
   // page,
 }) => {
-  // const width = useWindowSize();
-
-  // console.log(product);
-  // const router = useRouter();
-  // const { query } = router;
-  // const categoryId = query.id?.toString() || "";
-  // const productName = query.slug?.toString() || "";
-
-  // const fetchProducts = async (sortOption: string | { value: string }) => {
-  //   const actualValue =
-  //     typeof sortOption === "string" ? sortOption : sortOption.value;
-
-  //   const currentQuery = { ...router.query };
-  //   currentQuery.page = "1";
-  //   currentQuery.sort = actualValue;
-
-  //   const newUrl = {
-  //     pathname: router.pathname,
-  //     query: currentQuery,
-  //   };
-
-  //   router.push(newUrl);
-  // };
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   return (
@@ -66,60 +43,6 @@ const Category: FC<Props> & { layout: React.FC } = ({
           />
         </div>
       </FlexBox>
-      {/* <FlexBox
-        as={Card}
-        mb="55px"
-        p="1.25rem"
-        elevation={5}
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <div>
-          <H5>{productName}</H5>
-
-          <Paragraph color="text.muted">จำนวน 5 รายการ</Paragraph>
-        </div>
-
-        <FlexBox alignItems="center" flexWrap="wrap">
-          <Paragraph color="text.muted" mr="1rem">
-            Sort by:
-          </Paragraph>
-
-          <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
-            <Select
-              placeholder="Sort by"
-              value={selectedSortOption}
-              onChange={handleSortChange}
-              options={sortOptions}
-            />
-          </Box>
-
-          <Paragraph color="text.muted" mr="0.5rem">
-            View:
-          </Paragraph>
-
-          <IconButton size="small" onClick={toggleView("grid")} ml="0.5rem">
-            <Icon
-              variant="small"
-              defaultcolor="auto"
-              color={view === "grid" ? "primary" : "inherit"}
-            >
-              grid
-            </Icon>
-          </IconButton>
-
-          <IconButton size="small" onClick={toggleView("list")} ml="0.5rem">
-            <Icon
-              variant="small"
-              defaultcolor="auto"
-              color={view === "list" ? "primary" : "inherit"}
-            >
-              menu
-            </Icon>
-          </IconButton>
-        </FlexBox>
-      </FlexBox> */}
 
       <ProductsCategory
         groupSearch={filterProduct}
@@ -128,28 +51,10 @@ const Category: FC<Props> & { layout: React.FC } = ({
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
-      {/* FILTER */}
-      {/* <Hidden as={Grid} item lg={3} xs={12} down={1024}>
-          <ProductFilterCard
-            groupSearch={filterProduct}
-            categoryID={categoryId}
-          />
-        </Hidden> */}
-      {/* PRODUCTS */}
-      {/* <Grid item lg={9} xs={12}>
-          {view === "grid" ? (
-            <ProductCard1List products={product} />
-          ) : (
-            <ProductCard9List products={product} />
-          )}
-        </Grid> */}
     </Box>
   );
 };
-// const sortOptions = [
-//   { label: "ราคาต่ำ-สูง", label_en: "Price Low to High", value: "asc" },
-//   { label: "ราคาสูง-ต่ำ", label_en: "Price High to Low", value: "desc" },
-// ];
+
 Category.layout = NavbarLayout;
 export const getServerSideProps: GetServerSideProps = async ({
   params,

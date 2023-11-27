@@ -10,6 +10,7 @@ import listProduct from "@models/listProduct.model";
 import menuDropdown from "@models/menuDropdown.model";
 import detailCategory from "@models/detailCategory.model";
 import getGroupSearch from "@models/getGroupSearch";
+import search from "@models/search.model";
 
 // get all product slug
 const getSlugs = async (): Promise<{ params: { slug: string } }[]> => {
@@ -248,6 +249,28 @@ const getDetailCategory = async (
     return [];
   }
 };
+const searchProduct = async (search: string): Promise<search[]> => {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/search`,
+      {
+        search: search,
+        lang: "th",
+        offset: 0,
+        limit: 12,
+      }
+    );
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching searchProduct", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching searchProduct", error.message);
+    return [];
+  }
+};
 
 export default {
   getSlugs,
@@ -267,4 +290,5 @@ export default {
   getProductOfCategory,
   getDetailCategory,
   getFilterProductCategory,
+  searchProduct,
 };

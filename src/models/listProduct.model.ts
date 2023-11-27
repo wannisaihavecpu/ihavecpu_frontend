@@ -1,5 +1,7 @@
 interface listProduct {
   row: number;
+  minPrice: string;
+  maxPrice: string;
   data: listProductData[];
 }
 interface listProductData {

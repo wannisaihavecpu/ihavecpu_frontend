@@ -3,9 +3,8 @@ import { FC, Fragment } from "react";
 // import Pagination from "@component/pagination";
 // import { SemiSpan } from "@component/Typography";
 import { ProductCard9 } from "@component/product-cards";
-import listProduct from "@models/listProduct.model";
 // ==========================================================
-type Props = { products: listProduct };
+type Props = { products };
 // ==========================================================
 
 const ProductCard9List: FC<Props> = ({ products }) => {
