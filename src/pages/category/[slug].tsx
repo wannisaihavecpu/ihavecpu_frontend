@@ -1,29 +1,14 @@
-import { useCallback, useState, FC } from "react";
+import { useState, FC } from "react";
 import Box from "@component/Box";
-import Card from "@component/Card";
-import Select from "@component/Select";
-// import Hidden from "@component/hidden";
-// import Grid from "@component/grid/Grid";
-import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
-import { IconButton } from "@component/buttons";
-// import Sidenav from "@component/sidenav/Sidenav";
-import { H5, Paragraph } from "@component/Typography";
 import NavbarLayout from "@component/layout/NavbarLayout";
-// import ProductCard1List from "@component/products/ProductCard1List";
-// import ProductCard9List from "@component/products/ProductCard9List";
-// import ProductFilterCard from "@component/products/ProductFilterCard";
 import ProductsCategory from "@component/products/ProductCategory";
-// import useWindowSize from "@hook/useWindowSize";
-// import product from "@data/product";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import api from "@utils/__api__/products";
 import listProduct from "@models/listProduct.model";
-// import { ProductCard1 } from "@component/product-cards";
 import detailCategory from "@models/detailCategory.model";
 import getGroupSearch from "@models/getGroupSearch";
-// import Container from "@component/Container";
 
 type Props = {
   categoryId: string;
@@ -43,38 +28,28 @@ const Category: FC<Props> & { layout: React.FC } = ({
   // page,
 }) => {
   // const width = useWindowSize();
-  const [view, setView] = useState<"grid" | "list">("grid");
 
-  // const isTablet = width < 1025;
-  const toggleView = useCallback((v) => () => setView(v), []);
   // console.log(product);
-  const router = useRouter();
-  const { query } = router;
+  // const router = useRouter();
+  // const { query } = router;
   // const categoryId = query.id?.toString() || "";
-  const productName = query.slug?.toString() || "";
+  // const productName = query.slug?.toString() || "";
 
-  const [selectedSortOption, setSelectedSortOption] = useState(null);
+  // const fetchProducts = async (sortOption: string | { value: string }) => {
+  //   const actualValue =
+  //     typeof sortOption === "string" ? sortOption : sortOption.value;
 
-  const handleSortChange = (value: string) => {
-    setSelectedSortOption(value);
-    fetchProducts(value);
-  };
+  //   const currentQuery = { ...router.query };
+  //   currentQuery.page = "1";
+  //   currentQuery.sort = actualValue;
 
-  const fetchProducts = async (sortOption: string | { value: string }) => {
-    const actualValue =
-      typeof sortOption === "string" ? sortOption : sortOption.value;
+  //   const newUrl = {
+  //     pathname: router.pathname,
+  //     query: currentQuery,
+  //   };
 
-    const currentQuery = { ...router.query };
-    currentQuery.page = "1";
-    currentQuery.sort = actualValue;
-
-    const newUrl = {
-      pathname: router.pathname,
-      query: currentQuery,
-    };
-
-    router.push(newUrl);
-  };
+  //   router.push(newUrl);
+  // };
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   return (
@@ -91,7 +66,7 @@ const Category: FC<Props> & { layout: React.FC } = ({
           />
         </div>
       </FlexBox>
-      <FlexBox
+      {/* <FlexBox
         as={Card}
         mb="55px"
         p="1.25rem"
@@ -144,7 +119,7 @@ const Category: FC<Props> & { layout: React.FC } = ({
             </Icon>
           </IconButton>
         </FlexBox>
-      </FlexBox>
+      </FlexBox> */}
 
       <ProductsCategory
         groupSearch={filterProduct}
@@ -171,10 +146,10 @@ const Category: FC<Props> & { layout: React.FC } = ({
     </Box>
   );
 };
-const sortOptions = [
-  { label: "ราคาต่ำ-สูง", label_en: "Price Low to High", value: "asc" },
-  { label: "ราคาสูง-ต่ำ", label_en: "Price High to Low", value: "desc" },
-];
+// const sortOptions = [
+//   { label: "ราคาต่ำ-สูง", label_en: "Price Low to High", value: "asc" },
+//   { label: "ราคาสูง-ต่ำ", label_en: "Price High to Low", value: "desc" },
+// ];
 Category.layout = NavbarLayout;
 export const getServerSideProps: GetServerSideProps = async ({
   params,

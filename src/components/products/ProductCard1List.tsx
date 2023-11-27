@@ -1,11 +1,8 @@
 import { FC } from "react";
-import FlexBox from "@component/FlexBox";
 import Grid from "@component/grid/Grid";
-import Pagination from "@component/pagination";
 import { ProductCard1 } from "@component/product-cards";
-import { SemiSpan } from "@component/Typography";
 import listProduct from "@models/listProduct.model";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 
 // ==========================================================
 type Props = {
@@ -39,12 +36,26 @@ const ProductCard1List: FC<Props> = ({
 
   //   return brandMatch && unitMatch && priceMatch;
   // });
-  const router = useRouter();
+  // const router = useRouter();
   // const { push } = useRouter();
-  const { query } = router;
+  // const { query } = router;
 
-  const { page = "1" } = query;
-  const currentPage = parseInt(page as string, 10);
+  // const { page = "1" } = query;
+  // const currentPage = parseInt(page as string, 10);
+  const formatSlug = (name) => {
+    let formattedSlug = name.replace(/\s+/g, "-");
+
+    formattedSlug = formattedSlug
+      .replace(/\/+/g, "-")
+      .replace(/(\(\d{2}\+\w+\))/g, "-$1")
+      .replace(/(\(\d{2}\+\w+\))-/g, "$1");
+
+    formattedSlug = formattedSlug.replace(/[^a-zA-Z0-9-().]+/g, "");
+
+    formattedSlug = formattedSlug.replace(/-(?=-)/g, "");
+
+    return formattedSlug.toLowerCase();
+  };
 
   // const handlePageChange = (selectedPage: number) => {
   //   router.push({
@@ -59,37 +70,18 @@ const ProductCard1List: FC<Props> = ({
         {products.data.map((item) => (
           <Grid item lg={3} sm={6} xs={12} key={item.product_id}>
             <ProductCard1
+              key={item.product_id}
               id={item.product_id}
-              slug={item.name_th}
+              slug={formatSlug(item.name_th)}
               price={parseFloat(item.price_sale)}
+              off={parseFloat(item.discount)}
+              priceBefore={parseFloat(item.price_before)}
               title={item.name_th}
               imgUrl={item.image800}
             />
           </Grid>
         ))}
       </Grid>
-
-      <FlexBox
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-        mt="32px"
-      >
-        <SemiSpan>{`Showing ${Math.min(
-          (currentPage - 1) * 12 + 1,
-          products.row
-        )} - ${Math.min(currentPage * 12, products.row)} of ${
-          products.row
-        } Products`}</SemiSpan>
-
-        <Pagination
-          pageCount={Math.ceil(products.row / 12)}
-          currentPage={currentPage}
-          // onPageChange={handlePageChange}
-          marginPagesDisplayed={1}
-          pageRangeDisplayed={2}
-        />
-      </FlexBox>
     </div>
   );
 };

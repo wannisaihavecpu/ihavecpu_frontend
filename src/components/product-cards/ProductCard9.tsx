@@ -6,15 +6,16 @@ import Card from "../Card";
 import Image from "../Image";
 import { Chip } from "../Chip";
 import Hidden from "../hidden";
-import Rating from "../rating";
+// import Rating from "../rating";
 import Grid from "../grid/Grid";
 import Icon from "../icon/Icon";
 import FlexBox from "../FlexBox";
 import NavLink from "../nav-link";
 import { Button } from "../buttons";
 import { H5, SemiSpan } from "../Typography";
-import { calculateDiscount, currency, getTheme } from "@utils/utils";
+import { getTheme } from "@utils/utils";
 import { useAppContext } from "@context/AppContext";
+import PriceFormat from "@component/PriceFormat";
 
 // styled component
 const Wrapper = styled(Card)`
@@ -96,6 +97,7 @@ type ProductCard9Props = {
   slug: string;
   title: string;
   price: number;
+  priceBefore?: number;
   imgUrl: string;
   rating?: number;
   // images: string[];
@@ -113,6 +115,7 @@ const ProductCard9: FC<ProductCard9Props> = ({
   price,
   imgUrl,
   rating,
+  priceBefore,
   // images,
   categories,
   ...props
@@ -142,11 +145,11 @@ const ProductCard9: FC<ProductCard9Props> = ({
                 p="5px 10px"
                 fontSize="10px"
                 fontWeight="600"
-                bg="primary.main"
+                bg="ihavecpu.main"
                 position="absolute"
                 color="primary.text"
               >
-                {off}% off
+                {off}%
               </Chip>
             )}
 
@@ -189,7 +192,7 @@ const ProductCard9: FC<ProductCard9Props> = ({
               </div>
             )}
 
-            <Link href={`/product/${slug}`}>
+            <Link href={`/product/${id}/${slug}`}>
               <a>
                 <H5 fontWeight="600" my="0.5rem">
                   {title}
@@ -197,16 +200,19 @@ const ProductCard9: FC<ProductCard9Props> = ({
               </a>
             </Link>
 
-            <Rating value={rating || 0} outof={5} color="warn" />
+            {/* <Rating value={rating || 0} outof={5} color="warn" /> */}
 
             <FlexBox mt="0.5rem" mb="1rem" alignItems="center">
               <H5 fontWeight={600} color="primary.main" mr="0.5rem">
-                {calculateDiscount(price, off)}
+                {/* {calculateDiscount(price, off)} */}
+                <PriceFormat price={price} />
               </H5>
 
-              {off && (
+              {!!off && (
                 <SemiSpan fontWeight="600">
-                  <del>{currency(price)}</del>
+                  <del>
+                    <PriceFormat price={priceBefore ?? 0} />
+                  </del>
                 </SemiSpan>
               )}
             </FlexBox>
