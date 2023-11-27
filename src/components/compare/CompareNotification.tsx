@@ -3,7 +3,7 @@ import useWindowSize from "@hook/useWindowSize";
 import Icon from "@component/icon/Icon";
 import Link from "next/link";
 
-const CompareNotification = ({ count }) => {
+const CompareNotification = ({ count, category }) => {
   const width = useWindowSize();
   const marginBottomValue = width <= 900 ? "80px" : "15px";
 
@@ -12,10 +12,33 @@ const CompareNotification = ({ count }) => {
   };
 
   const [isVisible, setIsVisible] = useState(count > 0);
+  const [categoryDetails, setCategoryDetails] = useState(null);
 
   useEffect(() => {
     setIsVisible(count > 0);
-  }, [count]);
+
+    // Fetch category details when category prop changes
+    const fetchCategoryDetails = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_PATH}/category/detail?category_id=${category}`
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setCategoryDetails(data.res_result);
+        } else {
+          // Handle error
+          console.error("Failed to fetch category details");
+        }
+      } catch (error) {
+        // Handle error
+        console.error("Error during fetch:", error);
+      }
+    };
+
+    fetchCategoryDetails();
+  }, [count, category]);
 
   return count > 0 ? (
     <Link href="/compare">
@@ -29,7 +52,7 @@ const CompareNotification = ({ count }) => {
           margin: "10px",
           marginBottom: marginBottomValue,
           borderRadius: "15px",
-          width: "300px",
+          width: "400px",
           height: "50px",
           backgroundColor: isVisible ? "#d4001a" : "transparent",
           color: "#fff",
@@ -52,10 +75,13 @@ const CompareNotification = ({ count }) => {
       >
         {isVisible && (
           <>
-            <span>
-              เปรียบเทียบสินค้าในหมวดหมู่ ({count}
-              {count > 1 ? " ชิ้น" : ""})
-            </span>
+            {categoryDetails && (
+              <span>
+                เปรียบเทียบสินค้าในหมวดหมู่ (
+                {categoryDetails.display_cat_name_th})
+                {" "}{count} {count >= 1 ? " ชิ้น" : ""}
+              </span>
+            )}
             <Icon variant="small" ml="2px">
               compare
             </Icon>

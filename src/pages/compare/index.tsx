@@ -127,24 +127,26 @@ const ComparePage = () => {
       localStorage.getItem("compareList")
     );
 
-    // Create a Set to store unique category IDs
-    const uniqueCategoryIdsSet = new Set();
+    if (categoryIdFromLocalStorage !== null) {
+      // Create a Set to store unique category IDs
+      const uniqueCategoryIdsSet = new Set();
 
-    categoryIdFromLocalStorage.forEach((product) => {
-      uniqueCategoryIdsSet.add(product.category_id);
-    });
-
-    const uniqueCategoryIds = Array.from(uniqueCategoryIdsSet);
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${uniqueCategoryIds}`;
-    axios
-      .get(apiUrl)
-      .then((response) => {
-        setAddProductResponse(response.data.res_result);
-        setShowAddProductBox(false);
-      })
-      .catch((error) => {
-        console.error("API Error:", error);
+      categoryIdFromLocalStorage.forEach((product) => {
+        uniqueCategoryIdsSet.add(product.category_id);
       });
+
+      const uniqueCategoryIds = Array.from(uniqueCategoryIdsSet);
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${uniqueCategoryIds}`;
+      axios
+        .get(apiUrl)
+        .then((response) => {
+          setAddProductResponse(response.data.res_result.data);
+          setShowAddProductBox(false);
+        })
+        .catch((error) => {
+          console.error("API Error:", error);
+        });
+    }
   };
 
   const backtoMain = () => {
@@ -161,6 +163,7 @@ const ComparePage = () => {
     const apiUrl = `${
       process.env.NEXT_PUBLIC_API_PATH
     }/comparetest?product_ids=${productIds.join(",")}`;
+    console.log(apiUrl);
     if (productIds.length > 0) {
       axios
         .get(apiUrl)

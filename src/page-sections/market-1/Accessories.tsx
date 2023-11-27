@@ -43,8 +43,12 @@ const Accessories: FC<Props> = ({ category }) => {
           return response.json();
         })
         .then((data) => {
-          if (data.res_code === "00" && Array.isArray(data.res_result)) {
-            setProduct(data.res_result);
+          if (
+            data.res_code === "00" &&
+            data.res_result &&
+            Array.isArray(data.res_result.data)
+          ) {
+            setProduct(data.res_result.data);
             setLoading(false);
           } else {
             console.error("Unexpected response:", data);
@@ -70,8 +74,12 @@ const Accessories: FC<Props> = ({ category }) => {
           return response.json();
         })
         .then((data) => {
-          if (data.res_code === "00" && Array.isArray(data.res_result)) {
-            setProduct(data.res_result);
+          if (
+            data.res_code === "00" &&
+            data.res_result &&
+            Array.isArray(data.res_result.data)
+          ) {
+            setProduct(data.res_result.data);
             setLoading(false);
           } else {
             console.error("Unexpected response:", data);

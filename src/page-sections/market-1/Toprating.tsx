@@ -59,10 +59,10 @@ const Toprating: FC<Props> = ({ topRatedBrands, bestSeller }) => {
                           <ProductCard4
                             key={item.product_id}
                             title={item.name}
-                            price={parseInt(item.sell_price)}
-                            priceBefore={parseInt(item.sell_price)}
+                            price={parseInt(item.price_sale)}
+                            priceBefore={parseInt(item.price_before)}
                             imgUrl={item.img}
-                            off={item.ecom_market_price}
+                            off={item.discount}
                           />
                         </a>
                       </Link>

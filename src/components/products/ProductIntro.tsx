@@ -125,12 +125,13 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   }, []);
 
   const handleCompareClick = () => {
+    console.log(product.cat_id);
     const productIdString = product.product_id;
     const productCategoryId = product.cat_id;
 
     if (
       compareList.length === 0 ||
-      compareList[0].category_id.toString() === productCategoryId
+      compareList[0]?.category_id === parseInt(productCategoryId)
     ) {
       if (compareList.some((product) => product.id === productIdString)) {
         notify("error", "removed from compare");
@@ -143,6 +144,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         if (compareList.length >= maxCompareProducts) {
           notify("error", "เลือกเปรียบเทียบสินค้าได้สูงสุด 4 สินค้าเท่านั้น");
         } else {
+             console.log("case 3");
           notify("success", "added to compare");
           // add product to the comparison list
           const updatedCompareList = [
@@ -158,9 +160,11 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
           // update the state with the new compareList
           setCompareList(updatedCompareList);
+
         }
       }
     } else {
+      console.log("case 3");
       // clear the compare list and add the current product
       notify("success", "added to compare");
       const updatedCompareList = [
@@ -170,6 +174,8 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
       setCompareList(updatedCompareList);
     }
   };
+  // console.log(compareList);
+
 
   // copy Link
   const handleCopyLinkClick = () => {
@@ -205,31 +211,33 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
   const [quantity, setQuantity] = useState<number>(1);
 
-  // Cart Amount
   const handleCartAmountChange = (newAmount: number) => {
     newAmount = Math.max(newAmount, 1);
-    const availableStock = getAvailableStock(selectedOptions);
-    // check all required options are selected
+  
     const isAnyOptionRequired = product.option.some(
       (option) => option.sub.length > 0
     );
-
+  
     if (isAnyOptionRequired) {
       const isAllOptionsSelected = product.option.every((option) =>
         selectedOptions.hasOwnProperty(option.m_option_id)
       );
-
+  
       if (!isAllOptionsSelected) {
         notify("error", "กรุณาเลือกตัวเลือกสินค้า");
-      } else {
-        if (!isNaN(newAmount) && newAmount <= availableStock) {
-          setQuantity(newAmount);
-        } else {
-          notify("error", "สินค้าหมดคลัง");
-        }
+        return; 
       }
     }
+  
+    const availableStock = getAvailableStock(selectedOptions);
+  
+    if (!isNaN(newAmount) && newAmount <= availableStock) {
+      setQuantity(newAmount);
+    } else {
+      notify("error", "สินค้าหมดคลัง");
+    }
   };
+  
   const handleAddToCartClick = () => {
     const availableStock = getAvailableStock(selectedOptions);
     const optionId = mapSelectedOptionsToOptionId(
@@ -260,7 +268,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         type: "CHANGE_CART_AMOUNT",
         payload: {
           optionId: optionId,
-          price: parseInt(product.market_price),
+          price: parseInt(product.price_sale),
           qty: (cartItem?.qty || 0) + quantity,
           name: product.name_th,
           imgUrl: product.picture[0]?.pic_150 || "",
@@ -277,10 +285,10 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     const isAnyOptionRequired = product.option.some(
       (option) => option.sub.length > 0
     );
-    const optionId = mapSelectedOptionsToOptionId(
-      selectedOptions,
-      product.stock
-    );
+    // const optionId = mapSelectedOptionsToOptionId(
+    //   selectedOptions,
+    //   product.stock
+    // );
 
     if (isAnyOptionRequired) {
       const isAllOptionsSelected = product.option.every((option) =>
@@ -290,14 +298,14 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         notify("error", "กรุณาเลือกตัวเลือกสินค้า");
         return;
       } else {
-        router.push({
-          pathname: "/checkout",
-          query: {
-            product: product?.product_id || "",
-            option: optionId || "",
-            qty: quantity,
-          },
-        });
+        // router.push({
+        //   pathname: "/checkout",
+        //   query: {
+        //     product: product?.product_id || "",
+        //     option: optionId || "",
+        //     qty: quantity,
+        //   },
+        // });
       }
     }
     setSelectedOptions({});
@@ -310,7 +318,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     const selectedChoices = Object.entries(selectedOptions);
 
     const matchingEntry = product.stock.find((entry) =>
-      selectedChoices.every(([val]) => entry.choose.includes(val))
+      selectedChoices.every(([_, val]) => entry.choose.includes(val))
     );
 
     return matchingEntry ? matchingEntry.stock : 0;
@@ -338,7 +346,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     // check any stock matching the selected choice
     return product.stock.some(
       (entry) =>
-        selectedChoices.every(([val]) => entry.choose.includes(val)) &&
+        selectedChoices.every(([_, val]) => entry.choose.includes(val)) &&
         entry.stock > 0
     );
   };
@@ -370,14 +378,15 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   };
 
   const isProductInStock = () => {
+    if (Array.isArray(product.option)) {
+      return product.stock.some((entry) => entry.stock > 0);
+    }
     const allOptionCombinations = getAllOptionCombinations(product.option);
 
     for (const optionCombination of allOptionCombinations) {
       const isCombinationInStock = product.stock.some((entry) => {
-        const includesAll = entry.choose.every(() =>
-          optionCombination.some(([subId]) =>
-            entry.choose.includes(subId.toString())
-          )
+        const includesAll = optionCombination.every(([_, subId]) =>
+          entry.choose.includes(subId.toString())
         );
 
         if (includesAll && entry.stock > 0) {
@@ -391,6 +400,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         return true;
       }
     }
+
     return false;
   };
 
@@ -461,13 +471,14 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   const filteredCoupons = couponList.filter(
     (coupon) => !myCoupon.some((myCoupon) => myCoupon.code === coupon.code)
   );
+
   useEffect(() => {
     fetchMyCouponAvailable();
   }, []);
 
   return (
     <Box overflow="hidden">
-      <CompareNotification count={compareList.length} />
+      <CompareNotification count={compareList.length} category={compareList[0]?.category_id} />
 
       <Grid container justifyContent="center" spacing={16}>
         {/* PRODUCT IMAGE */}
@@ -480,8 +491,8 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
                   height={300}
                   src={
                     hoveredImage !== null
-                      ? product.picture[hoveredImage]?.pic_800
-                      : product.picture[selectedImage]?.pic_800
+                      ? product?.picture[hoveredImage]?.pic_800
+                      : product?.picture[selectedImage]?.pic_800
                   }
                   style={{
                     objectFit: "cover",
@@ -492,12 +503,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
               </Box>
             </FlexBox>
             <FlexBox>
-              {product.picture.length > 5 ? (
+              {product?.picture.length > 5 ? (
                 <CarouselViewProduct
                   totalSlides={product.picture.length}
                   visibleSlides={5}
                 >
-                  {product.picture.map((image, ind) => (
+                  {product?.picture?.map((image, ind) => (
                     <Box
                       key={ind}
                       size={70}
@@ -527,7 +538,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
                   ))}
                 </CarouselViewProduct>
               ) : (
-                product.picture.map((image, ind) => (
+                product?.picture?.map((image, ind) => (
                   <Box
                     key={ind}
                     size={70}
@@ -574,7 +585,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
               </Small>
             </ShowStock>
           </Box>
-          <H3 mb="1rem">{product.name_th}</H3>
+          <H3 mb="1rem">{product?.name_th}</H3>
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>แบรนด์:</SemiSpan>
@@ -596,12 +607,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
           <FlexBox mb="24px" alignItems="center">
             <H1 color="ihavecpu.main" mb="4px" lineHeight="1">
-              <PriceFormat price={parseInt(product.market_price)} />
+              <PriceFormat price={parseInt(product.price_sale)} />
             </H1>
-            {parseInt(product.sell_price) > parseInt(product.market_price) && (
+            {parseInt(product.price_sale) < parseInt(product.price_before) && (
               <H6 ml={2} color="grey" fontWeight={300}>
                 <del>
-                  <PriceFormat price={parseInt(product.sell_price)} />
+                  <PriceFormat price={parseInt(product.price_before)} />
                 </del>
               </H6>
             )}
@@ -930,7 +941,12 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
           </Grid>
         </Grid>
 
-        <ModalCoupon open={open} onClose={toggleDialog} />
+        <ModalCoupon
+          open={open}
+          onClose={toggleDialog}
+          product={product.product_id}
+          listCoupon={couponList}
+        />
       </Grid>
     </Box>
   );

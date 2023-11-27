@@ -9,6 +9,7 @@ import getAllProduct from "@models/getAllProduct.model";
 import listProduct from "@models/listProduct.model";
 import menuDropdown from "@models/menuDropdown.model";
 import detailCategory from "@models/detailCategory.model";
+import getGroupSearch from "@models/getGroupSearch";
 
 // get all product slug
 const getSlugs = async (): Promise<{ params: { slug: string } }[]> => {
@@ -183,11 +184,14 @@ const getCategoryNameById = async (): Promise<menuDropdown[]> => {
   }
 };
 const getProductOfCategory = async (
-  categoryID: string
+  categoryID: string,
+  offset: number,
+  limit: number,
+  sort: string
 ): Promise<listProduct[]> => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}`
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${offset}&limit=${limit}&sort=${sort}`
     );
     if (response.data.res_code === "00") {
       return response.data.res_result;
@@ -203,6 +207,29 @@ const getProductOfCategory = async (
     return [];
   }
 };
+
+const getFilterProductCategory = async (
+  categoryID: string
+): Promise<getGroupSearch[]> => {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`
+    );
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error(
+        "Error fetching getFilterProductCategory",
+        response.data.res_text
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getFilterProductCategory", error.message);
+    return [];
+  }
+};
+
 const getDetailCategory = async (
   categoryID: string
 ): Promise<detailCategory[]> => {
@@ -239,4 +266,5 @@ export default {
   getCategoryNameById,
   getProductOfCategory,
   getDetailCategory,
+  getFilterProductCategory,
 };

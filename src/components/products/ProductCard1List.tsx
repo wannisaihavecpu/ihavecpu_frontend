@@ -5,10 +5,11 @@ import Pagination from "@component/pagination";
 import { ProductCard1 } from "@component/product-cards";
 import { SemiSpan } from "@component/Typography";
 import listProduct from "@models/listProduct.model";
+import { useRouter } from "next/router";
 
 // ==========================================================
 type Props = {
-  products?: listProduct[];
+  products?: listProduct;
   selectedBrands?: string[];
   selectedSocketType?: string[];
   minPrice?: string;
@@ -38,11 +39,24 @@ const ProductCard1List: FC<Props> = ({
 
   //   return brandMatch && unitMatch && priceMatch;
   // });
+  const router = useRouter();
+  // const { push } = useRouter();
+  const { query } = router;
+
+  const { page = "1" } = query;
+  const currentPage = parseInt(page as string, 10);
+
+  // const handlePageChange = (selectedPage: number) => {
+  //   router.push({
+  //     pathname: router.pathname,
+  //     query: { ...query, page: selectedPage.toString() },
+  //   });
+  // };
 
   return (
     <div>
       <Grid container spacing={6}>
-        {products.map((item) => (
+        {products.data.map((item) => (
           <Grid item lg={3} sm={6} xs={12} key={item.product_id}>
             <ProductCard1
               id={item.product_id}
@@ -50,7 +64,6 @@ const ProductCard1List: FC<Props> = ({
               price={parseFloat(item.price_sale)}
               title={item.name_th}
               imgUrl={item.image800}
-              // description={item.meta_description_th}
             />
           </Grid>
         ))}
@@ -62,8 +75,20 @@ const ProductCard1List: FC<Props> = ({
         alignItems="center"
         mt="32px"
       >
-        <SemiSpan>Showing 1-9 of 1.3k Products</SemiSpan>
-        <Pagination pageCount={products.length} />
+        <SemiSpan>{`Showing ${Math.min(
+          (currentPage - 1) * 12 + 1,
+          products.row
+        )} - ${Math.min(currentPage * 12, products.row)} of ${
+          products.row
+        } Products`}</SemiSpan>
+
+        <Pagination
+          pageCount={Math.ceil(products.row / 12)}
+          currentPage={currentPage}
+          // onPageChange={handlePageChange}
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={2}
+        />
       </FlexBox>
     </div>
   );

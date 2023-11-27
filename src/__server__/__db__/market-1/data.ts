@@ -17,7 +17,6 @@ export const mainCarouselData = [
 ];
 
 export const banners = [
-
   // Banner 3 box Slide
   {
     id: "c8074ef7-6bf3-496a-91d5-d974dc7d091b",
@@ -114,7 +113,6 @@ export const categories = [
     for: { demo: "market-1", type: "top-categories" },
   },
 
-
   //Categories
   {
     id: "6df3771a-7075-492d-8f1f-c8358cd6345f",
@@ -150,7 +148,7 @@ export const categories = [
     id: "6097cbe8-eba5-4462-aea0-b0d53f9dd0ed",
     name: "แรม",
     icon: "memory",
-    slug: "memory",
+    slug: "ram",
     image: "/assets/images/categories/cat-4x.jpg",
     description: null,
     parent: [],
@@ -160,7 +158,7 @@ export const categories = [
     id: "e6660169-fbba-4724-81e3-8ffae6ff3707",
     name: "ฮาร์ไดร์ฟ",
     icon: "device-hdd",
-    slug: "device-hdd",
+    slug: "storage",
     image: "/assets/images/categories/cat-5x.jpg",
     description: null,
     parent: [],
@@ -170,7 +168,7 @@ export const categories = [
     id: "158d635a-76fd-425b-a158-1e8d8cd97542",
     name: "พาวเวอร์ซัพพลาย",
     icon: "safe2",
-    slug: "safe2",
+    slug: "power-supply",
     image: "/assets/images/categories/cat-6x.jpg",
     description: null,
     parent: [],
@@ -180,7 +178,7 @@ export const categories = [
     id: "0b68c451-0d4d-47ac-83e4-33651ae3d11f",
     name: "ชุดระบายความร้อน",
     icon: "fan",
-    slug: "cooling",
+    slug: "heat-sink",
     image: "/assets/images/categories/cat-10x.jpg",
     description: null,
     parent: [],
@@ -190,7 +188,7 @@ export const categories = [
     id: "7a069456-f06a-4688-994e-ddb620f9f67c",
     name: "โน๊ตบุ๊ก",
     icon: "laptop2",
-    slug: "laptop",
+    slug: "notebook",
     image: "/assets/images/categories/cat-12x.jpg",
     description: null,
     parent: [],
@@ -228,9 +226,9 @@ export const categories = [
   },
   {
     id: "3c36096b-73b4-4c3e-a768-f846cc889fd5",
-    name: "อุปรณ์เสริม",
+    name: "อุปกรณ์เสริม",
     icon: "controller",
-    slug: "electronics",
+    slug: "accessories",
     image: "/assets/images/categories/cat-11x.jpg",
     description: null,
     parent: [],
@@ -281,7 +279,10 @@ export const products = [
     colors: [],
     discount: 25,
     thumbnail: "/assets/images/products/flash-1.png",
-    images: ["/assets/images/products/flash-1.png", "/assets/images/products/flash-1.png"],
+    images: [
+      "/assets/images/products/flash-1.png",
+      "/assets/images/products/flash-1.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -331,7 +332,10 @@ export const products = [
     colors: [],
     discount: 15,
     thumbnail: "/assets/images/products/flash-2.png",
-    images: ["/assets/images/products/flash-2.png", "/assets/images/products/flash-2.png"],
+    images: [
+      "/assets/images/products/flash-2.png",
+      "/assets/images/products/flash-2.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -381,7 +385,10 @@ export const products = [
     colors: [],
     discount: 28,
     thumbnail: "/assets/images/products/flash-3.png",
-    images: ["/assets/images/products/flash-3.png", "/assets/images/products/flash-3.png"],
+    images: [
+      "/assets/images/products/flash-3.png",
+      "/assets/images/products/flash-3.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -431,7 +438,10 @@ export const products = [
     colors: [],
     discount: 21,
     thumbnail: "/assets/images/products/flash-4.png",
-    images: ["/assets/images/products/flash-4.png", "/assets/images/products/flash-4.png"],
+    images: [
+      "/assets/images/products/flash-4.png",
+      "/assets/images/products/flash-4.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -481,7 +491,10 @@ export const products = [
     colors: [],
     discount: 25,
     thumbnail: "/assets/images/products/flash-1.png",
-    images: ["/assets/images/products/flash-1.png", "/assets/images/products/flash-1.png"],
+    images: [
+      "/assets/images/products/flash-1.png",
+      "/assets/images/products/flash-1.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -531,7 +544,10 @@ export const products = [
     colors: [],
     discount: 15,
     thumbnail: "/assets/images/products/flash-2.png",
-    images: ["/assets/images/products/flash-2.png", "/assets/images/products/flash-2.png"],
+    images: [
+      "/assets/images/products/flash-2.png",
+      "/assets/images/products/flash-2.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -581,7 +597,10 @@ export const products = [
     colors: [],
     discount: 28,
     thumbnail: "/assets/images/products/flash-3.png",
-    images: ["/assets/images/products/flash-3.png", "/assets/images/products/flash-3.png"],
+    images: [
+      "/assets/images/products/flash-3.png",
+      "/assets/images/products/flash-3.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -631,7 +650,10 @@ export const products = [
     colors: [],
     discount: 21,
     thumbnail: "/assets/images/products/flash-4.png",
-    images: ["/assets/images/products/flash-4.png", "/assets/images/products/flash-4.png"],
+    images: [
+      "/assets/images/products/flash-4.png",
+      "/assets/images/products/flash-4.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -681,7 +703,10 @@ export const products = [
     colors: [],
     discount: 8,
     thumbnail: "/assets/images/products/camera-1.png",
-    images: ["/assets/images/products/camera-1.png", "/assets/images/products/camera-1.png"],
+    images: [
+      "/assets/images/products/camera-1.png",
+      "/assets/images/products/camera-1.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -731,7 +756,10 @@ export const products = [
     colors: [],
     discount: 5,
     thumbnail: "/assets/images/products/shoes-2.png",
-    images: ["/assets/images/products/shoes-2.png", "/assets/images/products/shoes-2.png"],
+    images: [
+      "/assets/images/products/shoes-2.png",
+      "/assets/images/products/shoes-2.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -781,7 +809,10 @@ export const products = [
     colors: [],
     discount: 5,
     thumbnail: "/assets/images/products/mobile-1.png",
-    images: ["/assets/images/products/mobile-1.png", "/assets/images/products/mobile-1.png"],
+    images: [
+      "/assets/images/products/mobile-1.png",
+      "/assets/images/products/mobile-1.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -831,7 +862,10 @@ export const products = [
     colors: [],
     discount: 6,
     thumbnail: "/assets/images/products/watch-1.png",
-    images: ["/assets/images/products/watch-1.png", "/assets/images/products/watch-1.png"],
+    images: [
+      "/assets/images/products/watch-1.png",
+      "/assets/images/products/watch-1.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -987,7 +1021,10 @@ export const products = [
     colors: [],
     discount: 10,
     thumbnail: "/assets/images/products/bgwatch.png",
-    images: ["/assets/images/products/bgwatch.png", "/assets/images/products/bgwatch.png"],
+    images: [
+      "/assets/images/products/bgwatch.png",
+      "/assets/images/products/bgwatch.png",
+    ],
     categories: [],
     status: null,
     reviews: [],
@@ -2367,7 +2404,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 5,
-    thumbnail: "/assets/images/products/Electronics/33.beatswirelessearphones.png",
+    thumbnail:
+      "/assets/images/products/Electronics/33.beatswirelessearphones.png",
     images: [
       "/assets/images/products/Electronics/33.beatswirelessearphones.png",
       "/assets/images/products/Electronics/33.beatswirelessearphones.png",
@@ -2473,7 +2511,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 9,
-    thumbnail: "/assets/images/products/Electronics/35.beatsbluetoothearpohones.png",
+    thumbnail:
+      "/assets/images/products/Electronics/35.beatsbluetoothearpohones.png",
     images: [
       "/assets/images/products/Electronics/35.beatsbluetoothearpohones.png",
       "/assets/images/products/Electronics/35.beatsbluetoothearpohones.png",
@@ -2526,7 +2565,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 9,
-    thumbnail: "/assets/images/products/Electronics/36.sbsWirelessEarphones.png",
+    thumbnail:
+      "/assets/images/products/Electronics/36.sbsWirelessEarphones.png",
     images: [
       "/assets/images/products/Electronics/36.sbsWirelessEarphones.png",
       "/assets/images/products/Electronics/36.sbsWirelessEarphones.png",
@@ -2632,7 +2672,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 10,
-    thumbnail: "/assets/images/products/Fashion/Accessories/7.PoliceGrayEyeglasses.png",
+    thumbnail:
+      "/assets/images/products/Fashion/Accessories/7.PoliceGrayEyeglasses.png",
     images: [
       "/assets/images/products/Fashion/Accessories/7.PoliceGrayEyeglasses.png",
       "/assets/images/products/Fashion/Accessories/7.PoliceGrayEyeglasses.png",
@@ -2685,7 +2726,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 9,
-    thumbnail: "/assets/images/products/Fashion/Accessories/8.RayBanMattBlack.png",
+    thumbnail:
+      "/assets/images/products/Fashion/Accessories/8.RayBanMattBlack.png",
     images: [
       "/assets/images/products/Fashion/Accessories/8.RayBanMattBlack.png",
       "/assets/images/products/Fashion/Accessories/8.RayBanMattBlack.png",
@@ -2844,7 +2886,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 7,
-    thumbnail: "/assets/images/products/Fashion/Accessories/11.SunglassesCollection.png",
+    thumbnail:
+      "/assets/images/products/Fashion/Accessories/11.SunglassesCollection.png",
     images: [
       "/assets/images/products/Fashion/Accessories/11.SunglassesCollection.png",
       "/assets/images/products/Fashion/Accessories/11.SunglassesCollection.png",
@@ -2897,7 +2940,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 7,
-    thumbnail: "/assets/images/products/Fashion/Accessories/12.Xiaomimiband2.png",
+    thumbnail:
+      "/assets/images/products/Fashion/Accessories/12.Xiaomimiband2.png",
     images: [
       "/assets/images/products/Fashion/Accessories/12.Xiaomimiband2.png",
       "/assets/images/products/Fashion/Accessories/12.Xiaomimiband2.png",
@@ -2950,7 +2994,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 8,
-    thumbnail: "/assets/images/products/Fashion/Accessories/13.FossilWatchBrown.png",
+    thumbnail:
+      "/assets/images/products/Fashion/Accessories/13.FossilWatchBrown.png",
     images: [
       "/assets/images/products/Fashion/Accessories/13.FossilWatchBrown.png",
       "/assets/images/products/Fashion/Accessories/13.FossilWatchBrown.png",
@@ -3003,7 +3048,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 6,
-    thumbnail: "/assets/images/products/Fashion/Accessories/14.MVMTMWatchBlack.png",
+    thumbnail:
+      "/assets/images/products/Fashion/Accessories/14.MVMTMWatchBlack.png",
     images: [
       "/assets/images/products/Fashion/Accessories/14.MVMTMWatchBlack.png",
       "/assets/images/products/Fashion/Accessories/14.MVMTMWatchBlack.png",
@@ -3910,7 +3956,8 @@ export const articles = [
   {
     id: "20a83049-bc4b-41cc-9a29-0b2b69a7fd08",
     title: "30% Off Coupon for Black Friday",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit.…",
+    description:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit.…",
     thumbnail: "/assets/images/blogs/blog-1.jpg",
     shop: {
       id: "e7c5030b-0504-4b4c-81dc-1627302bc1a4",
@@ -3963,7 +4010,8 @@ export const articles = [
   {
     id: "108015ad-897b-4c90-a90f-53b288ad162c",
     title: "10% Discount for Cosmatics",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit.…",
+    description:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit.…",
     thumbnail: "/assets/images/blogs/blog-2.jpg",
     shop: {
       id: "d32b469e-4ccc-43b4-8427-98eba478355f",
@@ -4016,7 +4064,8 @@ export const articles = [
   {
     id: "f3f920ba-3f3e-47cd-a109-9183a15479fa",
     title: " Buy 2 get 1 free Offer",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit.…",
+    description:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit.…",
     thumbnail: "/assets/images/blogs/blog-3.jpg",
     shop: {
       id: "e7c5030b-0504-4b4c-81dc-1627302bc1a4",
@@ -4117,7 +4166,7 @@ export const brandList = [
     for: { demo: "market-2", type: "top-brands" },
   },
   {
-  id: "95909c6c-91e7-4b64-a26b-0e3a56f144c9",
+    id: "95909c6c-91e7-4b64-a26b-0e3a56f144c9",
     slug: "gigabyte",
     name: "GIGABYTE",
     image: "/assets/images/brands/gigabyte.png",

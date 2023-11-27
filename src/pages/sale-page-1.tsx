@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import axios from "axios";
 import Box from "@component/Box";
 import Sticky from "@component/sticky";
@@ -9,7 +9,7 @@ import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import SaleNavbar from "@component/navbar/SaleNavbar";
 import SaleLayout1 from "@component/layout/SaleLayout1";
 import { ProductCard1 } from "@component/product-cards";
@@ -24,7 +24,7 @@ type Props = { products: Product[]; meta: Meta };
 // ===================================================
 
 const SalePage1 = ({ products, meta }: Props) => {
-  const { push } = useRouter();
+  // const { push } = useRouter();
   const [selected, setSelected] = useState(1);
   const [isFixed, setIsFixed] = useState(false);
 
@@ -35,7 +35,8 @@ const SalePage1 = ({ products, meta }: Props) => {
     []
   );
 
-  const handlePageChange = (page: number) => push(`?page=${page + 1}`);
+  // pagination handle
+  // const handlePageChange = (page: number) => push(`?page=${page + 1}`);
 
   const saleCategoryList = [
     { icon: "women-dress", title: "Women" },
@@ -142,7 +143,7 @@ const SalePage1 = ({ products, meta }: Props) => {
         <SemiSpan>
           {renderProductCount(meta.page - 1, meta.pageSize, meta.total)}
         </SemiSpan>
-        <Pagination onChange={handlePageChange} pageCount={meta.totalPage} />
+        {/* <Pagination onChange={handlePageChange} pageCount={meta.totalPage} /> */}
       </FlexBox>
     </Container>
   );

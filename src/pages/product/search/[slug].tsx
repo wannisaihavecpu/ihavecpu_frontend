@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Select from "@component/Select";
-import Hidden from "@component/hidden";
+// import Hidden from "@component/hidden";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
@@ -12,7 +12,7 @@ import { H5, Paragraph } from "@component/Typography";
 import NavbarLayout from "@component/layout/NavbarLayout";
 // import ProductCard1List from "@component/products/ProductCard1List";
 // import ProductCard9List from "@component/products/ProductCard9List";
-import ProductFilterCard from "@component/products/ProductFilterCard";
+// import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
 // import product from "@data/product";
 import { useRouter } from "next/router";
@@ -24,11 +24,11 @@ const ProductSearchResult = () => {
   const isTablet = width < 1025;
   const toggleView = useCallback((v) => () => setView(v), []);
   // select
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedSocketType, setSelectedSocketType] = useState<string[]>([]);
-  // price range
-  const [minPrice, setMinPrice] = useState<string | null>("0"); // 0 = mock up
-  const [maxPrice, setMaxPrice] = useState<string | null>("12000"); // "12000" = mock up
+  // const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  // const [selectedSocketType, setSelectedSocketType] = useState<string[]>([]);
+  // // price range
+  // const [minPrice, setMinPrice] = useState<string | null>("0"); // 0 = mock up
+  // const [maxPrice, setMaxPrice] = useState<string | null>("12000"); // "12000" = mock up
 
   const router = useRouter();
   const { query } = router;
@@ -36,59 +36,59 @@ const ProductSearchResult = () => {
   const productName = query.slug?.toString() || "";
 
   // handle changes in CPU brands filters
-  const handleBrandCheckboxChange = (brand: string) => {
-    setSelectedBrands((prevSelectedBrands) => {
-      if (prevSelectedBrands.includes(brand)) {
-        return prevSelectedBrands.filter((item) => item !== brand);
-      } else {
-        return [...prevSelectedBrands, brand];
-      }
-    });
-  };
-  // handle changes in CPU Socket Type filters
-  const handleSocketTypeCheckboxChange = (socketType: string) => {
-    setSelectedSocketType((prevSelectedSocketType) => {
-      if (prevSelectedSocketType.includes(socketType)) {
-        return prevSelectedSocketType.filter((item) => item !== socketType);
-      } else {
-        return [...prevSelectedSocketType, socketType];
-      }
-    });
-  };
+  // const handleBrandCheckboxChange = (brand: string) => {
+  //   setSelectedBrands((prevSelectedBrands) => {
+  //     if (prevSelectedBrands.includes(brand)) {
+  //       return prevSelectedBrands.filter((item) => item !== brand);
+  //     } else {
+  //       return [...prevSelectedBrands, brand];
+  //     }
+  //   });
+  // };
+  // // handle changes in CPU Socket Type filters
+  // const handleSocketTypeCheckboxChange = (socketType: string) => {
+  //   setSelectedSocketType((prevSelectedSocketType) => {
+  //     if (prevSelectedSocketType.includes(socketType)) {
+  //       return prevSelectedSocketType.filter((item) => item !== socketType);
+  //     } else {
+  //       return [...prevSelectedSocketType, socketType];
+  //     }
+  //   });
+  // };
 
   // handle changes in Price Range filters
-  const handleMinPriceChange = (value: string) => {
-    setMinPrice(value);
-  };
-  const handleMaxPriceChange = (value: string) => {
-    setMaxPrice(value);
-  };
+  // const handleMinPriceChange = (value: string) => {
+  //   setMinPrice(value);
+  // };
+  // const handleMaxPriceChange = (value: string) => {
+  //   setMaxPrice(value);
+  // };
 
-  // clear all Filters
-  const clearFilters = () => {
-    setSelectedBrands([]);
-    setSelectedSocketType([]);
-    setMinPrice("0");
-    setMaxPrice("12000");
-  };
-  // clear CPU Brands Filter
-  const clearBrands = () => {
-    setSelectedBrands([]);
-  };
-  // clear CPU Socket Type Filter
-  const clearSocket = () => {
-    setSelectedSocketType([]);
-  };
+  // // clear all Filters
+  // const clearFilters = () => {
+  //   setSelectedBrands([]);
+  //   setSelectedSocketType([]);
+  //   setMinPrice("0");
+  //   setMaxPrice("12000");
+  // };
+  // // clear CPU Brands Filter
+  // const clearBrands = () => {
+  //   setSelectedBrands([]);
+  // };
+  // // clear CPU Socket Type Filter
+  // const clearSocket = () => {
+  //   setSelectedSocketType([]);
+  // };
 
-  // delete specific item
-  const handleItemRemove = (itemToRemove) => {
-    setSelectedBrands((prevSelectedBrands) =>
-      prevSelectedBrands.filter((item) => item !== itemToRemove)
-    );
-    setSelectedSocketType((prevSelectedSocketType) =>
-      prevSelectedSocketType.filter((item) => item !== itemToRemove)
-    );
-  };
+  // // delete specific item
+  // const handleItemRemove = (itemToRemove) => {
+  //   setSelectedBrands((prevSelectedBrands) =>
+  //     prevSelectedBrands.filter((item) => item !== itemToRemove)
+  //   );
+  //   setSelectedSocketType((prevSelectedSocketType) =>
+  //     prevSelectedSocketType.filter((item) => item !== itemToRemove)
+  //   );
+  // };
 
   return (
     <Box pt="20px">
@@ -154,7 +154,7 @@ const ProductSearchResult = () => {
                 </IconButton>
               }
             >
-              <ProductFilterCard
+              {/* <ProductFilterCard
                 selectedBrands={selectedBrands}
                 onBrandCheckboxChange={handleBrandCheckboxChange}
                 selectedSocketType={selectedSocketType}
@@ -167,7 +167,7 @@ const ProductSearchResult = () => {
                 handleItemRemove={handleItemRemove}
                 clearBrands={clearBrands}
                 clearSocket={clearSocket}
-              />
+              /> */}
             </Sidenav>
           )}
         </FlexBox>
@@ -175,7 +175,7 @@ const ProductSearchResult = () => {
 
       <Grid container spacing={6}>
         {/* FILTER */}
-        <Hidden as={Grid} item lg={3} xs={12} down={1024}>
+        {/* <Hidden as={Grid} item lg={3} xs={12} down={1024}>
           <ProductFilterCard
             selectedBrands={selectedBrands}
             onBrandCheckboxChange={handleBrandCheckboxChange}
@@ -190,7 +190,7 @@ const ProductSearchResult = () => {
             clearBrands={clearBrands}
             clearSocket={clearSocket}
           />
-        </Hidden>
+        </Hidden> */}
         {/* PRODUCTS */}
         {/* <Grid item lg={9} xs={12}>
           {view === "grid" ? (

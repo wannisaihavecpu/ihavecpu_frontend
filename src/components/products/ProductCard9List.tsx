@@ -1,17 +1,17 @@
 import { FC, Fragment } from "react";
 import FlexBox from "@component/FlexBox";
-import Pagination from "@component/pagination";
+// import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
 import { ProductCard9 } from "@component/product-cards";
 import listProduct from "@models/listProduct.model";
 // ==========================================================
-type Props = { products: listProduct[] };
+type Props = { products: listProduct };
 // ==========================================================
 
 const ProductCard9List: FC<Props> = ({ products }) => {
   return (
     <Fragment>
-      {products.map((item) => (
+      {products.data.map((item) => (
         <ProductCard9
           mb="1.25rem"
           id={item.product_id}
@@ -31,7 +31,7 @@ const ProductCard9List: FC<Props> = ({ products }) => {
         mt="32px"
       >
         <SemiSpan>Showing 1-9 of 1.3k Products</SemiSpan>
-        <Pagination pageCount={10} />
+        {/* <Pagination pageCount={10} /> */}
       </FlexBox>
     </Fragment>
   );

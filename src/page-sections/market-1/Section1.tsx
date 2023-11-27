@@ -45,7 +45,7 @@ const Section1: FC<Props> = ({ banner }) => {
       <Navbar navListOpen={false} />
       {/* <Navbar navListOpen={true} /> */}
 
-      <ContainerHome pb="2rem">
+      <ContainerHome py="1.3rem">
         <StyledBox id="carouselBox">
           <Carousel
             spacing="0px"

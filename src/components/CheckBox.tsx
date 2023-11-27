@@ -15,7 +15,9 @@ type CheckBoxProps = {
 
 type WrapperProps = { labelPlacement?: "start" | "end" };
 
-const SyledCheckBox = styled.input<CheckBoxProps & InputHTMLAttributes<HTMLInputElement>>(
+const SyledCheckBox = styled.input<
+  CheckBoxProps & InputHTMLAttributes<HTMLInputElement>
+>(
   ({ color, size }) =>
     systemCss({
       /* remove standard background appearance */
@@ -36,6 +38,7 @@ const SyledCheckBox = styled.input<CheckBoxProps & InputHTMLAttributes<HTMLInput
       borderColor: "text.hint",
       borderRadius: 2,
       position: "relative",
+      transition: "max-height 1s ease-out, opacity 1s ease-out",
 
       "&:checked": { borderColor: `${color}.main` },
 
@@ -73,9 +76,13 @@ const SyledCheckBox = styled.input<CheckBoxProps & InputHTMLAttributes<HTMLInput
 const Wrapper = styled.div<WrapperProps & SpaceProps>`
   display: flex;
   align-items: center;
-  flex-direction: ${(props) => (props.labelPlacement !== "end" ? "row" : "row-reverse")};
+  flex-direction: ${(props) =>
+    props.labelPlacement !== "end" ? "row" : "row-reverse"};
   input {
-    ${(props) => (props.labelPlacement !== "end" ? "margin-right: 0.5rem" : "margin-left: 0.5rem")};
+    ${(props) =>
+      props.labelPlacement !== "end"
+        ? "margin-right: 0.5rem"
+        : "margin-left: 0.5rem"};
   }
   label {
     cursor: pointer;
@@ -90,25 +97,26 @@ const Wrapper = styled.div<WrapperProps & SpaceProps>`
   ${space}
 `;
 
-const CheckBox: FC<InputHTMLAttributes<HTMLInputElement> & CheckBoxProps & SpaceProps> = ({
-  id,
-  label,
-  labelColor,
-  labelPlacement,
-  ...props
-}: CheckBoxProps) => {
+const CheckBox: FC<
+  InputHTMLAttributes<HTMLInputElement> & CheckBoxProps & SpaceProps
+> = ({ id, label, labelColor, labelPlacement, ...props }: CheckBoxProps) => {
   const [checkboxId, setCheckboxId] = useState(id);
 
   // extract spacing props
   let spacingProps = {};
   for (const key in props) {
-    if (key.startsWith("m") || key.startsWith("p")) spacingProps[key] = props[key];
+    if (key.startsWith("m") || key.startsWith("p"))
+      spacingProps[key] = props[key];
   }
 
   useEffect(() => setCheckboxId(Math.random()), []);
 
   return (
-    <Wrapper labelPlacement={labelPlacement} color={`${labelColor}.main`} {...spacingProps}>
+    <Wrapper
+      labelPlacement={labelPlacement}
+      color={`${labelColor}.main`}
+      {...spacingProps}
+    >
       <SyledCheckBox id={checkboxId} type="checkbox" {...props} />
       <label htmlFor={checkboxId}>{label}</label>
     </Wrapper>

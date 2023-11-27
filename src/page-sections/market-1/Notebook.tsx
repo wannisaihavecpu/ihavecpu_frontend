@@ -83,13 +83,20 @@ const Notebook: FC<Props> = ({ category }) => {
     }, 800);
   };
   const fetchProductAll = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=13`, {
-      method: "GET",
-    })
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=13&offset=0&limit=8`,
+      {
+        method: "GET",
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
-        if (data.res_code === "00" && Array.isArray(data.res_result)) {
-          setProduct(data.res_result);
+        if (
+          data.res_code === "00" &&
+          data.res_result &&
+          Array.isArray(data.res_result.data)
+        ) {
+          setProduct(data.res_result.data);
           setLoading(false);
         } else {
           console.error("Unexpected response:", data);
