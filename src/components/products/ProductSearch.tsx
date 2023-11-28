@@ -326,10 +326,16 @@ const ProductSearch: FC<ProductCategoryProps> = ({
                   </Grid>
                 ))}
               </Grid>
-            ) : view === "grid" ? (
-              <ProductCard1List products={productFilter} />
+            ) : productFilter.count > 0 ? (
+              view === "grid" ? (
+                <ProductCard1List products={productFilter} />
+              ) : (
+                <ProductCard9List products={productFilter} />
+              )
             ) : (
-              <ProductCard9List products={productFilter} />
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
+                ไม่มีสินค้า
+              </div>
             )}
 
             <FlexBox
@@ -346,7 +352,7 @@ const ProductSearch: FC<ProductCategoryProps> = ({
                   productFilter.count
                 } Products`}</SemiSpan>
               )}
-              {products && (
+              {productFilter && (
                 <Pagination
                   pageCount={Math.max(1, Math.ceil(productFilter.count / 12))}
                   currentPage={currentPage}

@@ -217,6 +217,7 @@ const getFilterProductCategory = async (
       `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`
     );
     if (response.data.res_code === "00") {
+      // console.log(response.data.res_result);
       return response.data.res_result;
     } else {
       console.error(
