@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import Head from "next/head";
-import type { NextPage } from "next";
+// import type { NextPage } from "next";
 import Router from "next/router";
-import { AppProps } from "next/app";
+// import { AppProps } from "next/app";
 import NProgress from "nprogress";
 import { ThemeProvider } from "styled-components";
 import GoogleAnalytics from "@component/GoogleAnalytics";
@@ -13,6 +13,8 @@ import "../__server__";
 import theme from "../theme";
 import GlobalStyles from "theme/globalStyles";
 import clearExpirationCompare from "./clearExpirationCompare";
+import { SessionProvider } from "next-auth/react";
+
 //Binding events.
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
@@ -21,12 +23,12 @@ Router.events.on("routeChangeError", () => NProgress.done());
 NProgress.configure({ showSpinner: false });
 
 // ============================================================
-interface MyAppProps extends AppProps {
-  Component: NextPage & { layout?: () => JSX.Element };
-}
+// interface MyAppProps extends AppProps {
+//   Component: NextPage & { layout?: () => JSX.Element };
+// }
 // ============================================================
 
-const App = ({ Component, pageProps }: MyAppProps) => {
+const App = ({ Component, pageProps: { session, ...pageProps } }) => {
   let Layout = Component.layout || Fragment;
   // const [compareList, setCompareList] = useState([]);
   clearExpirationCompare();
@@ -62,9 +64,11 @@ const App = ({ Component, pageProps }: MyAppProps) => {
           <GlobalStyles />
           <ToastContainer />
 
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <SessionProvider session={pageProps.session}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </SessionProvider>
         </ThemeProvider>
       </AppProvider>
     </Fragment>

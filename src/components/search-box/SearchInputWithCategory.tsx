@@ -9,7 +9,11 @@ import TextField from "../text-field";
 import StyledSearchBox from "./styled";
 import { useRouter } from "next/router";
 
-const SearchInputWithCategory: FC = () => {
+interface SearchInputProps {
+  openModal: boolean;
+}
+
+const SearchInputWithCategory: FC<SearchInputProps> = ({ openModal }) => {
   const router = useRouter();
   const [resultList, setResultList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
@@ -54,13 +58,13 @@ const SearchInputWithCategory: FC = () => {
   const handleDocumentClick = () => setResultList([]);
   const handleEnterKeyPress = useCallback(
     (event) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !openModal) {
         router.push(`/product/search/${searchValue}`);
         setResultList([]);
         setSearchValue("");
       }
     },
-    [router, searchValue]
+    [router, searchValue, openModal]
   );
 
   const formatSlug = (name) => {
