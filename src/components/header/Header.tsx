@@ -62,7 +62,7 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
           position="absolute"
           justifyContent="center"
         >
-          <Tiny color="white" fontWeight="600" lineHeight={1}>
+        <Tiny color="white" fontWeight="600" lineHeight={1}>
             {state.cart.length}
           </Tiny>
         </FlexBox>
@@ -111,6 +111,7 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
           {/* <UserLoginDialog handle={LOGIN_HANDLE}>
             <Login />
           </UserLoginDialog> */}
+          {/* {session?.user?.firstname} */}
 
           {!session ? (
             <IconButton ml="1rem" bg="gray.200" p="8px" onClick={toggleDialog}>
@@ -132,17 +133,17 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
               position="absolute"
               top="100%"
               py="0.1rem"
-              width="10%"
+              width="15%"
               boxShadow="large"
               style={{ boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px" }}
               zIndex={99}
             >
-              <Link href={`/product/search/}`}>
+              <Link href={`/profile`}>
                 <MenuItem>
                   <Span fontSize="14px">บัญชีของฉัน</Span>
                 </MenuItem>
               </Link>
-              <Link href={`/product/search/}`}>
+              <Link href={`/wishlist`}>
                 <MenuItem>
                   <Span fontSize="14px">รายการสินค้าโปรด</Span>
                 </MenuItem>
