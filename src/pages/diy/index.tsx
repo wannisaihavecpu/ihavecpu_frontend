@@ -1,7 +1,9 @@
 import { GetStaticProps } from "next";
+import { useState, FC } from "react";
+
 import Box from "@component/Box";
 import { Footer2 } from "@component/footer";
-import Wrapper from "@sections/grocery-2/Wrapper";
+import Wrapper from "@sections/diy/Wrapper";
 import Section1 from "@sections/grocery-2/Section1";
 import Section2 from "@sections/grocery-2/Section2";
 import Section3 from "@sections/grocery-2/Section3";
@@ -22,7 +24,7 @@ import { GroceryTwoCarouselItem } from "@models/carousel.model";
 import NavbarLayout from "@component/layout/NavbarLayout";
 import apiPro from "@utils/__api__/products";
 import menuDropdown from "@models/menuDropdown.model";
-
+import { Fragment } from "react";
 
 // ========================================================
 type Grocery2Props = {
@@ -42,62 +44,77 @@ type Grocery2Props = {
 
 const GroceryTwo = (props: Grocery2Props) => {
   const { isFixed } = useScroll();
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   return (
-    <Wrapper isSidenavFixed={isFixed}>
+    <Fragment>
       {/* SIDEBAR NAVIGATION AREA */}
-      <Box className="sidenav" pt="1.5rem">
-        <SidenavDiy isFixed={isFixed} navList={props.categoriess} />
-      </Box>
+      {/* <Box className="sidenav" pt="1.5rem">
+        <SidenavDiy navList={props.categoriess} />
+      </Box> */}
+
+      <Section4
+        navList={props.categoriess}
+        title="Featured Items"
+        currentPage={currentPage}
+        products={props.featuredProducts}
+        setCurrentPage={setCurrentPage}
+      />
 
       <Box className="content" pt="1.5rem">
         {/* HERO CAROUSEL AREA */}
-        <Section1 carouselData={props.mainCarouselData} />
+        {/* <Section1 carouselData={props.mainCarouselData} /> */}
 
         {/* SERVICES AREA */}
-        <Box mb="3rem" overflow="hidden">
+        {/* <Box mb="3rem" overflow="hidden">
           <Section2 services={props.serviceList} />
-        </Box>
+        </Box> */}
 
         {/* SHOP BY CATEGORY AREA */}
-        <Box mb="3rem">
+        {/* <Box mb="3rem">
           <Section3 categories={props.categories} />
-        </Box>
+        </Box> */}
 
-        {/* FEATURED PRODUCTS AREA */}
-        <Box mb="3rem">
-          <Section4 title="Featured Items" products={props.featuredProducts} />
-        </Box>
+        {/* FILTER SEARCH & PRODUCT */}
 
         {/* BEST SELLER PRODUCTS AREA */}
-        <Box mb="3rem">
-          <Section4 title="Best Seller in Your Area" products={props.bestSellProducts} />
-        </Box>
+        {/* <Box mb="3rem">
+          <Section4
+            title="Best Seller in Your Area"
+            products={props.bestSellProducts}
+          />
+        </Box> */}
 
         {/* DISCOUNT BANNER CAROUSEL AREA */}
-        <Box mb="3rem">
+        {/* <Box mb="3rem">
           <Section6 cardList={props.discountBanners} />
-        </Box>
+        </Box> */}
 
         {/* BEST HOME PRODUCTS AREA */}
-        <Box mb="3rem">
-          <Section4 title="Best of Home Essentials" products={props.bestHomeProducts} />
-        </Box>
+        {/* <Box mb="3rem">
+          <Section4
+            title="Best of Home Essentials"
+            products={props.bestHomeProducts}
+          />
+        </Box> */}
 
         {/* SNACK AND DRINKS PRODUCTS AREA */}
-        <Box mb="3rem">
-          <Section4 title="Snacks, Drinks, Dairy & More" products={props.dairyProducts} />
-        </Box>
+        {/* <Box mb="3rem">
+          <Section4
+            title="Snacks, Drinks, Dairy & More"
+            products={props.dairyProducts}
+          />
+        </Box> */}
 
         {/* TESTIMONIAL CAROUSEL AREA */}
-        <Box mb="3rem">
+        {/* <Box mb="3rem">
           <Section9 testimonials={props.testimonials} />
-        </Box>
+        </Box> */}
 
         {/* FOOTER AREA */}
-        <Footer2 />
+        {/* <Footer2 /> */}
       </Box>
-    </Wrapper>
+    </Fragment>
   );
 };
 
@@ -115,7 +132,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const bestSellProducts = await api.getBestSellProducts();
   const discountBanners = await api.getDiscountBannerList();
 
-  const categoriesResponse = await apiPro.getCategoryNameById();
+  const categoriesResponse = await apiPro.getMenuDIY();
   const categoriess = categoriesResponse;
 
   return {

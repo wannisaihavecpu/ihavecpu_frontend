@@ -273,6 +273,24 @@ const searchProduct = async (search: string): Promise<search[]> => {
   }
 };
 
+const getMenuDIY = async (): Promise<menuDropdown[]> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_PATH}/menu/menuDIY`
+    );
+
+    if (response.data.res_code === "00") {
+      return response.data.res_result;
+    } else {
+      console.error("Error fetching getMenuDIY:", response.data.res_text);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching getMenuDIY:", error.message);
+    return [];
+  }
+};
+
 export default {
   getSlugs,
   getProduct,
@@ -292,4 +310,5 @@ export default {
   getDetailCategory,
   getFilterProductCategory,
   searchProduct,
+  getMenuDIY,
 };

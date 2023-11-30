@@ -22,6 +22,13 @@ const StyledProductCategory = styled(Box)<StyledProductCategoryProps>`
     margin-left: 1.5rem;
     text-transform: capitalize;
   }
+  .product-diy-title {
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+    margin-left: 1.5rem;
+    text-transform: capitalize;
+  }
 
   .show-all {
     width: 100%;

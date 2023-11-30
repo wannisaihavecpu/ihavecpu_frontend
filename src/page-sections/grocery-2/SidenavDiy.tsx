@@ -12,6 +12,7 @@ import { NavWithChild } from "interfaces";
 import { CategoryItem } from "@models/categoryNavList.model";
 import menuDropdown from "@models/menuDropdown.model";
 import StyledProductCategory from "../market-1/styled";
+import NextImage from "next/image";
 
 // styled component
 const AccordionHeaderText = styled(FlexBox)({
@@ -28,31 +29,23 @@ type Props = { isFixed?: boolean; navList: menuDropdown[] };
 // =======================================================================================
 
 const SidenavDiy: FC<Props> = ({ isFixed, navList }) => {
-
-
   return (
-    <Card position="relative" p="20px 20px 14px 24px" overflow={isFixed ? "auto" : "unset"}>
-   
-   {navList
-  .filter(subcategory => ![43, 107].includes(subcategory.displayCategoryID))
-  .map((subcategory, i) => (
-    <StyledProductCategory
-      key={i}
-      mb="0.75rem"
+    <Card
+      position="relative"
+      p="20px 20px 14px 24px"
+      // overflow={isFixed ? "auto" : "unset"}
     >
-      <img
-        height={30}
-        width={30}
-        style={{ borderRadius: "8px" }}
-        alt=""
-        src={subcategory.icon !== null ? subcategory.icon : null}
-      />
+      {navList.map((subcategory, i) => (
+        <StyledProductCategory key={i} mb="0.75rem">
+          <Icon size="20px" defaultcolor="auto">
+            {subcategory.icon}
+          </Icon>
 
-      <span className="product-category-title">
-        {subcategory.title_th}
-      </span>
-    </StyledProductCategory>
-  ))}
+          <SemiSpan className="product-diy-title">
+            {subcategory.title_th}
+          </SemiSpan>
+        </StyledProductCategory>
+      ))}
 
       {/* {navList.map((item) => (
         <Box mb="0.5rem" key={item.title} color="gray.700">
@@ -87,7 +80,6 @@ const SidenavDiy: FC<Props> = ({ isFixed, navList }) => {
           )}
         </Box>
       ))} */}
-
     </Card>
   );
 };
