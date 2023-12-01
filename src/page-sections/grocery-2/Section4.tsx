@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useState, useCallback } from "react";
 import Box from "@component/Box";
-import { H3, H5, SemiSpan, Paragraph } from "@component/Typography";
+import { H3, H5, SemiSpan, Paragraph, Tiny } from "@component/Typography";
 import Select from "@component/Select";
 
 import { Carousel } from "@component/carousel";
@@ -16,9 +16,13 @@ import FlexBox from "@component/FlexBox";
 import Grid from "@component/grid/Grid";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import { IconButton } from "@component/buttons";
+import NextImage from "next/image";
 
 import Product from "@models/product.model";
-import { ProductCard1, ProductCard1Skeleton } from "@component/product-cards";
+import {
+  ProductCard1DIY,
+  ProductCard1Skeleton,
+} from "@component/product-cards";
 import ProductCard1List from "@component/products/ProductCard1List";
 import ProductCard9List from "@component/products/ProductCard9List";
 import Pagination from "@component/pagination";
@@ -27,6 +31,7 @@ import getGroupSearch from "@models/getGroupSearch";
 import CheckBox from "@component/CheckBox";
 import { Button } from "react-scroll";
 import ModalCheckBox from "@component/modal/modalCheckbox";
+import ModalDIY from "@component/modal/modalDIY";
 
 // =======================================================
 type Props = {
@@ -47,12 +52,11 @@ const Section4: FC<Props> = ({
   currentPage,
   setCurrentPage,
 }) => {
+  // useState
   const { visibleSlides } = useVisibleSlide();
-
   const [selected, setSelected] = useState("");
   const [product, setProduct] = useState(null);
   const [productFilter, setProductFilter] = useState(null);
-
   const [filters, setFilter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
@@ -61,8 +65,22 @@ const Section4: FC<Props> = ({
   const [selectedItems, setSelectedItems] = useState<
     { id: number; name: string }[]
   >([]);
+  const [selectedProduct, setSelectedProduct] = useState<
+    {
+      id: number;
+      name: string;
+      categoryID: number;
+      filterID: number;
+      filterSubID: number;
+      price: string;
+      priceBefore: string;
+      discount: string;
+      imgUrl: string;
+    }[]
+  >([]);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [categoryID, setCategoryID] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Function to handle clicking on a filter
   const handleFilterClick = (filter) => {
@@ -134,6 +152,7 @@ const Section4: FC<Props> = ({
         setFilter(filterData.res_result);
       } else {
         setFilter(null);
+        setProductFilter(null);
         // console.error("failed to fetch filters", filterData);
       }
     } catch (error) {
@@ -224,6 +243,88 @@ const Section4: FC<Props> = ({
       }
     });
   };
+
+  const handleAddToSelectedProducts = (
+    productId,
+    name,
+    categoryID,
+    filterID,
+    filterSubID,
+    price,
+    priceBefore,
+    discount,
+    imgUrl
+  ) => {
+    // Check if the product with the same categoryID already exists
+    const existingProductIndex = selectedProduct.findIndex(
+      (product) => product.categoryID === categoryID
+    );
+
+    // If the product with the same categoryID exists, replace it; otherwise, add a new one
+    if (existingProductIndex !== -1) {
+      setSelectedProduct((prevProducts) => {
+        const updatedProducts = [...prevProducts];
+        updatedProducts[existingProductIndex] = {
+          id: productId,
+          name,
+          categoryID,
+          filterID,
+          filterSubID,
+          price,
+          priceBefore,
+          discount,
+          imgUrl,
+        };
+        return updatedProducts;
+      });
+    } else {
+      // Add the new product to the state
+      setSelectedProduct((prevProducts) => [
+        ...prevProducts,
+        {
+          id: productId,
+          name,
+          categoryID,
+          filterID,
+          filterSubID,
+          price,
+          priceBefore,
+          discount,
+          imgUrl,
+        },
+      ]);
+    }
+
+    // console.log(
+    //   productId,
+    //   name,
+    //   categoryID,
+    //   filterID,
+    //   filterSubID,
+    //   "added or replaced"
+    // );
+  };
+
+  const handleRemoveFromSelectedProducts = (productId) => {
+    setSelectedProduct((prevProducts) =>
+      prevProducts.filter((product) => product.id !== productId)
+    );
+  };
+  const hasProductsForCategory = (categoryID) => {
+    return selectedProduct.some((item) => item.categoryID === categoryID);
+  };
+  const handleResetButtonClick = () => {
+    setSelectedProduct([]);
+    setSelectedItems([]);
+    setFilter(null);
+    setTitle("");
+  };
+  const handleCreateSpecClick = () => {
+    setIsModalVisible(true);
+  };
+
+  console.log(selectedProduct);
+
   useEffect(() => {
     // set default (first category in api)
     const defaultCategoryID = navList[0].categoryID;
@@ -274,28 +375,114 @@ const Section4: FC<Props> = ({
         <FlexBox>
           <Hidden down={768} mr="1.75rem">
             <Box shadow={2} borderRadius={10} padding="1.25rem" bg="white">
-              {navList.map((value, i) => (
+              <Box shadow={2} borderRadius={10} padding="1.25rem" bg="white">
+                {navList.map((value, i) => (
+                  <Fragment key={i}>
+                    {selectedProduct &&
+                      selectedProduct
+                        .filter((item) => item.categoryID === value.categoryID)
+                        .map((item, ind) => (
+                          <StyledProductCategory
+                            key={ind}
+                            mb="0.75rem"
+                            shadow={
+                              selected === value.categoryID.toString()
+                                ? 8
+                                : null
+                            }
+                            bg={
+                              selected === value.categoryID.toString()
+                                ? "white"
+                                : "gray.100"
+                            }
+                            onClick={handleCategoryClick(
+                              value.categoryID.toString()
+                            )}
+                          >
+                            <NextImage
+                              src={item.imgUrl}
+                              height={40}
+                              width={40}
+                              objectFit="contain"
+                            />
+                            <Box>
+                              <SemiSpan fontSize={12}>
+                                {item.name.length > 15
+                                  ? item.name.slice(0, 20) + "..."
+                                  : item.name}
+                              </SemiSpan>
+                            </Box>
+                          </StyledProductCategory>
+                        ))}
+                    {(!selectedProduct ||
+                      !selectedProduct.some(
+                        (item) => item.categoryID === value.categoryID
+                      )) && (
+                      <StyledProductCategory
+                        mb="0.75rem"
+                        onClick={handleCategoryClick(
+                          value.categoryID.toString()
+                        )}
+                        shadow={
+                          selected === value.categoryID.toString() ? 8 : null
+                        }
+                        bg={
+                          selected === value.categoryID.toString()
+                            ? "white"
+                            : "gray.100"
+                        }
+                      >
+                        {value.icon && (
+                          <Icon size="20px" defaultcolor="auto">
+                            {value.icon}
+                          </Icon>
+                        )}
+                        <span className="product-diy-title">
+                          {value.title_th}
+                        </span>
+                      </StyledProductCategory>
+                    )}
+                  </Fragment>
+                ))}
                 <StyledProductCategory
-                  key={i}
-                  mb="0.75rem"
-                  onClick={handleCategoryClick(value.categoryID.toString())}
-                  shadow={selected === value.categoryID.toString() ? 8 : null}
-                  bg={
-                    selected === value.categoryID.toString()
-                      ? "white"
-                      : "gray.100"
-                  }
+                  id="all"
+                  mt="2rem"
+                  shadow={selected.match("all") ? 4 : null}
+                  onClick={handleCreateSpecClick}
+                  bg="#d4001a"
                 >
-                  {value.icon && (
-                    <Icon size="20px" defaultcolor="auto">
-                      {value.icon}
-                    </Icon>
-                  )}
-                  <span className="product-diy-title">{value.title_th}</span>
+                  <Icon size="20px">tools</Icon>
+                  <span
+                    id="all"
+                    className="product-diy-title"
+                    style={{ color: "white" }}
+                  >
+                    สร้างชุดสเปคคอม
+                  </span>
                 </StyledProductCategory>
-              ))}
+                <StyledProductCategory
+                  id="all"
+                  mt="0.5rem"
+                  onClick={handleResetButtonClick}
+                  shadow={selected.match("all") ? 4 : null}
+                  bg="grey"
+                  style={{ padding: "8px" }}
+                >
+                  <Box>
+                    <span
+                      id="all"
+                      className="product-diy-title"
+                      style={{
+                        color: "white",
+                      }}
+                    >
+                      รีเซ็ต
+                    </span>
+                  </Box>
+                </StyledProductCategory>
+              </Box>
             </Box>
-          </Hidden>{" "}
+          </Hidden>
           <Grid item lg={9} xs={12}>
             <FlexBox
               as={Card}
@@ -430,7 +617,7 @@ const Section4: FC<Props> = ({
                   {productFilter &&
                     productFilter.map((item, ind) => (
                       <Grid item lg={3} sm={6} xs={12} key={ind}>
-                        <ProductCard1
+                        <ProductCard1DIY
                           hoverEffect
                           id={item.product_id}
                           slug={formatSlug(item.name_th)}
@@ -439,6 +626,28 @@ const Section4: FC<Props> = ({
                           priceBefore={parseInt(item.price_before)}
                           off={item.discount}
                           imgUrl={item.image800}
+                          categoryID={item.category_id}
+                          filterID={item.filter_id}
+                          filterSubID={item.filter_sub_id}
+                          isInSelectedProducts={selectedProduct.some(
+                            (product) => product.id === item.product_id
+                          )}
+                          onAddToProductIds={(productId) =>
+                            handleAddToSelectedProducts(
+                              item.product_id,
+                              item.name_th,
+                              item.category_id,
+                              item.filter_id,
+                              item.filter_sub_id,
+                              item.price_sale,
+                              item.price_before,
+                              item.discount,
+                              item.image
+                            )
+                          }
+                          onRemoveFromProductIds={() =>
+                            handleRemoveFromSelectedProducts(item.product_id)
+                          }
                         />
                       </Grid>
                     ))}
@@ -459,7 +668,7 @@ const Section4: FC<Props> = ({
                   product.count
                 } Products`}</SemiSpan>
               )} */}
-              {productFilter && (
+              {/* {productFilter && (
                 <Pagination
                   pageCount={Math.max(1, Math.ceil(productFilter.count / 12))}
                   currentPage={1}
@@ -467,11 +676,17 @@ const Section4: FC<Props> = ({
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={2}
                 />
-              )}
+              )} */}
             </FlexBox>
           </Grid>
         </FlexBox>
       </Grid>
+      {isModalVisible && (
+        <ModalDIY
+          selectedProducts={selectedProduct}
+          onClose={() => setIsModalVisible(false)}
+        />
+      )}
     </Fragment>
   );
 };

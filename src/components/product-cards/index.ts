@@ -21,6 +21,8 @@ import ProductCard20 from "./ProductCard20";
 import ProductCard21 from "./ProductCard21";
 import ProductCard22 from "./ProductCard22";
 
+import ProductCard1DIY from "./ProductCard1DIY";
+
 import ProductCard1Skeleton from "./ProductCard1Skeleton";
 
 import ProductCard1FlashSale from "./ProductCard1FlashSale";
@@ -50,4 +52,5 @@ export {
   ProductCard22,
   ProductCard1Skeleton,
   ProductCard1FlashSale,
+  ProductCard1DIY,
 };
