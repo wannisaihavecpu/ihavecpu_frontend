@@ -32,6 +32,7 @@ import CheckBox from "@component/CheckBox";
 import { Button } from "react-scroll";
 import ModalCheckBox from "@component/modal/modalCheckbox";
 import ModalDIY from "@component/modal/modalDIY";
+import { useRouter } from "next/router";
 
 // =======================================================
 type Props = {
@@ -55,7 +56,6 @@ const Section4: FC<Props> = ({
   // useState
   const { visibleSlides } = useVisibleSlide();
   const [selected, setSelected] = useState("");
-  const [product, setProduct] = useState(null);
   const [productFilter, setProductFilter] = useState(null);
   const [filters, setFilter] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -76,11 +76,13 @@ const Section4: FC<Props> = ({
       priceBefore: string;
       discount: string;
       imgUrl: string;
+      filterSubIDArray: number[];
     }[]
   >([]);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [categoryID, setCategoryID] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const router = useRouter();
 
   // Function to handle clicking on a filter
   const handleFilterClick = (filter) => {
@@ -98,7 +100,6 @@ const Section4: FC<Props> = ({
     );
 
     if (clickedCategory && selected !== categoryId) {
-      console.log("handleCategoryClick");
       // clear selected items when switch category
       setSelectedItems([]);
       setSelected(categoryId);
@@ -163,22 +164,42 @@ const Section4: FC<Props> = ({
     setLoading(true);
     try {
       const filterIds = selectedItems.map((item) => item.id);
+      console.log("this");
+      const subFilter = selectedProduct
+        .map((product) => product.filterSubIDArray)
+        .flat() // Flatten the array of arrays
+        .filter((value) => value !== null && !isNaN(value));
+
       const limit = 12;
       const newOffset = 0;
 
       let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${category_id}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
 
+      // if (
+      //   subFilter.length > 0 &&
+      //   category_id != 48 &&
+      //   category_id != 34 &&
+      //   category_id != 49 &&
+      //   category_id != 25 &&
+      //   category_id != 267 &&
+      //   category_id != 46 &&
+      //   category_id != 50 &&
+      //   category_id != 30
+      // ) {
+      //   const subFilterString = subFilter.join(",");
+      //   apiUrl += `&sub_filter=[${subFilterString}]`;
+      // }
       if (filterIds.length > 0) {
         apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
       }
-      console.log(apiUrl);
+      // console.log(apiUrl);
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       const productResponse = await fetch(apiUrl);
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
-        setProductFilter(productData.res_result.data);
+        setProductFilter(productData.res_result);
         // setProductFilter(productData.res_result);
         setLoading(false);
         // setCurrentPage(1);
@@ -195,6 +216,10 @@ const Section4: FC<Props> = ({
   const handlePageChange = async (newPage: number) => {
     try {
       const filterIds = selectedItems.map((item) => item.id);
+      const subFilter = selectedProduct
+        .map((product) => product.filterSubIDArray)
+        .flat()
+        .filter((value) => value !== null && !isNaN(value));
       const limit = 12;
       const newOffset = (newPage - 1) * 12;
 
@@ -210,6 +235,20 @@ const Section4: FC<Props> = ({
 
       let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
 
+      // if (
+      //   subFilter.length > 0 &&
+      //   categoryID != 48 &&
+      //   categoryID != 34 &&
+      //   categoryID != 49 &&
+      //   categoryID != 25 &&
+      //   categoryID != 267 &&
+      //   categoryID != 46 &&
+      //   categoryID != 50 &&
+      //   categoryID != 30
+      // ) {
+      //   const subFilterString = subFilter.join(",");
+      //   apiUrl += `&sub_filter=[${subFilterString}]`;
+      // }
       if (filterIds.length > 0) {
         apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
       }
@@ -253,14 +292,13 @@ const Section4: FC<Props> = ({
     price,
     priceBefore,
     discount,
-    imgUrl
+    imgUrl,
+    filterSubIDArray
   ) => {
-    // Check if the product with the same categoryID already exists
     const existingProductIndex = selectedProduct.findIndex(
       (product) => product.categoryID === categoryID
     );
 
-    // If the product with the same categoryID exists, replace it; otherwise, add a new one
     if (existingProductIndex !== -1) {
       setSelectedProduct((prevProducts) => {
         const updatedProducts = [...prevProducts];
@@ -274,11 +312,11 @@ const Section4: FC<Props> = ({
           priceBefore,
           discount,
           imgUrl,
+          filterSubIDArray,
         };
         return updatedProducts;
       });
     } else {
-      // Add the new product to the state
       setSelectedProduct((prevProducts) => [
         ...prevProducts,
         {
@@ -291,6 +329,7 @@ const Section4: FC<Props> = ({
           priceBefore,
           discount,
           imgUrl,
+          filterSubIDArray,
         },
       ]);
     }
@@ -369,6 +408,50 @@ const Section4: FC<Props> = ({
     fetchProductData(categoryID);
   }, [selectedItems, categoryID]);
 
+  useEffect(() => {
+    const { id } = router.query;
+
+    if (id) {
+      const fetchSpec = async () => {
+        try {
+          const viewSpecResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_PATH}/diy/view?id=${id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const specData = await viewSpecResponse.json();
+
+          if (specData.res_code === "00") {
+            const mappedData = specData.res_result.map((item) => ({
+              id: item.product_id,
+              name: item.name_th,
+              categoryID: item.cat_id,
+              filterID: item.filter_id,
+              filterSubID: item.filter_sub_id,
+              price: item.price_sale,
+              priceBefore: item.price_before,
+              discount: item.discount,
+              imgUrl: item.imgUrl,
+            }));
+
+            setSelectedProduct(mappedData);
+          } else {
+            console.error("Failed to fetch data", specData);
+          }
+        } catch (error) {
+          console.error("Error fetching data", error);
+        }
+      };
+
+      fetchSpec();
+    }
+  }, [router.query.edit]);
+
   return (
     <Fragment>
       <Grid container spacing={6}>
@@ -444,42 +527,46 @@ const Section4: FC<Props> = ({
                     )}
                   </Fragment>
                 ))}
-                <StyledProductCategory
-                  id="all"
-                  mt="2rem"
-                  shadow={selected.match("all") ? 4 : null}
-                  onClick={handleCreateSpecClick}
-                  bg="#d4001a"
-                >
-                  <Icon size="20px">tools</Icon>
-                  <span
-                    id="all"
-                    className="product-diy-title"
-                    style={{ color: "white" }}
-                  >
-                    สร้างชุดสเปคคอม
-                  </span>
-                </StyledProductCategory>
-                <StyledProductCategory
-                  id="all"
-                  mt="0.5rem"
-                  onClick={handleResetButtonClick}
-                  shadow={selected.match("all") ? 4 : null}
-                  bg="grey"
-                  style={{ padding: "8px" }}
-                >
-                  <Box>
-                    <span
+                {selectedProduct.length > 0 && (
+                  <Fragment>
+                    <StyledProductCategory
                       id="all"
-                      className="product-diy-title"
-                      style={{
-                        color: "white",
-                      }}
+                      mt="2rem"
+                      shadow={selected.match("all") ? 4 : null}
+                      onClick={handleCreateSpecClick}
+                      bg="#d4001a"
                     >
-                      รีเซ็ต
-                    </span>
-                  </Box>
-                </StyledProductCategory>
+                      <Icon size="20px">tools</Icon>
+                      <span
+                        id="all"
+                        className="product-diy-title"
+                        style={{ color: "white" }}
+                      >
+                        สร้างชุดสเปคคอม
+                      </span>
+                    </StyledProductCategory>
+                    <StyledProductCategory
+                      id="all"
+                      mt="0.5rem"
+                      onClick={handleResetButtonClick}
+                      shadow={selected.match("all") ? 4 : null}
+                      bg="grey"
+                      style={{ padding: "8px" }}
+                    >
+                      <Box>
+                        <span
+                          id="all"
+                          className="product-diy-title"
+                          style={{
+                            color: "white",
+                          }}
+                        >
+                          รีเซ็ต
+                        </span>
+                      </Box>
+                    </StyledProductCategory>
+                  </Fragment>
+                )}
               </Box>
             </Box>
           </Hidden>
@@ -614,8 +701,8 @@ const Section4: FC<Props> = ({
                 </Grid>
               ) : (
                 <Grid container spacing={6}>
-                  {productFilter &&
-                    productFilter.map((item, ind) => (
+                  {productFilter ? (
+                    productFilter.data.map((item, ind) => (
                       <Grid item lg={3} sm={6} xs={12} key={ind}>
                         <ProductCard1DIY
                           hoverEffect
@@ -642,7 +729,16 @@ const Section4: FC<Props> = ({
                               item.price_sale,
                               item.price_before,
                               item.discount,
-                              item.image
+                              item.image,
+                              item.filter
+                                .map(
+                                  (filterItem) =>
+                                    `${filterItem.filter_id},${filterItem.filter_sub_id}`
+                                )
+                                .join(",")
+                                .split(",")
+                                .filter((id) => id.trim() !== "")
+                                .map(Number)
                             )
                           }
                           onRemoveFromProductIds={() =>
@@ -650,7 +746,12 @@ const Section4: FC<Props> = ({
                           }
                         />
                       </Grid>
-                    ))}
+                    ))
+                  ) : (
+                    <Grid container spacing={6}>
+                      <Box>sdsd</Box>
+                    </Grid>
+                  )}
                 </Grid>
               )}
             </Box>
@@ -660,23 +761,23 @@ const Section4: FC<Props> = ({
               alignItems="center"
               mt="32px"
             >
-              {/* {product && (
+              {productFilter && (
                 <SemiSpan>{`Showing ${Math.min(
                   (currentPage - 1) * 12 + 1,
-                  product.count
-                )} - ${Math.min(currentPage * 12, product.count)} of ${
-                  product.count
+                  productFilter.row
+                )} - ${Math.min(currentPage * 12, productFilter.row)} of ${
+                  productFilter.row
                 } Products`}</SemiSpan>
-              )} */}
-              {/* {productFilter && (
+              )}
+              {productFilter && (
                 <Pagination
-                  pageCount={Math.max(1, Math.ceil(productFilter.count / 12))}
+                  pageCount={Math.max(1, Math.ceil(productFilter.row / 12))}
                   currentPage={1}
-                  // onPageChange={handlePageChange}
+                  onPageChange={handlePageChange}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={2}
                 />
-              )} */}
+              )}
             </FlexBox>
           </Grid>
         </FlexBox>

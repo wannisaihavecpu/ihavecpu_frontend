@@ -71,9 +71,9 @@ const GroceryTwo = (props: Grocery2Props) => {
         </Box> */}
 
         {/* SHOP BY CATEGORY AREA */}
-        <Box mb="3rem">
+        {/* <Box mb="3rem">
           <Section3 categories={props.categories} />
-        </Box>
+        </Box> */}
 
         {/* FILTER SEARCH & PRODUCT */}
 

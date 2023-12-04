@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import { TableDIYStyle } from "./styles";
+
 import { Button } from "@component/buttons";
 import { notify } from "@component/toast";
 import { useRouter } from "next/router";
 import { display } from "styled-system";
 import { useAppContext } from "@context/AppContext";
+import ReactDOMServer from "react-dom/server";
+import TableRow from "@component/TableRow";
+import Typography from "@component/Typography";
+import Link from "next/link";
+import { IconButton } from "@component/buttons";
+import Avatar from "@component/avatar";
+import FlexBox from "@component/FlexBox";
+import Box from "@component/Box";
+import { H3, H5, H6, Paragraph } from "@component/Typography";
+import Table from "@component/table";
 
 const ModalDIY = ({ selectedProducts, onClose }) => {
   const router = useRouter();
-  const { state, dispatch } = useAppContext();
+  const { dispatch } = useAppContext();
 
   const handleShareButtonClick = async () => {
     try {
@@ -72,15 +84,63 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
         router.push(`/cart`);
       }, 1000);
 
-      // Close the modal after handling the response
       onClose();
     } catch (error) {
       console.error("Error handling share and adding to cart", error);
     }
   };
+  const iframeRef = useRef(null);
+
+  useEffect(() => {
+    iframeRef.current = document.createElement("iframe");
+    iframeRef.current.style.display = "none";
+    document.body.appendChild(iframeRef.current);
+  }, []);
+
+  const handlePrint = () => {
+    if (!iframeRef.current) {
+      console.error("iframeRef is not available.");
+      return;
+    }
+
+    const printContent = (
+      <div>
+        <h2>Selected Products</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedProducts.map((product) => (
+              <tr key={product.id}>
+                <td>{product.id}</td>
+                <td>{product.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+
+    const printHTML = ReactDOMServer.renderToStaticMarkup(printContent);
+
+    const iframeDocument =
+      iframeRef.current.contentDocument ||
+      iframeRef.current.contentWindow.document;
+    iframeDocument.write(printHTML);
+    iframeDocument.close();
+    iframeRef.current.contentWindow.print();
+  };
+
+  const handlePrintButtonClick = () => {
+    handlePrint();
+  };
 
   return (
-    <div
+    <Box
       style={{
         position: "fixed",
         top: 0,
@@ -94,7 +154,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
         zIndex: 1000,
       }}
     >
-      <div
+      <Box
         style={{
           backgroundColor: "white",
           padding: "20px",
@@ -102,37 +162,81 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         }}
       >
-        <h2>Selected Products</h2>
-        <ul>
-          {selectedProducts.map((product) => (
-            <li key={product.id}>{product.name}</li>
-          ))}
-        </ul>
-        <Button onClick={onClose} color="primary" bg="primary.light">
-          ปิด
-        </Button>
-        <Button onClick={onClose} color="primary" bg="primary.light">
-          แก้ไขรายการ
-        </Button>
-        <Button color="primary" bg="primary.light">
-          พิมพ์
-        </Button>
-        <Button
-          onClick={handleShareButtonClick}
-          color="primary"
-          bg="primary.light"
-        >
-          แชร์สเปคคอม
-        </Button>
-        <Button
-          color="primary"
-          bg="primary.light"
-          onClick={handleAddToCartButtonClick}
-        >
-          ยืนยันการสั่งซื้อ
-        </Button>
-      </div>
-    </div>
+        <h2 style={{ textAlign: "center", color: "#d4001a" }}>
+          รายการสั่งซื้อ
+        </h2>
+        <TableDIYStyle>
+          <table>
+            <thead>
+              <tr>
+                <th>ลำดับ</th>
+                <th>รูป</th>
+                <th>ชื่อ</th>
+                <th>จำนวน</th>
+                <th>ส่วนลด</th>
+                <th>ราคา</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedProducts.map((product, index) => (
+                <tr key={product.id}>
+                  <td>{index + 1}</td>
+                  <td>
+                    <Avatar src={product.imgUrl} alt={product.name} />
+                  </td>
+                  <td>{product.name}</td>
+                  <td>1</td>
+                  <td>{product.discount}</td>
+                  <td>{product.price}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableDIYStyle>
+        {/* <Button
+            onClick={onClose}
+            color="primary"
+            bg="primary.light"
+            style={{ width: "100px" }} // Adjust the width as needed
+          >
+            ปิด
+          </Button> */}
+        <FlexBox justifyContent="space-between" mt="1rem">
+          <Button
+            onClick={onClose}
+            color="primary"
+            bg="primary.light"
+            style={{ width: "100%", marginRight: "8px" }}
+          >
+            แก้ไขรายการ
+          </Button>
+          <Button
+            color="primary"
+            bg="primary.light"
+            onClick={handlePrintButtonClick}
+            style={{ width: "100%", marginRight: "8px" }}
+          >
+            พิมพ์
+          </Button>
+          <Button
+            onClick={handleShareButtonClick}
+            color="primary"
+            bg="primary.light"
+            style={{ width: "100%", marginRight: "8px" }}
+          >
+            แชร์สเปคคอม
+          </Button>
+          <Button
+            color="primary"
+            bg="primary.light"
+            onClick={handleAddToCartButtonClick}
+            style={{ width: "100%" }}
+          >
+            ยืนยันการสั่งซื้อ
+          </Button>
+        </FlexBox>
+      </Box>
+    </Box>
   );
 };
 
