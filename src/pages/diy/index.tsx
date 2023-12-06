@@ -53,13 +53,14 @@ const GroceryTwo = (props: Grocery2Props) => {
         <SidenavDiy navList={props.categoriess} />
       </Box> */}
 
-      <Section4
-        navList={props.categoriess}
-        title="Featured Items"
-        currentPage={currentPage}
-        products={props.featuredProducts}
-        setCurrentPage={setCurrentPage}
-      />
+      {props.categoriess && props.categoriess.length > 0 && (
+        <Section4
+          navList={props.categoriess}
+          title="Featured Items"
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
 
       <Box className="content" pt="1.5rem">
         {/* HERO CAROUSEL AREA */}

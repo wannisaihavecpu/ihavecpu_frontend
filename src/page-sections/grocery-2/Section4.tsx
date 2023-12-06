@@ -160,11 +160,15 @@ const Section4: FC<Props> = ({
       console.error("Error fetching filters", error);
     }
   };
-  const fetchProductData = async (category_id: number) => {
+  const fetchProductData = async (category_id) => {
     setLoading(true);
     try {
+      console.log(category_id);
       const filterIds = selectedItems.map((item) => item.id);
-      console.log("this");
+      const findParentID = navList.find(
+        (value) => value.categoryID.toString() === category_id
+      );
+
       const subFilter = selectedProduct
         .map((product) => product.filterSubIDArray)
         .flat() // Flatten the array of arrays
@@ -172,26 +176,31 @@ const Section4: FC<Props> = ({
 
       const limit = 12;
       const newOffset = 0;
+      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
 
-      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${category_id}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
-
-      // if (
-      //   subFilter.length > 0 &&
-      //   category_id != 48 &&
-      //   category_id != 34 &&
-      //   category_id != 49 &&
-      //   category_id != 25 &&
-      //   category_id != 267 &&
-      //   category_id != 46 &&
-      //   category_id != 50 &&
-      //   category_id != 30
-      // ) {
-      //   const subFilterString = subFilter.join(",");
-      //   apiUrl += `&sub_filter=[${subFilterString}]`;
-      // }
-      if (filterIds.length > 0) {
-        apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      if (findParentID && findParentID.parent_id !== null) {
+        apiUrl += `&addition=${findParentID.categoryID}&category_id=${findParentID.parent_id}`;
+      } else {
+        apiUrl += `&category_id=${category_id}`;
       }
+
+      if (
+        subFilter.length > 0 &&
+        category_id != 48 &&
+        category_id != 34 &&
+        category_id != 49 &&
+        category_id != 25 &&
+        category_id != 267 &&
+        category_id != 46 &&
+        category_id != 50 &&
+        category_id != 30
+      ) {
+        const subFilterString = subFilter.join(",");
+        apiUrl += `&sub_filter=[${subFilterString}]`;
+      }
+      // if (filterIds.length > 0) {
+      //   apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      // }
       // console.log(apiUrl);
       await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -204,7 +213,7 @@ const Section4: FC<Props> = ({
         setLoading(false);
         // setCurrentPage(1);
       } else {
-        // setProductFilter(null);
+        setProductFilter(null);
         setLoading(false);
         // console.error("failed to fetch products");
       }
@@ -232,26 +241,33 @@ const Section4: FC<Props> = ({
       if (filterIds.length > 0) {
         setCurrentPage(1);
       }
-
-      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?category_id=${categoryID}&offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
-
-      // if (
-      //   subFilter.length > 0 &&
-      //   categoryID != 48 &&
-      //   categoryID != 34 &&
-      //   categoryID != 49 &&
-      //   categoryID != 25 &&
-      //   categoryID != 267 &&
-      //   categoryID != 46 &&
-      //   categoryID != 50 &&
-      //   categoryID != 30
-      // ) {
-      //   const subFilterString = subFilter.join(",");
-      //   apiUrl += `&sub_filter=[${subFilterString}]`;
-      // }
-      if (filterIds.length > 0) {
-        apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
+      const findParentID = navList.find(
+        (value) => value.categoryID.toString() === categoryID
+      );
+      if (findParentID && findParentID.parent_id !== null) {
+        apiUrl += `&addition=${findParentID.categoryID}&category_id=${findParentID.parent_id}`;
+      } else {
+        apiUrl += `&category_id=${categoryID}`;
       }
+
+      if (
+        subFilter.length > 0 &&
+        categoryID != 48 &&
+        categoryID != 34 &&
+        categoryID != 49 &&
+        categoryID != 25 &&
+        categoryID != 267 &&
+        categoryID != 46 &&
+        categoryID != 50 &&
+        categoryID != 30
+      ) {
+        const subFilterString = subFilter.join(",");
+        apiUrl += `&sub_filter=[${subFilterString}]`;
+      }
+      // if (filterIds.length > 0) {
+      //   apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      // }
 
       const productResponse = await fetch(apiUrl);
       const productData = await productResponse.json();
@@ -295,53 +311,39 @@ const Section4: FC<Props> = ({
     imgUrl,
     filterSubIDArray
   ) => {
-    const existingProductIndex = selectedProduct.findIndex(
+    const categoryLimit = categoryID === 29 ? 2 : 1;
+
+    const existingProductsForCategory = selectedProduct.filter(
       (product) => product.categoryID === categoryID
     );
 
-    if (existingProductIndex !== -1) {
-      setSelectedProduct((prevProducts) => {
-        const updatedProducts = [...prevProducts];
-        updatedProducts[existingProductIndex] = {
-          id: productId,
-          name,
-          categoryID,
-          filterID,
-          filterSubID,
-          price,
-          priceBefore,
-          discount,
-          imgUrl,
-          filterSubIDArray,
-        };
-        return updatedProducts;
-      });
-    } else {
-      setSelectedProduct((prevProducts) => [
-        ...prevProducts,
-        {
-          id: productId,
-          name,
-          categoryID,
-          filterID,
-          filterSubID,
-          price,
-          priceBefore,
-          discount,
-          imgUrl,
-          filterSubIDArray,
-        },
-      ]);
+    if (existingProductsForCategory.length >= categoryLimit) {
+      return;
     }
 
-    // console.log(
-    //   productId,
-    //   name,
-    //   categoryID,
-    //   filterID,
-    //   filterSubID,
-    //   "added or replaced"
-    // );
+    const existingProductIndex = existingProductsForCategory.findIndex(
+      (product) => product.id === productId
+    );
+
+    if (existingProductIndex !== -1) {
+      return;
+    }
+
+    setSelectedProduct((prevProducts) => [
+      ...prevProducts,
+      {
+        id: productId,
+        name,
+        categoryID,
+        filterID,
+        filterSubID,
+        price,
+        priceBefore,
+        discount,
+        imgUrl,
+        filterSubIDArray,
+      },
+    ]);
   };
 
   const handleRemoveFromSelectedProducts = (productId) => {
@@ -362,7 +364,7 @@ const Section4: FC<Props> = ({
     setIsModalVisible(true);
   };
 
-  console.log(selectedProduct);
+  // console.log(productFilter.row);
 
   useEffect(() => {
     // set default (first category in api)
@@ -452,6 +454,8 @@ const Section4: FC<Props> = ({
     }
   }, [router.query.edit]);
 
+  console.log(selectedProduct);
+
   return (
     <Fragment>
       <Grid container spacing={6}>
@@ -482,21 +486,42 @@ const Section4: FC<Props> = ({
                               value.categoryID.toString()
                             )}
                           >
-                            <NextImage
-                              src={item.imgUrl}
-                              height={40}
-                              width={40}
-                              objectFit="contain"
-                            />
-                            <Box>
-                              <SemiSpan fontSize={12}>
-                                {item.name.length > 15
-                                  ? item.name.slice(0, 20) + "..."
-                                  : item.name}
-                              </SemiSpan>
-                            </Box>
+                            <FlexBox
+                              alignItems="center"
+                              justifyContent="space-between"
+                            >
+                              <FlexBox alignItems="center">
+                                <NextImage
+                                  src={item.imgUrl}
+                                  height={40}
+                                  width={40}
+                                  objectFit="contain"
+                                />
+                                <SemiSpan fontSize={12} ml="1rem">
+                                  {item.name.length > 12
+                                    ? item.name.slice(0, 12) + "..."
+                                    : item.name}
+                                </SemiSpan>
+                              </FlexBox>
+                            </FlexBox>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleRemoveFromSelectedProducts(item.id)
+                              }
+                              style={{ marginLeft: "auto" }}
+                            >
+                              <Icon
+                                variant="small"
+                                defaultcolor="auto"
+                                color="error"
+                              >
+                                delete
+                              </Icon>
+                            </IconButton>
                           </StyledProductCategory>
                         ))}
+
                     {(!selectedProduct ||
                       !selectedProduct.some(
                         (item) => item.categoryID === value.categoryID
@@ -527,6 +552,7 @@ const Section4: FC<Props> = ({
                     )}
                   </Fragment>
                 ))}
+
                 {selectedProduct.length > 0 && (
                   <Fragment>
                     <StyledProductCategory
@@ -589,63 +615,63 @@ const Section4: FC<Props> = ({
                 alignItems="center"
                 justifyContent="space-between"
                 width="100%"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: "20px",
-                }}
+                // style={{
+                //   display: "grid",
+                //   gridTemplateColumns: "repeat(3, 1fr)",
+                //   gap: "20px",
+                // }}
               >
+                {/* <div style={{ display: "flex", alignItems: "center" }}>
+                  Filter:
+                </div> */}
                 {filters?.map((filter) => (
-                  <div
-                    key={filter.filter_id}
-                    style={{
-                      marginBottom: "10px",
-                      maxHeight: "300px",
-                      overflowY: "auto",
-                    }}
-                  >
-                    <H3 fontSize={14} onClick={() => handleFilterClick(filter)}>
-                      {filter.name_th}
-                    </H3>
+                  <Grid item lg={12}>
+                    <Grid item lg={3}>
+                      <FlexBox onClick={() => handleFilterClick(filter)}>
+                        <H3 fontSize={14}>{filter.name_th}</H3>
+                        <Icon>arrow-down-filled</Icon>
+                      </FlexBox>
 
-                    {selectedFilter === filter && (
-                      <ModalCheckBox onClose={handleCloseModal}>
-                        <div>
-                          {filter.sub_filter.length > 0 ? (
-                            <div>
-                              {filter.sub_filter.map((item) => (
-                                <CheckBox
-                                  my="10px"
-                                  key={item.filter_id}
-                                  name={item.name_th}
-                                  value={item.filter_id.toString()}
-                                  color="ihavecpu"
-                                  label={
-                                    <SemiSpan color="inherit">
-                                      {item.name_th.length > 21
-                                        ? item.name_th.slice(0, 21) + "..."
-                                        : item.name_th}
-                                    </SemiSpan>
-                                  }
-                                  onChange={() =>
-                                    handleCheckboxChange(
-                                      item.filter_id,
-                                      item.name_th
-                                    )
-                                  }
-                                  checked={selectedItems.some(
-                                    (selected) => selected.id === item.filter_id
-                                  )}
-                                />
-                              ))}
-                            </div>
-                          ) : (
-                            <p>No sub-filters available</p>
-                          )}
-                        </div>
-                      </ModalCheckBox>
-                    )}
-                  </div>
+                      {selectedFilter === filter && (
+                        <ModalCheckBox onClose={handleCloseModal}>
+                          <div>
+                            {filter.sub_filter.length > 0 ? (
+                              <div>
+                                {filter.sub_filter.map((item) => (
+                                  <CheckBox
+                                    my="10px"
+                                    key={item.filter_id}
+                                    name={item.name_th}
+                                    value={item.filter_id.toString()}
+                                    color="ihavecpu"
+                                    label={
+                                      <SemiSpan color="inherit">
+                                        {item.name_th.length > 21
+                                          ? item.name_th.slice(0, 21) + "..."
+                                          : item.name_th}{" "}
+                                      </SemiSpan>
+                                    }
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        item.filter_id,
+                                        item.name_th
+                                      )
+                                    }
+                                    checked={selectedItems.some(
+                                      (selected) =>
+                                        selected.id === item.filter_id
+                                    )}
+                                  />
+                                ))}
+                              </div>
+                            ) : (
+                              <p>No sub-filters available</p>
+                            )}
+                          </div>
+                        </ModalCheckBox>
+                      )}
+                    </Grid>
+                  </Grid>
                 ))}
               </FlexBox>
 
@@ -701,55 +727,60 @@ const Section4: FC<Props> = ({
                 </Grid>
               ) : (
                 <Grid container spacing={6}>
-                  {productFilter ? (
+                  {/* {productFilter && productFilter.row > 0 && (
+                    <Box>{productFilter.row}</Box>
+                  )} */}
+                  {productFilter && productFilter.row > 0 ? (
                     productFilter.data.map((item, ind) => (
                       <Grid item lg={3} sm={6} xs={12} key={ind}>
-                        <ProductCard1DIY
-                          hoverEffect
-                          id={item.product_id}
-                          slug={formatSlug(item.name_th)}
-                          title={item.name_th}
-                          price={parseInt(item.price_sale)}
-                          priceBefore={parseInt(item.price_before)}
-                          off={item.discount}
-                          imgUrl={item.image800}
-                          categoryID={item.category_id}
-                          filterID={item.filter_id}
-                          filterSubID={item.filter_sub_id}
-                          isInSelectedProducts={selectedProduct.some(
-                            (product) => product.id === item.product_id
-                          )}
-                          onAddToProductIds={(productId) =>
-                            handleAddToSelectedProducts(
-                              item.product_id,
-                              item.name_th,
-                              item.category_id,
-                              item.filter_id,
-                              item.filter_sub_id,
-                              item.price_sale,
-                              item.price_before,
-                              item.discount,
-                              item.image,
-                              item.filter
-                                .map(
-                                  (filterItem) =>
-                                    `${filterItem.filter_id},${filterItem.filter_sub_id}`
-                                )
-                                .join(",")
-                                .split(",")
-                                .filter((id) => id.trim() !== "")
-                                .map(Number)
-                            )
-                          }
-                          onRemoveFromProductIds={() =>
-                            handleRemoveFromSelectedProducts(item.product_id)
-                          }
-                        />
+                        {item ? (
+                          <ProductCard1DIY
+                            hoverEffect
+                            id={item.product_id}
+                            slug={formatSlug(item.name_th)}
+                            title={item.name_th}
+                            price={parseInt(item.price_sale)}
+                            priceBefore={parseInt(item.price_before)}
+                            off={item.discount}
+                            imgUrl={item.image800}
+                            categoryID={item.category_id}
+                            filterID={item.filter_id}
+                            filterSubID={item.filter_sub_id}
+                            isInSelectedProducts={selectedProduct.some(
+                              (product) => product.id === item.product_id
+                            )}
+                            onAddToProductIds={(productId) =>
+                              handleAddToSelectedProducts(
+                                item.product_id,
+                                item.name_th,
+                                item.category_id,
+                                item.filter_id,
+                                item.filter_sub_id,
+                                item.price_sale,
+                                item.price_before,
+                                item.discount,
+                                item.image,
+                                item.filter
+                                  .map(
+                                    (filterItem) =>
+                                      `${filterItem.filter_id},${filterItem.filter_sub_id}`
+                                  )
+                                  .join(",")
+                                  .split(",")
+                                  .filter((id) => id.trim() !== "")
+                                  .map(Number)
+                              )
+                            }
+                            onRemoveFromProductIds={() =>
+                              handleRemoveFromSelectedProducts(item.product_id)
+                            }
+                          />
+                        ) : null}
                       </Grid>
                     ))
                   ) : (
                     <Grid container spacing={6}>
-                      <Box>sdsd</Box>
+                      <Box>ไม่่มีข้อมูล</Box>
                     </Grid>
                   )}
                 </Grid>

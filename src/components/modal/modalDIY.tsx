@@ -14,8 +14,8 @@ import { IconButton } from "@component/buttons";
 import Avatar from "@component/avatar";
 import FlexBox from "@component/FlexBox";
 import Box from "@component/Box";
-import { H3, H5, H6, Paragraph } from "@component/Typography";
-import Table from "@component/table";
+import useWindowSize from "@hook/useWindowSize";
+import Grid from "@component/grid/Grid";
 
 const ModalDIY = ({ selectedProducts, onClose }) => {
   const router = useRouter();
@@ -105,23 +105,48 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
 
     const printContent = (
       <div>
-        <h2>Selected Products</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedProducts.map((product) => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>{product.name}</td>
+        <h2 style={{ textAlign: "center", color: "#d4001a" }}>
+          รายการสั่งซื้อ
+        </h2>
+        <TableDIYStyle>
+          <table>
+            <thead>
+              <tr>
+                <th>ลำดับ</th>
+                <th>รูป</th>
+                <th>ชื่อ</th>
+                <th>จำนวน</th>
+                <th>ส่วนลด</th>
+                <th>ราคา</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {selectedProducts.map((product, index) => (
+                <tr key={product.id}>
+                  <td data-label="ลำดับ" style={{ textAlign: "center" }}>
+                    {index + 1}
+                  </td>
+                  <td data-label="รูป">
+                    <img
+                      src={product.imgUrl}
+                      style={{ width: "50px", height: "50px" }}
+                    />
+                  </td>
+                  <td data-label="ชื่อ">{product.name}</td>
+                  <td data-label="จำนวน" style={{ textAlign: "center" }}>
+                    1
+                  </td>
+                  <td data-label="ส่วนลด" style={{ textAlign: "center" }}>
+                    {product.discount}
+                  </td>
+                  <td data-label="ราคา" style={{ textAlign: "center" }}>
+                    {product.price}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableDIYStyle>
       </div>
     );
 
@@ -138,6 +163,8 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
   const handlePrintButtonClick = () => {
     handlePrint();
   };
+
+  const width = useWindowSize();
 
   return (
     <Box
@@ -160,6 +187,8 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           padding: "20px",
           borderRadius: "8px",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          width: "80%", // Set a default width
+          maxWidth: "800px", // Limit the maximum width
         }}
       >
         <h2 style={{ textAlign: "center", color: "#d4001a" }}>
@@ -180,33 +209,26 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
             <tbody>
               {selectedProducts.map((product, index) => (
                 <tr key={product.id}>
-                  <td>{index + 1}</td>
-                  <td>
+                  <td data-label="ลำดับ">{index + 1}</td>
+                  <td data-label="รูป">
                     <Avatar src={product.imgUrl} alt={product.name} />
                   </td>
-                  <td>{product.name}</td>
-                  <td>1</td>
-                  <td>{product.discount}</td>
-                  <td>{product.price}</td>
+                  <td data-label="ชื่อ">{product.name}</td>
+
+                  <td data-label="จำนวน">1</td>
+                  <td data-label="ส่วนลด">{product.discount}</td>
+                  <td data-label="ราคา">{product.price}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </TableDIYStyle>
-        {/* <Button
-            onClick={onClose}
-            color="primary"
-            bg="primary.light"
-            style={{ width: "100px" }} // Adjust the width as needed
-          >
-            ปิด
-          </Button> */}
         <FlexBox justifyContent="space-between" mt="1rem">
           <Button
             onClick={onClose}
             color="primary"
             bg="primary.light"
-            style={{ width: "100%", marginRight: "8px" }}
+            style={{ width: "48%" }}
           >
             แก้ไขรายการ
           </Button>
@@ -214,15 +236,17 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
             color="primary"
             bg="primary.light"
             onClick={handlePrintButtonClick}
-            style={{ width: "100%", marginRight: "8px" }}
+            style={{ width: "48%" }}
           >
             พิมพ์
           </Button>
+        </FlexBox>
+        <FlexBox justifyContent="space-between" mt="1rem">
           <Button
             onClick={handleShareButtonClick}
             color="primary"
             bg="primary.light"
-            style={{ width: "100%", marginRight: "8px" }}
+            style={{ width: "48%" }}
           >
             แชร์สเปคคอม
           </Button>
@@ -230,7 +254,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
             color="primary"
             bg="primary.light"
             onClick={handleAddToCartButtonClick}
-            style={{ width: "100%" }}
+            style={{ width: "48%" }}
           >
             ยืนยันการสั่งซื้อ
           </Button>
