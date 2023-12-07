@@ -85,7 +85,9 @@ export const TableDIYStyle = styled.div`
           td:first-child {
             padding-left: 10px;
           }
-
+          &:nth-child(2) {
+            justify-content: right;
+          }
           td:before {
             content: attr(data-label);
             float: left;
@@ -93,8 +95,15 @@ export const TableDIYStyle = styled.div`
             text-transform: uppercase;
             font-weight: bold;
           }
-
+          .picture {
+            justify-content: right;
+          }
           td {
+            img {
+              width: 48px;
+              height: 48px;
+              border-radius: 50px;
+            }
             display: block;
             text-align: right;
             font-size: 14px;

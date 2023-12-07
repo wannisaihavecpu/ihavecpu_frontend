@@ -2,7 +2,8 @@ import { FC, Fragment, useEffect, useState, useCallback } from "react";
 import Box from "@component/Box";
 import { H3, H5, SemiSpan, Paragraph, Tiny } from "@component/Typography";
 import Select from "@component/Select";
-
+import TextField from "@component/text-field";
+import StyledSearchBox from "@component/search-box/styled";
 import { Carousel } from "@component/carousel";
 import { ProductCard10 } from "@component/product-cards";
 import useVisibleSlide from "./hooks/useVisibleSlide";
@@ -17,7 +18,7 @@ import Grid from "@component/grid/Grid";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import { IconButton } from "@component/buttons";
 import NextImage from "next/image";
-
+import { Chip } from "@component/Chip";
 import Product from "@models/product.model";
 import {
   ProductCard1DIY,
@@ -33,6 +34,7 @@ import { Button } from "react-scroll";
 import ModalCheckBox from "@component/modal/modalCheckbox";
 import ModalDIY from "@component/modal/modalDIY";
 import { useRouter } from "next/router";
+import { match } from "assert";
 
 // =======================================================
 type Props = {
@@ -70,6 +72,7 @@ const Section4: FC<Props> = ({
       id: number;
       name: string;
       categoryID: number;
+      additionCate: number[];
       filterID: number;
       filterSubID: number;
       price: string;
@@ -184,23 +187,42 @@ const Section4: FC<Props> = ({
         apiUrl += `&category_id=${category_id}`;
       }
 
-      if (
-        subFilter.length > 0 &&
-        category_id != 48 &&
-        category_id != 34 &&
-        category_id != 49 &&
-        category_id != 25 &&
-        category_id != 267 &&
-        category_id != 46 &&
-        category_id != 50 &&
-        category_id != 30
-      ) {
-        const subFilterString = subFilter.join(",");
-        apiUrl += `&sub_filter=[${subFilterString}]`;
-      }
-      // if (filterIds.length > 0) {
-      //   apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      // if (
+      //   subFilter.length > 0 &&
+      //   category_id != 48 &&
+      //   category_id != 34 &&
+      //   category_id != 49 &&
+      //   category_id != 25 &&
+      //   category_id != 267 &&
+      //   category_id != 46 &&
+      //   category_id != 50 &&
+      //   category_id != 30
+      // ) {
+      //   const subFilterString = subFilter.join(",");
+      //   apiUrl += `&sub_filter=[${subFilterString}]`;
       // }
+      if (filterIds.length > 0) {
+        // apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+        const combinedFilter = [...subFilter, ...filterIds];
+        const filterString = combinedFilter.join(",");
+        apiUrl += `&sub_filter=[${filterString}]`;
+      }
+      // if (
+      //   subFilter.length > 0 &&
+      //   category_id != 48 &&
+      //   category_id != 34 &&
+      //   category_id != 49 &&
+      //   category_id != 25 &&
+      //   category_id != 267 &&
+      //   category_id != 46 &&
+      //   category_id != 50 &&
+      //   category_id != 30
+      // ) {
+      //   const combinedFilter = [...subFilter, ...filterIds];
+      //   const filterString = combinedFilter.join(",");
+      //   apiUrl += `&sub_filter=[${filterString}]`;
+      // }
+
       // console.log(apiUrl);
       await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -251,8 +273,41 @@ const Section4: FC<Props> = ({
         apiUrl += `&category_id=${categoryID}`;
       }
 
+      // if (
+      //   subFilter.length > 0 &&
+      //   categoryID != 48 &&
+      //   categoryID != 34 &&
+      //   categoryID != 49 &&
+      //   categoryID != 25 &&
+      //   categoryID != 267 &&
+      //   categoryID != 46 &&
+      //   categoryID != 50 &&
+      //   categoryID != 30
+      // ) {
+      //   const subFilterString = subFilter.join(",");
+      //   apiUrl += `&sub_filter=[${subFilterString}]`;
+      // }
+      // if (filterIds.length > 0) {
+      //   apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      // }
+      // if (
+      //   subFilter.length > 0 &&
+      //   categoryID != 48 &&
+      //   categoryID != 34 &&
+      //   categoryID != 49 &&
+      //   categoryID != 25 &&
+      //   categoryID != 267 &&
+      //   categoryID != 46 &&
+      //   categoryID != 50 &&
+      //   categoryID != 30
+      // ) {
+      //   const combinedFilter = [...subFilter, ...filterIds];
+      //   const filterString = combinedFilter.join(",");
+      //   apiUrl += `&sub_filter=[${filterString}]`;
+      // }
+
       if (
-        subFilter.length > 0 &&
+        (filterIds.length > 0 || subFilter.length > 0) &&
         categoryID != 48 &&
         categoryID != 34 &&
         categoryID != 49 &&
@@ -262,12 +317,10 @@ const Section4: FC<Props> = ({
         categoryID != 50 &&
         categoryID != 30
       ) {
-        const subFilterString = subFilter.join(",");
-        apiUrl += `&sub_filter=[${subFilterString}]`;
+        const combinedFilter = [...subFilter, ...filterIds];
+        const filterString = combinedFilter.join(",");
+        apiUrl += `&sub_filter=[${filterString}]`;
       }
-      // if (filterIds.length > 0) {
-      //   apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-      // }
 
       const productResponse = await fetch(apiUrl);
       const productData = await productResponse.json();
@@ -299,10 +352,60 @@ const Section4: FC<Props> = ({
     });
   };
 
+  // const handleAddToSelectedProducts = (
+  //   productId,
+  //   name,
+  //   categoryID,
+  //   additionCate,
+  //   filterID,
+  //   filterSubID,
+  //   price,
+  //   priceBefore,
+  //   discount,
+  //   imgUrl,
+  //   filterSubIDArray
+  // ) => {
+  //   const categoryLimit = categoryID === 29 ? 2 : 1;
+
+  //   const existingProductsForCategory = selectedProduct.filter(
+  //     (product) => product.categoryID === categoryID
+  //   );
+
+  //   if (existingProductsForCategory.length >= categoryLimit) {
+  //     return;
+  //   }
+
+  //   const existingProductIndex = existingProductsForCategory.findIndex(
+  //     (product) => product.id === productId
+  //   );
+
+  //   if (existingProductIndex !== -1) {
+  //     return;
+  //   }
+
+  //   setSelectedProduct((prevProducts) => [
+  //     ...prevProducts,
+  //     {
+  //       id: productId,
+  //       name,
+  //       categoryID,
+  //       additionCate,
+  //       filterID,
+  //       filterSubID,
+  //       price,
+  //       priceBefore,
+  //       discount,
+  //       imgUrl,
+  //       filterSubIDArray,
+  //     },
+  //   ]);
+  // };
+
   const handleAddToSelectedProducts = (
     productId,
     name,
     categoryID,
+    additionCate,
     filterID,
     filterSubID,
     price,
@@ -312,38 +415,129 @@ const Section4: FC<Props> = ({
     filterSubIDArray
   ) => {
     const categoryLimit = categoryID === 29 ? 2 : 1;
-
-    const existingProductsForCategory = selectedProduct.filter(
-      (product) => product.categoryID === categoryID
+    const parentCategories = navList.filter((item) => item.parent_id !== null);
+    const isParentCategory = parentCategories.some(
+      (parentCategory) => parentCategory.parent_id === categoryID
     );
-
-    if (existingProductsForCategory.length >= categoryLimit) {
-      return;
-    }
-
-    const existingProductIndex = existingProductsForCategory.findIndex(
+    const existingProduct = selectedProduct.find(
       (product) => product.id === productId
     );
 
-    if (existingProductIndex !== -1) {
-      return;
-    }
+    if (!isParentCategory) {
+      // case normally category_id not have parent_id
 
-    setSelectedProduct((prevProducts) => [
-      ...prevProducts,
-      {
-        id: productId,
-        name,
-        categoryID,
-        filterID,
-        filterSubID,
-        price,
-        priceBefore,
-        discount,
-        imgUrl,
-        filterSubIDArray,
-      },
-    ]);
+      const existingProductsForCategory = selectedProduct.filter(
+        (product) => product.categoryID === categoryID
+      );
+
+      const existingProductIndex = selectedProduct.findIndex(
+        (product) => product.categoryID === categoryID
+      );
+      console.log(existingProductIndex);
+
+      if (existingProductIndex !== -1) {
+        console.log("1");
+        // update if product with the same categoryID
+        setSelectedProduct((prevProducts) => {
+          const updatedProducts = [...prevProducts];
+          updatedProducts[existingProductIndex] = {
+            id: productId,
+            name,
+            categoryID,
+            additionCate,
+            filterID,
+            filterSubID,
+            price,
+            priceBefore,
+            discount,
+            imgUrl,
+            filterSubIDArray,
+          };
+          return updatedProducts;
+        });
+        return;
+      } else {
+        setSelectedProduct((prevProducts) => [
+          ...prevProducts,
+          {
+            id: productId,
+            name,
+            categoryID,
+            additionCate,
+            filterID,
+            filterSubID,
+            price,
+            priceBefore,
+            discount,
+            imgUrl,
+            filterSubIDArray,
+          },
+        ]);
+      }
+    } else {
+      // Case when category has parent_id and the product is not mapping with category_id but mapping with additionCate
+
+      const existingProductsParentIDForCategory = selectedProduct.filter(
+        (product) =>
+          Array.isArray(product.additionCate) &&
+          product.additionCate.length === additionCate.length &&
+          product.additionCate.every(
+            (value, index) => value === additionCate[index]
+          ) &&
+          product.categoryID === categoryID
+      );
+
+      const existingProductIndex = selectedProduct.findIndex(
+        (product) =>
+          Array.isArray(product.additionCate) &&
+          product.additionCate.length === additionCate.length &&
+          product.additionCate.every(
+            (value, index) => value === additionCate[index]
+          ) &&
+          product.categoryID === categoryID
+      );
+
+      if (existingProductsParentIDForCategory.length === 0) {
+        console.log("33");
+        // If no product with the same additionCate and categoryID, add a new one
+        setSelectedProduct((prevProducts) => [
+          ...prevProducts,
+          {
+            id: productId,
+            name,
+            categoryID,
+            additionCate,
+            filterID,
+            filterSubID,
+            price,
+            priceBefore,
+            discount,
+            imgUrl,
+            filterSubIDArray,
+          },
+        ]);
+      } else {
+        console.log("34");
+        // If a product with the same additionCate and categoryID exists, do nothing
+        setSelectedProduct((prevProducts) => {
+          const updatedProducts = [...prevProducts];
+          updatedProducts[existingProductIndex] = {
+            id: productId,
+            name,
+            categoryID,
+            additionCate,
+            filterID,
+            filterSubID,
+            price,
+            priceBefore,
+            discount,
+            imgUrl,
+            filterSubIDArray,
+          };
+          return updatedProducts;
+        });
+      }
+    }
   };
 
   const handleRemoveFromSelectedProducts = (productId) => {
@@ -463,7 +657,7 @@ const Section4: FC<Props> = ({
           <Hidden down={768} mr="1.75rem">
             <Box shadow={2} borderRadius={10} padding="1.25rem" bg="white">
               <Box shadow={2} borderRadius={10} padding="1.25rem" bg="white">
-                {navList.map((value, i) => (
+                {/* {navList.map((value, i) => (
                   <Fragment key={i}>
                     {selectedProduct &&
                       selectedProduct
@@ -551,6 +745,121 @@ const Section4: FC<Props> = ({
                       </StyledProductCategory>
                     )}
                   </Fragment>
+                ))} */}
+                {navList.map((value, i) => (
+                  <Fragment key={i}>
+                    {selectedProduct &&
+                      selectedProduct
+                        .filter((item) => {
+                          if (value.parent_id !== null) {
+                            const matchingProduct = selectedProduct.find(
+                              (selectedItem) =>
+                                selectedItem?.additionCate[0] ===
+                                value.categoryID
+                            );
+                            return (
+                              matchingProduct &&
+                              matchingProduct.additionCate.some((cate) =>
+                                item.additionCate.includes(cate)
+                              )
+                            );
+                          } else {
+                            return item.categoryID === value.categoryID;
+                          }
+                        })
+                        .map((item, ind) => (
+                          <StyledProductCategory
+                            key={ind}
+                            mb="0.75rem"
+                            shadow={
+                              selected === value.categoryID.toString()
+                                ? 8
+                                : null
+                            }
+                            bg={
+                              selected === value.categoryID.toString()
+                                ? "white"
+                                : "gray.100"
+                            }
+                            onClick={handleCategoryClick(
+                              value.categoryID.toString()
+                            )}
+                          >
+                            <FlexBox
+                              alignItems="center"
+                              justifyContent="space-between"
+                            >
+                              <FlexBox alignItems="center">
+                                <NextImage
+                                  src={item.imgUrl}
+                                  height={40}
+                                  width={40}
+                                  objectFit="contain"
+                                />
+                                <SemiSpan fontSize={12} ml="1rem">
+                                  {item.name.length > 12
+                                    ? item.name.slice(0, 12) + "..."
+                                    : item.name}
+                                </SemiSpan>
+                              </FlexBox>
+                            </FlexBox>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleRemoveFromSelectedProducts(item.id)
+                              }
+                              style={{ marginLeft: "auto" }}
+                            >
+                              <Icon
+                                variant="small"
+                                defaultcolor="auto"
+                                color="error"
+                              >
+                                delete
+                              </Icon>
+                            </IconButton>
+                          </StyledProductCategory>
+                        ))}
+
+                    {(!selectedProduct ||
+                      !selectedProduct.some((item) =>
+                        value.parent_id !== null
+                          ? selectedProduct
+                              .find((selectedItem) =>
+                                selectedItem.additionCate.includes(
+                                  value.categoryID
+                                )
+                              )
+                              ?.additionCate?.some((cate) =>
+                                item.additionCate.includes(cate)
+                              )
+                          : item.categoryID === value.categoryID
+                      )) && (
+                      <StyledProductCategory
+                        mb="0.75rem"
+                        onClick={handleCategoryClick(
+                          value.categoryID.toString()
+                        )}
+                        shadow={
+                          selected === value.categoryID.toString() ? 8 : null
+                        }
+                        bg={
+                          selected === value.categoryID.toString()
+                            ? "white"
+                            : "gray.100"
+                        }
+                      >
+                        {value.icon && (
+                          <Icon size="20px" defaultcolor="auto">
+                            {value.icon}
+                          </Icon>
+                        )}
+                        <span className="product-diy-title">
+                          {value.title_th}
+                        </span>
+                      </StyledProductCategory>
+                    )}
+                  </Fragment>
                 ))}
 
                 {selectedProduct.length > 0 && (
@@ -607,10 +916,10 @@ const Section4: FC<Props> = ({
               justifyContent="space-between"
             >
               <Box>
-                <H5>{title}</H5>
+                <H5 fontSize={18}>{title}</H5>
               </Box>
 
-              <FlexBox
+              {/* <FlexBox
                 mt="1rem"
                 alignItems="center"
                 justifyContent="space-between"
@@ -621,16 +930,21 @@ const Section4: FC<Props> = ({
                 //   gap: "20px",
                 // }}
               >
-                {/* <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   Filter:
-                </div> */}
-                {filters?.map((filter) => (
-                  <Grid item lg={12}>
-                    <Grid item lg={3}>
-                      <FlexBox onClick={() => handleFilterClick(filter)}>
-                        <H3 fontSize={14}>{filter.name_th}</H3>
+                </div>
+                <Grid container spacing={3}>
+                  {filters?.map((filter) => (
+                    <Grid item lg={6}>
+                      <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
+                        <H3 fontSize={13} color="ihavecpu.main">
+                          {filter.name_th}
+                        </H3>
                         <Icon>arrow-down-filled</Icon>
-                      </FlexBox>
+                      </Chip>
+                      <FlexBox
+                        onClick={() => handleFilterClick(filter)}
+                      ></FlexBox>
 
                       {selectedFilter === filter && (
                         <ModalCheckBox onClose={handleCloseModal}>
@@ -671,15 +985,165 @@ const Section4: FC<Props> = ({
                         </ModalCheckBox>
                       )}
                     </Grid>
+                  ))}
+                </Grid>
+              </FlexBox> */}
+              {/* <FlexBox
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+                mt="1rem"
+              >
+                <Grid container spacing={2}>
+                  <Grid item>
+                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
+                      <H3 fontSize={13} color="ihavecpu.main">
+                        CPU SOCKET TYPE
+                      </H3>
+                      <Icon>arrow-down-filled</Icon>
+                    </Chip>
                   </Grid>
-                ))}
-              </FlexBox>
 
-              <FlexBox alignItems="center" flexWrap="wrap" width="100%">
-                <Paragraph color="text.muted" mr="1rem">
+                  <Grid item>
+                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
+                      <H3 fontSize={13} color="ihavecpu.main">
+                        CPU SOCKET TYPE
+                      </H3>
+                      <Icon>arrow-down-filled</Icon>
+                    </Chip>
+                  </Grid>
+
+                  <Grid item>
+                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
+                      <H3 fontSize={13} color="ihavecpu.main">
+                        CPU SOCKET TYPE
+                      </H3>
+                      <Icon>arrow-down-filled</Icon>
+                    </Chip>
+                  </Grid>
+                  <Grid item>
+                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
+                      <H3 fontSize={13} color="ihavecpu.main">
+                        CPU SOCKET TYPE
+                      </H3>
+                      <Icon>arrow-down-filled</Icon>
+                    </Chip>
+                  </Grid>
+                </Grid>
+              </FlexBox> */}
+
+              <FlexBox
+                alignItems="center"
+                flexWrap="wrap"
+                width="100%"
+                mt="1rem"
+              >
+                <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
+                  <Grid item lg={8}>
+                    <StyledSearchBox>
+                      <Icon className="search-icon" size="18px">
+                        search
+                      </Icon>
+
+                      <TextField
+                        fullwidth
+                        // onChange={handleSearchChange}
+                        // value={searchValue}
+                        className="search-field"
+                        placeholder="ค้นหาสินค้า"
+                      />
+                    </StyledSearchBox>
+                  </Grid>
+                </Box>
+
+                <Paragraph color="text.muted" mr="0.5rem">
                   เรียงตาม:
                 </Paragraph>
 
+                <Grid item lg={3}>
+                  <Select
+                    placeholder="Sort by"
+                    // value={selectedSortOption}
+                    // onChange={handleSortChange}
+                    options={sortOptions}
+                  />
+                </Grid>
+              </FlexBox>
+
+              <FlexBox
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+                mt="1rem"
+              >
+                <Grid container spacing={2}>
+                  {filters?.map((filter) => (
+                    <Grid item>
+                      <Chip
+                        p="0.25rem 1rem"
+                        bg={`ihavecpu.light`}
+                        style={{ display: "flex", alignItems: "center" }}
+                        onClick={() => handleFilterClick(filter)}
+                      >
+                        <H3
+                          fontSize={13}
+                          color="ihavecpu.main"
+                          style={{ margin: "0", lineHeight: "1" }}
+                        >
+                          {filter.name_th}
+                        </H3>
+                        <Icon>arrow-down-filled</Icon>
+                      </Chip>
+
+                      {selectedFilter === filter && (
+                        <ModalCheckBox onClose={handleCloseModal}>
+                          <div>
+                            {filter.sub_filter.length > 0 ? (
+                              <div>
+                                {filter.sub_filter.map((item) => (
+                                  <CheckBox
+                                    my="10px"
+                                    key={item.filter_id}
+                                    name={item.name_th}
+                                    value={item.filter_id.toString()}
+                                    color="ihavecpu"
+                                    label={
+                                      <SemiSpan color="inherit">
+                                        {item.name_th.length > 21
+                                          ? item.name_th.slice(0, 21) + "..."
+                                          : item.name_th}{" "}
+                                      </SemiSpan>
+                                    }
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        item.filter_id,
+                                        item.name_th
+                                      )
+                                    }
+                                    checked={selectedItems.some(
+                                      (selected) =>
+                                        selected.id === item.filter_id
+                                    )}
+                                  />
+                                ))}
+                              </div>
+                            ) : (
+                              <p>No sub-filters available</p>
+                            )}
+                          </div>
+                        </ModalCheckBox>
+                      )}
+                    </Grid>
+                  ))}
+                </Grid>
+              </FlexBox>
+
+              <FlexBox
+                alignItems="center"
+                flexWrap="wrap"
+                width="100%"
+                mt="0.5rem"
+              >
                 <Box flex="1 1 0" mr="1.75rem" minWidth="150px"></Box>
 
                 <Paragraph color="text.muted" mr="0.5rem">
@@ -754,6 +1218,7 @@ const Section4: FC<Props> = ({
                                 item.product_id,
                                 item.name_th,
                                 item.category_id,
+                                item.addition_cate,
                                 item.filter_id,
                                 item.filter_sub_id,
                                 item.price_sale,
@@ -822,5 +1287,8 @@ const Section4: FC<Props> = ({
     </Fragment>
   );
 };
-
+const sortOptions = [
+  { label: "ราคาต่ำ-สูง", label_en: "Price Low to High", value: "asc" },
+  { label: "ราคาสูง-ต่ำ", label_en: "Price High to Low", value: "desc" },
+];
 export default Section4;

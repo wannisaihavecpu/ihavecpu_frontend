@@ -4,18 +4,13 @@ import { TableDIYStyle } from "./styles";
 import { Button } from "@component/buttons";
 import { notify } from "@component/toast";
 import { useRouter } from "next/router";
-import { display } from "styled-system";
 import { useAppContext } from "@context/AppContext";
 import ReactDOMServer from "react-dom/server";
-import TableRow from "@component/TableRow";
-import Typography from "@component/Typography";
-import Link from "next/link";
-import { IconButton } from "@component/buttons";
+
 import Avatar from "@component/avatar";
 import FlexBox from "@component/FlexBox";
 import Box from "@component/Box";
 import useWindowSize from "@hook/useWindowSize";
-import Grid from "@component/grid/Grid";
 
 const ModalDIY = ({ selectedProducts, onClose }) => {
   const router = useRouter();
@@ -187,10 +182,27 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           padding: "20px",
           borderRadius: "8px",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          width: "80%", // Set a default width
-          maxWidth: "800px", // Limit the maximum width
+          width: "80%",
+          maxWidth: "800px",
+          maxHeight: "80%",
+          overflowY: "auto",
         }}
       >
+        <style jsx global>{`
+          ::-webkit-scrollbar {
+            border-radius: 8px;
+            width: 5px;
+          }
+
+          ::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 8px;
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+          }
+        `}</style>
         <h2 style={{ textAlign: "center", color: "#d4001a" }}>
           รายการสั่งซื้อ
         </h2>
@@ -211,7 +223,8 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
                 <tr key={product.id}>
                   <td data-label="ลำดับ">{index + 1}</td>
                   <td data-label="รูป">
-                    <Avatar src={product.imgUrl} alt={product.name} />
+                    <img src={product.imgUrl} />
+                    {/* <Avatar src={product.imgUrl} alt={product.name} /> */}
                   </td>
                   <td data-label="ชื่อ">{product.name}</td>
 
