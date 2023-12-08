@@ -3,7 +3,19 @@ import styled from "styled-components";
 export const TableDIYStyle = styled.div`
   max-width: 100%;
   overflow-x: auto;
+  &::-webkit-scrollbar {
+    border-radius: 8px;
+    width: 5px;
+  }
 
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
   table {
     border: 0;
     width: 100%;
@@ -42,6 +54,11 @@ export const TableDIYStyle = styled.div`
         }
 
         td {
+          img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50px;
+          }
           height: 60px;
           // line-height: 60px !important;
           text-align: left;
@@ -55,19 +72,7 @@ export const TableDIYStyle = styled.div`
       }
     }
   }
-  .scrollbar::-webkit-scrollbar {
-    border-radius: 8px;
-    width: 5px;
-  }
 
-  .scrollbar::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 8px;
-  }
-
-  .scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
-  }
   @media screen and (max-width: 900px) {
     max-height: 500px;
 
@@ -113,5 +118,74 @@ export const TableDIYStyle = styled.div`
         }
       }
     }
+  }
+`;
+
+export const ModalNavListDIY = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 998;
+
+  /* modal content */
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  .exit-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    padding: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .text-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* Display selected products */
+  .selected-products {
+    overflow-y: auto;
+    max-height: 80vh; /* Set a maximum height for the content */
+    padding: 10px;
+  }
+
+  /* Buttons for creating specification and resetting */
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  /* Button styles */
+  .button {
+    /* Add styles for the buttons */
+    cursor: pointer;
+  }
+
+  /* Prevent scrolling of body content when modal is open */
+  body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
   }
 `;

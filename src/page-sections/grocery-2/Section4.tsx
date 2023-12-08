@@ -20,6 +20,8 @@ import { IconButton } from "@component/buttons";
 import NextImage from "next/image";
 import { Chip } from "@component/Chip";
 import Product from "@models/product.model";
+import ModalNavBarDIY from "@component/modal/modalNavBarDIY";
+import { ModalNavListDIY } from "@component/modal/styles";
 import {
   ProductCard1DIY,
   ProductCard1Skeleton,
@@ -30,11 +32,14 @@ import Pagination from "@component/pagination";
 import axios from "axios";
 import getGroupSearch from "@models/getGroupSearch";
 import CheckBox from "@component/CheckBox";
-import { Button } from "react-scroll";
+// import { Button } from "react-scroll";
+import { Button } from "@component/buttons";
+
 import ModalCheckBox from "@component/modal/modalCheckbox";
 import ModalDIY from "@component/modal/modalDIY";
 import { useRouter } from "next/router";
 import { match } from "assert";
+import useWindowSize from "@hook/useWindowSize";
 
 // =======================================================
 type Props = {
@@ -49,13 +54,9 @@ interface SelectedValue {
   label: string;
   value: string;
 }
-const Section4: FC<Props> = ({
-  products,
-  navList,
-  currentPage,
-  setCurrentPage,
-}) => {
+const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   // useState
+  const width = useWindowSize();
   const { visibleSlides } = useVisibleSlide();
   const [selected, setSelected] = useState("");
   const [productFilter, setProductFilter] = useState(null);
@@ -85,8 +86,13 @@ const Section4: FC<Props> = ({
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [categoryID, setCategoryID] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalNavListVisible, setIsModalNavListVisible] = useState(false);
+
   const router = useRouter();
 
+  const handleCloseModalNavList = () => {
+    setIsModalNavListVisible(false);
+  };
   // Function to handle clicking on a filter
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
@@ -98,11 +104,15 @@ const Section4: FC<Props> = ({
   };
 
   const handleCategoryClick = (categoryId) => () => {
+    console.log("Category clicked:", categoryId);
+
     const clickedCategory = navList.find(
       (value) => value.categoryID.toString() === categoryId
     );
+    console.log("clickedCtategor", clickedCategory);
 
     if (clickedCategory && selected !== categoryId) {
+      console.log("sdsd");
       // clear selected items when switch category
       setSelectedItems([]);
       setSelected(categoryId);
@@ -201,8 +211,22 @@ const Section4: FC<Props> = ({
       //   const subFilterString = subFilter.join(",");
       //   apiUrl += `&sub_filter=[${subFilterString}]`;
       // }
-      if (filterIds.length > 0) {
-        // apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+      // if (filterIds.length > 0) {
+      //   const combinedFilter = [...subFilter, ...filterIds];
+      //   const filterString = combinedFilter.join(",");
+      //   apiUrl += `&sub_filter=[${filterString}]`;
+      // }
+      if (
+        (filterIds.length > 0 || subFilter.length > 0) &&
+        category_id != 48 &&
+        category_id != 34 &&
+        category_id != 49 &&
+        category_id != 25 &&
+        category_id != 267 &&
+        category_id != 46 &&
+        category_id != 50 &&
+        category_id != 30
+      ) {
         const combinedFilter = [...subFilter, ...filterIds];
         const filterString = combinedFilter.join(",");
         apiUrl += `&sub_filter=[${filterString}]`;
@@ -557,6 +581,11 @@ const Section4: FC<Props> = ({
   const handleCreateSpecClick = () => {
     setIsModalVisible(true);
   };
+  const handleToggleModal = () => {
+    console.log("this handleToggle");
+    setIsModalNavListVisible(true);
+    document.body.style.overflow = "hidden"; // Hide scrollbar
+  };
 
   // console.log(productFilter.row);
 
@@ -653,99 +682,29 @@ const Section4: FC<Props> = ({
   return (
     <Fragment>
       <Grid container spacing={6}>
+        <Grid item xl={12} md={12} xs={12}>
+          <Hidden up={900}>
+            <FlexBox
+              as={Card}
+              mb="20px"
+              p="1.25rem"
+              elevation={5}
+              flexWrap="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Icon size="14px" mr="0.5rem" onClick={handleToggleModal}>
+                back
+              </Icon>
+              <H5 fontWeight={600}>ดูรายการจัดสเปคคอม</H5>
+            </FlexBox>
+          </Hidden>
+        </Grid>
+
         <FlexBox>
-          <Hidden down={768} mr="1.75rem">
+          <Hidden down={900} mr="1.75rem">
             <Box shadow={2} borderRadius={10} padding="1.25rem" bg="white">
               <Box shadow={2} borderRadius={10} padding="1.25rem" bg="white">
-                {/* {navList.map((value, i) => (
-                  <Fragment key={i}>
-                    {selectedProduct &&
-                      selectedProduct
-                        .filter((item) => item.categoryID === value.categoryID)
-                        .map((item, ind) => (
-                          <StyledProductCategory
-                            key={ind}
-                            mb="0.75rem"
-                            shadow={
-                              selected === value.categoryID.toString()
-                                ? 8
-                                : null
-                            }
-                            bg={
-                              selected === value.categoryID.toString()
-                                ? "white"
-                                : "gray.100"
-                            }
-                            onClick={handleCategoryClick(
-                              value.categoryID.toString()
-                            )}
-                          >
-                            <FlexBox
-                              alignItems="center"
-                              justifyContent="space-between"
-                            >
-                              <FlexBox alignItems="center">
-                                <NextImage
-                                  src={item.imgUrl}
-                                  height={40}
-                                  width={40}
-                                  objectFit="contain"
-                                />
-                                <SemiSpan fontSize={12} ml="1rem">
-                                  {item.name.length > 12
-                                    ? item.name.slice(0, 12) + "..."
-                                    : item.name}
-                                </SemiSpan>
-                              </FlexBox>
-                            </FlexBox>
-                            <IconButton
-                              size="small"
-                              onClick={() =>
-                                handleRemoveFromSelectedProducts(item.id)
-                              }
-                              style={{ marginLeft: "auto" }}
-                            >
-                              <Icon
-                                variant="small"
-                                defaultcolor="auto"
-                                color="error"
-                              >
-                                delete
-                              </Icon>
-                            </IconButton>
-                          </StyledProductCategory>
-                        ))}
-
-                    {(!selectedProduct ||
-                      !selectedProduct.some(
-                        (item) => item.categoryID === value.categoryID
-                      )) && (
-                      <StyledProductCategory
-                        mb="0.75rem"
-                        onClick={handleCategoryClick(
-                          value.categoryID.toString()
-                        )}
-                        shadow={
-                          selected === value.categoryID.toString() ? 8 : null
-                        }
-                        bg={
-                          selected === value.categoryID.toString()
-                            ? "white"
-                            : "gray.100"
-                        }
-                      >
-                        {value.icon && (
-                          <Icon size="20px" defaultcolor="auto">
-                            {value.icon}
-                          </Icon>
-                        )}
-                        <span className="product-diy-title">
-                          {value.title_th}
-                        </span>
-                      </StyledProductCategory>
-                    )}
-                  </Fragment>
-                ))} */}
                 {navList.map((value, i) => (
                   <Fragment key={i}>
                     {selectedProduct &&
@@ -905,6 +864,7 @@ const Section4: FC<Props> = ({
               </Box>
             </Box>
           </Hidden>
+
           <Grid item lg={9} xs={12}>
             <FlexBox
               as={Card}
@@ -918,119 +878,6 @@ const Section4: FC<Props> = ({
               <Box>
                 <H5 fontSize={18}>{title}</H5>
               </Box>
-
-              {/* <FlexBox
-                mt="1rem"
-                alignItems="center"
-                justifyContent="space-between"
-                width="100%"
-                // style={{
-                //   display: "grid",
-                //   gridTemplateColumns: "repeat(3, 1fr)",
-                //   gap: "20px",
-                // }}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  Filter:
-                </div>
-                <Grid container spacing={3}>
-                  {filters?.map((filter) => (
-                    <Grid item lg={6}>
-                      <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
-                        <H3 fontSize={13} color="ihavecpu.main">
-                          {filter.name_th}
-                        </H3>
-                        <Icon>arrow-down-filled</Icon>
-                      </Chip>
-                      <FlexBox
-                        onClick={() => handleFilterClick(filter)}
-                      ></FlexBox>
-
-                      {selectedFilter === filter && (
-                        <ModalCheckBox onClose={handleCloseModal}>
-                          <div>
-                            {filter.sub_filter.length > 0 ? (
-                              <div>
-                                {filter.sub_filter.map((item) => (
-                                  <CheckBox
-                                    my="10px"
-                                    key={item.filter_id}
-                                    name={item.name_th}
-                                    value={item.filter_id.toString()}
-                                    color="ihavecpu"
-                                    label={
-                                      <SemiSpan color="inherit">
-                                        {item.name_th.length > 21
-                                          ? item.name_th.slice(0, 21) + "..."
-                                          : item.name_th}{" "}
-                                      </SemiSpan>
-                                    }
-                                    onChange={() =>
-                                      handleCheckboxChange(
-                                        item.filter_id,
-                                        item.name_th
-                                      )
-                                    }
-                                    checked={selectedItems.some(
-                                      (selected) =>
-                                        selected.id === item.filter_id
-                                    )}
-                                  />
-                                ))}
-                              </div>
-                            ) : (
-                              <p>No sub-filters available</p>
-                            )}
-                          </div>
-                        </ModalCheckBox>
-                      )}
-                    </Grid>
-                  ))}
-                </Grid>
-              </FlexBox> */}
-              {/* <FlexBox
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
-                mt="1rem"
-              >
-                <Grid container spacing={2}>
-                  <Grid item>
-                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
-                      <H3 fontSize={13} color="ihavecpu.main">
-                        CPU SOCKET TYPE
-                      </H3>
-                      <Icon>arrow-down-filled</Icon>
-                    </Chip>
-                  </Grid>
-
-                  <Grid item>
-                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
-                      <H3 fontSize={13} color="ihavecpu.main">
-                        CPU SOCKET TYPE
-                      </H3>
-                      <Icon>arrow-down-filled</Icon>
-                    </Chip>
-                  </Grid>
-
-                  <Grid item>
-                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
-                      <H3 fontSize={13} color="ihavecpu.main">
-                        CPU SOCKET TYPE
-                      </H3>
-                      <Icon>arrow-down-filled</Icon>
-                    </Chip>
-                  </Grid>
-                  <Grid item>
-                    <Chip p="0.25rem 1rem" bg={`ihavecpu.light`}>
-                      <H3 fontSize={13} color="ihavecpu.main">
-                        CPU SOCKET TYPE
-                      </H3>
-                      <Icon>arrow-down-filled</Icon>
-                    </Chip>
-                  </Grid>
-                </Grid>
-              </FlexBox> */}
 
               <FlexBox
                 alignItems="center"
@@ -1056,13 +903,13 @@ const Section4: FC<Props> = ({
                   </Grid>
                 </Box>
 
-                <Paragraph color="text.muted" mr="0.5rem">
+                {/* <Paragraph color="text.muted" mr="0.5rem">
                   เรียงตาม:
-                </Paragraph>
+                </Paragraph> */}
 
                 <Grid item lg={3}>
                   <Select
-                    placeholder="Sort by"
+                    placeholder="ราคาสูง-ต่ำ"
                     // value={selectedSortOption}
                     // onChange={handleSortChange}
                     options={sortOptions}
@@ -1146,9 +993,9 @@ const Section4: FC<Props> = ({
               >
                 <Box flex="1 1 0" mr="1.75rem" minWidth="150px"></Box>
 
-                <Paragraph color="text.muted" mr="0.5rem">
+                {/* <Paragraph color="text.muted" mr="0.5rem">
                   View:
-                </Paragraph>
+                </Paragraph> */}
 
                 <IconButton
                   size="small"
@@ -1184,7 +1031,7 @@ const Section4: FC<Props> = ({
               {loading ? (
                 <Grid container spacing={6}>
                   {Array.from({ length: 8 }).map((_, index) => (
-                    <Grid item lg={3} sm={6} xs={12} key={index}>
+                    <Grid item lg={3} sm={6} xs={6} key={index}>
                       <ProductCard1Skeleton />
                     </Grid>
                   ))}
@@ -1196,7 +1043,7 @@ const Section4: FC<Props> = ({
                   )} */}
                   {productFilter && productFilter.row > 0 ? (
                     productFilter.data.map((item, ind) => (
-                      <Grid item lg={3} sm={6} xs={12} key={ind}>
+                      <Grid item lg={3} sm={6} xs={6} key={ind}>
                         {item ? (
                           <ProductCard1DIY
                             hoverEffect
@@ -1283,6 +1130,192 @@ const Section4: FC<Props> = ({
           selectedProducts={selectedProduct}
           onClose={() => setIsModalVisible(false)}
         />
+      )}
+      {isModalNavListVisible && (
+        <ModalNavListDIY>
+          <div style={{ width: "100%" }}>
+            <div className="selected-products">
+              {navList.map((value, i) => (
+                <Fragment key={i}>
+                  {selectedProduct &&
+                    selectedProduct
+                      .filter((item) => {
+                        if (value.parent_id !== null) {
+                          const matchingProduct = selectedProduct.find(
+                            (selectedItem) =>
+                              selectedItem?.additionCate[0] === value.categoryID
+                          );
+                          return (
+                            matchingProduct &&
+                            matchingProduct.additionCate.some((cate) =>
+                              item.additionCate.includes(cate)
+                            )
+                          );
+                        } else {
+                          return item.categoryID === value.categoryID;
+                        }
+                      })
+                      .map((item, ind) => (
+                        <StyledProductCategory
+                          key={ind}
+                          mb="0.75rem"
+                          shadow={
+                            selected === value.categoryID.toString() ? 8 : null
+                          }
+                          bg={
+                            selected === value.categoryID.toString()
+                              ? "white"
+                              : "gray.100"
+                          }
+                          onClick={() => {
+                            handleCategoryClick(value.categoryID.toString())();
+                            handleCloseModalNavList();
+                          }}
+                        >
+                          <FlexBox
+                            alignItems="center"
+                            justifyContent="space-between"
+                          >
+                            <FlexBox alignItems="center">
+                              <NextImage
+                                src={item.imgUrl}
+                                height={40}
+                                width={40}
+                                objectFit="contain"
+                              />
+                              <SemiSpan fontSize={12} ml="1rem">
+                                {item.name.length > 12
+                                  ? item.name.slice(0, 12) + "..."
+                                  : item.name}
+                              </SemiSpan>
+                            </FlexBox>
+                          </FlexBox>
+                          <IconButton
+                            size="small"
+                            onClick={() =>
+                              handleRemoveFromSelectedProducts(item.id)
+                            }
+                            style={{ marginLeft: "auto" }}
+                          >
+                            <Icon
+                              variant="small"
+                              defaultcolor="auto"
+                              color="error"
+                            >
+                              delete
+                            </Icon>
+                          </IconButton>
+                        </StyledProductCategory>
+                      ))}
+
+                  {(!selectedProduct ||
+                    !selectedProduct.some((item) =>
+                      value.parent_id !== null
+                        ? selectedProduct
+                            .find((selectedItem) =>
+                              selectedItem.additionCate.includes(
+                                value.categoryID
+                              )
+                            )
+                            ?.additionCate?.some((cate) =>
+                              item.additionCate.includes(cate)
+                            )
+                        : item.categoryID === value.categoryID
+                    )) && (
+                    <StyledProductCategory
+                      mb="0.75rem"
+                      onClick={() => {
+                        handleCategoryClick(value.categoryID.toString())();
+                        handleCloseModalNavList();
+                      }}
+                      shadow={
+                        selected === value.categoryID.toString() ? 8 : null
+                      }
+                      bg={
+                        selected === value.categoryID.toString()
+                          ? "white"
+                          : "gray.100"
+                      }
+                    >
+                      {value.icon && (
+                        <Icon size="20px" defaultcolor="auto">
+                          {value.icon}
+                        </Icon>
+                      )}
+                      <span className="product-diy-title">
+                        {value.title_th}
+                      </span>
+                    </StyledProductCategory>
+                  )}
+                </Fragment>
+              ))}
+
+              {selectedProduct.length > 0 && (
+                <Fragment>
+                  <StyledProductCategory
+                    id="all"
+                    mt="2rem"
+                    shadow={selected.match("all") ? 4 : null}
+                    onClick={handleCreateSpecClick}
+                    bg="#d4001a"
+                  >
+                    <Icon size="20px">tools</Icon>
+                    <span
+                      id="all"
+                      className="product-diy-title"
+                      style={{ color: "white" }}
+                    >
+                      สร้างชุดสเปคคอม
+                    </span>
+                  </StyledProductCategory>
+                  <StyledProductCategory
+                    id="all"
+                    mt="0.5rem"
+                    onClick={handleResetButtonClick}
+                    shadow={selected.match("all") ? 4 : null}
+                    bg="grey"
+                    style={{ padding: "8px" }}
+                  >
+                    <Box>
+                      <span
+                        id="all"
+                        className="product-diy-title"
+                        style={{
+                          color: "white",
+                        }}
+                      >
+                        รีเซ็ต
+                      </span>
+                    </Box>
+                  </StyledProductCategory>
+                </Fragment>
+              )}
+            </div>
+          </div>
+
+          {/* Exit button in the top-right corner */}
+          <FlexBox alignItems="center">
+            <Box className="text-left" display="flex" alignItems="center">
+              <Icon size="12px" mr="0.5rem">
+                menu
+              </Icon>
+              <H5>รายการจัดสเปคคอม</H5>
+            </Box>
+          </FlexBox>
+
+          <FlexBox>
+            <Box className="exit-button">
+              <IconButton
+                type="button"
+                p="3px 6px 3px"
+                style={{ width: "25px", height: "25px" }}
+                onClick={handleCloseModalNavList}
+              >
+                <Icon size="12px">close</Icon>
+              </IconButton>
+            </Box>
+          </FlexBox>
+        </ModalNavListDIY>
       )}
     </Fragment>
   );

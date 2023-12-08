@@ -188,26 +188,11 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           overflowY: "auto",
         }}
       >
-        <style jsx global>{`
-          ::-webkit-scrollbar {
-            border-radius: 8px;
-            width: 5px;
-          }
-
-          ::-webkit-scrollbar-thumb {
-            background-color: #888;
-            border-radius: 8px;
-          }
-
-          ::-webkit-scrollbar-thumb:hover {
-            background-color: #555;
-          }
-        `}</style>
         <h2 style={{ textAlign: "center", color: "#d4001a" }}>
           รายการสั่งซื้อ
         </h2>
         <TableDIYStyle>
-          <table>
+          <table className="custom-scrollbar">
             <thead>
               <tr>
                 <th>ลำดับ</th>
