@@ -128,15 +128,9 @@ export const ModalNavListDIY = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  // align-items: center;
+  // justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
-
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 998;
 
   /* modal content */
@@ -165,8 +159,8 @@ export const ModalNavListDIY = styled.div`
   /* Display selected products */
   .selected-products {
     overflow-y: auto;
-    max-height: 80vh; /* Set a maximum height for the content */
-    padding: 10px;
+    max-height: 80vh;
+    padding: 20px 10px 85px;
   }
 
   /* Buttons for creating specification and resetting */

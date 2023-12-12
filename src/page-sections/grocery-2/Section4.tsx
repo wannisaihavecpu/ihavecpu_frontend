@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useState, useCallback } from "react";
+import { FC, Fragment, useEffect, useState, useCallback, useRef } from "react";
 import Box from "@component/Box";
 import { H3, H5, SemiSpan, Paragraph, Tiny } from "@component/Typography";
 import Select from "@component/Select";
@@ -40,6 +40,7 @@ import ModalDIY from "@component/modal/modalDIY";
 import { useRouter } from "next/router";
 import { match } from "assert";
 import useWindowSize from "@hook/useWindowSize";
+import { notify } from "@component/toast";
 
 // =======================================================
 type Props = {
@@ -87,18 +88,20 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   const [categoryID, setCategoryID] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalNavListVisible, setIsModalNavListVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedSortOption, setSelectedSortOption] = useState(null);
 
   const router = useRouter();
+  const categoryIDRef = useRef(categoryID);
 
   const handleCloseModalNavList = () => {
     setIsModalNavListVisible(false);
   };
-  // Function to handle clicking on a filter
+
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
   };
 
-  // Function to handle closing the modal
   const handleCloseModal = () => {
     setSelectedFilter(null);
   };
@@ -113,15 +116,15 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
     if (clickedCategory && selected !== categoryId) {
       console.log("sdsd");
-      // clear selected items when switch category
       setSelectedItems([]);
+      setSearchValue("");
+      setSelectedSortOption(null);
       setSelected(categoryId);
       setTitle(clickedCategory.title_th);
       setCategoryID(categoryId);
     }
   };
   useEffect(() => {
-    // fetch filter data only after setSelectedItems([]) is complete
     if (categoryID !== null) {
       fetchFilterData(categoryID);
     }
@@ -173,7 +176,11 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       console.error("Error fetching filters", error);
     }
   };
-  const fetchProductData = async (category_id) => {
+  const fetchProductData = async (
+    category_id,
+    searchKeyword = "",
+    sortOption = ""
+  ) => {
     setLoading(true);
     try {
       console.log(category_id);
@@ -181,20 +188,29 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       const findParentID = navList.find(
         (value) => value.categoryID.toString() === category_id
       );
+      console.log("selectedProduct", selectedProduct);
 
       const subFilter = selectedProduct
         .map((product) => product.filterSubIDArray)
-        .flat() // Flatten the array of arrays
+        .flat()
         .filter((value) => value !== null && !isNaN(value));
 
       const limit = 12;
       const newOffset = 0;
-      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
+      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?offset=${newOffset}&limit=${limit}&field=cost_price`;
 
       if (findParentID && findParentID.parent_id !== null) {
         apiUrl += `&addition=${findParentID.categoryID}&category_id=${findParentID.parent_id}`;
       } else {
         apiUrl += `&category_id=${category_id}`;
+      }
+      if (searchKeyword || searchValue) {
+        apiUrl += `&search=${searchKeyword || searchValue}`;
+      }
+      if (sortOption) {
+        apiUrl += `&sort=${sortOption}&field=cost_price`;
+      } else {
+        apiUrl += `&sort=desc&field=cost_price`;
       }
 
       // if (
@@ -216,20 +232,44 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       //   const filterString = combinedFilter.join(",");
       //   apiUrl += `&sub_filter=[${filterString}]`;
       // }
+      const cateID = parseInt(category_id);
+
       if (
         (filterIds.length > 0 || subFilter.length > 0) &&
-        category_id != 48 &&
-        category_id != 34 &&
-        category_id != 49 &&
-        category_id != 25 &&
-        category_id != 267 &&
-        category_id != 46 &&
-        category_id != 50 &&
-        category_id != 30
+        cateID != 48 &&
+        cateID != 97 &&
+        cateID != 98 &&
+        cateID != 99 &&
+        cateID != 34 &&
+        cateID != 49 &&
+        cateID != 25 &&
+        cateID != 267 &&
+        cateID != 50
       ) {
-        const combinedFilter = [...subFilter, ...filterIds];
-        const filterString = combinedFilter.join(",");
-        apiUrl += `&sub_filter=[${filterString}]`;
+        console.log(cateID);
+        // 29 = ram , 28 = mainboard
+        if (filterIds.length > 0) {
+          apiUrl += `&filter_main=[${filterIds.join(",")}]`;
+        }
+        if (cateID === 29) {
+          console.log("this 29");
+          const hasCategory28 = selectedProduct.some(
+            (product) => product.categoryID === 28
+          );
+
+          if (hasCategory28) {
+            // const combinedFilter = [...subFilter, ...filterIds];
+            const combinedFilter = [...subFilter];
+
+            const filterString = combinedFilter.join(",");
+            apiUrl += `&sub_filter=[${filterString}]`;
+          }
+        } else {
+          console.log("categoryID", category_id);
+          const combinedFilter = [...subFilter];
+          const filterString = combinedFilter.join(",");
+          apiUrl += `&sub_filter=[${filterString}]`;
+        }
       }
       // if (
       //   subFilter.length > 0 &&
@@ -268,9 +308,18 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       console.error("Error fetching products", error);
     }
   };
-  const handlePageChange = async (newPage: number) => {
+  const handlePageChange = async (
+    newPage: number,
+    searchKeyword = "",
+    sortOption = ""
+  ) => {
+    setLoading(true);
+
     try {
       const filterIds = selectedItems.map((item) => item.id);
+      const findParentID = navList.find(
+        (value) => value.categoryID.toString() === categoryID
+      );
       const subFilter = selectedProduct
         .map((product) => product.filterSubIDArray)
         .flat()
@@ -287,14 +336,20 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       if (filterIds.length > 0) {
         setCurrentPage(1);
       }
-      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?offset=${newOffset}&limit=${limit}&sort=desc&field=cost_price`;
-      const findParentID = navList.find(
-        (value) => value.categoryID.toString() === categoryID
-      );
+      let apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/product/list?offset=${newOffset}&limit=${limit}`;
+
       if (findParentID && findParentID.parent_id !== null) {
         apiUrl += `&addition=${findParentID.categoryID}&category_id=${findParentID.parent_id}`;
       } else {
         apiUrl += `&category_id=${categoryID}`;
+      }
+      if (searchKeyword || searchValue) {
+        apiUrl += `&search=${searchKeyword || searchValue}`;
+      }
+      if (sortOption) {
+        apiUrl += `&sort=${sortOption}&field=cost_price`;
+      } else {
+        apiUrl += `&sort=desc&field=cost_price`;
       }
 
       // if (
@@ -329,33 +384,73 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       //   const filterString = combinedFilter.join(",");
       //   apiUrl += `&sub_filter=[${filterString}]`;
       // }
+      const cateID = parseInt(categoryID);
 
+      // if (
+      //   (filterIds.length > 0 || subFilter.length > 0) &&
+      //   categoryID != 48 &&
+      //   categoryID != 34 &&
+      //   categoryID != 49 &&
+      //   categoryID != 25 &&
+      //   categoryID != 267 &&
+      //   categoryID != 46 &&
+      //   categoryID != 50 &&
+      //   categoryID != 30
+      // ) {
+      //   const combinedFilter = [...subFilter, ...filterIds];
+      //   const filterString = combinedFilter.join(",");
+      //   apiUrl += `&sub_filter=[${filterString}]`;
+      // }
       if (
         (filterIds.length > 0 || subFilter.length > 0) &&
-        categoryID != 48 &&
-        categoryID != 34 &&
-        categoryID != 49 &&
-        categoryID != 25 &&
-        categoryID != 267 &&
-        categoryID != 46 &&
-        categoryID != 50 &&
-        categoryID != 30
+        cateID != 48 &&
+        cateID != 97 &&
+        cateID != 98 &&
+        cateID != 99 &&
+        cateID != 34 &&
+        cateID != 49 &&
+        cateID != 25 &&
+        cateID != 267 &&
+        cateID != 50
       ) {
-        const combinedFilter = [...subFilter, ...filterIds];
-        const filterString = combinedFilter.join(",");
-        apiUrl += `&sub_filter=[${filterString}]`;
+        console.log(cateID);
+        // 29 = ram , 28 = mainboard
+        if (cateID === 29) {
+          console.log("this 29");
+          const hasCategory28 = selectedProduct.some(
+            (product) => product.categoryID === 28
+          );
+
+          if (hasCategory28) {
+            const combinedFilter = [...subFilter, ...filterIds];
+            const filterString = combinedFilter.join(",");
+            apiUrl += `&sub_filter=[${filterString}]`;
+          } else {
+            if (filterIds.length > 0) {
+              apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
+            }
+          }
+        } else {
+          console.log("categoryID", categoryID);
+          const combinedFilter = [...subFilter, ...filterIds];
+          const filterString = combinedFilter.join(",");
+          apiUrl += `&sub_filter=[${filterString}]`;
+        }
       }
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       const productResponse = await fetch(apiUrl);
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
+        setLoading(false);
+
         setProductFilter(productData.res_result);
         setCurrentPage(newPage);
-        setLoading(false);
       } else {
+        setLoading(false);
+
         setProductFilter(null);
-        setLoading(true);
 
         // console.error("failed to fetch products");
       }
@@ -363,6 +458,15 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       setLoading(false);
       console.error("Error fetching products", error);
     }
+  };
+  const handleSortChange = async (value: {
+    label: string;
+    label_en: string;
+    value: string;
+  }) => {
+    setSelectedSortOption(value);
+    // Call fetchProductData with the new sort option
+    fetchProductData(categoryID, searchValue, value.value);
   };
   const handleCheckboxChange = (filterId: number, itemName: string) => {
     setSelectedItems((prevItems) => {
@@ -461,6 +565,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
       if (existingProductIndex !== -1) {
         console.log("1");
+        notify("success", "เพิ่มสินค้าในสเปคแล้ว");
+
         // update if product with the same categoryID
         setSelectedProduct((prevProducts) => {
           const updatedProducts = [...prevProducts];
@@ -481,6 +587,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         });
         return;
       } else {
+        notify("success", "เพิ่มสินค้าในสเปคแล้ว");
+
         setSelectedProduct((prevProducts) => [
           ...prevProducts,
           {
@@ -568,6 +676,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     setSelectedProduct((prevProducts) =>
       prevProducts.filter((product) => product.id !== productId)
     );
+    notify("error", "ลบสินค้าออกจากสเปคแล้ว");
   };
   const hasProductsForCategory = (categoryID) => {
     return selectedProduct.some((item) => item.categoryID === categoryID);
@@ -577,6 +686,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     setSelectedItems([]);
     setFilter(null);
     setTitle("");
+    notify("success", "รีเซ็ตสเปคทั้งหมดแล้ว");
   };
   const handleCreateSpecClick = () => {
     setIsModalVisible(true);
@@ -584,14 +694,31 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   const handleToggleModal = () => {
     console.log("this handleToggle");
     setIsModalNavListVisible(true);
-    document.body.style.overflow = "hidden"; // Hide scrollbar
   };
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchValue(value);
+  };
+  useEffect(() => {
+    let debounceTimeout;
+    console.log("debounce");
+    debounceTimeout = setTimeout(() => {
+      fetchProductData(categoryID, searchValue);
+      setCurrentPage(1);
+    }, 500);
+
+    return () => {
+      clearTimeout(debounceTimeout);
+    };
+  }, [searchValue, categoryID]);
 
   // console.log(productFilter.row);
 
   useEffect(() => {
     // set default (first category in api)
     const defaultCategoryID = navList[0].categoryID;
+    console.log("defaultCate", defaultCategoryID);
     fetchFilterData(defaultCategoryID);
     setCategoryID(defaultCategoryID);
     fetchProductData(defaultCategoryID);
@@ -622,7 +749,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         if (filterData.res_code === "00") {
           setFilter(filterData.res_result);
         } else {
-          // console.error("failed to fetch filters", filterData);
+          setFilter(null);
         }
       } catch (error) {
         console.error("Error fetching filters", error);
@@ -630,6 +757,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     };
 
     fetchFilterData();
+    console.log("fetchgProdutGe", categoryID);
     fetchProductData(categoryID);
   }, [selectedItems, categoryID]);
 
@@ -677,11 +805,11 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     }
   }, [router.query.edit]);
 
-  console.log(selectedProduct);
+  // console.log(selectedProduct);
 
   return (
     <Fragment>
-      <Grid container spacing={6}>
+      <Grid container spacing={6} className="diy">
         <Grid item xl={12} md={12} xs={12}>
           <Hidden up={900}>
             <FlexBox
@@ -697,6 +825,16 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 back
               </Icon>
               <H5 fontWeight={600}>ดูรายการจัดสเปคคอม</H5>
+              <Chip
+                p="0.20rem 1rem"
+                ml="1rem"
+                bg={`ihavecpu.light`}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <H3 fontSize={13} color="#d4001a">
+                  {selectedProduct?.length}
+                </H3>
+              </Chip>
             </FlexBox>
           </Hidden>
         </Grid>
@@ -894,8 +1032,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
                       <TextField
                         fullwidth
-                        // onChange={handleSearchChange}
-                        // value={searchValue}
+                        onChange={handleSearchChange}
+                        value={searchValue}
                         className="search-field"
                         placeholder="ค้นหาสินค้า"
                       />
@@ -903,15 +1041,11 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                   </Grid>
                 </Box>
 
-                {/* <Paragraph color="text.muted" mr="0.5rem">
-                  เรียงตาม:
-                </Paragraph> */}
-
                 <Grid item lg={3}>
                   <Select
                     placeholder="ราคาสูง-ต่ำ"
-                    // value={selectedSortOption}
-                    // onChange={handleSortChange}
+                    value={selectedSortOption}
+                    onChange={handleSortChange}
                     options={sortOptions}
                   />
                 </Grid>
@@ -924,8 +1058,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 mt="1rem"
               >
                 <Grid container spacing={2}>
-                  {filters?.map((filter) => (
-                    <Grid item>
+                  {filters?.map((filter, ind) => (
+                    <Grid item key={ind}>
                       <Chip
                         p="0.25rem 1rem"
                         bg={`ihavecpu.light`}
@@ -993,10 +1127,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               >
                 <Box flex="1 1 0" mr="1.75rem" minWidth="150px"></Box>
 
-                {/* <Paragraph color="text.muted" mr="0.5rem">
-                  View:
-                </Paragraph> */}
-
                 <IconButton
                   size="small"
                   onClick={toggleView("grid")}
@@ -1038,10 +1168,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 </Grid>
               ) : (
                 <Grid container spacing={6}>
-                  {/* {productFilter && productFilter.row > 0 && (
-                    <Box>{productFilter.row}</Box>
-                  )} */}
-                  {productFilter && productFilter.row > 0 ? (
+                  {productFilter ? (
                     productFilter.data.map((item, ind) => (
                       <Grid item lg={3} sm={6} xs={6} key={ind}>
                         {item ? (
@@ -1115,7 +1242,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               {productFilter && (
                 <Pagination
                   pageCount={Math.max(1, Math.ceil(productFilter.row / 12))}
-                  currentPage={1}
+                  currentPage={currentPage}
                   onPageChange={handlePageChange}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={2}
@@ -1134,6 +1261,32 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       {isModalNavListVisible && (
         <ModalNavListDIY>
           <div style={{ width: "100%" }}>
+            <div>
+              <FlexBox
+                alignItems="center"
+                style={{ backgroundColor: "white", marginBottom: "3rem" }}
+              >
+                <Box className="text-left" display="flex" alignItems="center">
+                  <Icon size="12px" mr="0.5rem">
+                    menu
+                  </Icon>
+                  <H5>รายการจัดสเปคคอม</H5>
+                </Box>
+              </FlexBox>
+
+              <FlexBox>
+                <Box className="exit-button">
+                  <IconButton
+                    type="button"
+                    p="3px 6px 3px"
+                    style={{ width: "25px", height: "25px" }}
+                    onClick={handleCloseModalNavList}
+                  >
+                    <Icon size="12px">close</Icon>
+                  </IconButton>
+                </Box>
+              </FlexBox>
+            </div>
             <div className="selected-products">
               {navList.map((value, i) => (
                 <Fragment key={i}>
@@ -1254,7 +1407,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 <Fragment>
                   <StyledProductCategory
                     id="all"
-                    mt="2rem"
+                    mt="0.5rem"
                     shadow={selected.match("all") ? 4 : null}
                     onClick={handleCreateSpecClick}
                     bg="#d4001a"
@@ -1292,29 +1445,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               )}
             </div>
           </div>
-
-          {/* Exit button in the top-right corner */}
-          <FlexBox alignItems="center">
-            <Box className="text-left" display="flex" alignItems="center">
-              <Icon size="12px" mr="0.5rem">
-                menu
-              </Icon>
-              <H5>รายการจัดสเปคคอม</H5>
-            </Box>
-          </FlexBox>
-
-          <FlexBox>
-            <Box className="exit-button">
-              <IconButton
-                type="button"
-                p="3px 6px 3px"
-                style={{ width: "25px", height: "25px" }}
-                onClick={handleCloseModalNavList}
-              >
-                <Icon size="12px">close</Icon>
-              </IconButton>
-            </Box>
-          </FlexBox>
         </ModalNavListDIY>
       )}
     </Fragment>

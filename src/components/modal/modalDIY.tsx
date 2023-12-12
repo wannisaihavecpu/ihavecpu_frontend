@@ -6,7 +6,7 @@ import { notify } from "@component/toast";
 import { useRouter } from "next/router";
 import { useAppContext } from "@context/AppContext";
 import ReactDOMServer from "react-dom/server";
-
+import PriceFormat from "@component/PriceFormat";
 import Avatar from "@component/avatar";
 import FlexBox from "@component/FlexBox";
 import Box from "@component/Box";
@@ -132,8 +132,9 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
                     1
                   </td>
                   <td data-label="ส่วนลด" style={{ textAlign: "center" }}>
-                    {product.discount}
+                    {`${product.price} บาท - ${product.priceBefore} บาท`}
                   </td>
+
                   <td data-label="ราคา" style={{ textAlign: "center" }}>
                     {product.price}
                   </td>
@@ -214,7 +215,13 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
                   <td data-label="ชื่อ">{product.name}</td>
 
                   <td data-label="จำนวน">1</td>
-                  <td data-label="ส่วนลด">{product.discount}</td>
+                  <td data-label="ส่วนลด" style={{ textAlign: "center" }}>
+                    {product.discount ? (
+                      <PriceFormat
+                        price={product?.priceBefore - product?.price}
+                      />
+                    ) : null}
+                  </td>
                   <td data-label="ราคา">{product.price}</td>
                 </tr>
               ))}

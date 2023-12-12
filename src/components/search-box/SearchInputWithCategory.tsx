@@ -58,7 +58,7 @@ const SearchInputWithCategory: FC<SearchInputProps> = ({ openModal }) => {
   const handleDocumentClick = () => setResultList([]);
   const handleEnterKeyPress = useCallback(
     (event) => {
-      if (event.key === "Enter" && !openModal) {
+      if (event.key === "Enter" && !openModal && searchValue) {
         router.push(`/product/search/${searchValue}`);
         setResultList([]);
         setSearchValue("");

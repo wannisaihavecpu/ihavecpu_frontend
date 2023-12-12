@@ -213,7 +213,7 @@ const ProductCard1DIY: FC<ProductCard1DIYProps> = ({
               color="ihavecpu.text"
               zIndex={1}
             >
-              {off}%
+              {off}
             </Chip>
           )}
           <CardBox>
@@ -262,7 +262,7 @@ const ProductCard1DIY: FC<ProductCard1DIYProps> = ({
                   className="title"
                   color="text.secondary"
                 >
-                  {title}
+                  {title.length > 25 ? title.slice(0, 25) + "..." : title}
                 </H3>
               </a>
               {/* </Link> */}
