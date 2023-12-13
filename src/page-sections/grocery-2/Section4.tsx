@@ -21,6 +21,7 @@ import NextImage from "next/image";
 import { Chip } from "@component/Chip";
 import Product from "@models/product.model";
 import ModalNavBarDIY from "@component/modal/modalNavBarDIY";
+import Link from "next/link";
 import { ModalNavListDIY } from "@component/modal/styles";
 import {
   ProductCard1DIY,
@@ -82,6 +83,14 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       discount: string;
       imgUrl: string;
       filterSubIDArray: number[];
+      sizeRam: string;
+      sizeSubRam: string;
+      slotRam: string;
+      sataMainBoard: string;
+      m2MainBoard: string;
+      mSlotMainBoard: string;
+      maxMemoryMainBoard: string;
+      quantity?: number;
     }[]
   >([]);
   const [selectedFilter, setSelectedFilter] = useState(null);
@@ -540,137 +549,119 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     priceBefore,
     discount,
     imgUrl,
-    filterSubIDArray
+    sizeRam,
+    sizeSubRam,
+    slotRam,
+    sataMainBoard,
+    m2MainBoard,
+    mSlotMainBoard,
+    maxMemoryMainBoard,
+    filterSubIDArray,
+    action?
   ) => {
-    const categoryLimit = categoryID === 29 ? 2 : 1;
-    const parentCategories = navList.filter((item) => item.parent_id !== null);
-    const isParentCategory = parentCategories.some(
-      (parentCategory) => parentCategory.parent_id === categoryID
-    );
     const existingProduct = selectedProduct.find(
       (product) => product.id === productId
     );
 
-    if (!isParentCategory) {
-      // case normally category_id not have parent_id
+    if (existingProduct) {
+      if (action === "add") {
+        if (categoryID === 29) {
+          const calculateTotalSlotRam = selectedProduct
+            .filter((product) => product.categoryID === 29)
+            .reduce(
+              (total, product) =>
+                total + parseInt(product.slotRam) * product.quantity,
+              0
+            );
+          console.log("calculateTotalSlotRam", calculateTotalSlotRam);
+          const updatedProducts = selectedProduct.map((product) =>
+            product.id === productId
+              ? { ...product, quantity: product.quantity + 1 }
+              : product
+          );
 
-      const existingProductsForCategory = selectedProduct.filter(
-        (product) => product.categoryID === categoryID
-      );
+          setSelectedProduct(updatedProducts);
 
-      const existingProductIndex = selectedProduct.findIndex(
-        (product) => product.categoryID === categoryID
-      );
-      console.log(existingProductIndex);
+          // get max slot
 
-      if (existingProductIndex !== -1) {
-        console.log("1");
-        notify("success", "เพิ่มสินค้าในสเปคแล้ว");
+          // const maxMSlotMainBoard = Math.max(
+          //   ...selectedProduct
+          //     .filter((product) => product.categoryID === 28)
+          //     .map((product) => parseInt(product.mSlotMainBoard) || 0)
+          // );
+          // // get slot ram total
+          // const calculateTotalSlotRam = selectedProduct
+          //   .filter((product) => product.categoryID === 29)
+          //   .reduce(
+          //     (total, product) =>
+          //       total + parseInt(product.slotRam) * product.quantity,
+          //     0
+          //   );
+          // console.log("maxMSlotMainBoard", maxMSlotMainBoard);
+          // console.log("calculateTotalSlotRam", calculateTotalSlotRam);
+          // if (calculateTotalSlotRam <= maxMSlotMainBoard) {
+          //   const updatedProducts = selectedProduct.map((product) =>
+          //     product.id === productId
+          //       ? { ...product, quantity: product.quantity + 1 }
+          //       : product
+          //   );
 
-        // update if product with the same categoryID
-        setSelectedProduct((prevProducts) => {
-          const updatedProducts = [...prevProducts];
-          updatedProducts[existingProductIndex] = {
-            id: productId,
-            name,
-            categoryID,
-            additionCate,
-            filterID,
-            filterSubID,
-            price,
-            priceBefore,
-            discount,
-            imgUrl,
-            filterSubIDArray,
-          };
-          return updatedProducts;
-        });
-        return;
-      } else {
-        notify("success", "เพิ่มสินค้าในสเปคแล้ว");
+          //   setSelectedProduct(updatedProducts);
+          //   notify("success", "เพิ่มจำนวนแล้ว");
+          // } else {
+          //   notify("error", "ไม่เพิ่ม");
+          // }
+        }
+      } else if (action === "remove") {
+        if (existingProduct.quantity > 1) {
+          // Decrement quantity if greater than 1
+          const updatedProducts = selectedProduct.map((product) =>
+            product.id === productId
+              ? { ...product, quantity: product.quantity - 1 }
+              : product
+          );
 
-        setSelectedProduct((prevProducts) => [
-          ...prevProducts,
-          {
-            id: productId,
-            name,
-            categoryID,
-            additionCate,
-            filterID,
-            filterSubID,
-            price,
-            priceBefore,
-            discount,
-            imgUrl,
-            filterSubIDArray,
-          },
-        ]);
+          setSelectedProduct(updatedProducts);
+          notify("success", "ลดจำนวนแล้ว");
+        } else {
+          // Remove product if quantity is 1
+          setSelectedProduct((prevProducts) =>
+            prevProducts.filter((product) => product.id !== productId)
+          );
+          notify("error", "ลบสินค้าออกจากสเปคแล้ว");
+        }
       }
     } else {
-      // Case when category has parent_id and the product is not mapping with category_id but mapping with additionCate
-
-      const existingProductsParentIDForCategory = selectedProduct.filter(
-        (product) =>
-          Array.isArray(product.additionCate) &&
-          product.additionCate.length === additionCate.length &&
-          product.additionCate.every(
-            (value, index) => value === additionCate[index]
-          ) &&
-          product.categoryID === categoryID
-      );
-
-      const existingProductIndex = selectedProduct.findIndex(
-        (product) =>
-          Array.isArray(product.additionCate) &&
-          product.additionCate.length === additionCate.length &&
-          product.additionCate.every(
-            (value, index) => value === additionCate[index]
-          ) &&
-          product.categoryID === categoryID
-      );
-
-      if (existingProductsParentIDForCategory.length === 0) {
-        console.log("33");
-        // If no product with the same additionCate and categoryID, add a new one
-        setSelectedProduct((prevProducts) => [
-          ...prevProducts,
-          {
-            id: productId,
-            name,
-            categoryID,
-            additionCate,
-            filterID,
-            filterSubID,
-            price,
-            priceBefore,
-            discount,
-            imgUrl,
-            filterSubIDArray,
-          },
-        ]);
-      } else {
-        console.log("34");
-        // If a product with the same additionCate and categoryID exists, do nothing
-        setSelectedProduct((prevProducts) => {
-          const updatedProducts = [...prevProducts];
-          updatedProducts[existingProductIndex] = {
-            id: productId,
-            name,
-            categoryID,
-            additionCate,
-            filterID,
-            filterSubID,
-            price,
-            priceBefore,
-            discount,
-            imgUrl,
-            filterSubIDArray,
-          };
-          return updatedProducts;
-        });
-      }
+      // If the product does not exist, add a new one with quantity 1
+      setSelectedProduct((prevProducts) => [
+        ...prevProducts,
+        {
+          id: productId,
+          name,
+          categoryID,
+          additionCate,
+          filterID,
+          filterSubID,
+          price,
+          priceBefore,
+          discount,
+          imgUrl,
+          sizeRam,
+          sizeSubRam,
+          slotRam,
+          sataMainBoard,
+          m2MainBoard,
+          mSlotMainBoard,
+          maxMemoryMainBoard,
+          filterSubIDArray,
+          quantity: 1, // Set initial quantity to 1
+        },
+      ]);
+      notify("success", "เพิ่มสินค้าในสเปคแล้ว");
     }
   };
+
+  console.log(selectedProduct);
 
   const handleRemoveFromSelectedProducts = (productId) => {
     setSelectedProduct((prevProducts) =>
@@ -883,29 +874,174 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                             )}
                           >
                             <FlexBox
-                              alignItems="center"
+                              alignItems="left"
                               justifyContent="space-between"
                             >
-                              <FlexBox alignItems="center">
-                                <NextImage
-                                  src={item.imgUrl}
-                                  height={40}
-                                  width={40}
-                                  objectFit="contain"
-                                />
-                                <SemiSpan fontSize={12} ml="1rem">
-                                  {item.name.length > 12
-                                    ? item.name.slice(0, 12) + "..."
-                                    : item.name}
+                              <FlexBox alignItems="left" flexDirection="column">
+                                <SemiSpan fontSize={12} mb="0.3rem">
+                                  {value.title_th}
                                 </SemiSpan>
+
+                                <FlexBox alignItems="left" flexDirection="row">
+                                  <NextImage
+                                    src={item.imgUrl}
+                                    height={40}
+                                    width={40}
+                                    objectFit="contain"
+                                  />
+                                  <FlexBox
+                                    alignItems="left"
+                                    flexDirection="column"
+                                    ml="1rem"
+                                  >
+                                    <SemiSpan fontSize={12}>
+                                      {item.name.length > 14
+                                        ? item.name.slice(0, 15) + "..."
+                                        : item.name}
+                                    </SemiSpan>
+                                    <FlexBox alignItems="center" mt="0.2rem">
+                                      <a
+                                        href={`/product/${item.id}/${formatSlug(
+                                          item.name
+                                        )}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        <Chip
+                                          p="0.25rem 1rem"
+                                          bg={`ihavecpu.light`}
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <H3
+                                            fontSize={10}
+                                            color="ihavecpu.main"
+                                            style={{
+                                              margin: "0",
+                                              lineHeight: "1",
+                                            }}
+                                          >
+                                            รายละเอียด
+                                          </H3>
+                                        </Chip>
+                                      </a>
+                                      {value.categoryID != 29 && (
+                                        <SemiSpan fontSize={12} ml="0.5rem">
+                                          x {item.quantity}
+                                        </SemiSpan>
+                                      )}
+                                    </FlexBox>
+                                    {value.categoryID == 29 && (
+                                      <FlexBox alignItems="center" mt="0.2rem">
+                                        <Chip
+                                          p="0.10rem 0.5rem"
+                                          bg={`white`}
+                                          style={{
+                                            border: "1px solid gray",
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Button
+                                            size="extrasmall"
+                                            padding="3px"
+                                            color="secondary"
+                                            variant="outlinedNoBorder"
+                                            style={{
+                                              width: "19px",
+                                              height: "19px",
+                                            }}
+                                            onClick={() =>
+                                              handleAddToSelectedProducts(
+                                                item.id,
+                                                item.name,
+                                                item.categoryID,
+                                                item.additionCate,
+                                                item.filterID,
+                                                item.filterSubID,
+                                                item.price,
+                                                item.priceBefore,
+                                                item.discount,
+                                                item.imgUrl,
+                                                item.filterSubIDArray,
+                                                item.sizeRam,
+                                                item.sizeSubRam,
+                                                item.slotRam,
+                                                item.sataMainBoard,
+                                                item.m2MainBoard,
+                                                item.mSlotMainBoard,
+                                                item.maxMemoryMainBoard,
+                                                "add"
+                                              )
+                                            }
+                                          >
+                                            <Icon variant="extrasmall">
+                                              plus
+                                            </Icon>
+                                          </Button>
+                                          <SemiSpan
+                                            fontSize={12}
+                                            ml="0.5rem"
+                                            color="gray"
+                                          >
+                                            {item.quantity}
+                                          </SemiSpan>
+                                          <Button
+                                            size="extrasmall"
+                                            padding="3px"
+                                            color="secondary"
+                                            variant="outlinedNoBorder"
+                                            onClick={() =>
+                                              handleAddToSelectedProducts(
+                                                item.id,
+                                                item.name,
+                                                item.categoryID,
+                                                item.additionCate,
+                                                item.filterID,
+                                                item.filterSubID,
+                                                item.price,
+                                                item.priceBefore,
+                                                item.discount,
+                                                item.imgUrl,
+                                                item.filterSubIDArray,
+                                                item.sizeRam,
+                                                item.sizeSubRam,
+                                                item.slotRam,
+                                                item.sataMainBoard,
+                                                item.m2MainBoard,
+                                                item.mSlotMainBoard,
+                                                item.maxMemoryMainBoard,
+                                                "remove"
+                                              )
+                                            }
+                                            ml="0.5rem"
+                                            style={{
+                                              width: "19px",
+                                              height: "19px",
+                                            }}
+                                          >
+                                            <Icon variant="extrasmall">
+                                              minus
+                                            </Icon>
+                                          </Button>
+                                        </Chip>
+                                      </FlexBox>
+                                    )}
+                                  </FlexBox>
+                                </FlexBox>
                               </FlexBox>
                             </FlexBox>
+
                             <IconButton
-                              size="small"
+                              size="extrasmall"
                               onClick={() =>
                                 handleRemoveFromSelectedProducts(item.id)
                               }
-                              style={{ marginLeft: "auto" }}
+                              style={{
+                                marginLeft: "auto",
+                              }}
                             >
                               <Icon
                                 variant="small"
@@ -1187,7 +1323,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                             isInSelectedProducts={selectedProduct.some(
                               (product) => product.id === item.product_id
                             )}
-                            onAddToProductIds={(productId) =>
+                            onAddToProductIds={() =>
                               handleAddToSelectedProducts(
                                 item.product_id,
                                 item.name_th,
@@ -1199,6 +1335,13 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                                 item.price_before,
                                 item.discount,
                                 item.image,
+                                item.size,
+                                item.size_sub,
+                                item.slot,
+                                item.sata,
+                                item.m2,
+                                item.m_slot,
+                                item.max_memory,
                                 item.filter
                                   .map(
                                     (filterItem) =>
@@ -1219,7 +1362,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                     ))
                   ) : (
                     <Grid container spacing={6}>
-                      <Box>ไม่่มีข้อมูล</Box>
+                      <Box ml="2rem">ไม่มีข้อมูล</Box>
                     </Grid>
                   )}
                 </Grid>

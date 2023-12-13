@@ -214,7 +214,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
                   </td>
                   <td data-label="ชื่อ">{product.name}</td>
 
-                  <td data-label="จำนวน">1</td>
+                  <td data-label="จำนวน">{product.quantity}</td>
                   <td data-label="ส่วนลด" style={{ textAlign: "center" }}>
                     {product.discount ? (
                       <PriceFormat

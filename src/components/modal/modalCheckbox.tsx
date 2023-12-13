@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import styles from "@component/products/scroll.module.css";
 
 const ModalCheckBox = ({ children, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -22,6 +23,7 @@ const ModalCheckBox = ({ children, onClose }) => {
 
   return (
     <div
+      className={styles.scroll}
       ref={modalRef}
       style={{
         position: "absolute",
@@ -30,12 +32,12 @@ const ModalCheckBox = ({ children, onClose }) => {
         borderRadius: "8px",
         boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.5)",
         zIndex: 1000,
-        maxWidth: "300px", // Adjust the maximum width as needed
-        overflowY: "auto", // Add vertical scrollbar if content overflows
-        maxHeight: "70vh", // Set a maximum height to control the scrollbar
+        maxWidth: "300px",
+        overflowY: "auto",
+        maxHeight: "30vh",
       }}
     >
-      <div
+      {/* <div
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -43,9 +45,8 @@ const ModalCheckBox = ({ children, onClose }) => {
           marginBottom: "15px",
         }}
       >
-        {/* Your additional header content can go here */}
-        {/* No close button */}
-      </div>
+    
+      </div> */}
       {children}
     </div>
   );

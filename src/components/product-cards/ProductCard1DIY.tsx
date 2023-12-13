@@ -218,7 +218,11 @@ const ProductCard1DIY: FC<ProductCard1DIYProps> = ({
           )}
           <CardBox>
             <CardMedia>
-              <Link href={`/product/${id}/${slug}`}>
+              <a
+                href={`/product/${id}/${slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {/* <Image
                   src={imgUrl}
                   width={100}
@@ -235,7 +239,7 @@ const ProductCard1DIY: FC<ProductCard1DIYProps> = ({
                   height={100}
                   style={{ objectFit: "cover", width: "100%", height: "100%" }}
                 />
-              </Link>
+              </a>
 
               <AddToCartButton className="product-actions">
                 <Icon size="18px">eye</Icon>
@@ -252,7 +256,11 @@ const ProductCard1DIY: FC<ProductCard1DIYProps> = ({
           <FlexBox>
             <Box flex="1 1 0" minWidth="0px" mr="0.5rem">
               {/* <Link href={`/product/${slug}`}> */}
-              <a>
+              <a
+                href={`/product/${id}/${slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <H3
                   mb="10px"
                   title={title}
