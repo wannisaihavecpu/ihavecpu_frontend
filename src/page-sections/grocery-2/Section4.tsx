@@ -253,22 +253,29 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         cateID != 49 &&
         cateID != 25 &&
         cateID != 267 &&
-        cateID != 50
+        cateID != 50 &&
+        cateID != 28
       ) {
         console.log(cateID);
         // 29 = ram , 28 = mainboard
         if (filterIds.length > 0) {
           apiUrl += `&filter_main=[${filterIds.join(",")}]`;
         }
+        // case if category 29 (ram)
         if (cateID === 29) {
           console.log("this 29");
           const hasCategory28 = selectedProduct.some(
             (product) => product.categoryID === 28
           );
 
+          // case have category 28 (mainboard)
           if (hasCategory28) {
-            // const combinedFilter = [...subFilter, ...filterIds];
-            const combinedFilter = [...subFilter];
+            const subFilterNotHaveCate29 = selectedProduct
+              .filter((product) => product.categoryID !== 29)
+              .map((product) => product.filterSubIDArray)
+              .flat()
+              .filter((value) => value !== null && !isNaN(value));
+            const combinedFilter = [...subFilterNotHaveCate29];
 
             const filterString = combinedFilter.join(",");
             apiUrl += `&sub_filter=[${filterString}]`;
@@ -420,7 +427,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         cateID != 49 &&
         cateID != 25 &&
         cateID != 267 &&
-        cateID != 50
+        cateID != 50 &&
+        cateID != 28
       ) {
         console.log(cateID);
         // 29 = ram , 28 = mainboard
@@ -562,55 +570,69 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     const existingProduct = selectedProduct.find(
       (product) => product.id === productId
     );
+    const existingProductIndex = selectedProduct.findIndex(
+      (product) => product.categoryID === categoryID
+    );
+    const parentCategories = navList.filter((item) => item.parent_id !== null);
+    const isParentCategory = parentCategories.some(
+      (parentCategory) => parentCategory.parent_id === categoryID
+    );
+    const calculateTotalSlotRam = selectedProduct
+      .filter((product) => product.categoryID === 29)
+      .reduce(
+        (total, product) =>
+          total + parseInt(product.slotRam) * product.quantity,
+        0
+      );
+    const hasCategory28 = selectedProduct.some(
+      (product) => product.categoryID === 28
+    );
+    const hasCategory29 = selectedProduct.some(
+      (product) => product.categoryID === 29
+    );
+
+    const calculateTotalMemoryRam = selectedProduct
+      .filter((product) => product.categoryID === 29)
+      .reduce(
+        (total, product) =>
+          total + parseInt(product.sizeRam) * product.quantity,
+        0
+      );
+    console.log("calculateTotalMemoryRam", calculateTotalMemoryRam);
+
+    const maxMSlotMainBoard = Math.max(
+      ...selectedProduct
+        .filter((product) => product.categoryID === 28)
+        .map((product) => parseInt(product.mSlotMainBoard) || 0)
+    );
+    const maxMemoryMainBoardCate28 = Math.max(
+      ...selectedProduct
+        .filter((product) => product.categoryID === 28)
+        .map((product) => parseInt(product.maxMemoryMainBoard) || 0)
+    );
 
     if (existingProduct) {
       if (action === "add") {
         if (categoryID === 29) {
-          const calculateTotalSlotRam = selectedProduct
-            .filter((product) => product.categoryID === 29)
-            .reduce(
-              (total, product) =>
-                total + parseInt(product.slotRam) * product.quantity,
-              0
-            );
           console.log("calculateTotalSlotRam", calculateTotalSlotRam);
-          const updatedProducts = selectedProduct.map((product) =>
-            product.id === productId
-              ? { ...product, quantity: product.quantity + 1 }
-              : product
-          );
 
-          setSelectedProduct(updatedProducts);
+          console.log("slotRam", existingProduct.slotRam);
 
-          // get max slot
+          const calculate =
+            calculateTotalSlotRam + parseInt(existingProduct.slotRam);
+          console.log("calculate", calculate);
 
-          // const maxMSlotMainBoard = Math.max(
-          //   ...selectedProduct
-          //     .filter((product) => product.categoryID === 28)
-          //     .map((product) => parseInt(product.mSlotMainBoard) || 0)
-          // );
-          // // get slot ram total
-          // const calculateTotalSlotRam = selectedProduct
-          //   .filter((product) => product.categoryID === 29)
-          //   .reduce(
-          //     (total, product) =>
-          //       total + parseInt(product.slotRam) * product.quantity,
-          //     0
-          //   );
-          // console.log("maxMSlotMainBoard", maxMSlotMainBoard);
-          // console.log("calculateTotalSlotRam", calculateTotalSlotRam);
-          // if (calculateTotalSlotRam <= maxMSlotMainBoard) {
-          //   const updatedProducts = selectedProduct.map((product) =>
-          //     product.id === productId
-          //       ? { ...product, quantity: product.quantity + 1 }
-          //       : product
-          //   );
-
-          //   setSelectedProduct(updatedProducts);
-          //   notify("success", "เพิ่มจำนวนแล้ว");
-          // } else {
-          //   notify("error", "ไม่เพิ่ม");
-          // }
+          if (calculate <= maxMSlotMainBoard && maxMemoryMainBoardCate28) {
+            console.log("calculateTotalSlotRam", calculateTotalSlotRam);
+            const updatedProducts = selectedProduct.map((product) =>
+              product.id === productId
+                ? { ...product, quantity: product.quantity + 1 }
+                : product
+            );
+            setSelectedProduct(updatedProducts);
+          } else {
+            notify("error", "ไม่สามารถเพิ่มได้");
+          }
         }
       } else if (action === "remove") {
         if (existingProduct.quantity > 1) {
@@ -632,32 +654,362 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         }
       }
     } else {
-      // If the product does not exist, add a new one with quantity 1
-      setSelectedProduct((prevProducts) => [
-        ...prevProducts,
-        {
-          id: productId,
-          name,
-          categoryID,
-          additionCate,
-          filterID,
-          filterSubID,
-          price,
-          priceBefore,
-          discount,
-          imgUrl,
-          sizeRam,
-          sizeSubRam,
-          slotRam,
-          sataMainBoard,
-          m2MainBoard,
-          mSlotMainBoard,
-          maxMemoryMainBoard,
-          filterSubIDArray,
-          quantity: 1, // Set initial quantity to 1
-        },
-      ]);
-      notify("success", "เพิ่มสินค้าในสเปคแล้ว");
+      const calculateSlotRam = calculateTotalSlotRam + parseInt(slotRam);
+      const calculateMemoryRam = calculateTotalMemoryRam + parseInt(sizeRam);
+
+      if (!isParentCategory) {
+        // case normally category_id not have parent_id
+
+        const existingProductIndex = selectedProduct.findIndex(
+          (product) => product.categoryID === categoryID
+        );
+        // console.log(existingProductIndex);
+
+        if (categoryID === 28) {
+          if (hasCategory29) {
+            const maxMemoryMainBoardCategory28 = maxMemoryMainBoard;
+
+            const productsCategory29 = selectedProduct.filter(
+              (product) => product.categoryID === 29
+            );
+
+            const totalMemoryCategory29 = calculateTotalMemoryRam;
+
+            // Additional condition to check mSlotMainBoard with slotRam
+            const isSlotMainBoardValid = productsCategory29.every(
+              (product) => product.mSlotMainBoard >= product.slotRam
+            );
+
+            // If the total memory of category 29 products exceeds maxMemoryMainBoard
+            // or the mSlotMainBoard is not valid, perform the necessary adjustments
+            if (
+              totalMemoryCategory29 >= maxMemoryMainBoardCategory28 ||
+              !isSlotMainBoardValid
+            ) {
+              let totalSizeRam = 0;
+              let productsToRemove = [];
+
+              // Iterate through category 29 products to find the products to remove
+              for (const product of productsCategory29) {
+                totalSizeRam += parseInt(product.sizeRam) * product.quantity;
+
+                // If total sizeRam exceeds maxMemoryMainBoard, mark the product for removal
+                if (totalSizeRam > maxMemoryMainBoardCategory28) {
+                  productsToRemove.push(product);
+                }
+              }
+              console.log("totalMemoryCategory29", totalMemoryCategory29);
+              console.log("isSlotMainBoardValid", totalMemoryCategory29);
+
+              console.log(
+                "maxMemoryMainBoardCategory28",
+                maxMemoryMainBoardCategory28
+              );
+
+              console.log("productsToRemove", productsToRemove);
+
+              // Calculate the total quantity to be removed
+              const totalQuantityToRemove = productsToRemove.reduce(
+                (total, product) => total + product.quantity,
+                0
+              );
+
+              // Iterate through productsToRemove and remove them from selectedProduct
+              let updatedProducts = [...selectedProduct];
+              for (const productToRemove of productsToRemove) {
+                const index = updatedProducts.findIndex(
+                  (product) => product.id === productToRemove.id
+                );
+
+                if (index !== -1) {
+                  updatedProducts.splice(index, 1);
+                }
+              }
+
+              // Update the selected products by replacing category 29 products with adjusted quantities
+              setSelectedProduct((prevProducts) => [
+                ...prevProducts.filter((product) => product.categoryID !== 29),
+                ...updatedProducts,
+              ]);
+
+              // Added product category 28
+              setSelectedProduct((prevProducts) => [
+                ...prevProducts,
+                {
+                  id: productId,
+                  name,
+                  categoryID,
+                  additionCate,
+                  filterID,
+                  filterSubID,
+                  price,
+                  priceBefore,
+                  discount,
+                  imgUrl,
+                  sizeRam,
+                  sizeSubRam,
+                  slotRam,
+                  sataMainBoard,
+                  m2MainBoard,
+                  mSlotMainBoard,
+                  maxMemoryMainBoard,
+                  filterSubIDArray,
+                  quantity: 1,
+                },
+              ]);
+
+              notify(
+                "warning",
+                `ปรับปรุงจำนวนสินค้าในสเปคแล้ว: ลบ ${totalQuantityToRemove} รายการ`
+              );
+            } else {
+              // If remaining memory is enough, and slotRam is valid, add the selected product in category 28
+              setSelectedProduct((prevProducts) => [
+                ...prevProducts,
+                {
+                  id: productId,
+                  name,
+                  categoryID,
+                  additionCate,
+                  filterID,
+                  filterSubID,
+                  price,
+                  priceBefore,
+                  discount,
+                  imgUrl,
+                  sizeRam,
+                  sizeSubRam,
+                  slotRam,
+                  sataMainBoard,
+                  m2MainBoard,
+                  mSlotMainBoard,
+                  maxMemoryMainBoard,
+                  filterSubIDArray,
+                  quantity: 1,
+                },
+              ]);
+
+              notify("success", "เพิ่มหสินค้าในสเปคแล้ว");
+            }
+          } else {
+            setSelectedProduct((prevProducts) => [
+              ...prevProducts,
+              {
+                id: productId,
+                name,
+                categoryID,
+                additionCate,
+                filterID,
+                filterSubID,
+                price,
+                priceBefore,
+                discount,
+                imgUrl,
+                sizeRam,
+                sizeSubRam,
+                slotRam,
+                sataMainBoard,
+                m2MainBoard,
+                mSlotMainBoard,
+                maxMemoryMainBoard,
+                filterSubIDArray,
+                quantity: 1,
+              },
+            ]);
+          }
+        } else {
+          const calculateSlotRam = calculateTotalSlotRam + parseInt(slotRam);
+          const calculateMemoryRam =
+            calculateTotalMemoryRam + parseInt(sizeRam);
+          if (categoryID === 29) {
+            if (calculateSlotRam <= maxMSlotMainBoard) {
+              setSelectedProduct((prevProducts) => [
+                ...prevProducts,
+                {
+                  id: productId,
+                  name,
+                  categoryID,
+                  additionCate,
+                  filterID,
+                  filterSubID,
+                  price,
+                  priceBefore,
+                  discount,
+                  imgUrl,
+                  sizeRam,
+                  sizeSubRam,
+                  slotRam,
+                  sataMainBoard,
+                  m2MainBoard,
+                  mSlotMainBoard,
+                  maxMemoryMainBoard,
+                  filterSubIDArray,
+                  quantity: 1,
+                },
+              ]);
+              notify("success", "เพิ่มสินค้าในสเปคแล้ว");
+            } else {
+              setSelectedProduct((prevProducts) => [
+                ...prevProducts,
+                {
+                  id: productId,
+                  name,
+                  categoryID,
+                  additionCate,
+                  filterID,
+                  filterSubID,
+                  price,
+                  priceBefore,
+                  discount,
+                  imgUrl,
+                  sizeRam,
+                  sizeSubRam,
+                  slotRam,
+                  sataMainBoard,
+                  m2MainBoard,
+                  mSlotMainBoard,
+                  maxMemoryMainBoard,
+                  filterSubIDArray,
+                  quantity: 1,
+                },
+              ]);
+            }
+          } else {
+            if (existingProductIndex !== -1) {
+              // กรณีมีสินค้าอยู่แล้ว
+              setSelectedProduct((prevProducts) => {
+                const updatedProducts = [...prevProducts];
+                updatedProducts[existingProductIndex] = {
+                  id: productId,
+                  name,
+                  categoryID,
+                  additionCate,
+                  filterID,
+                  filterSubID,
+                  price,
+                  priceBefore,
+                  discount,
+                  imgUrl,
+                  sizeRam,
+                  sizeSubRam,
+                  slotRam,
+                  sataMainBoard,
+                  m2MainBoard,
+                  mSlotMainBoard,
+                  maxMemoryMainBoard,
+                  filterSubIDArray,
+                  quantity: 1,
+                };
+                return updatedProducts;
+              });
+              notify("success", "แทนสินค้าในสเปคแล้ว");
+            } else {
+              setSelectedProduct((prevProducts) => [
+                ...prevProducts,
+                {
+                  id: productId,
+                  name,
+                  categoryID,
+                  additionCate,
+                  filterID,
+                  filterSubID,
+                  price,
+                  priceBefore,
+                  discount,
+                  imgUrl,
+                  sizeRam,
+                  sizeSubRam,
+                  slotRam,
+                  sataMainBoard,
+                  m2MainBoard,
+                  mSlotMainBoard,
+                  maxMemoryMainBoard,
+                  filterSubIDArray,
+                  quantity: 1,
+                },
+              ]);
+              notify("success", "เพิ่มหสินค้าในสเปคแล้ว");
+            }
+          }
+        }
+      } else {
+        // Case when category has parent_id and the product is not mapping with category_id but mapping with additionCate
+
+        const existingProductsParentIDForCategory = selectedProduct.filter(
+          (product) =>
+            Array.isArray(product.additionCate) &&
+            product.additionCate.length === additionCate.length &&
+            product.additionCate.every(
+              (value, index) => value === additionCate[index]
+            ) &&
+            product.categoryID === categoryID
+        );
+
+        const existingProductIndex = selectedProduct.findIndex(
+          (product) =>
+            Array.isArray(product.additionCate) &&
+            product.additionCate.length === additionCate.length &&
+            product.additionCate.every(
+              (value, index) => value === additionCate[index]
+            ) &&
+            product.categoryID === categoryID
+        );
+
+        if (existingProductsParentIDForCategory.length === 0) {
+          console.log("33");
+          // If no product with the same additionCate and categoryID, add a new one
+          setSelectedProduct((prevProducts) => [
+            ...prevProducts,
+            {
+              id: productId,
+              name,
+              categoryID,
+              additionCate,
+              filterID,
+              filterSubID,
+              price,
+              priceBefore,
+              discount,
+              imgUrl,
+              sizeRam,
+              sizeSubRam,
+              slotRam,
+              sataMainBoard,
+              m2MainBoard,
+              mSlotMainBoard,
+              maxMemoryMainBoard,
+              filterSubIDArray,
+            },
+          ]);
+        } else {
+          console.log("34");
+          // If a product with the same additionCate and categoryID exists, do nothing
+          setSelectedProduct((prevProducts) => {
+            const updatedProducts = [...prevProducts];
+            updatedProducts[existingProductIndex] = {
+              id: productId,
+              name,
+              categoryID,
+              additionCate,
+              filterID,
+              filterSubID,
+              price,
+              priceBefore,
+              discount,
+              imgUrl,
+              sizeRam,
+              sizeSubRam,
+              slotRam,
+              sataMainBoard,
+              m2MainBoard,
+              mSlotMainBoard,
+              maxMemoryMainBoard,
+              filterSubIDArray,
+            };
+            return updatedProducts;
+          });
+        }
+      }
     }
   };
 
@@ -953,6 +1305,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                                               width: "19px",
                                               height: "19px",
                                             }}
+                                            type="button"
                                             onClick={() =>
                                               handleAddToSelectedProducts(
                                                 item.id,
@@ -993,6 +1346,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                                             padding="3px"
                                             color="secondary"
                                             variant="outlinedNoBorder"
+                                            type="button"
                                             onClick={() =>
                                               handleAddToSelectedProducts(
                                                 item.id,
