@@ -101,7 +101,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   const [selectedSortOption, setSelectedSortOption] = useState(null);
 
   const router = useRouter();
-  const categoryIDRef = useRef(categoryID);
+
+  const [abortController, setAbortController] = useState(new AbortController());
 
   const handleCloseModalNavList = () => {
     setIsModalNavListVisible(false);
@@ -192,12 +193,10 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   ) => {
     setLoading(true);
     try {
-      console.log(category_id);
       const filterIds = selectedItems.map((item) => item.id);
       const findParentID = navList.find(
         (value) => value.categoryID.toString() === category_id
       );
-      console.log("selectedProduct", selectedProduct);
 
       const subFilter = selectedProduct
         .map((product) => product.filterSubIDArray)
@@ -253,8 +252,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         cateID != 49 &&
         cateID != 25 &&
         cateID != 267 &&
-        cateID != 50 &&
-        cateID != 28
+        cateID != 50
       ) {
         console.log(cateID);
         // 29 = ram , 28 = mainboard
@@ -284,7 +282,9 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           console.log("categoryID", category_id);
           const combinedFilter = [...subFilter];
           const filterString = combinedFilter.join(",");
-          apiUrl += `&sub_filter=[${filterString}]`;
+          if (subFilter.length > 0) {
+            apiUrl += `&sub_filter=[${filterString}]`;
+          }
         }
       }
       // if (
@@ -306,18 +306,26 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       // console.log(apiUrl);
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      const productResponse = await fetch(apiUrl);
+      const productResponse = await fetch(apiUrl, {
+        signal: abortController.signal,
+      });
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
-        setProductFilter(productData.res_result);
-        // setProductFilter(productData.res_result);
-        setLoading(false);
-        // setCurrentPage(1);
+        // Check if the fetched products belong to the current category
+        const isCurrentCategory =
+          parseInt(category_id) === parseInt(categoryID);
+
+        if (isCurrentCategory) {
+          setProductFilter(productData.res_result);
+          setLoading(false);
+        } else {
+          // If not, do not update the state
+          setLoading(false);
+        }
       } else {
         setProductFilter(null);
         setLoading(false);
-        // console.error("failed to fetch products");
       }
     } catch (error) {
       setLoading(false);
@@ -427,8 +435,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         cateID != 49 &&
         cateID != 25 &&
         cateID != 267 &&
-        cateID != 50 &&
-        cateID != 28
+        cateID != 50
       ) {
         console.log(cateID);
         // 29 = ram , 28 = mainboard
@@ -451,7 +458,9 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           console.log("categoryID", categoryID);
           const combinedFilter = [...subFilter, ...filterIds];
           const filterString = combinedFilter.join(",");
-          apiUrl += `&sub_filter=[${filterString}]`;
+          if (subFilter.length > 0) {
+            apiUrl += `&sub_filter=[${filterString}]`;
+          }
         }
       }
       await new Promise((resolve) => setTimeout(resolve, 800));
@@ -482,7 +491,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     value: string;
   }) => {
     setSelectedSortOption(value);
-    // Call fetchProductData with the new sort option
     fetchProductData(categoryID, searchValue, value.value);
   };
   const handleCheckboxChange = (filterId: number, itemName: string) => {
@@ -870,88 +878,49 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               notify("success", "เพิ่มหสินค้าในสเปคแล้ว");
             }
           }
-          // if (hasCategoryM2) {
-          //   const maxMemoryMainBoardCategory28 = m2MainBoard;
+          if (hasCategoryM2) {
+            const maxMemoryMainBoardCategory28 = m2MainBoard;
 
-          //   const productsCategory29 = selectedProduct.filter(
-          //     (product) =>
-          //       Array.isArray(product.additionCate) &&
-          //       product.additionCate.includes(39)
-          //   );
+            const productsCategory29 = selectedProduct.filter(
+              (product) =>
+                Array.isArray(product.additionCate) &&
+                product.additionCate.includes(39)
+            );
 
-          //   const totalMemoryCategory29 = calculateTotalSlotM2;
+            const totalMemoryCategory29 = calculateTotalSlotM2;
 
-          //   // Additional condition to check mSlotMainBoard with slotRam
+            console.log("calculateTotalSlotM2", calculateTotalSlotM2);
 
-          //   // If the total memory of category 29 products exceeds maxMemoryMainBoard
-          //   // or the mSlotMainBoard is not valid, perform the necessary adjustments
-          //   if (totalMemoryCategory29 >= maxMemoryMainBoardCategory28) {
-          //     let remainingMemory = maxMemoryMainBoardCategory28;
+            if (totalMemoryCategory29 >= maxMemoryMainBoardCategory28) {
+              const updatedProductM2 = productsCategory29.map((product) => {
+                const slotM2Required = 1 * product.quantity;
 
-          //     // Iterate through category 29 products to find the products to adjust
-          //     const updatedProducts = productsCategory29.map((product) => {
-          //       const productSizeRam = 1 * product.quantity;
+                if (slotM2Required > m2MainBoard) {
+                  return {
+                    ...product,
+                    quantity: maxMemoryMainBoardCategory28,
+                  };
+                } else {
+                  return null;
+                }
+              });
 
-          //       // If the product sizeRam exceeds the remainingMemory, adjust the quantity
-          //       if (productSizeRam > remainingMemory) {
-          //         const reduction = Math.floor(remainingMemory / 1) || 0;
-          //         remainingMemory -= reduction * 1;
+              const filtereddProducts = updatedProductM2.filter(
+                (product) => product?.quantity > 0
+              );
+              console.log(
+                "filtereddProductsfiltereddProducts",
+                filtereddProducts
+              );
 
-          //         if (reduction > 0) {
-          //           remainingMemory -= reduction * 1;
-          //           return { ...product, quantity: reduction };
-          //         } else {
-          //           return null; // Product with reduction 0
-          //         }
-          //       } else {
-          //         return product;
-          //       }
-          //     });
-
-          //     // Filter out products with reduction 0
-          //     const filteredProducts = updatedProducts.filter(
-          //       (product) => product !== null
-          //     );
-
-          //     // Update the selected products by replacing category 29 products with adjusted quantities
-          //     setSelectedProduct((prevProducts) => [
-          //       ...prevProducts.filter(
-          //         (product) =>
-          //           Array.isArray(product.additionCate) &&
-          //           !product.additionCate.includes(39)
-          //       ),
-          //       ...filteredProducts,
-          //     ]);
-
-          //     // // Added product category 28
-          //     // setSelectedProduct((prevProducts) => [
-          //     //   ...prevProducts,
-          //     //   {
-          //     //     id: productId,
-          //     //     name,
-          //     //     categoryID,
-          //     //     additionCate,
-          //     //     filterID,
-          //     //     filterSubID,
-          //     //     price,
-          //     //     priceBefore,
-          //     //     discount,
-          //     //     imgUrl,
-          //     //     sizeRam,
-          //     //     sizeSubRam,
-          //     //     slotRam,
-          //     //     sataMainBoard,
-          //     //     m2MainBoard,
-          //     //     mSlotMainBoard,
-          //     //     maxMemoryMainBoard,
-          //     //     filterSubIDArray,
-          //     //     quantity: 1,
-          //     //   },
-          //     // ]);
-
-          //     notify("warning", `ปรับปรุงจำนวนสินค้าในสเปคแล้ว:  รายการ`);
-          //   }
-          // }
+              setSelectedProduct((prevProducts) => [
+                ...prevProducts.filter(
+                  (product) => !product.additionCate.includes(39)
+                ),
+                ...filtereddProducts,
+              ]);
+            }
+          }
 
           if (!hasCategory29) {
             if (existingProductIndex !== -1) {
@@ -1185,14 +1154,20 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   };
   useEffect(() => {
     let debounceTimeout;
-    console.log("debounce");
+
+    // Create a new AbortController for each useEffect
+    const newAbortController = new AbortController();
+    setAbortController(newAbortController);
+
     debounceTimeout = setTimeout(() => {
       fetchProductData(categoryID, searchValue);
       setCurrentPage(1);
     }, 500);
 
+    // Cleanup function to abort the previous request when the effect is re-run
     return () => {
       clearTimeout(debounceTimeout);
+      abortController.abort();
     };
   }, [searchValue, categoryID]);
 
