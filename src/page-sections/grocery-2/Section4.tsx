@@ -134,11 +134,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       setCategoryID(categoryId);
     }
   };
-  useEffect(() => {
-    if (categoryID !== null) {
-      fetchFilterData(categoryID);
-    }
-  }, [selectedItems, categoryID]);
 
   const formatSlug = (name) => {
     let formattedSlug = name.replace(/\s+/g, "-");
@@ -191,6 +186,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     searchKeyword = "",
     sortOption = ""
   ) => {
+    console.log("fetchProductData", category_id);
     setLoading(true);
     try {
       const filterIds = selectedItems.map((item) => item.id);
@@ -241,25 +237,27 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       //   apiUrl += `&sub_filter=[${filterString}]`;
       // }
       const cateID = parseInt(category_id);
+      const excludedCateIDs = [48, 97, 98, 99, 34, 49, 25, 267, 50, 37, 38, 39];
+      const desiredCategoryIDs = [28, 9, 30, 29];
+      const hasDesiredCategory = selectedProduct.some((product) =>
+        desiredCategoryIDs.includes(product.categoryID)
+      );
+      const subFilterNotHaveSameCateID = selectedProduct
+        .filter((product) => product.categoryID !== cateID)
+        .map((product) => product.filterSubIDArray)
+        .flat()
+        .filter((value) => value !== null && !isNaN(value));
 
       if (
         (filterIds.length > 0 || subFilter.length > 0) &&
-        cateID != 48 &&
-        cateID != 97 &&
-        cateID != 98 &&
-        cateID != 99 &&
-        cateID != 34 &&
-        cateID != 49 &&
-        cateID != 25 &&
-        cateID != 267 &&
-        cateID != 50
+        !excludedCateIDs.includes(cateID)
       ) {
         console.log(cateID);
         // 29 = ram , 28 = mainboard
         if (filterIds.length > 0) {
           apiUrl += `&filter_main=[${filterIds.join(",")}]`;
         }
-        // case if category 29 (ram)
+        // case if click category 29 (ram)
         if (cateID === 29) {
           console.log("this 29");
           const hasCategory28 = selectedProduct.some(
@@ -274,34 +272,63 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               .flat()
               .filter((value) => value !== null && !isNaN(value));
             const combinedFilter = [...subFilterNotHaveCate29];
-
             const filterString = combinedFilter.join(",");
+            if (subFilterNotHaveCate29.length > 0) {
+              apiUrl += `&sub_filter=[${filterString}]`;
+            }
+          }
+        } else if (cateID === 9) {
+          // case if click category 9 (cpu)
+          // 28(mainboard),30(graphic card)
+          const showOnlyCateID9 = [28, 30];
+          const subFilterHaveShowOnlyCateID9 = selectedProduct
+            .filter((product) => showOnlyCateID9.includes(product.categoryID))
+            .map((product) => product.filterSubIDArray)
+            .flat()
+            .filter((value) => value !== null && !isNaN(value));
+          const combinedFilter = [...subFilterHaveShowOnlyCateID9];
+          const filterString = combinedFilter.join(",");
+          if (subFilterHaveShowOnlyCateID9.length > 0) {
+            apiUrl += `&sub_filter=[${filterString}]`;
+          }
+        } else if (cateID === 28) {
+          // case if click category 28 (mainboard)
+          // 9(cpu),28(mainboard),30(graphic card),15(harddisk,ssd,m2),46(power supply)
+          const showOnlyCateID28 = [9, 15, 29, 30, 46];
+          const subFilterHaveShowOnlyCateID28 = selectedProduct
+            .filter((product) => showOnlyCateID28.includes(product.categoryID))
+            .map((product) => product.filterSubIDArray)
+            .flat()
+            .filter((value) => value !== null && !isNaN(value));
+          const combinedFilter = [...subFilterHaveShowOnlyCateID28];
+          const filterString = combinedFilter.join(",");
+          if (subFilterHaveShowOnlyCateID28.length > 0) {
+            apiUrl += `&sub_filter=[${filterString}]`;
+          }
+        } else if (cateID === 30) {
+          // case if click category 30 (graphic card)
+          // 9(cpu),28(mainboard),30(graphic card),46(power supply)
+          const showOnlyCateID28 = [9, 29, 30, 46];
+          const subFilterHaveShowOnlyCateID30 = selectedProduct
+            .filter((product) => showOnlyCateID28.includes(product.categoryID))
+            .map((product) => product.filterSubIDArray)
+            .flat()
+            .filter((value) => value !== null && !isNaN(value));
+          const combinedFilter = [...subFilterHaveShowOnlyCateID30];
+          const filterString = combinedFilter.join(",");
+          if (subFilterHaveShowOnlyCateID30.length > 0) {
             apiUrl += `&sub_filter=[${filterString}]`;
           }
         } else {
           console.log("categoryID", category_id);
-          const combinedFilter = [...subFilter];
+
+          const combinedFilter = [...subFilterNotHaveSameCateID];
           const filterString = combinedFilter.join(",");
-          if (subFilter.length > 0) {
+          if (subFilterNotHaveSameCateID.length > 0) {
             apiUrl += `&sub_filter=[${filterString}]`;
           }
         }
       }
-      // if (
-      //   subFilter.length > 0 &&
-      //   category_id != 48 &&
-      //   category_id != 34 &&
-      //   category_id != 49 &&
-      //   category_id != 25 &&
-      //   category_id != 267 &&
-      //   category_id != 46 &&
-      //   category_id != 50 &&
-      //   category_id != 30
-      // ) {
-      //   const combinedFilter = [...subFilter, ...filterIds];
-      //   const filterString = combinedFilter.join(",");
-      //   apiUrl += `&sub_filter=[${filterString}]`;
-      // }
 
       // console.log(apiUrl);
       await new Promise((resolve) => setTimeout(resolve, 800));
@@ -312,23 +339,13 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
-        // Check if the fetched products belong to the current category
-        const isCurrentCategory =
-          parseInt(category_id) === parseInt(categoryID);
-
-        if (isCurrentCategory) {
-          setProductFilter(productData.res_result);
-          setLoading(false);
-        } else {
-          // If not, do not update the state
-          setLoading(false);
-        }
+        setProductFilter(productData.res_result);
+        setLoading(false);
       } else {
         setProductFilter(null);
         setLoading(false);
       }
     } catch (error) {
-      setLoading(false);
       console.error("Error fetching products", error);
     }
   };
@@ -376,110 +393,123 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         apiUrl += `&sort=desc&field=cost_price`;
       }
 
-      // if (
-      //   subFilter.length > 0 &&
-      //   categoryID != 48 &&
-      //   categoryID != 34 &&
-      //   categoryID != 49 &&
-      //   categoryID != 25 &&
-      //   categoryID != 267 &&
-      //   categoryID != 46 &&
-      //   categoryID != 50 &&
-      //   categoryID != 30
-      // ) {
-      //   const subFilterString = subFilter.join(",");
-      //   apiUrl += `&sub_filter=[${subFilterString}]`;
-      // }
-      // if (filterIds.length > 0) {
-      //   apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-      // }
-      // if (
-      //   subFilter.length > 0 &&
-      //   categoryID != 48 &&
-      //   categoryID != 34 &&
-      //   categoryID != 49 &&
-      //   categoryID != 25 &&
-      //   categoryID != 267 &&
-      //   categoryID != 46 &&
-      //   categoryID != 50 &&
-      //   categoryID != 30
-      // ) {
-      //   const combinedFilter = [...subFilter, ...filterIds];
-      //   const filterString = combinedFilter.join(",");
-      //   apiUrl += `&sub_filter=[${filterString}]`;
-      // }
       const cateID = parseInt(categoryID);
+      const excludedCateIDs = [48, 97, 98, 99, 34, 49, 25, 267, 50, 37, 38, 39];
+      const hasCategory28 = selectedProduct.some(
+        (product) => product.categoryID === 28
+      );
+      const subFilterNotHaveSameCateID = selectedProduct
+        .filter((product) => product.categoryID !== cateID)
+        .map((product) => product.filterSubIDArray)
+        .flat()
+        .filter((value) => value !== null && !isNaN(value));
 
-      // if (
-      //   (filterIds.length > 0 || subFilter.length > 0) &&
-      //   categoryID != 48 &&
-      //   categoryID != 34 &&
-      //   categoryID != 49 &&
-      //   categoryID != 25 &&
-      //   categoryID != 267 &&
-      //   categoryID != 46 &&
-      //   categoryID != 50 &&
-      //   categoryID != 30
-      // ) {
-      //   const combinedFilter = [...subFilter, ...filterIds];
-      //   const filterString = combinedFilter.join(",");
-      //   apiUrl += `&sub_filter=[${filterString}]`;
-      // }
       if (
         (filterIds.length > 0 || subFilter.length > 0) &&
-        cateID != 48 &&
-        cateID != 97 &&
-        cateID != 98 &&
-        cateID != 99 &&
-        cateID != 34 &&
-        cateID != 49 &&
-        cateID != 25 &&
-        cateID != 267 &&
-        cateID != 50
+        !excludedCateIDs.includes(cateID)
       ) {
         console.log(cateID);
         // 29 = ram , 28 = mainboard
+        if (filterIds.length > 0) {
+          apiUrl += `&filter_main=[${filterIds.join(",")}]`;
+        }
         if (cateID === 29) {
           console.log("this 29");
-          const hasCategory28 = selectedProduct.some(
-            (product) => product.categoryID === 28
-          );
 
           if (hasCategory28) {
-            const combinedFilter = [...subFilter, ...filterIds];
+            const subFilterNotHaveCate29 = selectedProduct
+              .filter((product) => product.categoryID !== 29)
+              .map((product) => product.filterSubIDArray)
+              .flat()
+              .filter((value) => value !== null && !isNaN(value));
+            const combinedFilter = [...subFilterNotHaveCate29];
             const filterString = combinedFilter.join(",");
             apiUrl += `&sub_filter=[${filterString}]`;
-          } else {
-            if (filterIds.length > 0) {
-              apiUrl += `&sub_filter=[${filterIds.join(",")}]`;
-            }
+          }
+        } else if (cateID === 9) {
+          // case if click category 9 (cpu)
+          // 28(mainboard),30(graphic card)
+          const showOnlyCateID9 = [28, 30];
+          const subFilterHaveShowOnlyCateID9 = selectedProduct
+            .filter((product) => showOnlyCateID9.includes(product.categoryID))
+            .map((product) => product.filterSubIDArray)
+            .flat()
+            .filter((value) => value !== null && !isNaN(value));
+          const combinedFilter = [...subFilterHaveShowOnlyCateID9];
+          const filterString = combinedFilter.join(",");
+          if (subFilterHaveShowOnlyCateID9.length > 0) {
+            apiUrl += `&sub_filter=[${filterString}]`;
+          }
+        } else if (cateID === 28) {
+          // case if click category 28 (mainboard)
+          // 9(cpu),28(mainboard),30(graphic card),15(harddisk,ssd,m2),46(power supply)
+          const showOnlyCateID28 = [9, 15, 29, 30, 46];
+          const subFilterHaveShowOnlyCateID28 = selectedProduct
+            .filter((product) => showOnlyCateID28.includes(product.categoryID))
+            .map((product) => product.filterSubIDArray)
+            .flat()
+            .filter((value) => value !== null && !isNaN(value));
+          const combinedFilter = [...subFilterHaveShowOnlyCateID28];
+          const filterString = combinedFilter.join(",");
+          if (subFilterHaveShowOnlyCateID28.length > 0) {
+            apiUrl += `&sub_filter=[${filterString}]`;
+          }
+        } else if (cateID === 30) {
+          // case if click category 30 (graphic card)
+          // 9(cpu),28(mainboard),30(graphic card),46(power supply)
+          const showOnlyCateID28 = [9, 29, 30, 46];
+          const subFilterHaveShowOnlyCateID30 = selectedProduct
+            .filter((product) => showOnlyCateID28.includes(product.categoryID))
+            .map((product) => product.filterSubIDArray)
+            .flat()
+            .filter((value) => value !== null && !isNaN(value));
+          const combinedFilter = [...subFilterHaveShowOnlyCateID30];
+          const filterString = combinedFilter.join(",");
+          if (subFilterHaveShowOnlyCateID30.length > 0) {
+            apiUrl += `&sub_filter=[${filterString}]`;
           }
         } else {
-          console.log("categoryID", categoryID);
-          const combinedFilter = [...subFilter, ...filterIds];
+          const combinedFilter = [...subFilterNotHaveSameCateID];
           const filterString = combinedFilter.join(",");
-          if (subFilter.length > 0) {
+          if (subFilterNotHaveSameCateID.length > 0) {
             apiUrl += `&sub_filter=[${filterString}]`;
           }
         }
       }
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      const productResponse = await fetch(apiUrl);
+      const productResponse = await fetch(apiUrl, {
+        signal: abortController.signal,
+      });
       const productData = await productResponse.json();
 
       if (productData.res_code === "00") {
-        setLoading(false);
+        const isCurrentCategory = cateID === parseInt(categoryID);
 
-        setProductFilter(productData.res_result);
-        setCurrentPage(newPage);
+        if (isCurrentCategory) {
+          setProductFilter(productData.res_result);
+          setLoading(false);
+          setCurrentPage(newPage);
+        } else {
+          setLoading(false);
+          setProductFilter(null);
+        }
       } else {
-        setLoading(false);
-
         setProductFilter(null);
-
-        // console.error("failed to fetch products");
+        setLoading(false);
       }
+      // if (productData.res_code === "00") {
+      //   setLoading(false);
+
+      //   setProductFilter(productData.res_result);
+      //   setCurrentPage(newPage);
+      // } else {
+      //   setLoading(false);
+
+      //   setProductFilter(null);
+
+      //   // console.error("failed to fetch products");
+      // }
     } catch (error) {
       setLoading(false);
       console.error("Error fetching products", error);
@@ -504,55 +534,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       }
     });
   };
-
-  // const handleAddToSelectedProducts = (
-  //   productId,
-  //   name,
-  //   categoryID,
-  //   additionCate,
-  //   filterID,
-  //   filterSubID,
-  //   price,
-  //   priceBefore,
-  //   discount,
-  //   imgUrl,
-  //   filterSubIDArray
-  // ) => {
-  //   const categoryLimit = categoryID === 29 ? 2 : 1;
-
-  //   const existingProductsForCategory = selectedProduct.filter(
-  //     (product) => product.categoryID === categoryID
-  //   );
-
-  //   if (existingProductsForCategory.length >= categoryLimit) {
-  //     return;
-  //   }
-
-  //   const existingProductIndex = existingProductsForCategory.findIndex(
-  //     (product) => product.id === productId
-  //   );
-
-  //   if (existingProductIndex !== -1) {
-  //     return;
-  //   }
-
-  //   setSelectedProduct((prevProducts) => [
-  //     ...prevProducts,
-  //     {
-  //       id: productId,
-  //       name,
-  //       categoryID,
-  //       additionCate,
-  //       filterID,
-  //       filterSubID,
-  //       price,
-  //       priceBefore,
-  //       discount,
-  //       imgUrl,
-  //       filterSubIDArray,
-  //     },
-  //   ]);
-  // };
 
   const handleAddToSelectedProducts = (
     productId,
@@ -585,6 +566,15 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     const isParentCategory = parentCategories.some(
       (parentCategory) => parentCategory.parent_id === categoryID
     );
+    let numberCateID;
+
+    numberCateID =
+      categoryID === 15 || categoryID === 47 ? additionCate : [categoryID];
+
+    const findCategory = navList.find((value) =>
+      numberCateID.includes(value.categoryID)
+    );
+
     const calculateTotalSlotRam = selectedProduct
       .filter((product) => product.categoryID === 29)
       .reduce(
@@ -646,17 +636,26 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           const calculate =
             calculateTotalSlotRam + parseInt(existingProduct.slotRam);
           console.log("calculate", calculate);
-
-          if (calculate <= maxMSlotMainBoard && maxMemoryMainBoardCate28) {
-            console.log("calculateTotalSlotRam", calculateTotalSlotRam);
+          if (hasCategory28) {
+            if (calculate <= maxMSlotMainBoard && maxMemoryMainBoardCate28) {
+              console.log("calculateTotalSlotRam", calculateTotalSlotRam);
+              const updatedProducts = selectedProduct.map((product) =>
+                product.id === productId
+                  ? { ...product, quantity: product.quantity + 1 }
+                  : product
+              );
+              setSelectedProduct(updatedProducts);
+            }
+          } else {
             const updatedProducts = selectedProduct.map((product) =>
               product.id === productId
-                ? { ...product, quantity: product.quantity + 1 }
+                ? {
+                    ...product,
+                    quantity: Math.min(product.quantity + 1, 4),
+                  }
                 : product
             );
             setSelectedProduct(updatedProducts);
-          } else {
-            notify("error", "ไม่สามารถเพิ่มได้");
           }
         }
         if (
@@ -664,23 +663,28 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           Array.isArray(additionCate) &&
           additionCate.includes(39)
         ) {
-          // console.log("calculateTotalSlotRam", calculateTotalSlotRam);
-
-          // console.log("slotRam", existingProduct.slotRam);
-
           const calculate = calculateTotalSlotM2 + 1;
           console.log("calculate", calculate);
-
-          if (calculate <= maxM2MainBoard) {
-            console.log("calculateTotalSlotM2", calculateTotalSlotM2);
+          if (hasCategory28) {
+            if (calculate <= maxM2MainBoard) {
+              console.log("calculateTotalSlotM2", calculateTotalSlotM2);
+              const updatedProducts = selectedProduct.map((product) =>
+                product.id === productId
+                  ? { ...product, quantity: product.quantity + 1 }
+                  : product
+              );
+              setSelectedProduct(updatedProducts);
+            }
+          } else {
             const updatedProducts = selectedProduct.map((product) =>
               product.id === productId
-                ? { ...product, quantity: product.quantity + 1 }
+                ? {
+                    ...product,
+                    quantity: Math.min(product.quantity + 1, 4),
+                  }
                 : product
             );
             setSelectedProduct(updatedProducts);
-          } else {
-            notify("error", "ไม่สามารถเพิ่มได้");
           }
         }
       } else if (action === "remove") {
@@ -693,7 +697,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           );
 
           setSelectedProduct(updatedProducts);
-          notify("success", "ลดจำนวนแล้ว");
         } else {
           // Remove product if quantity is 1
           setSelectedProduct((prevProducts) =>
@@ -875,7 +878,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 },
               ]);
 
-              notify("success", "เพิ่มหสินค้าในสเปคแล้ว");
+              notify("success", "เพิ่มหกสินค้าในสเปคแล้ว");
             }
           }
           if (hasCategoryM2) {
@@ -925,6 +928,10 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           if (!hasCategory29) {
             if (existingProductIndex !== -1) {
               console.log("123132");
+              notify(
+                "success",
+                `แทนสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`
+              );
               setSelectedProduct((prevProducts) => {
                 const updatedProducts = [...prevProducts];
                 updatedProducts[existingProductIndex] = {
@@ -951,7 +958,10 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 return updatedProducts;
               });
             } else {
-              console.log;
+              notify(
+                "success",
+                `เพิ่มสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`
+              );
               setSelectedProduct((prevProducts) => [
                 ...prevProducts,
                 {
@@ -985,6 +995,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
           if (existingProductIndex !== -1) {
             // กรณีมีสินค้าอยู่แล้ว
+
             setSelectedProduct((prevProducts) => {
               const updatedProducts = [...prevProducts];
               updatedProducts[existingProductIndex] = {
@@ -1010,7 +1021,10 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               };
               return updatedProducts;
             });
-            notify("success", "แทนสินค้าในสเปคแล้ว");
+            notify(
+              "success",
+              `แทนสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`
+            );
           } else {
             setSelectedProduct((prevProducts) => [
               ...prevProducts,
@@ -1036,7 +1050,10 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 quantity: 1,
               },
             ]);
-            notify("success", "เพิ่มหสินค้าในสเปคแล้ว");
+            notify(
+              "success",
+              `เพิ่มสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`
+            );
           }
         }
       } else {
@@ -1063,8 +1080,10 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         );
 
         if (existingProductsParentIDForCategory.length === 0) {
-          console.log("33");
-          // If no product with the same additionCate and categoryID, add a new one
+          notify(
+            "success",
+            `เพิ่มสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`
+          ); // If no product with the same additionCate and categoryID, add a new one
           setSelectedProduct((prevProducts) => [
             ...prevProducts,
             {
@@ -1125,10 +1144,29 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   console.log(selectedProduct);
 
   const handleRemoveFromSelectedProducts = (productId) => {
+    const findProduct = selectedProduct.find(
+      (value) => value?.id === productId
+    );
+
+    let numberCateID;
+    if (findProduct) {
+      numberCateID =
+        findProduct.categoryID === 15 || findProduct.categoryID === 47
+          ? findProduct.additionCate
+          : [findProduct.categoryID];
+    }
+
+    const findCategory = navList.find((value) =>
+      numberCateID.includes(value.categoryID)
+    );
+
     setSelectedProduct((prevProducts) =>
       prevProducts.filter((product) => product.id !== productId)
     );
-    notify("error", "ลบสินค้าออกจากสเปคแล้ว");
+
+    if (findCategory) {
+      notify("error", `ลบสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`);
+    }
   };
   const hasProductsForCategory = (categoryID) => {
     return selectedProduct.some((item) => item.categoryID === categoryID);
@@ -1152,69 +1190,41 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     const value = event.target.value;
     setSearchValue(value);
   };
+
+  // console.log(productFilter.row);
+  // useEffect(() => {
+  //   if (categoryID !== null) {
+  //     fetchFilterData(categoryID);
+  //   }
+  // }, [selectedItems, categoryID]);
+  useEffect(() => {
+    // set default (first category in api)
+    const defaultCategoryID = navList[0].categoryID;
+    setCategoryID(defaultCategoryID);
+    fetchProductData(defaultCategoryID);
+    console.log("defaultCate", defaultCategoryID);
+    fetchFilterData(defaultCategoryID);
+    setSelected(defaultCategoryID.toString());
+    setTitle(navList[0].title_th);
+  }, []);
   useEffect(() => {
     let debounceTimeout;
-
     // Create a new AbortController for each useEffect
     const newAbortController = new AbortController();
     setAbortController(newAbortController);
-
+    console.log("debounce");
     debounceTimeout = setTimeout(() => {
       fetchProductData(categoryID, searchValue);
       setCurrentPage(1);
     }, 500);
 
-    // Cleanup function to abort the previous request when the effect is re-run
     return () => {
       clearTimeout(debounceTimeout);
       abortController.abort();
     };
-  }, [searchValue, categoryID]);
-
-  // console.log(productFilter.row);
-
+  }, [searchValue]);
   useEffect(() => {
-    // set default (first category in api)
-    const defaultCategoryID = navList[0].categoryID;
-    console.log("defaultCate", defaultCategoryID);
-    fetchFilterData(defaultCategoryID);
-    setCategoryID(defaultCategoryID);
-    fetchProductData(defaultCategoryID);
-    setSelected(defaultCategoryID.toString());
-    setTitle(navList[0].title_th);
-  }, []);
-  useEffect(() => {
-    const fetchFilterData = async () => {
-      try {
-        const filterIds = selectedItems.map((item) => item.id);
-
-        const filterResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${categoryID}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body:
-              filterIds.length > 0
-                ? JSON.stringify({ filter: filterIds })
-                : undefined,
-          }
-        );
-
-        const filterData = await filterResponse.json();
-
-        if (filterData.res_code === "00") {
-          setFilter(filterData.res_result);
-        } else {
-          setFilter(null);
-        }
-      } catch (error) {
-        console.error("Error fetching filters", error);
-      }
-    };
-
-    fetchFilterData();
+    fetchFilterData(categoryID);
     console.log("fetchgProdutGe", categoryID);
     fetchProductData(categoryID);
   }, [selectedItems, categoryID]);
@@ -1262,6 +1272,21 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       fetchSpec();
     }
   }, [router.query.edit]);
+  useEffect(() => {
+    const body = document.body;
+
+    if (isModalNavListVisible) {
+      // hide main scrollbar
+      body.style.overflow = "hidden";
+    } else {
+      // remove class to show main scrollbar
+      body.style.overflow = "visible";
+    }
+    // clear
+    return () => {
+      body.style.overflow = "visible";
+    };
+  }, [isModalNavListVisible]);
 
   // console.log(selectedProduct);
 
@@ -1278,8 +1303,23 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               flexWrap="flex"
               justifyContent="center"
               alignItems="center"
+              onClick={handleToggleModal}
+              style={{
+                cursor: "pointer",
+                transition: "background-color 0.6s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transition = "box-shadow 0.3s ease";
+                e.currentTarget.style.boxShadow =
+                  "rgba(0, 0, 0, 0.08) 0px 4px 12px";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transition = "box-shadow 0.3s ease";
+
+                e.currentTarget.style.boxShadow = "none"; // Reset box shadow on leave
+              }}
             >
-              <Icon size="14px" mr="0.5rem" onClick={handleToggleModal}>
+              <Icon size="14px" mr="0.5rem">
                 back
               </Icon>
               <H5 fontWeight={600}>ดูรายการจัดสเปคคอม</H5>
@@ -1871,195 +1911,319 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           onClose={() => setIsModalVisible(false)}
         />
       )}
-      {isModalNavListVisible && (
-        <ModalNavListDIY>
-          <div style={{ width: "100%" }}>
-            <div>
-              <FlexBox
-                alignItems="center"
-                style={{ backgroundColor: "white", marginBottom: "3rem" }}
-              >
-                <Box className="text-left" display="flex" alignItems="center">
-                  <Icon size="12px" mr="0.5rem">
-                    menu
-                  </Icon>
-                  <H5>รายการจัดสเปคคอม</H5>
-                </Box>
-              </FlexBox>
+      (
+      <ModalNavListDIY className={isModalNavListVisible ? "open" : "exits"}>
+        <div style={{ width: "100%" }}>
+          <div>
+            <FlexBox
+              alignItems="center"
+              style={{ backgroundColor: "white", marginBottom: "3rem" }}
+            >
+              <Box className="text-left" display="flex" alignItems="center">
+                <Icon size="12px" mr="0.5rem">
+                  menu
+                </Icon>
+                <H5>รายการจัดสเปคคอม</H5>
+              </Box>
+            </FlexBox>
 
-              <FlexBox>
-                <Box className="exit-button">
-                  <IconButton
-                    type="button"
-                    p="3px 6px 3px"
-                    style={{ width: "25px", height: "25px" }}
-                    onClick={handleCloseModalNavList}
-                  >
-                    <Icon size="12px">close</Icon>
-                  </IconButton>
-                </Box>
-              </FlexBox>
-            </div>
-            <div className="selected-products">
-              {navList.map((value, i) => (
-                <Fragment key={i}>
-                  {selectedProduct &&
-                    selectedProduct
-                      .filter((item) => {
-                        if (value.parent_id !== null) {
-                          const matchingProduct = selectedProduct.find(
-                            (selectedItem) =>
-                              selectedItem?.additionCate[0] === value.categoryID
-                          );
-                          return (
-                            matchingProduct &&
-                            matchingProduct.additionCate.some((cate) =>
-                              item.additionCate.includes(cate)
-                            )
-                          );
-                        } else {
-                          return item.categoryID === value.categoryID;
+            <FlexBox>
+              <Box className="exit-button">
+                <IconButton
+                  type="button"
+                  p="3px 6px 3px"
+                  style={{ width: "25px", height: "25px" }}
+                  onClick={handleCloseModalNavList}
+                >
+                  <Icon size="12px">close</Icon>
+                </IconButton>
+              </Box>
+            </FlexBox>
+          </div>
+          <div className="selected-products">
+            {navList.map((value, i) => (
+              <Fragment key={i}>
+                {selectedProduct &&
+                  selectedProduct
+                    .filter((item) => {
+                      if (value.parent_id !== null) {
+                        const matchingProduct = selectedProduct.find(
+                          (selectedItem) =>
+                            selectedItem?.additionCate[0] === value.categoryID
+                        );
+                        return (
+                          matchingProduct &&
+                          matchingProduct.additionCate.some((cate) =>
+                            item.additionCate.includes(cate)
+                          )
+                        );
+                      } else {
+                        return item.categoryID === value.categoryID;
+                      }
+                    })
+                    .map((item, ind) => (
+                      <StyledProductCategory
+                        key={ind}
+                        mb="0.75rem"
+                        shadow={
+                          selected === value.categoryID.toString() ? 8 : null
                         }
-                      })
-                      .map((item, ind) => (
-                        <StyledProductCategory
-                          key={ind}
-                          mb="0.75rem"
-                          shadow={
-                            selected === value.categoryID.toString() ? 8 : null
-                          }
-                          bg={
-                            selected === value.categoryID.toString()
-                              ? "white"
-                              : "gray.100"
-                          }
-                          onClick={() => {
-                            handleCategoryClick(value.categoryID.toString())();
-                            handleCloseModalNavList();
-                          }}
-                        >
+                        bg={
+                          selected === value.categoryID.toString()
+                            ? "white"
+                            : "gray.100"
+                        }
+                        onClick={() => {
+                          handleCategoryClick(value.categoryID.toString())();
+                          handleCloseModalNavList();
+                        }}
+                      >
+                        <FlexBox alignItems="left" flexDirection="row">
+                          <NextImage
+                            src={item.imgUrl}
+                            height={40}
+                            width={40}
+                            objectFit="contain"
+                          />
                           <FlexBox
-                            alignItems="center"
-                            justifyContent="space-between"
+                            alignItems="left"
+                            flexDirection="column"
+                            ml="1rem"
                           >
-                            <FlexBox alignItems="center">
-                              <NextImage
-                                src={item.imgUrl}
-                                height={40}
-                                width={40}
-                                objectFit="contain"
-                              />
-                              <SemiSpan fontSize={12} ml="1rem">
-                                {item.name.length > 12
-                                  ? item.name.slice(0, 12) + "..."
-                                  : item.name}
-                              </SemiSpan>
+                            <SemiSpan fontSize={12}>
+                              {item.name.length > 15
+                                ? item.name.slice(0, 20) + "..."
+                                : item.name}
+                            </SemiSpan>
+                            <FlexBox alignItems="center" mt="0.2rem">
+                              <a
+                                href={`/product/${item.id}/${formatSlug(
+                                  item.name
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Chip
+                                  p="0.25rem 1rem"
+                                  bg={`ihavecpu.light`}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <H3
+                                    fontSize={10}
+                                    color="ihavecpu.main"
+                                    style={{
+                                      margin: "0",
+                                      lineHeight: "1",
+                                    }}
+                                  >
+                                    รายละเอียด
+                                  </H3>
+                                </Chip>
+                              </a>
+                              {value.categoryID != 29 && (
+                                <SemiSpan fontSize={12} ml="0.5rem">
+                                  x {item.quantity}
+                                </SemiSpan>
+                              )}
                             </FlexBox>
+                            {(value.categoryID == 29 ||
+                              value.categoryID == 39) && (
+                              <FlexBox alignItems="center" mt="0.2rem">
+                                <Chip
+                                  p="0.10rem 0.5rem"
+                                  bg={`white`}
+                                  style={{
+                                    border: "1px solid gray",
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Button
+                                    size="extrasmall"
+                                    padding="3px"
+                                    color="secondary"
+                                    variant="outlinedNoBorder"
+                                    style={{
+                                      width: "19px",
+                                      height: "19px",
+                                    }}
+                                    type="button"
+                                    onClick={() =>
+                                      handleAddToSelectedProducts(
+                                        item.id,
+                                        item.name,
+                                        item.categoryID,
+                                        item.additionCate,
+                                        item.filterID,
+                                        item.filterSubID,
+                                        item.price,
+                                        item.priceBefore,
+                                        item.discount,
+                                        item.imgUrl,
+                                        item.filterSubIDArray,
+                                        item.sizeRam,
+                                        item.sizeSubRam,
+                                        item.slotRam,
+                                        item.sataMainBoard,
+                                        item.m2MainBoard,
+                                        item.mSlotMainBoard,
+                                        item.maxMemoryMainBoard,
+                                        "add"
+                                      )
+                                    }
+                                  >
+                                    <Icon variant="extrasmall">plus</Icon>
+                                  </Button>
+                                  <SemiSpan
+                                    fontSize={12}
+                                    ml="0.5rem"
+                                    color="gray"
+                                  >
+                                    {item.quantity}
+                                  </SemiSpan>
+                                  <Button
+                                    size="extrasmall"
+                                    padding="3px"
+                                    color="secondary"
+                                    variant="outlinedNoBorder"
+                                    type="button"
+                                    onClick={() =>
+                                      handleAddToSelectedProducts(
+                                        item.id,
+                                        item.name,
+                                        item.categoryID,
+                                        item.additionCate,
+                                        item.filterID,
+                                        item.filterSubID,
+                                        item.price,
+                                        item.priceBefore,
+                                        item.discount,
+                                        item.imgUrl,
+                                        item.filterSubIDArray,
+                                        item.sizeRam,
+                                        item.sizeSubRam,
+                                        item.slotRam,
+                                        item.sataMainBoard,
+                                        item.m2MainBoard,
+                                        item.mSlotMainBoard,
+                                        item.maxMemoryMainBoard,
+                                        "remove"
+                                      )
+                                    }
+                                    ml="0.5rem"
+                                    style={{
+                                      width: "19px",
+                                      height: "19px",
+                                    }}
+                                  >
+                                    <Icon variant="extrasmall">minus</Icon>
+                                  </Button>
+                                </Chip>
+                              </FlexBox>
+                            )}
                           </FlexBox>
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              handleRemoveFromSelectedProducts(item.id)
-                            }
-                            style={{ marginLeft: "auto" }}
+                        </FlexBox>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleRemoveFromSelectedProducts(item.id)
+                          }
+                          style={{ marginLeft: "auto" }}
+                        >
+                          <Icon
+                            variant="small"
+                            defaultcolor="auto"
+                            color="error"
                           >
-                            <Icon
-                              variant="small"
-                              defaultcolor="auto"
-                              color="error"
-                            >
-                              delete
-                            </Icon>
-                          </IconButton>
-                        </StyledProductCategory>
-                      ))}
+                            delete
+                          </Icon>
+                        </IconButton>
+                      </StyledProductCategory>
+                    ))}
 
-                  {(!selectedProduct ||
-                    !selectedProduct.some((item) =>
-                      value.parent_id !== null
-                        ? selectedProduct
-                            .find((selectedItem) =>
-                              selectedItem.additionCate.includes(
-                                value.categoryID
-                              )
-                            )
-                            ?.additionCate?.some((cate) =>
-                              item.additionCate.includes(cate)
-                            )
-                        : item.categoryID === value.categoryID
-                    )) && (
-                    <StyledProductCategory
-                      mb="0.75rem"
-                      onClick={() => {
-                        handleCategoryClick(value.categoryID.toString())();
-                        handleCloseModalNavList();
-                      }}
-                      shadow={
-                        selected === value.categoryID.toString() ? 8 : null
-                      }
-                      bg={
-                        selected === value.categoryID.toString()
-                          ? "white"
-                          : "gray.100"
-                      }
-                    >
-                      {value.icon && (
-                        <Icon size="20px" defaultcolor="auto">
-                          {value.icon}
-                        </Icon>
-                      )}
-                      <span className="product-diy-title">
-                        {value.title_th}
-                      </span>
-                    </StyledProductCategory>
-                  )}
-                </Fragment>
-              ))}
-
-              {selectedProduct.length > 0 && (
-                <Fragment>
+                {(!selectedProduct ||
+                  !selectedProduct.some((item) =>
+                    value.parent_id !== null
+                      ? selectedProduct
+                          .find((selectedItem) =>
+                            selectedItem.additionCate.includes(value.categoryID)
+                          )
+                          ?.additionCate?.some((cate) =>
+                            item.additionCate.includes(cate)
+                          )
+                      : item.categoryID === value.categoryID
+                  )) && (
                   <StyledProductCategory
-                    id="all"
-                    mt="0.5rem"
-                    shadow={selected.match("all") ? 4 : null}
-                    onClick={handleCreateSpecClick}
-                    bg="#d4001a"
+                    mb="0.75rem"
+                    onClick={() => {
+                      handleCategoryClick(value.categoryID.toString())();
+                      handleCloseModalNavList();
+                    }}
+                    shadow={selected === value.categoryID.toString() ? 8 : null}
+                    bg={
+                      selected === value.categoryID.toString()
+                        ? "white"
+                        : "gray.100"
+                    }
                   >
-                    <Icon size="20px">tools</Icon>
+                    {value.icon && (
+                      <Icon size="20px" defaultcolor="auto">
+                        {value.icon}
+                      </Icon>
+                    )}
+                    <span className="product-diy-title">{value.title_th}</span>
+                  </StyledProductCategory>
+                )}
+              </Fragment>
+            ))}
+
+            {selectedProduct.length > 0 && (
+              <Fragment>
+                <StyledProductCategory
+                  id="all"
+                  mt="0.5rem"
+                  shadow={selected.match("all") ? 4 : null}
+                  onClick={handleCreateSpecClick}
+                  bg="#d4001a"
+                >
+                  <Icon size="20px">tools</Icon>
+                  <span
+                    id="all"
+                    className="product-diy-title"
+                    style={{ color: "white" }}
+                  >
+                    สร้างชุดสเปคคอม
+                  </span>
+                </StyledProductCategory>
+                <StyledProductCategory
+                  id="all"
+                  mt="0.5rem"
+                  onClick={handleResetButtonClick}
+                  shadow={selected.match("all") ? 4 : null}
+                  bg="grey"
+                  style={{ padding: "8px" }}
+                >
+                  <Box>
                     <span
                       id="all"
                       className="product-diy-title"
-                      style={{ color: "white" }}
+                      style={{
+                        color: "white",
+                      }}
                     >
-                      สร้างชุดสเปคคอม
+                      รีเซ็ต
                     </span>
-                  </StyledProductCategory>
-                  <StyledProductCategory
-                    id="all"
-                    mt="0.5rem"
-                    onClick={handleResetButtonClick}
-                    shadow={selected.match("all") ? 4 : null}
-                    bg="grey"
-                    style={{ padding: "8px" }}
-                  >
-                    <Box>
-                      <span
-                        id="all"
-                        className="product-diy-title"
-                        style={{
-                          color: "white",
-                        }}
-                      >
-                        รีเซ็ต
-                      </span>
-                    </Box>
-                  </StyledProductCategory>
-                </Fragment>
-              )}
-            </div>
+                  </Box>
+                </StyledProductCategory>
+              </Fragment>
+            )}
           </div>
-        </ModalNavListDIY>
-      )}
+        </div>
+      </ModalNavListDIY>
+      )
     </Fragment>
   );
 };

@@ -291,23 +291,34 @@ const ProductCard1DIY: FC<ProductCard1DIYProps> = ({
               >
                 {description}
               </H6>
-              <FlexBox alignItems="center" mt="10px">
-                <SemiSpan pr="0.5rem" fontWeight="600" color="ihavecpu.main">
-                  {/* {calculateDiscount(price, off)} */}
+              <FlexBox alignItems="left" mt="10px">
+                <SemiSpan pr="0.3rem" fontWeight="600" color="ihavecpu.main">
                   <PriceFormat price={price ?? 0} />
                 </SemiSpan>
-
-                {!!off && (
+                <SemiSpan
+                  fontSize="0.65rem"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <del>
+                    <PriceFormat price={priceBefore ?? 0} />
+                  </del>
+                </SemiSpan>
+                {/* {!!off && (
                   <SemiSpan
-                    color="text.muted"
-                    fontWeight="100"
-                    fontSize="0.75rem"
+                    fontSize="0.65rem"
+                    style={{
+                      display: "flex",
+                      alignItems: "right",
+                    }}
                   >
                     <del>
                       <PriceFormat price={priceBefore ?? 0} />
                     </del>
                   </SemiSpan>
-                )}
+                )} */}
               </FlexBox>
             </Box>
 
@@ -334,10 +345,7 @@ const ProductCard1DIY: FC<ProductCard1DIYProps> = ({
                     color="text.ihavecpu"
                     fontSize="13px"
                     fontWeight="600"
-                  >
-                    {/* You can add additional styling here */}
-                    {/* {cartItem.qty} */}
-                  </SemiSpan>
+                  ></SemiSpan>
                 </>
               ) : (
                 // Show "plus" button if the product is not in the state

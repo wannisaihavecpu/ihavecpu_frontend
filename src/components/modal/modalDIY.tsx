@@ -11,6 +11,7 @@ import Avatar from "@component/avatar";
 import FlexBox from "@component/FlexBox";
 import Box from "@component/Box";
 import useWindowSize from "@hook/useWindowSize";
+import Table from "@component/table";
 
 const ModalDIY = ({ selectedProducts, onClose }) => {
   const router = useRouter();
@@ -187,12 +188,25 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           maxWidth: "800px",
           maxHeight: "80%",
           overflowY: "auto",
+          border: "solid 1px #e2eef1",
         }}
       >
-        <h2 style={{ textAlign: "center", color: "#d4001a" }}>
-          รายการสั่งซื้อ
-        </h2>
+        <h2 style={{ textAlign: "left", color: "#183b56" }}>รายการสั่งซื้อ</h2>
         <TableDIYStyle>
+          {selectedProducts.map((product, index) => (
+            <div key={index} className="loader">
+              <div className="song">
+                <p className="name">{product.name}</p>
+                <p className="artist">{product.artist}</p>
+              </div>
+              <div className="albumcover">
+                <img src={product.imgUrl} />
+              </div>
+              <div className="play"></div>
+            </div>
+          ))}
+        </TableDIYStyle>
+        {/* <TableDIYStyle>
           <table className="custom-scrollbar">
             <thead>
               <tr>
@@ -210,7 +224,6 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
                   <td data-label="ลำดับ">{index + 1}</td>
                   <td data-label="รูป">
                     <img src={product.imgUrl} />
-                    {/* <Avatar src={product.imgUrl} alt={product.name} /> */}
                   </td>
                   <td data-label="ชื่อ">{product.name}</td>
 
@@ -227,26 +240,26 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
               ))}
             </tbody>
           </table>
-        </TableDIYStyle>
+        </TableDIYStyle> */}
         <FlexBox justifyContent="space-between" mt="1rem">
           <Button
             onClick={onClose}
-            color="primary"
-            bg="primary.light"
+            color="secondary"
+            bg="secondary.light"
             style={{ width: "48%" }}
           >
             แก้ไขรายการ
           </Button>
           <Button
-            color="primary"
-            bg="primary.light"
+            color="secondary"
+            bg="secondary.light"
             onClick={handlePrintButtonClick}
             style={{ width: "48%" }}
           >
             พิมพ์
           </Button>
         </FlexBox>
-        <FlexBox justifyContent="space-between" mt="1rem">
+        {/* <FlexBox justifyContent="space-between" mt="1rem">
           <Button
             onClick={handleShareButtonClick}
             color="primary"
@@ -263,7 +276,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           >
             ยืนยันการสั่งซื้อ
           </Button>
-        </FlexBox>
+        </FlexBox> */}
       </Box>
     </Box>
   );
