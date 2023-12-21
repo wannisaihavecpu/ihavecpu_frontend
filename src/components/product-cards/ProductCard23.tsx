@@ -2,14 +2,9 @@ import { FC } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { space, SpaceProps } from "styled-system";
-import { useAppContext } from "@context/AppContext";
-import Box from "@component/Box";
 import Image from "@component/Image";
-import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
-import { Button } from "@component/buttons";
 import Typography from "@component/Typography";
-import { IconButton } from "@component/buttons";
 import PriceFormat from "@component/PriceFormat";
 import { getTheme } from "@utils/utils";
 
@@ -58,13 +53,13 @@ interface ProductCard23Props extends SpaceProps {
 const ProductCard23: FC<ProductCard23Props> = (props) => {
   const { id, name, qty, price, imgUrl, slug, ...others } = props;
 
-  const { dispatch } = useAppContext();
-  const handleCartAmountChange = (amount: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { qty: amount, name, price, imgUrl, id },
-    });
-  };
+  // const { dispatch } = useAppContext();
+  // const handleCartAmountChange = (amount: number) => () => {
+  //   dispatch({
+  //     type: "CHANGE_CART_AMOUNT",
+  //     payload: { qty: amount, name, price, imgUrl, id },
+  //   });
+  // };
 
   const formatSlug = (name) => {
     let formattedSlug = name.replace(/\s+/g, "-");

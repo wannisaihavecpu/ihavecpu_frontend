@@ -1,15 +1,9 @@
-import { FC, Fragment, useState } from "react";
-import Link from "next/link";
-import NextImage from "next/image";
+import { FC, Fragment } from "react";
 import Box from "@component/Box";
-import Card from "@component/Card";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
-import Typography, { H3, H5, H6, Paragraph } from "@component/Typography";
-import Category from "@models/category.model";
+import Typography, { H3 } from "@component/Typography";
 import viewDIY from "@models/viewDIY.model";
-import TableRow from "@component/TableRow";
-import Avatar from "@component/avatar";
 import { Button } from "@component/buttons";
 import { useRouter } from "next/router";
 import { useAppContext } from "@context/AppContext";
@@ -19,6 +13,7 @@ import { ProductCard23 } from "@component/product-cards";
 import PriceFormat from "@component/PriceFormat";
 import Icon from "@component/icon/Icon";
 import SocialButton from "@component/social/SocialButton";
+import useWindowSize from "@hook/useWindowSize";
 
 // ===========================================================
 type Props = { details: viewDIY[] };
@@ -28,6 +23,8 @@ const Detail: FC<Props> = ({ details }) => {
   const router = useRouter();
   const { id } = router.query;
   const { dispatch } = useAppContext();
+  const FIXED_ID = "services-area";
+  const width = useWindowSize();
 
   const handleEditClick = () => {
     const diyId = id;
@@ -62,24 +59,10 @@ const Detail: FC<Props> = ({ details }) => {
       console.error("Error handling share and adding to cart", error);
     }
   };
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyClick = () => {
-    // Logic to copy the link to the clipboard (You can use document.execCommand('copy') or other methods)
-    // For this example, let's assume the link is stored in a variable named 'link'
-    const link = "https://example.com";
-    navigator.clipboard.writeText(link);
-    setCopied(true);
-
-    // Reset copied state after a certain duration
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  };
 
   return (
     <Box>
-      <FlexBox alignItems="center" mb="2rem">
+      <FlexBox alignItems="center" mb="2rem" id={FIXED_ID}>
         <Icon defaultcolor="auto" mr="0.6rem">
           list
         </Icon>
@@ -90,7 +73,7 @@ const Detail: FC<Props> = ({ details }) => {
 
       <Fragment>
         <Grid container spacing={6}>
-          <Grid item lg={8} md={8} xs={12}>
+          <Grid item lg={8} md={8} xs={12} id="productlist">
             {details.map((item) => (
               <ProductCard23
                 mb="1.5rem"
@@ -104,139 +87,270 @@ const Detail: FC<Props> = ({ details }) => {
               />
             ))}
           </Grid>
-
           <Grid item lg={4} md={4} xs={12}>
-            <Card1>
-              <FlexBox
-                justifyContent="space-between"
-                alignItems="center"
-                mb="1rem"
-              >
-                {/* <Typography fontWeight={800} fontSize={18}>
+            {width > 900 ? (
+              // <SideNavScrollRight
+              //   navFixedComponentID={FIXED_ID}
+              //   navBottomFixedComponentID="card1"
+              // >
+              <Card1 id="card1">
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
+                >
+                  <Typography
+                    fontSize="15px"
+                    fontWeight="600"
+                    lineHeight="1"
+                  ></Typography>
+                </FlexBox>
+                <FlexBox justifyContent="center" alignItems="center" mb="1rem">
+                  <Typography
+                    color="#d4001a"
+                    fontWeight={800}
+                    fontSize={35}
+                    textAlign="center"
+                  >
+                    ฿
+                  </Typography>
+                  <Typography
+                    ml="0.5rem"
+                    color="#251f1f"
+                    fontWeight={800}
+                    fontSize={35}
+                    textAlign="center"
+                  >
+                    12,345.00
+                  </Typography>
+                </FlexBox>
+
+                {/* <Divider mb="0.5rem" /> */}
+
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
+                >
+                  <Typography>ยอดรวม :</Typography>
+
+                  <Typography fontSize="15px" fontWeight="600" lineHeight="1">
+                    <PriceFormat price={1} />
+                  </Typography>
+                </FlexBox>
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
+                >
+                  <Typography color="#d4001a">ส่วนลด :</Typography>
+
+                  <Typography
+                    color="#d4001a"
+                    fontSize="15px"
+                    fontWeight="600"
+                    lineHeight="1"
+                  >
+                    -<PriceFormat price={0} />
+                  </Typography>
+                </FlexBox>
+
+                <Divider mb="1rem" />
+
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
+                >
+                  <Typography fontWeight={600}>ยอดรวมสุทธิ :</Typography>
+
+                  <Typography fontSize="15px" fontWeight="600" lineHeight="1">
+                    <PriceFormat price={0} />
+                  </Typography>
+                </FlexBox>
+
+                <FlexBox flexDirection="column"></FlexBox>
+
+                <Box my="1rem">
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    color="ihavecpu"
+                    disabled={isAnyProductOutOfStock}
+                    onClick={handleAddToCartButtonClick}
+                    style={{
+                      width: "100%",
+                      height: "50px",
+                      boxShadow: "4px 7px 12px 0 rgba(226 , 35 , 35 , 0.2)",
+                    }}
+                  >
+                    สั่งซื้อชุดสเปคคอม
+                  </Button>
+                </Box>
+                <Box my="1rem">
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    color="secondary"
+                    onClick={handleEditClick}
+                    style={{
+                      width: "100%",
+                      height: "40px",
+                      // border: "1px solid #dedeea",
+                      // boxShadow: "4px 7px 12px 0 rgba(226 , 35 , 35 , 0.2)",
+                    }}
+                  >
+                    แก้ไขรายการ
+                  </Button>
+                </Box>
+                <Divider mt="1.5rem" mb="1rem" />
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="0.5rem"
+                >
+                  <Typography fontWeight={600}>แชร์ให้เพื่อน</Typography>
+                </FlexBox>
+                <FlexBox justifyContent="space-between" alignItems="center">
+                  <SocialButton />
+                </FlexBox>
+              </Card1>
+            ) : (
+              // </SideNavScrollRight>
+              <Card1>
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
+                >
+                  {/* <Typography fontWeight={800} fontSize={18}>
                   ยอดรวม
                 </Typography> */}
 
-                <Typography
-                  fontSize="15px"
-                  fontWeight="600"
-                  lineHeight="1"
-                ></Typography>
-              </FlexBox>
-              <FlexBox justifyContent="center" alignItems="center" mb="1rem">
-                <Typography
-                  color="#d4001a"
-                  fontWeight={800}
-                  fontSize={35}
-                  textAlign="center"
+                  <Typography
+                    fontSize="15px"
+                    fontWeight="600"
+                    lineHeight="1"
+                  ></Typography>
+                </FlexBox>
+                <FlexBox justifyContent="center" alignItems="center" mb="1rem">
+                  <Typography
+                    color="#d4001a"
+                    fontWeight={800}
+                    fontSize={35}
+                    textAlign="center"
+                  >
+                    ฿
+                  </Typography>
+                  <Typography
+                    ml="0.5rem"
+                    color="#251f1f"
+                    fontWeight={800}
+                    fontSize={35}
+                    textAlign="center"
+                  >
+                    12,345.00
+                  </Typography>
+                </FlexBox>
+
+                {/* <Divider mb="0.5rem" /> */}
+
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
                 >
-                  ฿
-                </Typography>
-                <Typography
-                  ml="0.5rem"
-                  color="#251f1f"
-                  fontWeight={800}
-                  fontSize={35}
-                  textAlign="center"
+                  <Typography>ยอดรวม :</Typography>
+
+                  <Typography fontSize="15px" fontWeight="600" lineHeight="1">
+                    <PriceFormat price={1} />
+                  </Typography>
+                </FlexBox>
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
                 >
-                  12,345.00
-                </Typography>
-              </FlexBox>
+                  <Typography color="#d4001a">ส่วนลด :</Typography>
 
-              {/* <Divider mb="0.5rem" /> */}
+                  <Typography
+                    color="#d4001a"
+                    fontSize="15px"
+                    fontWeight="600"
+                    lineHeight="1"
+                  >
+                    -<PriceFormat price={0} />
+                  </Typography>
+                </FlexBox>
 
-              <FlexBox
-                justifyContent="space-between"
-                alignItems="center"
-                mb="1rem"
-              >
-                <Typography>ยอดรวม :</Typography>
+                <Divider mb="1rem" />
 
-                <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                  <PriceFormat price={1} />
-                </Typography>
-              </FlexBox>
-              <FlexBox
-                justifyContent="space-between"
-                alignItems="center"
-                mb="1rem"
-              >
-                <Typography color="#d4001a">ส่วนลด :</Typography>
-
-                <Typography
-                  color="#d4001a"
-                  fontSize="15px"
-                  fontWeight="600"
-                  lineHeight="1"
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="1rem"
                 >
-                  -<PriceFormat price={0} />
-                </Typography>
-              </FlexBox>
+                  <Typography fontWeight={600}>ยอดรวมสุทธิ :</Typography>
 
-              <Divider mb="1rem" />
+                  <Typography fontSize="15px" fontWeight="600" lineHeight="1">
+                    <PriceFormat price={0} />
+                  </Typography>
+                </FlexBox>
 
-              <FlexBox
-                justifyContent="space-between"
-                alignItems="center"
-                mb="1rem"
-              >
-                <Typography fontWeight={600}>ยอดรวมสุทธิ :</Typography>
-
-                <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                  <PriceFormat price={0} />
-                </Typography>
-              </FlexBox>
-
-              {/* <Select
+                {/* <Select
               mb="1rem"
               label="ต้องการให้ iHAVECPU ประกอบให้หรือไม่"
               options={optionList}
               placeholder="เลือกสั่งประกอบ"
               onChange={(e) => console.log(e)}
             /> */}
-              <FlexBox flexDirection="column"></FlexBox>
+                <FlexBox flexDirection="column"></FlexBox>
 
-              <Box my="1rem">
-                <Button
-                  variant="contained"
-                  type="submit"
-                  color="ihavecpu"
-                  style={{
-                    width: "100%",
-                    height: "50px",
-                    boxShadow: "4px 7px 12px 0 rgba(226 , 35 , 35 , 0.2)",
-                  }}
+                <Box my="1rem">
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    color="ihavecpu"
+                    disabled={isAnyProductOutOfStock}
+                    onClick={handleAddToCartButtonClick}
+                    style={{
+                      width: "100%",
+                      height: "50px",
+                      boxShadow: "4px 7px 12px 0 rgba(226 , 35 , 35 , 0.2)",
+                    }}
+                  >
+                    สั่งซื้อชุดสเปคคอม
+                  </Button>
+                </Box>
+                <Box my="1rem">
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    color="secondary"
+                    onClick={handleEditClick}
+                    style={{
+                      width: "100%",
+                      height: "40px",
+                      // border: "1px solid #dedeea",
+                      // boxShadow: "4px 7px 12px 0 rgba(226 , 35 , 35 , 0.2)",
+                    }}
+                  >
+                    แก้ไขรายการ
+                  </Button>
+                </Box>
+                <Divider mt="1.5rem" mb="1rem" />
+                <FlexBox
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb="0.5rem"
                 >
-                  สั่งซื้อชุดสเปคคอม
-                </Button>
-              </Box>
-              <Box my="1rem">
-                <Button
-                  variant="outlined"
-                  type="submit"
-                  color="secondary"
-                  style={{
-                    width: "100%",
-                    height: "40px",
-                    // border: "1px solid #dedeea",
-                    // boxShadow: "4px 7px 12px 0 rgba(226 , 35 , 35 , 0.2)",
-                  }}
-                >
-                  แก้ไขรายการ
-                </Button>
-              </Box>
-              <Divider mt="1.5rem" mb="1rem" />
-              <FlexBox
-                justifyContent="space-between"
-                alignItems="center"
-                mb="1rem"
-              >
-                <Typography fontWeight={600}>แชร์ให้เพื่อน</Typography>
-                <SocialButton></SocialButton>
-                <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                  <PriceFormat price={0} />
-                </Typography>
-              </FlexBox>
-            </Card1>
+                  <Typography fontWeight={600}>แชร์ให้เพื่อน</Typography>
+                </FlexBox>
+                <FlexBox justifyContent="space-between" alignItems="center">
+                  <SocialButton />
+                </FlexBox>
+              </Card1>
+            )}
           </Grid>
         </Grid>
       </Fragment>

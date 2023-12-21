@@ -1,46 +1,32 @@
-import { FC, Fragment, useEffect, useState, useCallback, useRef } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import Box from "@component/Box";
-import { H3, H5, SemiSpan, Paragraph, Tiny } from "@component/Typography";
+import { H3, H5, SemiSpan } from "@component/Typography";
 import Select from "@component/Select";
 import TextField from "@component/text-field";
 import StyledSearchBox from "@component/search-box/styled";
-import { Carousel } from "@component/carousel";
-import { ProductCard10 } from "@component/product-cards";
-import useVisibleSlide from "./hooks/useVisibleSlide";
 import menuDropdown from "@models/menuDropdown.model";
-import SidenavDiy from "./SidenavDiy";
 import Hidden from "@component/hidden";
 import StyledProductCategory from "../market-1/styled";
 import Icon from "@component/icon/Icon";
 import Card from "@component/Card";
 import FlexBox from "@component/FlexBox";
 import Grid from "@component/grid/Grid";
-import CategorySectionHeader from "@component/CategorySectionHeader";
 import { IconButton } from "@component/buttons";
 import NextImage from "next/image";
 import { Chip } from "@component/Chip";
 import Product from "@models/product.model";
-import ModalNavBarDIY from "@component/modal/modalNavBarDIY";
-import Link from "next/link";
 import { ModalNavListDIY } from "@component/modal/styles";
 import {
   ProductCard1DIY,
   ProductCard1Skeleton,
 } from "@component/product-cards";
-import ProductCard1List from "@component/products/ProductCard1List";
-import ProductCard9List from "@component/products/ProductCard9List";
 import Pagination from "@component/pagination";
-import axios from "axios";
-import getGroupSearch from "@models/getGroupSearch";
 import CheckBox from "@component/CheckBox";
 // import { Button } from "react-scroll";
 import { Button } from "@component/buttons";
-
 import ModalCheckBox from "@component/modal/modalCheckbox";
 import ModalDIY from "@component/modal/modalDIY";
 import { useRouter } from "next/router";
-import { match } from "assert";
-import useWindowSize from "@hook/useWindowSize";
 import { notify } from "@component/toast";
 
 // =======================================================
@@ -52,21 +38,17 @@ type Props = {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };
 // =======================================================
-interface SelectedValue {
-  label: string;
-  value: string;
-}
 const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   // useState
-  const width = useWindowSize();
-  const { visibleSlides } = useVisibleSlide();
+  // const width = useWindowSize();
+  // const { visibleSlides } = useVisibleSlide();
   const [selected, setSelected] = useState("");
   const [productFilter, setProductFilter] = useState(null);
   const [filters, setFilter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
-  const [view, setView] = useState<"grid" | "list">("grid");
-  const toggleView = useCallback((v) => () => setView(v), []);
+  // const [view, setView] = useState<"grid" | "list">("grid");
+  // const toggleView = useCallback((v) => () => setView(v), []);
   const [selectedItems, setSelectedItems] = useState<
     { id: number; name: string }[]
   >([]);
@@ -96,7 +78,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [categoryID, setCategoryID] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalNavListVisible, setIsModalNavListVisible] = useState(false);
+  const [isModalNavListVisible, setIsModalNavListVisible] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [selectedSortOption, setSelectedSortOption] = useState(null);
 
@@ -105,7 +87,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   const [abortController, setAbortController] = useState(new AbortController());
 
   const handleCloseModalNavList = () => {
-    setIsModalNavListVisible(false);
+    setIsModalNavListVisible(3);
   };
 
   const handleFilterClick = (filter) => {
@@ -117,15 +99,11 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   };
 
   const handleCategoryClick = (categoryId) => () => {
-    console.log("Category clicked:", categoryId);
-
     const clickedCategory = navList.find(
       (value) => value.categoryID.toString() === categoryId
     );
-    console.log("clickedCtategor", clickedCategory);
 
     if (clickedCategory && selected !== categoryId) {
-      console.log("sdsd");
       setSelectedItems([]);
       setSearchValue("");
       setSelectedSortOption(null);
@@ -152,7 +130,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   const fetchFilterData = async (category_id: number) => {
     try {
       const filterIds = selectedItems.map((item) => item.id);
-      console.log("filterDtat", filterIds);
 
       const filterResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_PATH}/category/getGroupSearch/${category_id}`,
@@ -175,7 +152,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       } else {
         setFilter(null);
         setProductFilter(null);
-        // console.error("failed to fetch filters", filterData);
       }
     } catch (error) {
       console.error("Error fetching filters", error);
@@ -186,7 +162,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     searchKeyword = "",
     sortOption = ""
   ) => {
-    console.log("fetchProductData", category_id);
     setLoading(true);
     try {
       const filterIds = selectedItems.map((item) => item.id);
@@ -238,10 +213,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       // }
       const cateID = parseInt(category_id);
       const excludedCateIDs = [48, 97, 98, 99, 34, 49, 25, 267, 50, 37, 38, 39];
-      const desiredCategoryIDs = [28, 9, 30, 29];
-      const hasDesiredCategory = selectedProduct.some((product) =>
-        desiredCategoryIDs.includes(product.categoryID)
-      );
+
       const subFilterNotHaveSameCateID = selectedProduct
         .filter((product) => product.categoryID !== cateID)
         .map((product) => product.filterSubIDArray)
@@ -252,14 +224,12 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         (filterIds.length > 0 || subFilter.length > 0) &&
         !excludedCateIDs.includes(cateID)
       ) {
-        console.log(cateID);
         // 29 = ram , 28 = mainboard
         if (filterIds.length > 0) {
           apiUrl += `&filter_main=[${filterIds.join(",")}]`;
         }
         // case if click category 29 (ram)
         if (cateID === 29) {
-          console.log("this 29");
           const hasCategory28 = selectedProduct.some(
             (product) => product.categoryID === 28
           );
@@ -320,8 +290,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
             apiUrl += `&sub_filter=[${filterString}]`;
           }
         } else {
-          console.log("categoryID", category_id);
-
           const combinedFilter = [...subFilterNotHaveSameCateID];
           const filterString = combinedFilter.join(",");
           if (subFilterNotHaveSameCateID.length > 0) {
@@ -330,7 +298,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         }
       }
 
-      // console.log(apiUrl);
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       const productResponse = await fetch(apiUrl, {
@@ -408,14 +375,11 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         (filterIds.length > 0 || subFilter.length > 0) &&
         !excludedCateIDs.includes(cateID)
       ) {
-        console.log(cateID);
         // 29 = ram , 28 = mainboard
         if (filterIds.length > 0) {
           apiUrl += `&filter_main=[${filterIds.join(",")}]`;
         }
         if (cateID === 29) {
-          console.log("this 29");
-
           if (hasCategory28) {
             const subFilterNotHaveCate29 = selectedProduct
               .filter((product) => product.categoryID !== 29)
@@ -498,18 +462,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         setProductFilter(null);
         setLoading(false);
       }
-      // if (productData.res_code === "00") {
-      //   setLoading(false);
-
-      //   setProductFilter(productData.res_result);
-      //   setCurrentPage(newPage);
-      // } else {
-      //   setLoading(false);
-
-      //   setProductFilter(null);
-
-      //   // console.error("failed to fetch products");
-      // }
     } catch (error) {
       setLoading(false);
       console.error("Error fetching products", error);
@@ -559,9 +511,9 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     const existingProduct = selectedProduct.find(
       (product) => product.id === productId
     );
-    const existingProductIndex = selectedProduct.findIndex(
-      (product) => product.categoryID === categoryID
-    );
+    // const existingProductIndex = selectedProduct.findIndex(
+    //   (product) => product.categoryID === categoryID
+    // );
     const parentCategories = navList.filter((item) => item.parent_id !== null);
     const isParentCategory = parentCategories.some(
       (parentCategory) => parentCategory.parent_id === categoryID
@@ -608,7 +560,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           total + parseInt(product.sizeRam) * product.quantity,
         0
       );
-    console.log("calculateTotalMemoryRam", calculateTotalMemoryRam);
 
     const maxMSlotMainBoard = Math.max(
       ...selectedProduct
@@ -625,20 +576,13 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         .filter((product) => product.categoryID === 28)
         .map((product) => parseInt(product.m2MainBoard) || 0)
     );
-    console.log("additionCate", additionCate);
     if (existingProduct) {
       if (action === "add") {
         if (categoryID === 29) {
-          console.log("calculateTotalSlotRam", calculateTotalSlotRam);
-
-          console.log("slotRam", existingProduct.slotRam);
-
           const calculate =
             calculateTotalSlotRam + parseInt(existingProduct.slotRam);
-          console.log("calculate", calculate);
           if (hasCategory28) {
             if (calculate <= maxMSlotMainBoard && maxMemoryMainBoardCate28) {
-              console.log("calculateTotalSlotRam", calculateTotalSlotRam);
               const updatedProducts = selectedProduct.map((product) =>
                 product.id === productId
                   ? { ...product, quantity: product.quantity + 1 }
@@ -664,10 +608,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           additionCate.includes(39)
         ) {
           const calculate = calculateTotalSlotM2 + 1;
-          console.log("calculate", calculate);
           if (hasCategory28) {
             if (calculate <= maxM2MainBoard) {
-              console.log("calculateTotalSlotM2", calculateTotalSlotM2);
               const updatedProducts = selectedProduct.map((product) =>
                 product.id === productId
                   ? { ...product, quantity: product.quantity + 1 }
@@ -689,7 +631,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         }
       } else if (action === "remove") {
         if (existingProduct.quantity > 1) {
-          // Decrement quantity if greater than 1
           const updatedProducts = selectedProduct.map((product) =>
             product.id === productId
               ? { ...product, quantity: product.quantity - 1 }
@@ -698,7 +639,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
           setSelectedProduct(updatedProducts);
         } else {
-          // Remove product if quantity is 1
           setSelectedProduct((prevProducts) =>
             prevProducts.filter((product) => product.id !== productId)
           );
@@ -708,11 +648,9 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     } else {
       if (!isParentCategory) {
         // case normally category_id not have parent_id
-
         const existingProductIndex = selectedProduct.findIndex(
           (product) => product.categoryID === categoryID
         );
-        // console.log(existingProductIndex);
 
         if (categoryID === 28) {
           if (hasCategory29) {
@@ -724,18 +662,14 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
             const totalMemoryCategory29 = calculateTotalMemoryRam;
 
-            // Additional condition to check mSlotMainBoard with slotRam
             const isSlotMainBoardValid = productsCategory29.every(
               (product) => product.mSlotMainBoard >= product.slotRam
             );
 
-            // If the total memory of category 29 products exceeds maxMemoryMainBoard
-            // or the mSlotMainBoard is not valid, perform the necessary adjustments
             if (
               totalMemoryCategory29 >= maxMemoryMainBoardCategory28 ||
               !isSlotMainBoardValid
             ) {
-              let remainingMemory = maxMemoryMainBoardCategory28;
               const updatedProducts = productsCategory29.map((product) => {
                 const slotRamRequired =
                   parseInt(product.slotRam) * product.quantity;
@@ -767,14 +701,13 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                       quantity: product.quantity - reduction,
                     };
                   } else {
-                    return null; // Product with reduction 0
+                    return null;
                   }
                 }
 
                 return product;
               });
 
-              // Filter out products with reduction 0
               const filteredProducts = updatedProducts.filter(
                 (product) => product?.quantity > 0
               );
@@ -852,7 +785,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 ...filteredProducts,
               ]);
             } else {
-              // If remaining memory is enough, and slotRam is valid, add the selected product in category 28
               setSelectedProduct((prevProducts) => [
                 ...prevProducts,
                 {
@@ -892,8 +824,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
             const totalMemoryCategory29 = calculateTotalSlotM2;
 
-            console.log("calculateTotalSlotM2", calculateTotalSlotM2);
-
             if (totalMemoryCategory29 >= maxMemoryMainBoardCategory28) {
               const updatedProductM2 = productsCategory29.map((product) => {
                 const slotM2Required = 1 * product.quantity;
@@ -911,10 +841,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               const filtereddProducts = updatedProductM2.filter(
                 (product) => product?.quantity > 0
               );
-              console.log(
-                "filtereddProductsfiltereddProducts",
-                filtereddProducts
-              );
 
               setSelectedProduct((prevProducts) => [
                 ...prevProducts.filter(
@@ -927,7 +853,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
 
           if (!hasCategory29) {
             if (existingProductIndex !== -1) {
-              console.log("123132");
               notify(
                 "success",
                 `แทนสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`
@@ -989,10 +914,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
             }
           }
         } else {
-          const calculateSlotRam = calculateTotalSlotRam + parseInt(slotRam);
-          const calculateMemoryRam =
-            calculateTotalMemoryRam + parseInt(sizeRam);
-
           if (existingProductIndex !== -1) {
             // กรณีมีสินค้าอยู่แล้ว
 
@@ -1057,8 +978,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           }
         }
       } else {
-        // Case when category has parent_id and the product is not mapping with category_id but mapping with additionCate
-
         const existingProductsParentIDForCategory = selectedProduct.filter(
           (product) =>
             Array.isArray(product.additionCate) &&
@@ -1083,7 +1002,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           notify(
             "success",
             `เพิ่มสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`
-          ); // If no product with the same additionCate and categoryID, add a new one
+          );
           setSelectedProduct((prevProducts) => [
             ...prevProducts,
             {
@@ -1109,8 +1028,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
             },
           ]);
         } else {
-          console.log("34");
-          // If a product with the same additionCate and categoryID exists, do nothing
           setSelectedProduct((prevProducts) => {
             const updatedProducts = [...prevProducts];
             updatedProducts[existingProductIndex] = {
@@ -1141,8 +1058,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     }
   };
 
-  console.log(selectedProduct);
-
   const handleRemoveFromSelectedProducts = (productId) => {
     const findProduct = selectedProduct.find(
       (value) => value?.id === productId
@@ -1168,9 +1083,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       notify("error", `ลบสินค้าในหมวดหมู่ ${findCategory.title_th} แล้ว`);
     }
   };
-  const hasProductsForCategory = (categoryID) => {
-    return selectedProduct.some((item) => item.categoryID === categoryID);
-  };
+
   const handleResetButtonClick = () => {
     setSelectedProduct([]);
     setSelectedItems([]);
@@ -1182,8 +1095,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     setIsModalVisible(true);
   };
   const handleToggleModal = () => {
-    console.log("this handleToggle");
-    setIsModalNavListVisible(true);
+    setIsModalNavListVisible(2);
   };
 
   const handleSearchChange = (event) => {
@@ -1191,28 +1103,19 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     setSearchValue(value);
   };
 
-  // console.log(productFilter.row);
-  // useEffect(() => {
-  //   if (categoryID !== null) {
-  //     fetchFilterData(categoryID);
-  //   }
-  // }, [selectedItems, categoryID]);
   useEffect(() => {
     // set default (first category in api)
     const defaultCategoryID = navList[0].categoryID;
     setCategoryID(defaultCategoryID);
     fetchProductData(defaultCategoryID);
-    console.log("defaultCate", defaultCategoryID);
     fetchFilterData(defaultCategoryID);
     setSelected(defaultCategoryID.toString());
     setTitle(navList[0].title_th);
   }, []);
   useEffect(() => {
     let debounceTimeout;
-    // Create a new AbortController for each useEffect
     const newAbortController = new AbortController();
     setAbortController(newAbortController);
-    console.log("debounce");
     debounceTimeout = setTimeout(() => {
       fetchProductData(categoryID, searchValue);
       setCurrentPage(1);
@@ -1225,7 +1128,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   }, [searchValue]);
   useEffect(() => {
     fetchFilterData(categoryID);
-    console.log("fetchgProdutGe", categoryID);
     fetchProductData(categoryID);
   }, [selectedItems, categoryID]);
 
@@ -1285,7 +1187,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   useEffect(() => {
     const body = document.body;
 
-    if (isModalNavListVisible) {
+    if (isModalNavListVisible === 2) {
       // hide main scrollbar
       body.style.overflow = "hidden";
     } else {
@@ -1297,8 +1199,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       body.style.overflow = "visible";
     };
   }, [isModalNavListVisible]);
-
-  // console.log(selectedProduct);
 
   return (
     <Fragment>
@@ -1326,7 +1226,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               onMouseLeave={(e) => {
                 e.currentTarget.style.transition = "box-shadow 0.3s ease";
 
-                e.currentTarget.style.boxShadow = "none"; // Reset box shadow on leave
+                e.currentTarget.style.boxShadow = "none";
               }}
             >
               <Icon size="14px" mr="0.5rem">
@@ -1777,7 +1677,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                 </Grid>
               </FlexBox>
 
-              <FlexBox
+              {/* <FlexBox
                 alignItems="center"
                 flexWrap="wrap"
                 width="100%"
@@ -1812,7 +1712,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                     menu
                   </Icon>
                 </IconButton>
-              </FlexBox>
+              </FlexBox> */}
             </FlexBox>
 
             <Box>
@@ -1924,7 +1824,15 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
         />
       )}
 
-      <ModalNavListDIY className={isModalNavListVisible ? "open" : "exits"}>
+      <ModalNavListDIY
+        className={
+          isModalNavListVisible === 1
+            ? ""
+            : isModalNavListVisible === 2
+            ? "open"
+            : "exits"
+        }
+      >
         <div style={{ width: "100%" }}>
           <div>
             <FlexBox

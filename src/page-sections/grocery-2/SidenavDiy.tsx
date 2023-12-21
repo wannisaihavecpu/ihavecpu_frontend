@@ -1,34 +1,15 @@
-import { FC, Fragment } from "react";
-import styled from "styled-components";
-import Box from "@component/Box";
+import { FC } from "react";
 import Card from "@component/Card";
 import Icon from "@component/icon/Icon";
-import FlexBox from "@component/FlexBox";
-import NavLink from "@component/nav-link";
 import { SemiSpan } from "@component/Typography";
-import { Accordion, AccordionHeader } from "@component/accordion";
-import { theme } from "@utils/theme";
-import { NavWithChild } from "interfaces";
-import { CategoryItem } from "@models/categoryNavList.model";
 import menuDropdown from "@models/menuDropdown.model";
 import StyledProductCategory from "../market-1/styled";
-import NextImage from "next/image";
-
-// styled component
-const AccordionHeaderText = styled(FlexBox)({
-  flex: "1",
-  gap: "0.75rem",
-  ":hover": {
-    color: theme.colors.primary.main,
-    "& + .caret-icon": { color: theme.colors.primary.main },
-  },
-});
 
 // ======================================================================================
 type Props = { isFixed?: boolean; navList: menuDropdown[] };
 // =======================================================================================
 
-const SidenavDiy: FC<Props> = ({ isFixed, navList }) => {
+const SidenavDiy: FC<Props> = ({ navList }) => {
   return (
     <Card
       position="relative"

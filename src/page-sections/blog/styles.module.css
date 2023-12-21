@@ -1,0 +1,28 @@
+/* styles/styles.module.css */
+.blogContainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.leftColumn {
+  width: 60%;
+  background-color: blue; /* Add red background */
+}
+
+.contentDiv {
+  height: 100px; /* Adjust the height as needed */
+  background-color: red;
+}
+
+.rightColumnContainer {
+  width: 35%;
+  position: relative;
+}
+
+.rightColumn {
+  position: sticky;
+  top: 0;
+  height: 100%;
+  overflow-y: auto;
+}

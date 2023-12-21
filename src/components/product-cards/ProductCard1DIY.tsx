@@ -1,5 +1,3 @@
-import Link from "next/link";
-// import Image from "next/image";
 import { FC, useCallback, useState } from "react";
 import styled from "styled-components";
 import Box from "@component/Box";

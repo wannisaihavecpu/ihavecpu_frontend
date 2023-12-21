@@ -1,19 +1,8 @@
 import { GetStaticProps } from "next";
-import { useState, FC } from "react";
+import { useState } from "react";
 
 import Box from "@component/Box";
-import { Footer2 } from "@component/footer";
-import Wrapper from "@sections/diy/Wrapper";
-import Section1 from "@sections/grocery-2/Section1";
-import Section2 from "@sections/grocery-2/Section2";
-import Section3 from "@sections/grocery-2/Section3";
 import Section4 from "@sections/grocery-2/Section4";
-import Section6 from "@sections/grocery-2/Section6";
-import Section9 from "@sections/grocery-2/Section9";
-import SidenavBar from "@sections/grocery-2/SidenavBar";
-import SidenavDiy from "@sections/grocery-2/SidenavDiy";
-import GroceryLayout from "@component/layout/GroceryLayout";
-import useScroll from "@hook/useScroll";
 import api from "@utils/__api__/grocery-2";
 // data models
 import Service from "@models/service.model";
@@ -43,16 +32,10 @@ type Grocery2Props = {
 // ========================================================
 
 const GroceryTwo = (props: Grocery2Props) => {
-  const { isFixed } = useScroll();
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   return (
     <Fragment>
-      {/* SIDEBAR NAVIGATION AREA */}
-      {/* <Box className="sidenav" pt="1.5rem">
-        <SidenavDiy navList={props.categoriess} />
-      </Box> */}
-
       {props.categoriess && props.categoriess.length > 0 && (
         <Section4
           navList={props.categoriess}
@@ -62,59 +45,7 @@ const GroceryTwo = (props: Grocery2Props) => {
         />
       )}
 
-      <Box className="content" pt="1.5rem">
-        {/* HERO CAROUSEL AREA */}
-        {/* <Section1 carouselData={props.mainCarouselData} /> */}
-
-        {/* SERVICES AREA */}
-        {/* <Box mb="3rem" overflow="hidden">
-          <Section2 services={props.serviceList} />
-        </Box> */}
-
-        {/* SHOP BY CATEGORY AREA */}
-        {/* <Box mb="3rem">
-          <Section3 categories={props.categories} />
-        </Box> */}
-
-        {/* FILTER SEARCH & PRODUCT */}
-
-        {/* BEST SELLER PRODUCTS AREA */}
-        {/* <Box mb="3rem">
-          <Section4
-            title="Best Seller in Your Area"
-            products={props.bestSellProducts}
-          />
-        </Box> */}
-
-        {/* DISCOUNT BANNER CAROUSEL AREA */}
-        {/* <Box mb="3rem">
-          <Section6 cardList={props.discountBanners} />
-        </Box> */}
-
-        {/* BEST HOME PRODUCTS AREA */}
-        {/* <Box mb="3rem">
-          <Section4
-            title="Best of Home Essentials"
-            products={props.bestHomeProducts}
-          />
-        </Box> */}
-
-        {/* SNACK AND DRINKS PRODUCTS AREA */}
-        {/* <Box mb="3rem">
-          <Section4
-            title="Snacks, Drinks, Dairy & More"
-            products={props.dairyProducts}
-          />
-        </Box> */}
-
-        {/* TESTIMONIAL CAROUSEL AREA */}
-        {/* <Box mb="3rem">
-          <Section9 testimonials={props.testimonials} />
-        </Box> */}
-
-        {/* FOOTER AREA */}
-        {/* <Footer2 /> */}
-      </Box>
+      <Box className="content" pt="1.5rem"></Box>
     </Fragment>
   );
 };

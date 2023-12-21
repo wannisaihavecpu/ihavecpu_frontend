@@ -7,14 +7,11 @@ import { useRouter } from "next/router";
 import { useAppContext } from "@context/AppContext";
 import ReactDOMServer from "react-dom/server";
 import PriceFormat from "@component/PriceFormat";
-import Avatar from "@component/avatar";
 import FlexBox from "@component/FlexBox";
 import Box from "@component/Box";
-import useWindowSize from "@hook/useWindowSize";
-import Table from "@component/table";
 import Icon from "@component/icon/Icon";
-import CategorySectionHeader from "@component/CategorySectionHeader";
-
+import { IconButton } from "@component/buttons";
+import Grid from "@component/grid/Grid";
 const ModalDIY = ({ selectedProducts, onClose }) => {
   const router = useRouter();
   const { dispatch } = useAppContext();
@@ -25,12 +22,6 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
         product_id: product.id,
         quantity: product.quantity,
       }));
-
-      // console.log(
-      //   JSON.stringify({
-      //     product_id: productIds,
-      //   })
-      // );
 
       const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/diy/create`;
 
@@ -166,8 +157,6 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
     handlePrint();
   };
 
-  const width = useWindowSize();
-
   return (
     <Box
       style={{
@@ -186,7 +175,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
       <Box
         style={{
           backgroundColor: "white",
-          padding: "20px",
+          padding: "30px",
           borderRadius: "8px",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
           width: "80%",
@@ -196,33 +185,43 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           border: "solid 1px #e2eef1",
         }}
       >
-        <FlexBox alignItems="center" mb="0.5rem" mt="2rem">
-          <Icon defaultcolor="auto" mr="0.6rem">
-            list
-          </Icon>
+        <div
+          style={{
+            marginTop: "1rem",
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <FlexBox
+            alignItems="center"
+            style={{ backgroundColor: "white", marginBottom: "1rem" }}
+          >
+            <Box className="text-left" display="flex" alignItems="center">
+              <Icon defaultcolor="auto" mr="0.6rem">
+                list
+              </Icon>
 
-          <H4 fontWeight="bold" lineHeight="1" fontSize="20px">
-            รายการ
-          </H4>
-        </FlexBox>
-        {/* <FlexBox>
-          <Icon>list</Icon>
-          <h2 style={{ textAlign: "left", color: "#183b56" }}>รายการ</h2>
-        </FlexBox> */}
-        {/* <TableDIYStyle>
-          {selectedProducts.map((product, index) => (
-            <div key={index} className="loader">
-              <div className="song">
-                <p className="name">{product.name}</p>
-                <p className="artist">{product.artist} x1</p>
-              </div>
-              <div className="albumcover">
-                <img src={product.imgUrl} />
-              </div>
-              <div className="play">1</div>
-            </div>
-          ))}
-        </TableDIYStyle> */}
+              <H4 fontWeight="bold" lineHeight="1" fontSize="20px">
+                รายการ
+              </H4>
+            </Box>
+          </FlexBox>
+
+          <FlexBox>
+            <Box className="exit-button">
+              <IconButton
+                type="button"
+                p="3px 6px 3px"
+                onClick={onClose}
+                style={{ width: "30px", height: "30px" }}
+              >
+                <Icon size="18px">close</Icon>
+              </IconButton>
+            </Box>
+          </FlexBox>
+        </div>
+
         <TableDIYStyle>
           <table className="custom-scrollbar">
             <thead>
@@ -235,7 +234,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
               </tr>
             </thead>
             <tbody>
-              {selectedProducts.map((product, index) => (
+              {selectedProducts.map((product) => (
                 <tr key={product.id}>
                   <td colSpan={2} data-label="รูป">
                     <img src={product.imgUrl} alt={product.name} />
@@ -272,28 +271,60 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
             </tbody>
           </table>
         </TableDIYStyle>
-        <FlexBox justifyContent="space-between" mt="2rem">
-          <Button
-            onClick={onClose}
-            color="secondary"
-            bg="secondary.light"
-            style={{ width: "20%" }}
-          >
-            แก้ไขรายการ
-          </Button>
+        <Box mt="1rem">
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+              <Button
+                color="primary"
+                bg="primary.light"
+                onClick={handleAddToCartButtonClick}
+                style={{ width: "100%" }}
+              >
+                ยืนยันการสั่งซื้อ
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                onClick={handleShareButtonClick}
+                color="secondary"
+                bg="secondary.light"
+                style={{ width: "100%" }}
+              >
+                แชร์สเปคคอม
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                color="secondary"
+                bg="secondary.light"
+                onClick={handlePrintButtonClick}
+                style={{ width: "100%" }}
+              >
+                พิมพ์
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* <FlexBox flexDirection={{ xs: "column", sm: "row" }} mt="2rem">
           <Button
             color="secondary"
             bg="secondary.light"
             onClick={handlePrintButtonClick}
-            style={{ width: "20%" }}
+            style={{ flex: 1, marginBottom: "1rem", marginRight: "1rem" }}
           >
             พิมพ์
           </Button>
+
           <Button
             onClick={handleShareButtonClick}
             color="primary"
             bg="primary.light"
-            style={{ width: "20%" }}
+            style={{
+              flex: 1,
+              marginBottom: "1rem",
+              // marginRight: "1rem",
+            }}
           >
             แชร์สเปคคอม
           </Button>
@@ -301,25 +332,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
             color="primary"
             bg="primary.light"
             onClick={handleAddToCartButtonClick}
-            style={{ width: "25%" }}
-          >
-            ยืนยันการสั่งซื้อ
-          </Button>
-        </FlexBox>
-        {/* <FlexBox justifyContent="space-between" mt="1rem">
-          <Button
-            onClick={handleShareButtonClick}
-            color="primary"
-            bg="primary.light"
-            style={{ width: "48%" }}
-          >
-            แชร์สเปคคอม
-          </Button>
-          <Button
-            color="primary"
-            bg="primary.light"
-            onClick={handleAddToCartButtonClick}
-            style={{ width: "48%" }}
+            style={{ flex: 1, marginLeft: "1rem" }}
           >
             ยืนยันการสั่งซื้อ
           </Button>

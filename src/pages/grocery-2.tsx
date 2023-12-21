@@ -5,7 +5,6 @@ import Wrapper from "@sections/grocery-2/Wrapper";
 import Section1 from "@sections/grocery-2/Section1";
 import Section2 from "@sections/grocery-2/Section2";
 import Section3 from "@sections/grocery-2/Section3";
-import Section4 from "@sections/grocery-2/Section4";
 import Section6 from "@sections/grocery-2/Section6";
 import Section9 from "@sections/grocery-2/Section9";
 import SidenavBar from "@sections/grocery-2/SidenavBar";
@@ -59,14 +58,14 @@ const GroceryTwo = (props: Grocery2Props) => {
         </Box>
 
         {/* FEATURED PRODUCTS AREA */}
-        <Box mb="3rem">
+        {/* <Box mb="3rem">
           <Section4 title="Featured Items" products={props.featuredProducts} />
-        </Box>
+        </Box> */}
 
         {/* BEST SELLER PRODUCTS AREA */}
-        <Box mb="3rem">
+        {/* <Box mb="3rem">
           <Section4 title="Best Seller in Your Area" products={props.bestSellProducts} />
-        </Box>
+        </Box> */}
 
         {/* DISCOUNT BANNER CAROUSEL AREA */}
         <Box mb="3rem">
@@ -74,14 +73,17 @@ const GroceryTwo = (props: Grocery2Props) => {
         </Box>
 
         {/* BEST HOME PRODUCTS AREA */}
-        <Box mb="3rem">
+        {/* <Box mb="3rem">
           <Section4 title="Best of Home Essentials" products={props.bestHomeProducts} />
-        </Box>
+        </Box> */}
 
         {/* SNACK AND DRINKS PRODUCTS AREA */}
-        <Box mb="3rem">
-          <Section4 title="Snacks, Drinks, Dairy & More" products={props.dairyProducts} />
-        </Box>
+        {/* <Box mb="3rem">
+          <Section4
+            title="Snacks, Drinks, Dairy & More"
+            products={props.dairyProducts}
+          />
+        </Box> */}
 
         {/* TESTIMONIAL CAROUSEL AREA */}
         <Box mb="3rem">

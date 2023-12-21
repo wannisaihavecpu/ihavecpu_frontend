@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
 export const SocialCircle = styled.div`
   .shareArticle {
@@ -13,7 +13,7 @@ export const SocialCircle = styled.div`
     display: flex;
     flex-flow: row;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     @media (max-width: 767px) {
       flex-flow: column;
     }
@@ -43,8 +43,8 @@ export const SocialCircle = styled.div`
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 50px;
-          height: 50px;
+          width: 45px;
+          height: 45px;
           border-radius: 100%;
           text-decoration: none;
           background-color: #999;
@@ -91,7 +91,7 @@ export const SocialCircle = styled.div`
         text-align: center;
         padding: 12px 60px 12px 30px;
         height: 45px;
-        width: 450px;
+        width: 100%;
         font-size: 16px;
         letter-spacing: 0.3px;
         color: #494949;
@@ -109,7 +109,7 @@ export const SocialCircle = styled.div`
         }
         &::selection {
           color: #fff;
-          background-color: #ff0a4b;
+          background-color: #d4001a;
         }
       }
       .copyLink {
@@ -125,7 +125,7 @@ export const SocialCircle = styled.div`
           }
         }
         &:after {
-          content: attr(tooltip);
+          content: attr(data-tooltip);
           width: 140px;
           bottom: -40px;
           left: 50%;
@@ -147,26 +147,5 @@ export const SocialCircle = styled.div`
         }
       }
     }
-  }
-`;
-
-const fadeInFromLeft = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
-const fadeOutToLeft = keyframes`
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-100%);
   }
 `;

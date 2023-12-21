@@ -1,37 +1,21 @@
 // ModalNavBarDIY.js
 
-import React, { Fragment } from "react";
+import React from "react";
 import { ModalNavListDIY } from "./styles";
-import { Button } from "@component/buttons";
-import Card from "@component/Card";
 import FlexBox from "@component/FlexBox";
-import Grid from "@component/grid/Grid";
 import Box from "@component/Box";
 import { IconButton } from "@component/buttons";
-import { H3, H5, SemiSpan, Paragraph, Tiny } from "@component/Typography";
-import NextImage from "next/image";
+import { H5 } from "@component/Typography";
 import Icon from "@component/icon/Icon";
 
 // import { Grid, Box, IconButton, Icon, FlexBox, H5, SemiSpan } from "@component";
-import StyledProductCategory from "@sections/market-1/styled";
 
-const ModalNavBarDIY = ({
-  navList,
-  selectedProduct,
-selected,
-  onClose,
-  categoryClick,
-  removeProduct,
-  onCreateSpec,
-  onReset,
-}) => {
+const ModalNavBarDIY = ({ onClose }) => {
   return (
     <ModalNavListDIY>
-      {/* Modal content */}
       <div style={{ width: "100%" }}>
-        {/* Display selected products */}
         <div className="selected-products">
-          {navList.map((value, i) => (
+          {/* {navList.map((value, i) => (
             <Fragment key={i}>
               {selectedProduct &&
                 selectedProduct
@@ -175,21 +159,12 @@ selected,
                 </Box>
               </StyledProductCategory>
             </Fragment>
-          )}
+          )} */}
         </div>
 
-        {/* Buttons for creating specification and resetting */}
-        <div className="modal-buttons">
-          {/* <Button className="button" onClick={onCreateSpec}>
-            Create Specification
-          </Button>
-          <Button className="button" onClick={onReset}>
-            Reset
-          </Button> */}
-        </div>
+        <div className="modal-buttons"></div>
       </div>
 
-      {/* Exit button and text in the top-right corner */}
       <FlexBox justifyContent="space-between">
         <Box className="text-left" display="flex" alignItems="center">
           <Icon size="12px" mr="0.5rem">
@@ -197,7 +172,6 @@ selected,
           </Icon>
           <H5>รายการจัดสเปคคอม</H5>
         </Box>
-
         <Box className="exit-button">
           <IconButton
             type="button"

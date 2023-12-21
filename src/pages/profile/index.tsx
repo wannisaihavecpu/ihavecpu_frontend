@@ -1,28 +1,22 @@
 import React, { Fragment, useEffect, useState } from "react";
-
-import { GetStaticProps } from "next";
-import Router from "next/router";
-import { format } from "date-fns";
-import Box from "@component/Box";
 import Card from "@component/Card";
+import Router from "next/router";
+import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import TableRow from "@component/TableRow";
 import Avatar from "@component/avatar";
 import { Button } from "@component/buttons";
-import Typography, { H3, H5, Small } from "@component/Typography";
+import { H3, Small } from "@component/Typography";
 import DashboardLayout from "@component/layout/customer-dashboard";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
-import User from "@models/user.model";
-import api from "@utils/__api__/users";
-import { getSession } from "next-auth/react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import DateFormat from "@component/DateFormat";
 import { useRouter } from "next/router";
 
 // ============================================================
-type ProfileProps = { user: User };
+// type ProfileProps = { user: User };
 // ============================================================
 
 const Profile = ({}) => {

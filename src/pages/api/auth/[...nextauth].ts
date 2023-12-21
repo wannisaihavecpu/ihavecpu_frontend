@@ -30,12 +30,10 @@ export default NextAuth({
             },
           }
         );
-        // console.log(formData);
 
         if (apiResponse.data.res_code === "00") {
           return apiResponse.data.res_result;
         } else {
-          console.log("in to the");
           return Promise.resolve(null);
         }
       },
@@ -53,9 +51,9 @@ export default NextAuth({
     },
 
     async session({ session, token }) {
-      console.log("session", session);
+      // console.log("session", session);
 
-      console.log("token", token);
+      // console.log("token", token);
       // session.accessToken = token.accessToken;
       session.user = token.user;
 

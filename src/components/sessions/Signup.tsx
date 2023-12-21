@@ -1,17 +1,15 @@
 import { FC, useState, Fragment } from "react";
 import Link from "next/link";
 import * as yup from "yup";
-import { useFormik } from "formik";
+
 import Box from "../Box";
 import Icon from "../icon/Icon";
 import Divider from "../Divider";
 import FlexBox from "../FlexBox";
-import CheckBox from "../CheckBox";
 import TextField from "../text-field";
 import { Button, IconButton } from "../buttons";
-import { H3, H5, H6, SemiSpan, Small, Span } from "../Typography";
-import { StyledSessionCard } from "./styles";
-import Typography from "../Typography";
+import { H3, H6, SemiSpan, Small, Span } from "../Typography";
+
 import Grid from "@component/grid/Grid";
 import { Formik } from "formik";
 import { Card1 } from "@component/Card1";
@@ -29,7 +27,6 @@ const Signup: FC = () => {
   };
 
   const handleFormSubmit = async (values, { setFieldError }) => {
-    // Extract values from the form
     const { firstname, lastname, email, password, tel, birth_date } = values;
 
     const birthDate = new Date(birth_date);
@@ -103,7 +100,6 @@ const Signup: FC = () => {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                setFieldValue,
               }) => (
                 <form onSubmit={handleSubmit}>
                   <Grid container spacing={7}>
@@ -430,7 +426,7 @@ const checkoutSchema = yup.object().shape({
   birth_date: yup
     .date()
     .nullable()
-    .transform((originalValue, originalObject) => {
+    .transform((originalValue, _) => {
       return originalValue || null;
     })
     .max(new Date(), "วันเกิดต้องไม่เกินวันปัจจุบัน")
