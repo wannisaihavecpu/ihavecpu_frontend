@@ -1252,12 +1252,22 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
               id: item.product_id,
               name: item.name_th,
               categoryID: item.cat_id,
+              additionCate: item.addition_cate,
               filterID: item.filter_id,
               filterSubID: item.filter_sub_id,
               price: item.price_sale,
               priceBefore: item.price_before,
               discount: item.discount,
               imgUrl: item.imgUrl,
+              filterSubIDArray: item.filterArray,
+              sizeRam: item.size,
+              sizeSubRam: item.size_sub,
+              slotRam: item.slot,
+              sataMainBoard: item.sata,
+              m2MainBoard: item.m2,
+              mSlotMainBoard: item.m_slot,
+              maxMemoryMainBoard: item.max_memory,
+              quantity: item.quantity,
             }));
 
             setSelectedProduct(mappedData);
@@ -1349,9 +1359,11 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                           if (value.parent_id !== null) {
                             const matchingProduct = selectedProduct.find(
                               (selectedItem) =>
-                                selectedItem?.additionCate[0] ===
-                                value.categoryID
+                                selectedItem?.additionCate.includes(
+                                  value.categoryID
+                                )
                             );
+
                             return (
                               matchingProduct &&
                               matchingProduct.additionCate.some((cate) =>
@@ -1911,7 +1923,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           onClose={() => setIsModalVisible(false)}
         />
       )}
-      (
+
       <ModalNavListDIY className={isModalNavListVisible ? "open" : "exits"}>
         <div style={{ width: "100%" }}>
           <div>
@@ -1949,8 +1961,11 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
                       if (value.parent_id !== null) {
                         const matchingProduct = selectedProduct.find(
                           (selectedItem) =>
-                            selectedItem?.additionCate[0] === value.categoryID
+                            selectedItem?.additionCate.includes(
+                              value.categoryID
+                            )
                         );
+
                         return (
                           matchingProduct &&
                           matchingProduct.additionCate.some((cate) =>
@@ -2223,7 +2238,6 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           </div>
         </div>
       </ModalNavListDIY>
-      )
     </Fragment>
   );
 };

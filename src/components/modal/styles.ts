@@ -17,143 +17,119 @@ export const TableDIYStyle = styled.div`
     background-color: #555;
   }
 
+  table {
+    border-collapse: separate;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-spacing: 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    border-spacing: 0 1em;
+
+    thead {
+      th {
+        text-transform: uppercase;
+        line-height: 60px !important;
+        text-align: center;
+        font-weight: 600;
+        font-size: 14px;
+        color: black;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
+    }
+
+    tbody {
+      tr {
+        td:first-child {
+          padding-left: 20px;
+        }
+
+        td {
+          img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+          }
+          background-color: #f8f8f8;
+          height: 5rem;
+          text-align: left;
+          padding: 0 10px;
+          font-size: 14px;
+
+          i {
+            margin-right: 8px;
+          }
+        }
+      }
+
+      tr td {
+        transition: 0.3s ease-in-out;
+      }
+      tr:hover td {
+        cursor: pointer;
+        background-color: lightgray;
+      }
+      tr td:first-of-type {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+      }
+
+      tr td:last-of-type {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+      }
+    }
+  }
+
   @media screen and (max-width: 900px) {
     max-height: 500px;
-  }
-  .main {
-    padding: 1em;
-    padding-bottom: 1.1em;
-    border-radius: 15px;
-    margin: 1em;
-  }
 
-  .loader {
-    margin-bottom: 0.5rem;
-    border: 1px solid #e1e1e1;
-    display: flex;
-    flex-direction: row;
-    height: 6em;
-    padding-left: 1em;
-    padding-right: 1em;
-    transform: rotate(180deg);
-    justify-content: right;
-    border-radius: 10px;
-    transition: 0.3s ease-in-out;
-  }
+    table {
+      border: 1px solid transparent;
+      box-shadow: none;
 
-  .loader:hover {
-    cursor: pointer;
-    background-color: lightgray;
-  }
+      thead {
+        display: none;
+      }
 
-  .currentplaying {
-    display: flex;
-    margin: 1em;
-  }
-  .name {
-    color: #13111acc;
-    font-size: 14px;
-    font-weight: 800;
-  }
-
-  .spotify {
-    width: 50px;
-    height: 50px;
-    margin-right: 0.6em;
-  }
-
-  .heading {
-    color: black;
-    font-size: 1.1em;
-    font-weight: bold;
-    align-self: center;
-  }
-
-  .loading {
-    display: flex;
-    margin-top: 1em;
-    margin-left: 0.3em;
-  }
-
-  .load {
-    width: 2px;
-    height: 33px;
-    background-color: limegreen;
-    animation: 1s move6 infinite;
-    border-radius: 5px;
-    margin: 0.1em;
-  }
-
-  .load:nth-child(1) {
-    animation-delay: 0.2s;
-  }
-
-  .load:nth-child(2) {
-    animation-delay: 0.4s;
-  }
-
-  .load:nth-child(3) {
-    animation-delay: 0.6s;
-  }
-
-  .play {
-    position: relative;
-    left: 0.35em;
-    height: 1.6em;
-    width: 1.6em;
-    clip-path: polygon(50% 50%, 100% 50%, 75% 6.6%);
-    background-color: black;
-    transform: rotate(-90deg);
-    align-self: center;
-    margin-top: 0.7em;
-    justify-self: center;
-  }
-
-  .albumcover {
-    img {
-      border-radius: 10px;
-      height: 50px;
-      width: 50px;
-    }
-    position: relative;
-    margin-right: 1em;
-    height: 50px;
-    width: 50px;
-    background-color: rgb(233, 232, 232);
-    align-self: center;
-    border-radius: 10px;
-  }
-
-  .song {
-    position: relative;
-    transform: rotate(180deg);
-    margin-right: 1em;
-    color: black;
-    align-self: center;
-  }
-
-  .artist {
-    font-size: 0.6em;
-  }
-
-  @keyframes move6 {
-    0% {
-      height: 0.2em;
-    }
-
-    25% {
-      height: 0.7em;
-    }
-
-    50% {
-      height: 1.5em;
-    }
-
-    100% {
-      height: 0.2em;
+      tbody {
+        tr {
+          border-bottom: 5px solid #ddd;
+          td:first-child {
+            padding-left: 10px;
+          }
+          &:nth-child(2) {
+            justify-content: right;
+          }
+          td:before {
+            content: attr(data-label);
+            float: left;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: bold;
+          }
+          .picture {
+            justify-content: right;
+          }
+          td {
+            img {
+              width: 48px;
+              height: 48px;
+              border-radius: 50px;
+            }
+            display: block;
+            text-align: right;
+            font-size: 14px;
+            padding: 0px 10px !important;
+            box-shadow: 0 1px 1px #ddd;
+          }
+        }
+      }
     }
   }
 `;
+
 const fadeInFromLeft = keyframes`
   from {
     opacity: 0;

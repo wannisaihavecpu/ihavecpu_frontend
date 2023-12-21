@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { TableDIYStyle } from "./styles";
-
+import { H4, SemiSpan } from "@component/Typography";
 import { Button } from "@component/buttons";
 import { notify } from "@component/toast";
 import { useRouter } from "next/router";
@@ -12,6 +12,8 @@ import FlexBox from "@component/FlexBox";
 import Box from "@component/Box";
 import useWindowSize from "@hook/useWindowSize";
 import Table from "@component/table";
+import Icon from "@component/icon/Icon";
+import CategorySectionHeader from "@component/CategorySectionHeader";
 
 const ModalDIY = ({ selectedProducts, onClose }) => {
   const router = useRouter();
@@ -19,13 +21,16 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
 
   const handleShareButtonClick = async () => {
     try {
-      const productIds = selectedProducts.map((product) => product.id);
+      const productData = selectedProducts.map((product) => ({
+        product_id: product.id,
+        quantity: product.quantity,
+      }));
 
-      console.log(
-        JSON.stringify({
-          product_id: productIds,
-        })
-      );
+      // console.log(
+      //   JSON.stringify({
+      //     product_id: productIds,
+      //   })
+      // );
 
       const apiUrl = `${process.env.NEXT_PUBLIC_API_PATH}/diy/create`;
 
@@ -35,7 +40,7 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          product_id: productIds,
+          products: productData,
         }),
       });
 
@@ -191,62 +196,88 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
           border: "solid 1px #e2eef1",
         }}
       >
-        <h2 style={{ textAlign: "left", color: "#183b56" }}>รายการสั่งซื้อ</h2>
-        <TableDIYStyle>
+        <FlexBox alignItems="center" mb="0.5rem" mt="2rem">
+          <Icon defaultcolor="auto" mr="0.6rem">
+            list
+          </Icon>
+
+          <H4 fontWeight="bold" lineHeight="1" fontSize="20px">
+            รายการ
+          </H4>
+        </FlexBox>
+        {/* <FlexBox>
+          <Icon>list</Icon>
+          <h2 style={{ textAlign: "left", color: "#183b56" }}>รายการ</h2>
+        </FlexBox> */}
+        {/* <TableDIYStyle>
           {selectedProducts.map((product, index) => (
             <div key={index} className="loader">
               <div className="song">
                 <p className="name">{product.name}</p>
-                <p className="artist">{product.artist}</p>
+                <p className="artist">{product.artist} x1</p>
               </div>
               <div className="albumcover">
                 <img src={product.imgUrl} />
               </div>
-              <div className="play"></div>
+              <div className="play">1</div>
             </div>
           ))}
-        </TableDIYStyle>
-        {/* <TableDIYStyle>
+        </TableDIYStyle> */}
+        <TableDIYStyle>
           <table className="custom-scrollbar">
             <thead>
               <tr>
-                <th>ลำดับ</th>
-                <th>รูป</th>
-                <th>ชื่อ</th>
-                <th>จำนวน</th>
-                <th>ส่วนลด</th>
-                <th>ราคา</th>
+                <th colSpan={2}>รูป</th>
+                <th colSpan={5}>สินค้า</th>
+                <th colSpan={3}>จำนวน</th>
+                <th colSpan={3}>ส่วนลด</th>
+                <th colSpan={4}>ราคา</th>
               </tr>
             </thead>
             <tbody>
               {selectedProducts.map((product, index) => (
                 <tr key={product.id}>
-                  <td data-label="ลำดับ">{index + 1}</td>
-                  <td data-label="รูป">
-                    <img src={product.imgUrl} />
+                  <td colSpan={2} data-label="รูป">
+                    <img src={product.imgUrl} alt={product.name} />
                   </td>
-                  <td data-label="ชื่อ">{product.name}</td>
-
-                  <td data-label="จำนวน">{product.quantity}</td>
-                  <td data-label="ส่วนลด" style={{ textAlign: "center" }}>
+                  <td colSpan={5} data-label="สินค้า">
+                    {product.name}
+                  </td>
+                  <td colSpan={3} data-label="จำนวน">
+                    {product.quantity}
+                  </td>
+                  <td colSpan={3} data-label="ส่วนลด">
                     {product.discount ? (
-                      <PriceFormat
-                        price={product?.priceBefore - product?.price}
-                      />
+                      <SemiSpan
+                        color="#d4001a"
+                        ml="0.5rem"
+                        style={{ textAlign: "center" }}
+                      >
+                        <PriceFormat
+                          price={
+                            parseInt(product?.priceBefore) -
+                            parseInt(product?.price)
+                          }
+                        />
+                      </SemiSpan>
                     ) : null}
                   </td>
-                  <td data-label="ราคา">{product.price}</td>
+                  <td colSpan={4} data-label="ราคา">
+                    <FlexBox display="block" alignContent="center">
+                      <PriceFormat price={parseInt(product?.price)} />{" "}
+                    </FlexBox>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </TableDIYStyle> */}
-        <FlexBox justifyContent="space-between" mt="1rem">
+        </TableDIYStyle>
+        <FlexBox justifyContent="space-between" mt="2rem">
           <Button
             onClick={onClose}
             color="secondary"
             bg="secondary.light"
-            style={{ width: "48%" }}
+            style={{ width: "20%" }}
           >
             แก้ไขรายการ
           </Button>
@@ -254,9 +285,25 @@ const ModalDIY = ({ selectedProducts, onClose }) => {
             color="secondary"
             bg="secondary.light"
             onClick={handlePrintButtonClick}
-            style={{ width: "48%" }}
+            style={{ width: "20%" }}
           >
             พิมพ์
+          </Button>
+          <Button
+            onClick={handleShareButtonClick}
+            color="primary"
+            bg="primary.light"
+            style={{ width: "20%" }}
+          >
+            แชร์สเปคคอม
+          </Button>
+          <Button
+            color="primary"
+            bg="primary.light"
+            onClick={handleAddToCartButtonClick}
+            style={{ width: "25%" }}
+          >
+            ยืนยันการสั่งซื้อ
           </Button>
         </FlexBox>
         {/* <FlexBox justifyContent="space-between" mt="1rem">
