@@ -8,7 +8,7 @@ export interface IconProps {
   children: string;
   transform?: string;
   color?: colorOptions;
-  variant?: "small" | "medium" | "large";
+  variant?: "small" | "medium" | "large" | "extrasmall";
   defaultcolor?: "currentColor" | "auto";
   className?: string;
   onClick?: () => void;

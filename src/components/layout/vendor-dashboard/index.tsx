@@ -14,8 +14,17 @@ const linkList = [
   { href: "/vendor/dashboard", title: "Dashboard", iconName: "board" },
   { href: "/vendor/products", title: "Products", iconName: "box", count: 300 },
   { href: "/vendor/add-product", title: "Add New Product", iconName: "upload" },
-  { href: "/vendor/orders", title: "Orders", iconName: "shopping-cart", count: 40 },
-  { href: "/vendor/account-settings", title: "Account Settings", iconName: "gear-2" },
+  {
+    href: "/vendor/orders",
+    title: "Orders",
+    iconName: "shopping-cart",
+    count: 40,
+  },
+  {
+    href: "/vendor/account-settings",
+    title: "Account Settings",
+    iconName: "gear-2",
+  },
 ];
 
 // ======================================================
@@ -41,7 +50,11 @@ const VendorDashboardLayout: FC<Props> = ({ children }) => {
                 >
                   <FlexBox alignItems="center">
                     <Box className="dashboard-nav-icon-holder">
-                      <Icon variant="small" defaultcolor="currentColor" mr="10px">
+                      <Icon
+                        variant="small"
+                        defaultcolor="currentColor"
+                        mr="10px"
+                      >
                         {item.iconName}
                       </Icon>
                     </Box>

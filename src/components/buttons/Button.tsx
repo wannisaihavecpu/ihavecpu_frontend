@@ -20,7 +20,7 @@ interface ButtonProps {
   fullwidth?: boolean;
   width?: string;
   color?: colorOptions;
-  variant?: "text" | "outlined" | "contained";
+  variant?: "text" | "outlined" | "contained" | "outlinedNoBorder";
   size?: "extrasmall" | "small" | "medium" | "large" | "none";
 }
 
@@ -80,6 +80,41 @@ const Button = styled.button<
           padding: "10px 16px",
           color: `${color}.main`,
           border: "1px solid",
+          borderColor: color ? `${color}.main` : "text.disabled",
+
+          "&:enabled svg path": {
+            fill: color
+              ? `${theme.colors[color]?.main} !important`
+              : "text.primary",
+          },
+          "&:enabled svg polyline, svg polygon": {
+            color: color
+              ? `${theme.colors[color]?.main} !important`
+              : "text.primary",
+          },
+          "&:focus": {
+            boxShadow: `0px 1px 4px 0px ${theme.colors[color]?.light}`,
+          },
+          "&:hover:enabled": {
+            bg: color && `${color}.main`,
+            borderColor: color && `${color}.main`,
+            color: color && `${color}.text`,
+            "svg path": {
+              fill: color
+                ? `${theme.colors[color]?.text} !important`
+                : "text.primary",
+            },
+            "svg polyline, svg polygon": {
+              color: color
+                ? `${theme.colors[color]?.text} !important`
+                : "text.primary",
+            },
+            ...(color === "dark" && { color: "white" }),
+          },
+        },
+        outlinedNoBorder: {
+          padding: "10px 16px",
+          color: `${color}.main`,
           borderColor: color ? `${color}.main` : "text.disabled",
 
           "&:enabled svg path": {

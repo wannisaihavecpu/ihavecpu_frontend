@@ -60,7 +60,9 @@ const GroceryOne = (props: Grocery1Props) => {
   );
 };
 
-GroceryOne.layout = ({ children }) => <GroceryLayout showNavbar={false}>{children}</GroceryLayout>;
+GroceryOne.layout = ({ children }) => (
+  <GroceryLayout showNavbar={false}>{children}</GroceryLayout>
+);
 
 export const getStaticProps: GetStaticProps = async () => {
   const products = await api.getProducts();
@@ -70,7 +72,13 @@ export const getStaticProps: GetStaticProps = async () => {
   const grocery1NavList = await api.getGrocery1Navigation();
 
   return {
-    props: { products, serviceList, grocery1NavList, popularProducts, trendingProducts },
+    props: {
+      products,
+      serviceList,
+      grocery1NavList,
+      popularProducts,
+      trendingProducts,
+    },
   };
 };
 

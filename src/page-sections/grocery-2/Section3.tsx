@@ -32,7 +32,12 @@ const Section3: FC<Props> = ({ categories }) => {
                   hoverEffect={true}
                   alignItems="center"
                 >
-                  <NextImage src={item.image} height={46} width={46} objectFit="contain" />
+                  <NextImage
+                    src={item.image}
+                    height={46}
+                    width={46}
+                    objectFit="contain"
+                  />
 
                   <Box ml="2rem" flex={1} overflow="hidden">
                     <Tiny color="primary.main">{item.description}</Tiny>

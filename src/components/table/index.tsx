@@ -10,14 +10,19 @@ const Table: FC<TableProps> = ({ product }) => {
     <TableStyle>
       <table>
         <tbody>
-          {product.property.map((row) =>
-            row.detail.map((detailItem) => (
-              <tr key={detailItem.filter_id}>
-                <td className="column1">{row.name_th}</td>
-                <td className="column2">{detailItem.name_th}</td>
-              </tr>
-            ))
-          )}
+          {product.property.map((row) => (
+            <tr key={row.name_th}>
+              <td className="column1">{row.name_th}</td>
+              <td className="column2">
+                {row.detail.map((detailItem, index) => (
+                  <React.Fragment key={detailItem.filter_id}>
+                    {index > 0 && ", "}
+                    {detailItem.name_th}
+                  </React.Fragment>
+                ))}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </TableStyle>

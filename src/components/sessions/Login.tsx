@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Box from "@component/Box";
@@ -9,28 +9,75 @@ import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import TextField from "@component/text-field";
 import { Button, IconButton } from "@component/buttons";
-import { H3, H6, SemiSpan, Small, Span } from "@component/Typography";
+import { H3, H6, SemiSpan, Small } from "@component/Typography";
 import { StyledSessionCard } from "./styles";
 import styled from "styled-components";
 import Modal from "@component/Modal";
+import SearchBoxStyle from "@component/search-box/styled";
+import Grid from "@component/grid/Grid";
+import CheckBox from "@component/CheckBox";
+import { signIn } from "next-auth/react";
+import { notify } from "@component/toast";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
+const IconCloseWrapper = styled.div`
+  .icon-button {
+    padding: 0px;
+    border: 0;
+    background-color: transparent;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.15s ease;
+  }
+
+  .icon-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .icon-button:hover,
+  .icon-button:focus {
+    background-color: #dfdad7;
+  }
+`;
 const Login: FC<Props> = (props) => {
   const { open, onClose } = props;
 
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const router = useRouter();
 
   const togglePasswordVisibility = useCallback(() => {
     setPasswordVisibility((visible) => !visible);
   }, []);
 
   const handleFormSubmit = async (values) => {
-    router.push("/profile");
-    console.log(values);
+    try {
+      const result = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+
+      if (result.error) {
+        notify("error", "เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่");
+      } else {
+        // router.push("/");
+        notify("success", "เข้าสู่ระบบสำเร็จ");
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
@@ -40,107 +87,119 @@ const Login: FC<Props> = (props) => {
       validationSchema: formSchema,
     });
 
-  const IconClose = styled.div`
-    .icon-button {
-      padding: 0px;
-      border: 0;
-      background-color: transparent;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: 0.15s ease;
-    }
-
-    .icon-button svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    .icon-button:hover,
-    .icon-button:focus {
-      background-color: #dfdad7;
-    }
-  `;
-
   return (
     <Modal open={open}>
       <StyledSessionCard mx="auto" my="2rem" boxShadow="large">
-        <FlexBox style={{ justifyContent: "right", padding: "15px 45px" }}>
-          <IconClose>
+        <FlexBox
+          className="content"
+          style={{
+            paddingTop: "0px",
+            paddingBottom: "0px",
+            marginTop: "15px",
+            marginBottom: "0px",
+            justifyContent: "right",
+          }}
+        >
+          <IconCloseWrapper>
             <Button type="button" className="icon-button" onClick={onClose}>
               <Icon size="24px">close</Icon>
             </Button>
-          </IconClose>
+          </IconCloseWrapper>
         </FlexBox>
         <form className="content" onSubmit={handleSubmit}>
           <Box mb="2rem">
-            <H3 textAlign="center" mb="0.5rem">
-              เข้าสู่ระบบ
-            </H3>
+            <H3 textAlign="center">เข้าสู่ระบบ</H3>
           </Box>
+          <SearchBoxStyle style={{ marginBottom: "0.5rem" }}>
+            <Icon className="login-icon" size="22px">
+              email
+            </Icon>
 
-          <TextField
-            fullwidth
-            mb="0.75rem"
-            name="email"
-            type="email"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={values.email || ""}
-            placeholder="exmple@mail.com"
-            // label="Email or Phone Number"
-            errorText={touched.email && errors.email}
-          />
+            <TextField
+              fullwidth
+              className="login-field"
+              name="email"
+              type="email"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.email || ""}
+              placeholder="อีเมล"
+              style={{
+                borderColor:
+                  touched.email && errors.email ? "#d4001a" : "#ecedec",
+              }}
+            />
+          </SearchBoxStyle>
+          <SearchBoxStyle style={{ marginBottom: "1rem" }}>
+            <Icon className="login-icon" size="22px">
+              email
+            </Icon>
 
-          <TextField
-            mb="1rem"
-            fullwidth
-            name="password"
-            // label="Password"
-            autoComplete="on"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            placeholder="*********"
-            value={values.password || ""}
-            errorText={touched.password && errors.password}
-            type={passwordVisibility ? "text" : "password"}
-            endAdornment={
-              <IconButton
-                p="0.25rem"
-                // size="small"
-                mr="0.25rem"
-                type="button"
-                onClick={togglePasswordVisibility}
-                color={passwordVisibility ? "gray.700" : "gray.600"}
-              >
-                <Icon variant="small" defaultcolor="currentColor">
-                  {passwordVisibility ? "eye-alt" : "eye"}
-                </Icon>
-              </IconButton>
-            }
-          />
+            <TextField
+              fullwidth
+              className="login-field"
+              name="password"
+              autoComplete="on"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              placeholder="รหัสผ่าน"
+              style={{
+                borderColor:
+                  touched.password && errors.password ? "#d4001a" : "#ecedec",
+              }}
+              value={values.password || ""}
+              type={passwordVisibility ? "text" : "password"}
+              endAdornment={
+                <IconButton
+                  p="0.25rem"
+                  // size="small"
+                  mr="0.25rem"
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  color={passwordVisibility ? "gray.700" : "gray.600"}
+                >
+                  <Icon variant="small" defaultcolor="currentColor">
+                    {passwordVisibility ? "eye-alt" : "eye"}
+                  </Icon>
+                </IconButton>
+              }
+            />
+          </SearchBoxStyle>
+          <FlexBox>
+            <CheckBox
+              mb="1.75rem"
+              name="agreement"
+              color="secondary"
+              onChange={handleChange}
+              checked={values.remember}
+              label={<SemiSpan>จำฉันเข้าระบบ</SemiSpan>}
+            />
+          </FlexBox>
 
-          <Button
-            mb="1.65rem"
-            variant="contained"
-            color="primary"
-            type="submit"
-            fullwidth
-          >
-            Login
-          </Button>
+          <Grid item xl={12} md={12} xs={12}>
+            <Button
+              mb="1.65rem"
+              variant="contained"
+              color="ihavecpu"
+              type="submit"
+              style={{ width: "100%" }}
+            >
+              เข้าสู่ระบบ
+            </Button>
+          </Grid>
 
           <Box mb="1rem">
             <Divider width="200px" mx="auto" />
             <FlexBox justifyContent="center" mt="-14px">
-              <Span color="text.muted" bg="body.paper" px="1rem">
-                on
-              </Span>
+              <H3
+                color="text.muted"
+                bg="body.paper"
+                px="1rem"
+                fontSize={14}
+                fontWeight={100}
+              >
+                หรือเข้าสู่ระบบด้วย
+              </H3>
             </FlexBox>
           </Box>
 
@@ -157,11 +216,11 @@ const Login: FC<Props> = (props) => {
             <Icon variant="small" defaultcolor="auto" mr="0.5rem">
               facebook-filled-white
             </Icon>
-            <Small fontWeight="600">Continue with Facebook</Small>
+            <Small fontWeight="600">เข้าสู่ระบบด้วย Facebook</Small>
           </FlexBox>
 
           <FlexBox
-            mb="1.25rem"
+            mb="0.75rem"
             height="40px"
             color="white"
             bg="#4285F4"
@@ -173,15 +232,31 @@ const Login: FC<Props> = (props) => {
             <Icon variant="small" defaultcolor="auto" mr="0.5rem">
               google-1
             </Icon>
-            <Small fontWeight="600">Continue with Google</Small>
+            <Small fontWeight="600">เข้าสู่ระบบด้วย Google</Small>
+          </FlexBox>
+
+          <FlexBox
+            mb="1.25rem"
+            height="40px"
+            color="white"
+            bg="#00b900"
+            borderRadius={5}
+            cursor="pointer"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Icon variant="small" defaultcolor="auto" mr="0.5rem">
+              facebook-filled-white
+            </Icon>
+            <Small fontWeight="600">เข้าสู่ระบบด้วย LINE</Small>
           </FlexBox>
 
           <FlexBox justifyContent="center" mb="1.25rem">
-            <SemiSpan>Don’t have account?</SemiSpan>
+            <SemiSpan>ไม่ใช่สมาชิก?</SemiSpan>
             <Link href="/signup">
               <a>
                 <H6 ml="0.5rem" borderBottom="1px solid" borderColor="gray.900">
-                  Sign Up
+                  สมัครสมาชิก
                 </H6>
               </a>
             </Link>
@@ -189,11 +264,10 @@ const Login: FC<Props> = (props) => {
         </form>
 
         <FlexBox justifyContent="center" bg="gray.200" py="19px">
-          <SemiSpan>Forgot your password?</SemiSpan>
           <Link href="/">
             <a>
               <H6 ml="0.5rem" borderBottom="1px solid" borderColor="gray.900">
-                Reset It
+                ลืมรหัสผ่าน ?
               </H6>
             </a>
           </Link>

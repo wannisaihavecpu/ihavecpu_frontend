@@ -6,6 +6,24 @@ const StyledSearchBox = styled.div`
   display: flex;
   align-items: center;
 
+  &.error {
+    border: 1.5px solid #d4001a;
+  }
+
+  .login-icon {
+    position: absolute;
+    color: white;
+    left: 1rem;
+    z-index: 1;
+  }
+  .login-field {
+    flex: 1 1 0;
+    padding-left: 3rem;
+    height: 44px;
+    border-radius: 10px;
+    border: 1.5px solid #ecedec;
+  }
+
   .search-icon {
     position: absolute;
     color: ${getTheme("colors.text.hint")};

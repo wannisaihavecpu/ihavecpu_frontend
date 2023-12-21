@@ -163,7 +163,7 @@ const ProductCard9: FC<ProductCard9Props> = ({
             </Icon>
 
             <Image
-              src={imgUrl}
+              src={imgUrl || "/assets/images/products/nophoto.jpg"}
               alt={title}
               width="100%"
               borderRadius="0.5rem"
