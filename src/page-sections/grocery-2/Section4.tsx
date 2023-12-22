@@ -1111,7 +1111,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     fetchFilterData(defaultCategoryID);
     setSelected(defaultCategoryID.toString());
     setTitle(navList[0].title_th);
-  }, []);
+  }, [navList]);
   useEffect(() => {
     let debounceTimeout;
     const newAbortController = new AbortController();

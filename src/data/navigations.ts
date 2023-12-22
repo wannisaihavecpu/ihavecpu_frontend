@@ -2,7 +2,7 @@ const navigations = [
   {
     icon: "tools",
     title: "จัดสเป็กคอม",
-    href: "/product/search/music",
+    href: "/diy",
     menuComponent: "MegaMenu1",
   },
   {
@@ -240,7 +240,6 @@ const navigations = [
           ],
         },
       },
-     
     ],
   },
   {
