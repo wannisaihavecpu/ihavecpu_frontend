@@ -45,13 +45,14 @@ interface ProductCard23Props extends SpaceProps {
   name: string;
   slug: string;
   price: number;
+  categoryName?: string;
   imgUrl?: string;
   id: string | number;
 }
 // =====================================================================
 
 const ProductCard23: FC<ProductCard23Props> = (props) => {
-  const { id, name, qty, price, imgUrl, slug, ...others } = props;
+  const { id, name, qty, price, imgUrl, slug, categoryName, ...others } = props;
 
   // const { dispatch } = useAppContext();
   // const handleCartAmountChange = (amount: number) => () => {
@@ -92,21 +93,22 @@ const ProductCard23: FC<ProductCard23Props> = (props) => {
         className="product-details"
         justifyContent="space-between"
       >
+        <Typography color="gray.600" mr="0.5rem" fontSize={12}>
+          {categoryName}
+        </Typography>
         <Link href={`/product/${id}/${formatSlug(name)}`}>
           <a>
             <Typography
               className="title"
               fontWeight="600"
               fontSize="18px"
-              mb="0.5rem"
+              mb="1.2rem"
             >
               {name}
             </Typography>
           </a>
         </Link>
-        <Typography color="gray.600" mr="0.5rem">
-          เมนบอร์ด
-        </Typography>
+
         <FlexBox justifyContent="space-between" alignItems="flex-end">
           <FlexBox flexWrap="wrap" alignItems="center">
             <Typography color="gray.600" mr="0.5rem">

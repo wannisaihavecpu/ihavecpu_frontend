@@ -82,6 +82,7 @@ const Detail: FC<Props> = ({ details }) => {
                 qty={item.quantity}
                 slug={item.name_th}
                 name={item.name_th}
+                categoryName={item.category_name}
                 price={parseInt(item.price_sale)}
                 imgUrl={item.imgUrl}
               />
