@@ -160,7 +160,8 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
   const fetchProductData = async (
     category_id,
     searchKeyword = "",
-    sortOption = ""
+    sortOption = "",
+    customAbortController?
   ) => {
     setLoading(true);
     try {
@@ -301,7 +302,7 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       const productResponse = await fetch(apiUrl, {
-        signal: abortController.signal,
+        signal: customAbortController?.signal,
       });
       const productData = await productResponse.json();
 
@@ -1116,16 +1117,31 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
     let debounceTimeout;
     const newAbortController = new AbortController();
     setAbortController(newAbortController);
+
+    const fetchData = async () => {
+      try {
+        await fetchProductData(
+          categoryID,
+          searchValue,
+          selectedSortOption,
+          newAbortController
+        );
+        setCurrentPage(1);
+      } catch (error) {
+        console.error("Error fetching products", error);
+      }
+    };
+
     debounceTimeout = setTimeout(() => {
-      fetchProductData(categoryID, searchValue);
-      setCurrentPage(1);
+      fetchData();
     }, 500);
 
     return () => {
       clearTimeout(debounceTimeout);
-      abortController.abort();
+      newAbortController.abort();
     };
-  }, [searchValue]);
+  }, [searchValue, categoryID]);
+
   useEffect(() => {
     fetchFilterData(categoryID);
     fetchProductData(categoryID);

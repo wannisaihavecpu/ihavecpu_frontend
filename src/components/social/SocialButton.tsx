@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SocialCircle } from "./styles";
 import Icon from "@component/icon/Icon";
+import Box from "@component/Box";
 
 const SocialButton = () => {
   const [copied, setCopied] = useState(false);
@@ -39,18 +40,22 @@ const SocialButton = () => {
         <div className="shareSocial">
           <ul className="socialList">
             <li>
-              <a href="#" onClick={handleFacebookShare}>
-                <i className="fa-brands fa-facebook-f">
-                  <Icon>facebook</Icon>
-                </i>
-              </a>
+              <Box onClick={handleFacebookShare}>
+                <a href="#">
+                  <i className="fa-brands fa-facebook-f">
+                    <Icon>facebook</Icon>
+                  </i>
+                </a>
+              </Box>
             </li>
             <li>
-              <a href="#" onClick={handleLineShare}>
-                <i className="fa-brands fa-twitter">
-                  <Icon>line</Icon>
-                </i>
-              </a>
+              <Box onClick={handleLineShare}>
+                <a href="#">
+                  <i className="fa-brands fa-twitter">
+                    <Icon>line</Icon>
+                  </i>
+                </a>
+              </Box>
             </li>
           </ul>
         </div>
@@ -61,8 +66,10 @@ const SocialButton = () => {
               id="text"
               type="text"
               name="shortlink"
+              readOnly
               value={pageUrl}
             />
+
             <span
               className="copyLink"
               id="copy"
