@@ -45,6 +45,8 @@ interface ProductCard23Props extends SpaceProps {
   name: string;
   slug: string;
   price: number;
+  priceBefore?: number;
+  discount?: string;
   categoryName?: string;
   imgUrl?: string;
   id: string | number;
@@ -52,7 +54,18 @@ interface ProductCard23Props extends SpaceProps {
 // =====================================================================
 
 const ProductCard23: FC<ProductCard23Props> = (props) => {
-  const { id, name, qty, price, imgUrl, slug, categoryName, ...others } = props;
+  const {
+    id,
+    name,
+    qty,
+    price,
+    priceBefore,
+    discount,
+    imgUrl,
+    slug,
+    categoryName,
+    ...others
+  } = props;
 
   // const { dispatch } = useAppContext();
   // const handleCartAmountChange = (amount: number) => () => {
@@ -111,19 +124,34 @@ const ProductCard23: FC<ProductCard23Props> = (props) => {
 
         <FlexBox justifyContent="space-between" alignItems="flex-end">
           <FlexBox flexWrap="wrap" alignItems="center">
-            <Typography color="gray.600" mr="0.5rem">
-              <PriceFormat price={price} /> x {qty}
+            <Typography fontWeight={50} color="gray.600" mr="0.5rem">
+              <PriceFormat price={price} />
             </Typography>
-
-            <Typography fontWeight={600} color="primary.main" mr="1rem">
+            <Typography
+              fontSize="10px"
+              color="gray.600"
+              mr="0.5rem"
+              style={{ alignSelf: "center" }}
+            >
+              <del>
+                <PriceFormat price={priceBefore} />
+              </del>
+            </Typography>
+            <Typography fontWeight={50} color="gray.600" mr="0.5rem">
+              x {qty}
+            </Typography>
+            {/* <Typography fontWeight={600} color="primary.main" mr="1rem">
               <PriceFormat price={price * qty} />
-            </Typography>
+            </Typography> */}
           </FlexBox>
 
           <FlexBox alignItems="center">
-            <Typography mx="0.5rem" fontWeight="600" fontSize="15px">
-              x {qty}
+            <Typography fontWeight={600} fontSize="17px" color="ihavecpu.main">
+              <PriceFormat price={price * qty} />
             </Typography>
+            {/* <Typography mx="0.5rem" fontWeight="600" fontSize="15px">
+              x {qty}
+            </Typography> */}
           </FlexBox>
         </FlexBox>
       </FlexBox>

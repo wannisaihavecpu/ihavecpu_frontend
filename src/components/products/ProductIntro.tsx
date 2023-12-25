@@ -144,7 +144,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         if (compareList.length >= maxCompareProducts) {
           notify("error", "เลือกเปรียบเทียบสินค้าได้สูงสุด 4 สินค้าเท่านั้น");
         } else {
-             console.log("case 3");
+          console.log("case 3");
           notify("success", "added to compare");
           // add product to the comparison list
           const updatedCompareList = [
@@ -160,7 +160,6 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
           // update the state with the new compareList
           setCompareList(updatedCompareList);
-
         }
       }
     } else {
@@ -175,7 +174,6 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     }
   };
   // console.log(compareList);
-
 
   // copy Link
   const handleCopyLinkClick = () => {
@@ -213,37 +211,39 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
   const handleCartAmountChange = (newAmount: number) => {
     newAmount = Math.max(newAmount, 1);
-  
+
     const isAnyOptionRequired = product.option.some(
       (option) => option.sub.length > 0
     );
-  
+
     if (isAnyOptionRequired) {
       const isAllOptionsSelected = product.option.every((option) =>
         selectedOptions.hasOwnProperty(option.m_option_id)
       );
-  
+
       if (!isAllOptionsSelected) {
         notify("error", "กรุณาเลือกตัวเลือกสินค้า");
-        return; 
+        return;
       }
     }
-  
+
     const availableStock = getAvailableStock(selectedOptions);
-  
+
     if (!isNaN(newAmount) && newAmount <= availableStock) {
       setQuantity(newAmount);
     } else {
       notify("error", "สินค้าหมดคลัง");
     }
   };
-  
+
   const handleAddToCartClick = () => {
     const availableStock = getAvailableStock(selectedOptions);
     const optionId = mapSelectedOptionsToOptionId(
       selectedOptions,
       product.stock
     );
+
+    console.log("optionID", optionId);
 
     if (cartItem?.qty >= availableStock) {
       notify("error", "สินค้าหมดคลัง");
@@ -411,7 +411,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   };
   // check Stock
   const isProductAvailable = isProductInStock();
-  const status = isProductAvailable ? "IN STOCK" : "OUT OF STOCK";
+  const status = isProductAvailable ? "มีสินค้า" : "สินค้าหมด";
 
   const [myCoupon, setMyCoupon] = useState([]);
 
@@ -478,7 +478,10 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
 
   return (
     <Box overflow="hidden">
-      <CompareNotification count={compareList.length} category={compareList[0]?.category_id} />
+      <CompareNotification
+        count={compareList.length}
+        category={compareList[0]?.category_id}
+      />
 
       <Grid container justifyContent="center" spacing={16}>
         {/* PRODUCT IMAGE */}

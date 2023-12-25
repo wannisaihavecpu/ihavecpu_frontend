@@ -16,7 +16,7 @@ import SocialButton from "@component/social/SocialButton";
 import useWindowSize from "@hook/useWindowSize";
 
 // ===========================================================
-type Props = { details: viewDIY[] };
+type Props = { details: viewDIY };
 // ===========================================================
 
 const Detail: FC<Props> = ({ details }) => {
@@ -34,11 +34,13 @@ const Detail: FC<Props> = ({ details }) => {
     }
   };
 
-  const isAnyProductOutOfStock = details.some((item) => item.stock === 0);
+  const isAnyProductOutOfStock = details.productDetail.some(
+    (item) => item.stock === 0
+  );
 
   const handleAddToCartButtonClick = async () => {
     try {
-      details.forEach((product) => {
+      details.productDetail.forEach((product) => {
         dispatch({
           type: "CHANGE_CART_AMOUNT",
           payload: {
@@ -59,6 +61,9 @@ const Detail: FC<Props> = ({ details }) => {
       console.error("Error handling share and adding to cart", error);
     }
   };
+  const formattedPrice = details?.netPrice
+    ?.toFixed(2)
+    .replace(/\d(?=(\d{3})+\.)/g, "$&,");
 
   return (
     <Box>
@@ -74,7 +79,7 @@ const Detail: FC<Props> = ({ details }) => {
       <Fragment>
         <Grid container spacing={6}>
           <Grid item lg={8} md={8} xs={12} id="productlist">
-            {details.map((item) => (
+            {details.productDetail.map((item) => (
               <ProductCard23
                 mb="1.5rem"
                 id={item.product_id}
@@ -84,6 +89,8 @@ const Detail: FC<Props> = ({ details }) => {
                 name={item.name_th}
                 categoryName={item.category_name}
                 price={parseInt(item.price_sale)}
+                priceBefore={parseInt(item.price_before)}
+                discount={item.discount}
                 imgUrl={item.imgUrl}
               />
             ))}
@@ -122,7 +129,7 @@ const Detail: FC<Props> = ({ details }) => {
                     fontSize={35}
                     textAlign="center"
                   >
-                    12,345.00
+                    {formattedPrice ?? 0}
                   </Typography>
                 </FlexBox>
 
@@ -136,7 +143,7 @@ const Detail: FC<Props> = ({ details }) => {
                   <Typography>ยอดรวม :</Typography>
 
                   <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                    <PriceFormat price={1} />
+                    <PriceFormat price={details?.priceBeforeDiscount ?? 0} />
                   </Typography>
                 </FlexBox>
                 <FlexBox
@@ -152,7 +159,7 @@ const Detail: FC<Props> = ({ details }) => {
                     fontWeight="600"
                     lineHeight="1"
                   >
-                    -<PriceFormat price={0} />
+                    -<PriceFormat price={details?.discount ?? 0} />
                   </Typography>
                 </FlexBox>
 
@@ -166,7 +173,7 @@ const Detail: FC<Props> = ({ details }) => {
                   <Typography fontWeight={600}>ยอดรวมสุทธิ :</Typography>
 
                   <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                    <PriceFormat price={0} />
+                    <PriceFormat price={details?.netPrice ?? 0} />
                   </Typography>
                 </FlexBox>
 
@@ -250,7 +257,7 @@ const Detail: FC<Props> = ({ details }) => {
                     fontSize={35}
                     textAlign="center"
                   >
-                    12,345.00
+                    {formattedPrice ?? 0}
                   </Typography>
                 </FlexBox>
 
@@ -264,7 +271,7 @@ const Detail: FC<Props> = ({ details }) => {
                   <Typography>ยอดรวม :</Typography>
 
                   <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                    <PriceFormat price={1} />
+                    <PriceFormat price={details?.priceBeforeDiscount ?? 0} />
                   </Typography>
                 </FlexBox>
                 <FlexBox
@@ -280,7 +287,7 @@ const Detail: FC<Props> = ({ details }) => {
                     fontWeight="600"
                     lineHeight="1"
                   >
-                    -<PriceFormat price={0} />
+                    -<PriceFormat price={details?.discount ?? 0} />
                   </Typography>
                 </FlexBox>
 
@@ -294,7 +301,7 @@ const Detail: FC<Props> = ({ details }) => {
                   <Typography fontWeight={600}>ยอดรวมสุทธิ :</Typography>
 
                   <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                    <PriceFormat price={0} />
+                    <PriceFormat price={details?.netPrice ?? 0} />
                   </Typography>
                 </FlexBox>
 

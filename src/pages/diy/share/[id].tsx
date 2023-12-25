@@ -12,7 +12,7 @@ type Props = {
   //   relatedProducts: Product[];
   //   frequentlyBought: Product[];
   //   listCoupon: listCouponProduct[];
-  detailDIY: viewDIY[];
+  detailDIY: viewDIY;
 };
 // ===============================================================
 
