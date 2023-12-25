@@ -1,4 +1,11 @@
 interface viewDIY {
+  priceBeforeDiscount?: number;
+  netPrice?: number;
+  discount?: number;
+  productDetail: listProductDetail[];
+}
+
+interface listProductDetail {
   product_id: number;
   cat_id: number;
   category_name: string;
@@ -24,5 +31,4 @@ interface viewDIY {
   imgUrl: string;
   image800: string;
 }
-
 export default viewDIY;

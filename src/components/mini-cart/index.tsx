@@ -11,6 +11,7 @@ import { useAppContext } from "@context/AppContext";
 import { StyledMiniCart } from "./styles";
 import { currency } from "@utils/utils";
 import { notify } from "@component/toast";
+// import PriceFormat from "@component/PriceFormat";
 
 type MiniCartProps = { toggleSidenav?: () => void };
 
@@ -160,7 +161,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav }) => {
         <Fragment>
           <Link href="/checkout">
             <Button
-              color="primary"
+              color="ihavecpu"
               variant="contained"
               m="1rem 1rem 0.75rem"
               onClick={toggleSidenav}

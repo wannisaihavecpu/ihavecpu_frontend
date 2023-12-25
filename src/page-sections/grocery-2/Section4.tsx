@@ -1166,27 +1166,29 @@ const Section4: FC<Props> = ({ navList, currentPage, setCurrentPage }) => {
           const specData = await viewSpecResponse.json();
 
           if (specData.res_code === "00") {
-            const mappedData = specData.res_result.map((item) => ({
-              id: item.product_id,
-              name: item.name_th,
-              categoryID: item.cat_id,
-              additionCate: item.addition_cate,
-              filterID: item.filter_id,
-              filterSubID: item.filter_sub_id,
-              price: item.price_sale,
-              priceBefore: item.price_before,
-              discount: item.discount,
-              imgUrl: item.imgUrl,
-              filterSubIDArray: item.filterArray,
-              sizeRam: item.size,
-              sizeSubRam: item.size_sub,
-              slotRam: item.slot,
-              sataMainBoard: item.sata,
-              m2MainBoard: item.m2,
-              mSlotMainBoard: item.m_slot,
-              maxMemoryMainBoard: item.max_memory,
-              quantity: item.quantity,
-            }));
+            const mappedData = specData.res_result.productDetail.map(
+              (item) => ({
+                id: item.product_id,
+                name: item.name_th,
+                categoryID: item.cat_id,
+                additionCate: item.addition_cate,
+                filterID: item.filter_id,
+                filterSubID: item.filter_sub_id,
+                price: item.price_sale,
+                priceBefore: item.price_before,
+                discount: item.discount,
+                imgUrl: item.imgUrl,
+                filterSubIDArray: item.filterArray,
+                sizeRam: item.size,
+                sizeSubRam: item.size_sub,
+                slotRam: item.slot,
+                sataMainBoard: item.sata,
+                m2MainBoard: item.m2,
+                mSlotMainBoard: item.m_slot,
+                maxMemoryMainBoard: item.max_memory,
+                quantity: item.quantity,
+              })
+            );
 
             setSelectedProduct(mappedData);
           } else {
