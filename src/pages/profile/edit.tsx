@@ -53,7 +53,11 @@ const ProfileEditor = ({ user }: Props) => {
 
   return (
     <Fragment>
-      <DashboardPageHeader iconName="user_filled" title="Edit Profile" button={HEADER_LINK} />
+      <DashboardPageHeader
+        iconName="user_filled"
+        title="Edit Profile"
+        button={HEADER_LINK}
+      />
 
       <Card1>
         <FlexBox alignItems="flex-end" mb="22px">
@@ -91,7 +95,14 @@ const ProfileEditor = ({ user }: Props) => {
           initialValues={INITIAL_VALUES}
           validationSchema={VALIDATION_SCHEMA}
         >
-          {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+          }) => (
             <form onSubmit={handleSubmit}>
               <Box mb="30px">
                 <Grid container horizontal_spacing={6} vertical_spacing={4}>

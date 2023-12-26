@@ -1,7 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import Divider from "@component/Divider";
+import { useRouter } from "next/router";
 import FlexBox from "@component/FlexBox";
-import Typography, { Span } from "@component/Typography";
+import Typography from "@component/Typography";
 import { useAppContext } from "@context/AppContext";
 import PriceFormat from "@component/PriceFormat";
 import { Card1 } from "@component/Card1";
@@ -10,13 +11,16 @@ import { Button } from "@component/buttons";
 
 const CheckoutSummary2: FC = () => {
   const { state } = useAppContext();
+  const router = useRouter();
   const [apiResponseCheckout, setApiResponseCheckout] = useState(null);
+  const { product: urlProduct, qty: urlQty } = router.query;
 
-  const product = state.cart.map((item) => ({
-    product_id: item.id,
-    quantity: item.qty.toString(),
-  }));
-
+  const product = urlProduct
+    ? [{ product_id: urlProduct, quantity: urlQty || "1" }]
+    : state.cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.qty.toString(),
+      }));
   const calculatePayment = async () => {
     let parsedPoint = state.customerDetail[0]?.use_point;
     if (isNaN(parsedPoint)) {
@@ -71,29 +75,88 @@ const CheckoutSummary2: FC = () => {
         คำสั่งซื้อของคุณ
       </Typography>
 
-      {state.cart.map((item) => {
-        const totalQty = item.qty;
-        const totalPrice = item.price * totalQty;
+      {urlProduct && urlQty ? (
+        <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
+          <div>
+            <Typography
+              fontSize="14px"
+              color="text.hint"
+              style={{
+                flex: "1",
+                width: "120px",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {apiResponseCheckout?.productDetail[0]?.name_th}
+            </Typography>
+          </div>
 
-        return (
-          <FlexBox
-            justifyContent="space-between"
-            alignItems="center"
-            mb="1.5rem"
-            key={item.id}
+          <Typography
+            fontSize="14px"
+            color="text.hint"
+            style={{ flex: "1", textAlign: "center" }}
           >
-            <Typography>
-              <Span fontWeight="700" fontSize="14px">
+            {urlQty}
+          </Typography>
+
+          <div style={{ flex: "1", textAlign: "right" }}>
+            <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+              <PriceFormat
+                price={
+                  apiResponseCheckout?.productDetail[0]?.discountPrice *
+                  Number(urlQty)
+                }
+              />
+            </Typography>
+          </div>
+        </FlexBox>
+      ) : (
+        state.cart.map((item) => {
+          const totalQty = item.qty;
+          const totalPrice = item.price * totalQty;
+
+          return (
+            <FlexBox
+              key={item.id}
+              justifyContent="space-between"
+              alignItems="center"
+              mb="0.5rem"
+            >
+              <div>
+                <Typography
+                  fontSize="14px"
+                  color="text.hint"
+                  style={{
+                    flex: "1",
+                    width: "120px",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {item.name}
+                </Typography>
+              </div>
+
+              <Typography
+                fontSize="14px"
+                color="text.hint"
+                style={{ flex: "1", textAlign: "center" }}
+              >
                 {item.qty}
-              </Span>{" "}
-              x {item.name}
-            </Typography>
-            <Typography>
-              <PriceFormat price={totalPrice} />
-            </Typography>
-          </FlexBox>
-        );
-      })}
+              </Typography>
+
+              <div style={{ flex: "1", textAlign: "right" }}>
+                <Typography fontSize="14px" fontWeight="600" lineHeight="1">
+                  <PriceFormat price={totalPrice} />
+                </Typography>
+              </div>
+            </FlexBox>
+          );
+        })
+      )}
 
       <Divider bg="gray.300" mb="1.5rem" />
 

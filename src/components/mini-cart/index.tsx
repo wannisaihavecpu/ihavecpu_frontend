@@ -39,7 +39,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav }) => {
       ) || 0
     );
   };
-
+  console.log("state.cart", state.cart);
   return (
     <StyledMiniCart>
       <div className="cart-list">
@@ -75,8 +75,8 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav }) => {
           </FlexBox>
         )}
 
-        {state.cart.map((item) => (
-          <Fragment key={item.id}>
+        {state.cart.map((item, index) => (
+          <Fragment key={index}>
             <div className="cart-item">
               <FlexBox alignItems="center" flexDirection="column">
                 <Button

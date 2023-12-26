@@ -15,21 +15,62 @@ const CheckoutNavLayout: FC<Props> = ({ children }) => {
   const [selectedStep, setSelectedStep] = useState(0);
 
   const router = useRouter();
-  const { pathname } = router;
+
+  const { product: urlProduct, option: optionID, qty: urlQty } = router.query;
+  const { pathname, query } = router;
 
   const handleStepChange = (_step, ind) => {
+    const cartPath = "/cart";
+    const checkoutPath = "/checkout";
+    const paymentPath = "/payment";
+    const checkoutAlterPath = "/checkout-alternative";
+
+    const cartQuery = {
+      product: urlProduct || "",
+      option: optionID || "",
+      qty: urlQty || "",
+    };
+
     switch (ind) {
       case 0:
-        router.push("/cart");
+        if (urlProduct || optionID || urlQty) {
+          router.push({
+            pathname: checkoutPath,
+            query: cartQuery,
+          });
+        } else {
+          router.push(cartPath);
+        }
         break;
       case 1:
-        router.push("/checkout");
+        if (urlProduct || optionID || urlQty) {
+          router.push({
+            pathname: paymentPath,
+            query: cartQuery,
+          });
+        } else {
+          router.push(checkoutPath);
+        }
         break;
       case 2:
-        router.push("/payment");
+        if (urlProduct || optionID || urlQty) {
+          router.push({
+            pathname: checkoutAlterPath,
+            query: cartQuery,
+          });
+        } else {
+          router.push(paymentPath);
+        }
         break;
       case 3:
-        router.push("/checkout-alternative");
+        if (urlProduct || optionID || urlQty) {
+          router.push({
+            pathname: checkoutAlterPath,
+            query: cartQuery,
+          });
+        } else {
+          router.push(checkoutAlterPath);
+        }
         break;
       default:
         break;
@@ -42,18 +83,35 @@ const CheckoutNavLayout: FC<Props> = ({ children }) => {
         setSelectedStep(1);
         break;
       case "/checkout":
-        setSelectedStep(2);
+        if (urlProduct || optionID || urlQty) {
+          setSelectedStep(1);
+        } else {
+          setSelectedStep(2);
+        }
         break;
       case "/payment":
-        setSelectedStep(3);
+        if (urlProduct || optionID || urlQty) {
+          setSelectedStep(2);
+        } else {
+          setSelectedStep(3);
+        }
         break;
       case "/checkout-alternative":
-        setSelectedStep(4);
+        if (urlProduct || optionID || urlQty) {
+          setSelectedStep(3);
+        } else {
+          setSelectedStep(4);
+        }
         break;
       default:
         break;
     }
   }, [pathname]);
+  const shouldShowCartStep = !query.product || !query.option || !query.qty;
+
+  const dynamicStepperList = shouldShowCartStep
+    ? stepperList
+    : stepperList.slice(1);
 
   return (
     <AppLayout navbar={<Navbar />}>
@@ -62,7 +120,7 @@ const CheckoutNavLayout: FC<Props> = ({ children }) => {
           <Grid container spacing={6}>
             <Grid item lg={8} md={8} xs={12}>
               <Stepper
-                stepperList={stepperList}
+                stepperList={dynamicStepperList}
                 selectedStep={selectedStep}
                 onChange={handleStepChange}
               />

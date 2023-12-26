@@ -23,14 +23,10 @@ interface SelectedValue {
 
 type Props = { paymentMethods; installmentList; shippingList };
 
-
-const PaymentForm: FC<Props> = ({
-  paymentMethods,
-  installmentList,
-}) => {
+const PaymentForm: FC<Props> = ({ paymentMethods, installmentList }) => {
   // const width = useWindowSize();
   const router = useRouter();
-  const { state, updateCustomerDetailsPurchase} = useAppContext();
+  const { state, updateCustomerDetailsPurchase } = useAppContext();
   // const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [selectedBank, setSelectedBank] = useState(null);
 
@@ -50,16 +46,24 @@ const PaymentForm: FC<Props> = ({
     };
 
     updateCustomerDetailsPurchase(updatedCustomerDetail);
-
-    router.push("/checkout-alternative");
+    if (urlProduct || optionID || urlQty) {
+      router.push({
+        pathname: "/checkout-alternative",
+        query: {
+          product: urlProduct || "",
+          option: optionID || "",
+          qty: urlQty || "",
+        },
+      });
+    } else {
+      router.push("/checkout-alternative");
+    }
   };
-
 
   // const handlePaymentMethodChange = (event) => {
   //   const name = event.target.name;
   //   setPaymentMethod(name);
   // };
-
 
   const handleBankSelectChange = (
     selectedValue,
@@ -82,12 +86,17 @@ const PaymentForm: FC<Props> = ({
   };
 
   // calculate
-  const product = state.cart.map((item) => ({
-    product_id: item.id,
-    quantity: item.qty.toString(),
-  }));
+  const { product: urlProduct, option: optionID, qty: urlQty } = router.query;
+  const product = urlProduct
+    ? [{ product_id: urlProduct, quantity: urlQty || "1" }]
+    : state.cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.qty.toString(),
+      }));
+
   const initialSelectedLabel = installmentList.find(
-    (installment) => installment.bank_id.toString() === state.customerDetail[0].bankOption
+    (installment) =>
+      installment.bank_id.toString() === state.customerDetail[0].bankOption
   )?.bank_name;
 
   const calculatePayment = async () => {
@@ -134,8 +143,6 @@ const PaymentForm: FC<Props> = ({
       console.error("Error calling API:", error);
     }
   };
-  
-  
 
   useEffect(() => {
     calculatePayment();
@@ -145,24 +152,27 @@ const PaymentForm: FC<Props> = ({
       const selectedBankData = installmentList.find(
         (item) => item.bank_id.toString() === state.customerDetail[0].bankOption
       );
-  
+
       setSelectedBank({
-        label: initialSelectedLabel || '',
-        value: state.customerDetail[0].bankOption.toString() || '',
+        label: initialSelectedLabel || "",
+        value: state.customerDetail[0].bankOption.toString() || "",
       });
-  
+
       if (
         state.customerDetail[0].termOption !== undefined &&
         selectedBankData &&
         selectedBankData.installment_terms
       ) {
-        const initialSelectedTermValue = state.customerDetail[0].termOption.toString();
-        const initialSelectedTermOption = selectedBankData.installment_terms.find(
-          (termOption) => termOption.term.toString() === initialSelectedTermValue
-        );
-  
+        const initialSelectedTermValue =
+          state.customerDetail[0].termOption.toString();
+        const initialSelectedTermOption =
+          selectedBankData.installment_terms.find(
+            (termOption) =>
+              termOption.term.toString() === initialSelectedTermValue
+          );
+
         setSelectedTerm({
-          label: initialSelectedTermOption?.interest_rate || '',
+          label: initialSelectedTermOption?.interest_rate || "",
           value: initialSelectedTermValue,
         });
       }
@@ -172,27 +182,30 @@ const PaymentForm: FC<Props> = ({
     const fetchSelectedBankData = async () => {
       if (state.customerDetail[0].bankOption) {
         const selectedBankData = installmentList.find(
-          (item) => item.bank_id.toString() === state.customerDetail[0].bankOption
+          (item) =>
+            item.bank_id.toString() === state.customerDetail[0].bankOption
         );
-        const initialSelectedTermValue = state.customerDetail[0].termOption.toString();
-        const initialSelectedTermOption = selectedBankData.installment_terms.find(
-          (termOption) => termOption.term.toString() === initialSelectedTermValue
-        );
-  
+        const initialSelectedTermValue =
+          state.customerDetail[0].termOption.toString();
+        const initialSelectedTermOption =
+          selectedBankData.installment_terms.find(
+            (termOption) =>
+              termOption.term.toString() === initialSelectedTermValue
+          );
+
         if (selectedBankData && selectedBankData.installment_terms) {
           setSelectedTerm({
-            label: initialSelectedTermOption?.interest_rate || '',
-            value: initialSelectedTermValue || '',
+            label: initialSelectedTermOption?.interest_rate || "",
+            value: initialSelectedTermValue || "",
           });
-  
+
           setTermOptions(selectedBankData.installment_terms);
         }
       }
     };
-  
+
     fetchSelectedBankData();
   }, [state.customerDetail[0].bankOption, installmentList]);
-  
 
   return (
     <Formik
@@ -260,7 +273,7 @@ const PaymentForm: FC<Props> = ({
                             onChange={(selectedValue: SelectedValue) => {
                               setSelectedBank({
                                 label: selectedValue.label,
-                                value: selectedValue.value || "0", 
+                                value: selectedValue.value || "0",
                               });
                               setFieldValue("bankOption", selectedValue.value);
                               handleBankSelectChange(
@@ -294,7 +307,7 @@ const PaymentForm: FC<Props> = ({
                               onChange={(selectedValue: SelectedValue) => {
                                 setSelectedTerm({
                                   label: selectedValue.label,
-                                  value: selectedValue.value || "0", 
+                                  value: selectedValue.value || "0",
                                 });
                                 setFieldValue(
                                   "termOption",
@@ -341,53 +354,100 @@ const PaymentForm: FC<Props> = ({
             </Grid>
             <Grid item lg={4} md={4} xs={12}>
               <Card1>
-                {state.cart.map((item) => {
-                  const totalQty = item.qty;
-                  const totalPrice = item.price * totalQty;
-
-                  return (
-                    <FlexBox
-                      key={item.id}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      mb="0.5rem"
-                    >
-                      <div>
-                        <Typography
-                          fontSize="14px"
-                          color="text.hint"
-                          style={{
-                            flex: "1",
-                            width: "120px",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {item.name}
-                        </Typography>
-                      </div>
-
+                {urlProduct && urlQty ? (
+                  <FlexBox
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="0.5rem"
+                  >
+                    <div>
                       <Typography
                         fontSize="14px"
                         color="text.hint"
-                        style={{ flex: "1", textAlign: "center" }}
+                        style={{
+                          flex: "1",
+                          width: "120px",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
                       >
-                        {item.qty}
+                        {apiResponsePayment?.productDetail[0]?.name_th}
                       </Typography>
+                    </div>
 
-                      <div style={{ flex: "1", textAlign: "right" }}>
+                    <Typography
+                      fontSize="14px"
+                      color="text.hint"
+                      style={{ flex: "1", textAlign: "center" }}
+                    >
+                      {urlQty}
+                    </Typography>
+
+                    <div style={{ flex: "1", textAlign: "right" }}>
+                      <Typography
+                        fontSize="14px"
+                        fontWeight="600"
+                        lineHeight="1"
+                      >
+                        <PriceFormat
+                          price={
+                            apiResponsePayment?.productDetail[0]
+                              ?.discountPrice * Number(urlQty)
+                          }
+                        />
+                      </Typography>
+                    </div>
+                  </FlexBox>
+                ) : (
+                  state.cart.map((item) => {
+                    const totalQty = item.qty;
+                    const totalPrice = item.price * totalQty;
+
+                    return (
+                      <FlexBox
+                        key={item.id}
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mb="0.5rem"
+                      >
+                        <div>
+                          <Typography
+                            fontSize="14px"
+                            color="text.hint"
+                            style={{
+                              flex: "1",
+                              width: "120px",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {item.name}
+                          </Typography>
+                        </div>
+
                         <Typography
                           fontSize="14px"
-                          fontWeight="600"
-                          lineHeight="1"
+                          color="text.hint"
+                          style={{ flex: "1", textAlign: "center" }}
                         >
-                          <PriceFormat price={totalPrice} />
+                          {item.qty}
                         </Typography>
-                      </div>
-                    </FlexBox>
-                  );
-                })}
+
+                        <div style={{ flex: "1", textAlign: "right" }}>
+                          <Typography
+                            fontSize="14px"
+                            fontWeight="600"
+                            lineHeight="1"
+                          >
+                            <PriceFormat price={totalPrice} />
+                          </Typography>
+                        </div>
+                      </FlexBox>
+                    );
+                  })
+                )}
 
                 <Divider mb="1rem" />
 
@@ -525,7 +585,6 @@ const PaymentForm: FC<Props> = ({
     </Formik>
   );
 };
-
 
 const initialValues = {
   paymentOption: "",

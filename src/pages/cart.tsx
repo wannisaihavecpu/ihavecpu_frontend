@@ -10,13 +10,12 @@ import { ProductCard7 } from "@component/product-cards";
 import CheckoutNavLayout from "@component/layout/CheckoutNavLayout";
 import { useAppContext } from "@context/AppContext";
 import PriceFormat from "@component/PriceFormat";
-import Radio from "@component/radio";
 import { Formik } from "formik";
-import * as yup from "yup";
+// import * as yup from "yup";
 import { useRouter } from "next/router";
 
 const Cart = () => {
-  const { state, updateCustomerDetailsPurchase } = useAppContext();
+  const { state } = useAppContext();
   const router = useRouter();
 
   const getTotalPrice = () => {
@@ -27,28 +26,17 @@ const Cart = () => {
       ) || 0
     );
   };
-  const handleFormSubmit = async (values) => {
-    const updatedCustomerDetail = {
-      ...state.customerDetail[0],
-      customOption: values.customOption,
-    };
-
-    updateCustomerDetailsPurchase(updatedCustomerDetail);
-
+  const handleFormSubmit = async () => {
     router.push("/checkout");
   };
-console.log(state.cart);
+  console.log(state.cart);
   return (
     <Formik
       initialValues={state.customerDetail[0] || initialValues}
-      validationSchema={checkoutSchema}
+      // validationSchema={checkoutSchema}
       onSubmit={handleFormSubmit}
     >
-      {({
-        values,
-        handleSubmit,
-        setFieldValue,
-      }) => (
+      {({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <Fragment>
             <Grid container spacing={6}>
@@ -107,23 +95,16 @@ console.log(state.cart);
                     <Typography fontWeight={600}>ยอดรวมสุทธิ :</Typography>
 
                     <Typography fontSize="15px" fontWeight="600" lineHeight="1">
-                      <PriceFormat price={0} />
+                      <PriceFormat price={getTotalPrice()} />
                     </Typography>
                   </FlexBox>
 
-                  <Divider mb="1.5rem" />
+                  {/* <Divider mb="1.5rem" /> */}
 
-                  <Typography fontWeight="600" mb="1rem">
+                  {/* <Typography fontWeight="600" mb="1rem">
                     ข้อมูลเพิ่มเติม
                   </Typography>
 
-                  {/* <Select
-              mb="1rem"
-              label="ต้องการให้ iHAVECPU ประกอบให้หรือไม่"
-              options={optionList}
-              placeholder="เลือกสั่งประกอบ"
-              onChange={(e) => console.log(e)}
-            /> */}
                   <FlexBox flexDirection="column">
                     {optionList.map((option, index) => (
                       <Radio
@@ -145,7 +126,7 @@ console.log(state.cart);
                         }}
                       />
                     ))}
-                  </FlexBox>
+                  </FlexBox> */}
 
                   <Box my="1rem">
                     <Button
@@ -172,14 +153,14 @@ console.log(state.cart);
 //   { value: "Chicago", label: "Chicago" },
 // ];
 
-const optionList = [
-  { value: 1, label: "สั่งประกอบ" },
-  { value: 2, label: "ไม่ต้องประกอบ" },
-];
+// const optionList = [
+//   { value: 1, label: "สั่งประกอบ" },
+//   { value: 2, label: "ไม่ต้องประกอบ" },
+// ];
 const initialValues = {
-  customOption: "",
+  // customOption: "",
 };
-const checkoutSchema = yup.object().shape({});
+// const checkoutSchema = yup.object().shape({});
 Cart.layout = CheckoutNavLayout;
 
 export default Cart;
