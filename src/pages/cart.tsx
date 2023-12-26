@@ -29,7 +29,6 @@ const Cart = () => {
   const handleFormSubmit = async () => {
     router.push("/checkout");
   };
-  console.log(state.cart);
   return (
     <Formik
       initialValues={state.customerDetail[0] || initialValues}

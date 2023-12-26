@@ -125,7 +125,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   }, []);
 
   const handleCompareClick = () => {
-    console.log(product.cat_id);
+    // console.log(product.cat_id);
     const productIdString = product.product_id;
     const productCategoryId = product.cat_id;
 
@@ -144,7 +144,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         if (compareList.length >= maxCompareProducts) {
           notify("error", "เลือกเปรียบเทียบสินค้าได้สูงสุด 4 สินค้าเท่านั้น");
         } else {
-          console.log("case 3");
+          // console.log("case 3");
           notify("success", "added to compare");
           // add product to the comparison list
           const updatedCompareList = [
@@ -163,7 +163,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
         }
       }
     } else {
-      console.log("case 3");
+      // console.log("case 3");
       // clear the compare list and add the current product
       notify("success", "added to compare");
       const updatedCompareList = [
@@ -191,13 +191,13 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     selectedOptions: Record<string, string>,
     stock: { option_id?: number; stock?: number; choose?: string[] }[]
   ): number | null => {
-    console.log("selectdoptions", selectedOptions);
+    // console.log("selectdoptions", selectedOptions);
     const selectedOptionsArray = Object.entries(selectedOptions);
 
     const matchingEntry = stock.find((entry) =>
       selectedOptionsArray.every(([, val]) => entry.choose?.includes(val))
     );
-    console.log("match", matchingEntry);
+    // console.log("match", matchingEntry);
 
     return matchingEntry ? matchingEntry.option_id || null : null;
   };
@@ -245,7 +245,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
       product.stock
     );
 
-    console.log("optionID", optionId);
+    // console.log("optionID", optionId);
 
     if (cartItem?.qty >= availableStock) {
       notify("error", "สินค้าหมดคลัง");
@@ -488,7 +488,7 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     fetchMyCouponAvailable();
   }, []);
 
-  console.log("state", state.cart);
+  // console.log("state", state.cart);
 
   return (
     <Box overflow="hidden">
