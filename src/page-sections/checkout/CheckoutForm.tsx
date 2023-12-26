@@ -41,10 +41,17 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
   const [buttonClicked, setButtonClicked] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
 
-  const product = state.cart.map((item) => ({
-    product_id: item.id,
-    quantity: item.qty.toString(),
-  }));
+  // const product = state.cart.map((item) => ({
+  //   product_id: item.id,
+  //   quantity: item.qty.toString(),
+  // }));
+  const { product: urlProduct, option: optionID, qty: urlQty } = router.query;
+  const product = urlProduct
+    ? [{ product_id: urlProduct, quantity: urlQty || "1" }]
+    : state.cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.qty.toString(),
+      }));
 
   const handleFormSubmit = async (values) => {
     const updatedCustomerDetail = {
@@ -58,7 +65,18 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
     };
     if (buttonClicked === "submitPayment") {
       updateCustomerDetailsPurchase(updatedCustomerDetail);
-      router.push("/payment");
+      if (urlProduct || optionID || urlQty) {
+        router.push({
+          pathname: "/payment",
+          query: {
+            product: urlProduct || "",
+            option: optionID || "",
+            qty: urlQty || "",
+          },
+        });
+      } else {
+        router.push("/payment");
+      }
     }
   };
   const clearSelectedCoupon = async () => {
@@ -215,7 +233,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
           ? parsedPoint.toString()
           : state.customerDetail[0].use_point,
     };
-
 
     try {
       const response = await fetch(url, {
@@ -625,53 +642,100 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
               {/* RIGHT */}
               <Grid item lg={4} md={4} xs={12}>
                 <Card1>
-                  {state.cart.map((item) => {
-                    const totalQty = item.qty;
-                    const totalPrice = item.price * totalQty;
-
-                    return (
-                      <FlexBox
-                        key={item.id}
-                        justifyContent="space-between"
-                        alignItems="center"
-                        mb="0.5rem"
-                      >
-                        <div>
-                          <Typography
-                            fontSize="14px"
-                            color="text.hint"
-                            style={{
-                              flex: "1",
-                              width: "120px",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              textOverflow: "ellipsis",
-                            }}
-                          >
-                            {item.name}
-                          </Typography>
-                        </div>
-
+                  {urlProduct && urlQty ? (
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="0.5rem"
+                    >
+                      <div>
                         <Typography
                           fontSize="14px"
                           color="text.hint"
-                          style={{ flex: "1", textAlign: "center" }}
+                          style={{
+                            flex: "1",
+                            width: "120px",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                          }}
                         >
-                          {item.qty}
+                          {apiResponse?.productDetail[0]?.name_th}
                         </Typography>
+                      </div>
 
-                        <div style={{ flex: "1", textAlign: "right" }}>
+                      <Typography
+                        fontSize="14px"
+                        color="text.hint"
+                        style={{ flex: "1", textAlign: "center" }}
+                      >
+                        {urlQty}
+                      </Typography>
+
+                      <div style={{ flex: "1", textAlign: "right" }}>
+                        <Typography
+                          fontSize="14px"
+                          fontWeight="600"
+                          lineHeight="1"
+                        >
+                          <PriceFormat
+                            price={
+                              apiResponse?.productDetail[0]?.discountPrice *
+                              Number(urlQty)
+                            }
+                          />
+                        </Typography>
+                      </div>
+                    </FlexBox>
+                  ) : (
+                    state.cart.map((item) => {
+                      const totalQty = item.qty;
+                      const totalPrice = item.price * totalQty;
+
+                      return (
+                        <FlexBox
+                          key={item.id}
+                          justifyContent="space-between"
+                          alignItems="center"
+                          mb="0.5rem"
+                        >
+                          <div>
+                            <Typography
+                              fontSize="14px"
+                              color="text.hint"
+                              style={{
+                                flex: "1",
+                                width: "120px",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {item.name}
+                            </Typography>
+                          </div>
+
                           <Typography
                             fontSize="14px"
-                            fontWeight="600"
-                            lineHeight="1"
+                            color="text.hint"
+                            style={{ flex: "1", textAlign: "center" }}
                           >
-                            <PriceFormat price={totalPrice} />
+                            {item.qty}
                           </Typography>
-                        </div>
-                      </FlexBox>
-                    );
-                  })}
+
+                          <div style={{ flex: "1", textAlign: "right" }}>
+                            <Typography
+                              fontSize="14px"
+                              fontWeight="600"
+                              lineHeight="1"
+                            >
+                              <PriceFormat price={totalPrice} />
+                            </Typography>
+                          </div>
+                        </FlexBox>
+                      );
+                    })
+                  )}
 
                   <Divider mb="1rem" />
 
@@ -793,6 +857,51 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                           color="red"
                         >
                           {errors.shippingOption}
+                        </H6>
+                      )}
+                    </FlexBox>
+                  </FlexBox>
+                  <Divider mb="1rem" />
+                  <FlexBox
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="1rem"
+                  >
+                    <Typography color="text.hint">ข้อมูลเพิ่มเติม:</Typography>
+                    <FlexBox flexDirection="column">
+                      {optionList &&
+                        optionList.map((option, index) => (
+                          <Radio
+                            key={index}
+                            mb="0.5rem"
+                            color="secondary"
+                            name="customOption"
+                            value={option.value}
+                            width={15}
+                            height={15}
+                            checked={values.customOption === option.value}
+                            onChange={() => {
+                              setFieldValue("customOption", option.value);
+                            }}
+                            label={
+                              <Typography
+                                ml="6px"
+                                fontWeight="600"
+                                fontSize="13px"
+                              >
+                                {option.label}
+                              </Typography>
+                            }
+                          />
+                        ))}
+                      {touched.customOption && errors.customOption && (
+                        <H6
+                          fontWeight={300}
+                          fontSize="12px"
+                          textAlign="right"
+                          color="red"
+                        >
+                          {errors.customOption}
                         </H6>
                       )}
                     </FlexBox>
@@ -956,7 +1065,10 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
     </Fragment>
   );
 };
-
+const optionList = [
+  { value: 1, label: "สั่งประกอบ" },
+  { value: 2, label: "ไม่ต้องประกอบ" },
+];
 const initialValues = {
   selectedBranch: "",
   ship_firstname: "",
@@ -1068,6 +1180,7 @@ const checkoutSchema = yup.object().shape({
     otherwise: yup.string(),
   }),
   shippingOption: yup.string().nullable().required("กรุณาเลือกวิธีการจัดส่ง"),
+  customOption: yup.string().nullable().required("กรุณาเลือกข้อมูลเพิ่มเติม"),
 });
 
 export default CheckoutForm;

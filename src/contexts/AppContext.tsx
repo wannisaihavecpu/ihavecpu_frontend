@@ -68,7 +68,6 @@ type ActionType =
   | UpdateCustomerDetailsPurchaseActionType;
 
 const INITIAL_CUSTOMER_DETAILS: CustomerDetails = {
-  customOption: 1,
   ship_firstname: "",
   ship_lastname: "",
   ship_email: "",
@@ -93,6 +92,7 @@ const INITIAL_CUSTOMER_DETAILS: CustomerDetails = {
   paymentMethod: "",
   deliveryOption: "",
   shippingOption: null,
+  customOption: null,
 
   paymentOption: null,
   bankOption: null,

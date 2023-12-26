@@ -191,11 +191,13 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     selectedOptions: Record<string, string>,
     stock: { option_id?: number; stock?: number; choose?: string[] }[]
   ): number | null => {
+    console.log("selectdoptions", selectedOptions);
     const selectedOptionsArray = Object.entries(selectedOptions);
 
     const matchingEntry = stock.find((entry) =>
-      selectedOptionsArray.every(([val]) => entry.choose?.includes(val))
+      selectedOptionsArray.every(([, val]) => entry.choose?.includes(val))
     );
+    console.log("match", matchingEntry);
 
     return matchingEntry ? matchingEntry.option_id || null : null;
   };
@@ -285,28 +287,38 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
     const isAnyOptionRequired = product.option.some(
       (option) => option.sub.length > 0
     );
-    // const optionId = mapSelectedOptionsToOptionId(
-    //   selectedOptions,
-    //   product.stock
-    // );
+    const optionId = mapSelectedOptionsToOptionId(
+      selectedOptions,
+      product.stock
+    );
 
     if (isAnyOptionRequired) {
       const isAllOptionsSelected = product.option.every((option) =>
         selectedOptions.hasOwnProperty(option.m_option_id)
       );
+
       if (!isAllOptionsSelected) {
         notify("error", "กรุณาเลือกตัวเลือกสินค้า");
         return;
       } else {
-        // router.push({
-        //   pathname: "/checkout",
-        //   query: {
-        //     product: product?.product_id || "",
-        //     option: optionId || "",
-        //     qty: quantity,
-        //   },
-        // });
+        router.push({
+          pathname: "/checkout",
+          query: {
+            product: product?.product_id || "",
+            option: optionId || "",
+            qty: quantity,
+          },
+        });
       }
+    } else {
+      router.push({
+        pathname: "/checkout",
+        query: {
+          product: product?.product_id || "",
+          option: optionId || "",
+          qty: quantity,
+        },
+      });
     }
     setSelectedOptions({});
     setQuantity(1);
@@ -475,6 +487,8 @@ const ProductIntro: FC<ProductIntroProps> = ({ product, couponList }) => {
   useEffect(() => {
     fetchMyCouponAvailable();
   }, []);
+
+  console.log("state", state.cart);
 
   return (
     <Box overflow="hidden">
