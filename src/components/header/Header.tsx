@@ -56,13 +56,13 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
           right={-5}
           height={20}
           minWidth={20}
-          bg="primary.main"
+          bg="ihavecpu.main"
           borderRadius="50%"
           alignItems="center"
           position="absolute"
           justifyContent="center"
         >
-        <Tiny color="white" fontWeight="600" lineHeight={1}>
+          <Tiny color="white" fontWeight="600" lineHeight={1}>
             {state.cart.length}
           </Tiny>
         </FlexBox>

@@ -46,6 +46,7 @@ const CardProduct: FC<CardProductProps> = ({
   onRemoveFromCompare,
   shouldRenderDeleteButton,
   classStyle,
+  brand,
 }) => {
   const getColor = (status: string) => {
     switch (status) {
@@ -112,15 +113,16 @@ const CardProduct: FC<CardProductProps> = ({
             mb="0.5rem"
             bg={`${getColor("Cancelled")}.light`}
           >
-            <Small color={`${getColor("Cancelled")}.main`}>Intel</Small>
+            <Small color={`${getColor("Cancelled")}.main`}>{brand}</Small>
           </Chip>
 
           <H6 fontWeight={800} mb="0.5rem">
-            {title}
+            {/* {title} */}
+            {title.length > 15 ? title.slice(0, 23) + "..." : title}
           </H6>
           <FlexBox>
             <Box>
-              {discount != "0%" && (
+              {discount && (
                 <Chip
                   mr="5px"
                   p="4px 5px"
@@ -139,7 +141,7 @@ const CardProduct: FC<CardProductProps> = ({
               </H4>
             </Box>
             <Box>
-              {discount != "0%" && (
+              {discount && (
                 <Small
                   fontSize={11}
                   fontWeight={500}

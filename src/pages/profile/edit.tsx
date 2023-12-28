@@ -4,31 +4,29 @@ import Router from "next/router";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Box from "@component/Box";
-import Hidden from "@component/hidden";
-import Avatar from "@component/avatar";
 import Grid from "@component/grid/Grid";
-import Icon from "@component/icon/Icon";
 import { Card1 } from "@component/Card1";
-import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
 import DashboardLayout from "@component/layout/customer-dashboard";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 import api from "@utils/__api__/users";
 import User from "@models/user.model";
-import { format } from "date-fns";
-
+// import { format } from "date-fns";
+// import { useSession } from "next-auth/react";
 // ===========================================================
 type Props = { user: User };
 // ===========================================================
 
 const ProfileEditor = ({ user }: Props) => {
   const INITIAL_VALUES = {
-    first_name: user.name.firstName || "",
-    last_name: user.name.lastName || "",
+    firstname: user.firstname || "",
+    lastname: user.lastname || "",
     email: user.email || "",
-    contact: user.phone || "",
-    birth_date: format(new Date(user.dateOfBirth), "yyyy-MM-dd") || "",
+    phone: user.phone || "",
+    birthday: user.birthday || "",
+    line: user.line || "",
+    facebook: user.facebook || "",
   };
 
   const VALIDATION_SCHEMA = yup.object().shape({
@@ -55,41 +53,11 @@ const ProfileEditor = ({ user }: Props) => {
     <Fragment>
       <DashboardPageHeader
         iconName="user_filled"
-        title="Edit Profile"
+        title="แก้ไขข้อมูลส่วนตัว"
         button={HEADER_LINK}
       />
 
       <Card1>
-        <FlexBox alignItems="flex-end" mb="22px">
-          <Avatar src="/assets/images/faces/ralph.png" size={64} />
-
-          <Box ml="-20px" zIndex={1}>
-            <label htmlFor="profile-image">
-              <Button
-                p="6px"
-                as="span"
-                size="small"
-                height="auto"
-                bg="gray.300"
-                color="secondary"
-                borderRadius="50%"
-              >
-                <Icon>camera</Icon>
-              </Button>
-            </label>
-          </Box>
-
-          <Hidden>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              id="profile-image"
-              onChange={(e) => console.log(e.target.files)}
-            />
-          </Hidden>
-        </FlexBox>
-
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={INITIAL_VALUES}
@@ -109,12 +77,12 @@ const ProfileEditor = ({ user }: Props) => {
                   <Grid item md={6} xs={12}>
                     <TextField
                       fullwidth
-                      name="first_name"
-                      label="First Name"
+                      name="firstname"
+                      label="ชื่อ"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.first_name}
-                      errorText={touched.first_name && errors.first_name}
+                      value={values.firstname}
+                      errorText={touched.firstname && errors.firstname}
                     />
                   </Grid>
 
@@ -122,11 +90,11 @@ const ProfileEditor = ({ user }: Props) => {
                     <TextField
                       fullwidth
                       name="last_name"
-                      label="Last Name"
+                      label="นามสกุล"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.last_name}
-                      errorText={touched.last_name && errors.last_name}
+                      value={values?.lastname}
+                      errorText={touched.lastname && errors.lastname}
                     />
                   </Grid>
 
@@ -135,9 +103,9 @@ const ProfileEditor = ({ user }: Props) => {
                       fullwidth
                       name="email"
                       type="email"
-                      label="Email"
+                      label="อีเมล"
                       onBlur={handleBlur}
-                      value={values.email}
+                      value={values?.email}
                       onChange={handleChange}
                       errorText={touched.email && errors.email}
                     />
@@ -146,12 +114,12 @@ const ProfileEditor = ({ user }: Props) => {
                   <Grid item md={6} xs={12}>
                     <TextField
                       fullwidth
-                      label="Phone"
-                      name="contact"
+                      label="เบอร์โทรศัพท์"
+                      name="phone"
                       onBlur={handleBlur}
-                      value={values.contact}
+                      value={values?.phone}
                       onChange={handleChange}
-                      errorText={touched.contact && errors.contact}
+                      errorText={touched.phone && errors.phone}
                     />
                   </Grid>
 
@@ -159,19 +127,46 @@ const ProfileEditor = ({ user }: Props) => {
                     <TextField
                       fullwidth
                       type="date"
-                      name="birth_date"
-                      label="Birth Date"
+                      name="birthday"
+                      label="วันเกิด"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.birth_date}
-                      errorText={touched.birth_date && errors.birth_date}
+                      value={values?.birthday}
+                      errorText={touched.birthday && errors.birthday}
                     />
                   </Grid>
                 </Grid>
+                <Box mt="1rem">
+                  <Grid container horizontal_spacing={6} vertical_spacing={4}>
+                    <Grid item md={6} xs={12}>
+                      <TextField
+                        fullwidth
+                        name="facebook"
+                        label="Facebook"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values?.facebook}
+                        errorText={touched.facebook && errors.facebook}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} xs={12}>
+                      <TextField
+                        fullwidth
+                        name="line"
+                        label="Line"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values?.line}
+                        errorText={touched.line && errors.line}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
               </Box>
 
-              <Button type="submit" variant="contained" color="primary">
-                Save Changes
+              <Button type="submit" variant="contained" color="ihavecpu">
+                บันทึก
               </Button>
             </form>
           )}

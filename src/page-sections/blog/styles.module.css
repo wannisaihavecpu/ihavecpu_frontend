@@ -16,13 +16,16 @@
 }
 
 .rightColumnContainer {
+  gap: 1rem;
   width: 35%;
-  position: relative;
 }
 
+.content {
+  align-items: start;
+}
 .rightColumn {
   position: sticky;
   top: 0;
-  height: 100%;
-  overflow-y: auto;
+  background-color: rgb(228, 209, 209);
+  /* height: auto; */
 }
