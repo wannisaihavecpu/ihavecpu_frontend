@@ -2,10 +2,10 @@
   "name": "iHAVECPU",
   "version": "2.0",
   "scripts": {
-    "dev": "next -p 8080",
+    "dev": "next",
     "build": "next build",
     "build-static-page": "next build && next export",
-    "start": "next start -p 8080",
+    "start": "next start",
     "type-check": "tsc",
     "heroku-postbuild": "npm run build"
   },
