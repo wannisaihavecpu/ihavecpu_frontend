@@ -152,8 +152,7 @@ const Profile = ({}) => {
               <Small color="text.muted" mb="4px" textAlign="left">
                 หมายเลขโทรศัพท์
               </Small>
-
-              <span> {profileData?.phone ?? "-"} </span>
+              <span>{(profileData?.phone !== "" && profileData?.phone !== null) ? profileData?.phone : "-"}</span>
             </FlexBox>
 
             <FlexBox flexDirection="column" p="0.5rem">
@@ -162,7 +161,9 @@ const Profile = ({}) => {
               </Small>
 
               <span className="pre">
-                <DateFormat date={profileData?.birthday} />
+                {profileData?.birthday ? (
+                  <DateFormat date={profileData.birthday} />
+                ) : "-"}
               </span>
             </FlexBox>
             <FlexBox flexDirection="column" p="0.5rem">

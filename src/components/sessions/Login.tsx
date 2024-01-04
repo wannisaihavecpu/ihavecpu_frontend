@@ -16,7 +16,7 @@ import Modal from "@component/Modal";
 import SearchBoxStyle from "@component/search-box/styled";
 import Grid from "@component/grid/Grid";
 import CheckBox from "@component/CheckBox";
-import { signIn } from "next-auth/react";
+import { signIn,useSession,signOut } from "next-auth/react";
 import { notify } from "@component/toast";
 
 type Props = {
@@ -229,9 +229,10 @@ const Login: FC<Props> = (props) => {
             alignItems="center"
             justifyContent="center"
           >
-            <Icon variant="small" defaultcolor="auto" mr="0.5rem">
+            <Icon variant="small" defaultcolor="auto" mr="0.5rem" onClick={()=>signIn()}>
               google-1
             </Icon>
+      
             <Small fontWeight="600">เข้าสู่ระบบด้วย Google</Small>
           </FlexBox>
 
