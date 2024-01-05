@@ -212,6 +212,7 @@ const Login: FC<Props> = (props) => {
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
+            onClick={() => signIn('facebook')}
           >
             <Icon variant="small" defaultcolor="auto" mr="0.5rem">
               facebook-filled-white
@@ -228,8 +229,9 @@ const Login: FC<Props> = (props) => {
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
+            onClick={() => signIn('google')}
           >
-            <Icon variant="small" defaultcolor="auto" mr="0.5rem" onClick={()=>signIn()}>
+            <Icon variant="small" defaultcolor="auto" mr="0.5rem">
               google-1
             </Icon>
       

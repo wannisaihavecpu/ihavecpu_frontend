@@ -1,15 +1,40 @@
-// Import necessary modules
 // import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 // import Providers from "next-auth/providers";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from 'next-auth/providers/facebook';
 
 import axios from "axios";
 
-// Define your API route function
+async function checkToken(token) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/auth/checkToken`,
+      { token },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data.res_code === "00") {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
 export default NextAuth({
   providers: [
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
@@ -48,15 +73,11 @@ export default NextAuth({
   secret: "LlKq6ZtYbr+hTC073mAmAh9/h2HwMfsFo4hrfCx5mLg=",
   callbacks: {
     async signIn({ account, profile,user }) {
-      console.log("account1",account);
-      console.log("profile1",profile);
-      // If a user is signed in with credentials, return true
       if (account?.provider === 'credentials') {
         // account.provider = account.provider;
         return true;
       }
     
-      // If a user is signed in with Google, handle the sign-in logic
       if (account?.provider === 'google') {
         const formData = new FormData();
         formData.append("type", "3");
@@ -80,7 +101,7 @@ export default NextAuth({
             }
           );
     
-          console.log('Checklogin API Response:', checkLoginResponse);
+          // console.log('Checklogin API Response:', checkLoginResponse);
     
           if (checkLoginResponse.data.res_code === "00") {
             // Include additional data in the JWT token
@@ -99,16 +120,18 @@ export default NextAuth({
           return Promise.resolve(null);
         }
       }
+      if (account?.provider === 'facebook') {
+        // console.log("facebook", {
+        //   account, profile,user
+        // })
+      }
     
-      // Return false for other providers
       return false;
     },  
     async jwt({ token, user, account }) {
       console.log("user12", user);
       console.log("account12", account);
       console.log("token12", token);
-
-
       if (account?.provider === 'google') {
         // token.accessToken = account.access_token;
         token.user = account.user;
@@ -118,13 +141,19 @@ export default NextAuth({
       return token;
     }, 
 
-    // for save user response to session (token is from response)
-    async session({user, session, token }) {
-      console.log("user2", user);
-
-      console.log("session2", session);
-
-      console.log("token2", token);
+    async session({ session, token }: { user: any; session: any; token: any }) {
+      // console.log("user2", user);
+      // console.log("session2", session);
+      // console.log("token2", token);
+      if(token){
+        const isTokenValid = await checkToken(token.user.token_expire);
+        if (!isTokenValid) {
+          console.log("token is expired");
+          return null;
+        } else {
+          console.log("no valid token");
+        }
+      }
       // session.accessToken = token.token_expire;
       session.user = token.user;
 
