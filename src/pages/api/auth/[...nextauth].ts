@@ -145,15 +145,15 @@ export default NextAuth({
       // console.log("user2", user);
       // console.log("session2", session);
       // console.log("token2", token);
-      if(token){
-        const isTokenValid = await checkToken(token.user.token_expire);
-        if (!isTokenValid) {
-          console.log("token is expired");
-          return null;
-        } else {
-          console.log("no valid token");
-        }
-      }
+      // if(token){
+      //   const isTokenValid = await checkToken(token.user.token_expire);
+      //   if (!isTokenValid) {
+      //     console.log("token is expired");
+      //     return null;
+      //   } else {
+      //     console.log("no valid token");
+      //   }
+      // }
       // session.accessToken = token.token_expire;
       session.user = token.user;
 

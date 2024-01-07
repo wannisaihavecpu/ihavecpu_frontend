@@ -203,6 +203,23 @@ input[type='range']::-moz-range-thumb:hover {
 input[type='range']::-webkit-slider-thumb:hover {
   background: #d4001a; /* Updated thfc value */
 }
+.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover .ant-select-selector {
+  border-color: #AEB4BE;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 0px;
+  box-shadow: 0 0 0 0px;
+  // -webkit-box-shadow: 0 0 0 2px rgb(233 87 87 / 20%);
+  // box-shadow: 0 0 0 2px rgb(233 87 87 / 20%);
+  ;
+}
+.ant-select-focused:where(.css-dev-only-do-not-override-17sses9).ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector{
+  border-color:#d4001a;
+  -webkit-box-shadow: 0 0 0 0px;
+  box-shadow: 0 0 0 0px;
+  // box-shadow:0 0 0 2px rgb(233 87 87 / 20%);
+  outline:0;
+}
+
 `;
 
 export default GlobalStyles;

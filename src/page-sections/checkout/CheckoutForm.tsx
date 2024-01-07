@@ -22,6 +22,8 @@ import StyledSearchBox from "@component/search-box/styled";
 import Box from "@component/Box";
 import { notify } from "@component/toast";
 import { useFormik } from "formik";
+import InputThaiAddress from "thai-address-autocomplete-react";
+import React from "react";
 
 type Props = { branchList; shippingList; listCoupon };
 
@@ -41,6 +43,44 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
   const [buttonClicked, setButtonClicked] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
 
+  
+
+  const [address, setAddress] = useState({
+    subdistrict: "",
+    district: "",
+    province: "",
+    zipcode: "",
+  });
+  const [subDistrict,setSubDistrict] = useState(null);
+  console.log("address",address);
+
+  const onChange = (targetName,setFieldValue) => (targetValue) => {
+    console.log("onChange");
+    console.log("targetName",targetName);
+    console.log({ ...address, [targetName]: targetValue });
+    const addressFully = { ...address, [targetName]: targetValue };
+    console.log("addressFully",addressFully);
+    setAddress({ ...address, [targetName]: targetValue });
+    setFieldValue("ship_subdistrict", addressFully.subdistrict);
+    setFieldValue("ship_state", addressFully.province);
+    setFieldValue("ship_city", addressFully.district);
+    setFieldValue("ship_postcode", addressFully.zipcode);
+    
+  };
+
+  const onSelect = (addresses,setFieldValue) => {
+    setAddress({ ...address, ...addresses });
+    setFieldValue("ship_subdistrict", addresses.subdistrict);
+    setFieldValue("ship_state", addresses.province);
+    setFieldValue("ship_city", addresses.district);
+    setFieldValue("ship_postcode", addresses.zipcode);
+  };
+
+  const handleSubdistrictChange = (selectedValue,setFieldValue) => {
+    console.log("shipsdsd",selectedValue);
+    setFieldValue('ship_subdistrict', selectedValue);
+  };
+
   // const product = state.cart.map((item) => ({
   //   product_id: item.id,
   //   quantity: item.qty.toString(),
@@ -54,6 +94,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
       }));
 
   const handleFormSubmit = async (values) => {
+    console.log("values",values);
     const updatedCustomerDetail = {
       ...values,
       code_coupon:
@@ -279,6 +320,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
     // }
   }, []);
 
+
   return (
     <Fragment>
       <Formik
@@ -294,7 +336,12 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
           handleBlur,
           handleSubmit,
           setFieldValue,
-        }) => (
+        }) => {
+          console.log("Form Values:", values);
+          console.log("Form Errors:", errors);
+          console.log("Form Touched Fields:", touched);
+      
+          return (
           <form onSubmit={handleSubmit}>
             <Grid container flexWrap="wrap-reverse" spacing={6}>
               {/* LEFT */}
@@ -385,22 +432,104 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                           />
                         </Grid>
                         <Grid item sm={6} xs={12}>
-                          <TextField
+                          <label>ตำบล/แขวง</label>
+                          <InputThaiAddress
+                            field="subdistrict"
+                            value={address.subdistrict || state?.customerDetail[0].ship_subdistrict}
+                            onChange={onChange("subdistrict", setFieldValue)}
+                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
+                            style={{
+                              height: "40px",
+                            }}
+                          />
+                          <input
+                            type="text"
+                            name="ship_subdistrict"
+                            value={subDistrict}
+                            onChange={(e) => setFieldValue("ship_subdistrict", e.target.value)}
+                            style={{ display: 'none' }}
+                          />
+                          {touched.ship_subdistrict &&
+                            errors.ship_subdistrict &&
+                            !address.subdistrict && (
+                              <small
+                                style={{
+                                  color: "#e94560",
+                                  marginTop: "0.25rem",
+                                  marginLeft: "0.25rem",
+                                  display: "block",
+                                }}
+                              >
+                                {Array.isArray(errors.ship_subdistrict) ? (
+                                  <ul>
+                                    {errors.ship_subdistrict.map(
+                                      (error, index) => (
+                                        <li key={index}>{error}</li>
+                                      )
+                                    )}
+                                  </ul>
+                                ) : typeof errors.ship_subdistrict ===
+                                  "string" ? (
+                                  errors.ship_subdistrict
+                                ) : null}
+                              </small>
+                            )}
+
+                          {/* <TextField
                             fullwidth
                             mb="1rem"
-                            label="ตำบล/แขวง"
+                            // label="ตำบล/แขวง"
                             name="ship_subdistrict"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            value={values.ship_subdistrict}
-                            errorText={
-                              touched.ship_subdistrict &&
-                              errors.ship_subdistrict
-                            }
-                          />
+                            value={address.subdistrict}
+                            // errorText={
+                            //   touched.ship_subdistrict &&
+                            //   errors.ship_subdistrict
+                            // }
+                            // readOnly
+                            // hidden
+                          /> */}
                         </Grid>
                         <Grid item sm={6} xs={12}>
-                          <TextField
+                          <label>จังหวัด</label>
+                          <InputThaiAddress
+                            field={"province"}
+                            value={address.province || state?.customerDetail[0].ship_state}
+                            onChange={onChange("province", setFieldValue)}
+                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
+                            style={{ height: "40px" }}
+                          />
+                          <input
+                            type="text"
+                            name="ship_state"
+                            value={address.province}
+                            onChange={() => {}}
+                            style={{ display: 'none' }}
+                          />
+                          {touched.ship_state &&
+                            errors.ship_state &&
+                            !address.province && (
+                              <small
+                                style={{
+                                  color: "#e94560",
+                                  marginTop: "0.25rem",
+                                  marginLeft: "0.25rem",
+                                  display: "block",
+                                }}
+                              >
+                                {Array.isArray(errors.ship_state) ? (
+                                  <ul>
+                                    {errors.ship_state.map((error, index) => (
+                                      <li key={index}>{error}</li>
+                                    ))}
+                                  </ul>
+                                ) : typeof errors.ship_state === "string" ? (
+                                  errors.ship_state
+                                ) : null}
+                              </small>
+                            )}
+                          {/* <TextField
                             fullwidth
                             mb="1rem"
                             label="จังหวัด"
@@ -409,10 +538,47 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                             name="ship_state"
                             value={values.ship_state}
                             errorText={touched.ship_state && errors.ship_state}
-                          />
+                          /> */}
                         </Grid>
                         <Grid item sm={6} xs={12}>
-                          <TextField
+                          <label>อำเภอ / เขต</label>
+                          <InputThaiAddress
+                            field={"district"}
+                            value={address.district || state?.customerDetail[0].ship_city}
+                            onChange={onChange("district", setFieldValue)}
+                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
+                            style={{ height: "40px" }}
+                          />
+                          <input
+                            type="text"
+                            name="ship_city"
+                            value={address.district}
+                            onChange={() => {}}
+                            style={{ display: 'none' }}
+                          />
+                          {touched.ship_city &&
+                            errors.ship_city &&
+                            !address.district && (
+                              <small
+                                style={{
+                                  color: "#e94560",
+                                  marginTop: "0.25rem",
+                                  marginLeft: "0.25rem",
+                                  display: "block",
+                                }}
+                              >
+                                {Array.isArray(errors.ship_city) ? (
+                                  <ul>
+                                    {errors.ship_city.map((error, index) => (
+                                      <li key={index}>{error}</li>
+                                    ))}
+                                  </ul>
+                                ) : typeof errors.ship_city === "string" ? (
+                                  errors.ship_city
+                                ) : null}
+                              </small>
+                            )}
+                          {/* <TextField
                             fullwidth
                             mb="1rem"
                             label="เขต/อำเภอ"
@@ -421,10 +587,50 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                             onChange={handleChange}
                             value={values.ship_city}
                             errorText={touched.ship_city && errors.ship_city}
-                          />
+                          /> */}
                         </Grid>
                         <Grid item sm={6} xs={12}>
-                          <TextField
+                        <label>รหัสไปรษณีย์</label>
+                        <InputThaiAddress
+                            field={"zipcode"}
+                            value={address.zipcode || state?.customerDetail[0].ship_postcode}
+                            onChange={onChange("zipcode", setFieldValue)}
+                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
+                            style={{height:"40px"}}
+                          />
+                          <input
+                            type="text"
+                            name="ship_postcode"
+                            value={address.zipcode}
+                            onChange={() => {}}
+                            style={{ display: 'none' }}
+                          />
+                          {touched.ship_postcode &&
+                            errors.ship_postcode &&
+                            !address.zipcode && (
+                              <small
+                                style={{
+                                  color: "#e94560",
+                                  marginTop: "0.25rem",
+                                  marginLeft: "0.25rem",
+                                  display: "block",
+                                }}
+                              >
+                                {Array.isArray(errors.ship_postcode) ? (
+                                  <ul>
+                                    {errors.ship_postcode.map(
+                                      (error, index) => (
+                                        <li key={index}>{error}</li>
+                                      )
+                                    )}
+                                  </ul>
+                                ) : typeof errors.ship_postcode ===
+                                  "string" ? (
+                                  errors.ship_postcode
+                                ) : null}
+                              </small>
+                            )}
+                          {/* <TextField
                             fullwidth
                             mb="1rem"
                             label="รหัสไปรษณีย์"
@@ -435,7 +641,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                             errorText={
                               touched.ship_postcode && errors.ship_postcode
                             }
-                          />
+                          /> */}
                         </Grid>
                         <Grid item sm={6} xs={12}>
                           <CheckBox
@@ -907,16 +1113,16 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                     </FlexBox>
                   </FlexBox>
                   <FlexBox>
-                    <Grid item sm={12} xs={12}>
-                      {/* <Select
+                    {/* <Grid item sm={12} xs={12}>
+                      <Select
                         label="สาขาที่ต้องการรับ"
                         options={branchList.map((branch) => ({
                           value: branch.branch_id,
                           label: branch.branch_name_th,
                         }))}
                         value={values.selectedBranch}
-                      /> */}
-                    </Grid>
+                      />
+                    </Grid> */}
                   </FlexBox>
 
                   <Divider mb="1rem" />
@@ -1060,7 +1266,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
               </Grid>
             </Grid>
           </form>
-        )}
+        )}}
       </Formik>
     </Fragment>
   );
