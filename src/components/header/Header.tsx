@@ -44,6 +44,8 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
     setShowCard(!showCard);
   };
 
+  // console.log("session",session);
+
   const CART_HANDLE = (
     <Box ml="20px" position="relative">
       <IconButton bg="gray.200" p="12px">
@@ -62,7 +64,7 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
           position="absolute"
           justifyContent="center"
         >
-        <Tiny color="white" fontWeight="600" lineHeight={1}>
+          <Tiny color="white" fontWeight="600" lineHeight={1}>
             {state.cart.length}
           </Tiny>
         </FlexBox>
@@ -121,9 +123,9 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
             <IconButton ml="1rem" bg="gray.200" p="8px" onClick={toggleShow}>
               <Box width={28} height={28}>
                 <H3 fontSize={20}>
-                  {session?.user.email.length > 2
-                    ? session?.user.email.slice(0, 2)
-                    : session?.user.email}
+                  {session?.user?.email.length > 2
+                    ? session?.user?.email.slice(0, 2)
+                    : session?.user?.email}
                 </H3>
               </Box>
             </IconButton>

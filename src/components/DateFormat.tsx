@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { format } from "date-fns";
+import { isValid, format } from 'date-fns';
 import { th } from "date-fns/locale";
 
 interface DateFormatProps {
@@ -7,7 +7,9 @@ interface DateFormatProps {
 }
 
 const DateFormat: FC<DateFormatProps> = ({ date }) => {
-  const thaiFormattedBirthday = date
+  const isValidDate = isValid(new Date(date));
+
+  const thaiFormattedBirthday = isValidDate
     ? format(new Date(date), "d MMMM yyyy", { locale: th })
     : "-";
 

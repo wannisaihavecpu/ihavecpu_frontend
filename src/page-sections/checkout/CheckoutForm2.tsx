@@ -139,7 +139,7 @@ const CheckoutForm2: FC<Props> = ({
                       {item.ship_address1}
                       {item.ship_subdistrict && ` ต.${item.ship_subdistrict}`}
                       {item.ship_city && ` อ.${item.ship_city}`}
-                      {item.ship_state && ` จ.${item.ship_state}`}
+                      {item.ship_state && ` จ.${item.ship_state}`}{" "}
                       {item.ship_postcode}
                     </Paragraph>
                   </Card>
