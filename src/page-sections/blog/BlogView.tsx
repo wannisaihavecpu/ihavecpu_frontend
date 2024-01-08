@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 import { Card1 } from "@component/Card1";
 import FlexBox from "@component/FlexBox";
 import Avatar from "@component/avatar";
-import Typography, { H6, Paragraph } from "@component/Typography";
+import Typography from "@component/Typography";
 import Grid from "@component/grid/Grid";
 import Box from "@component/Box";
 import Icon from "@component/icon/Icon";
