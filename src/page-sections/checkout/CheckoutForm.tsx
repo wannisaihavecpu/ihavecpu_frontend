@@ -32,8 +32,9 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
   const { state, updateCustomerDetailsPurchase } = useAppContext();
 
   const [sameAsShipping, setSameAsShipping] = useState(false);
-  const [taxInvoice, setTaxInvoice] = useState(false);
-
+  const [taxInvoice, setTaxInvoice] = useState(
+    state.customerDetail[0]?.request_tax || false
+  );
   const [usePoint, setUsePoint] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -143,7 +144,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
       }));
 
   const handleFormSubmit = async (values) => {
-    console.log("values", values);
     const updatedCustomerDetail = {
       ...values,
       code_coupon:
@@ -223,7 +223,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
           zipcode: "",
         });
       } else {
-        console.log("valuesss", values);
         // billing address fields with shipping address if checked
         setFieldValue("bill_address1", values.ship_address1);
         setFieldValue("bill_subdistrict", values.ship_subdistrict);
@@ -747,174 +746,164 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                     </Grid>
                   </Card1>
                   {sameAsShipping}
-                  {taxInvoice ||
-                    (state.customerDetail[0] &&
-                      state.customerDetail[0].request_tax && (
-                        <Card1 mb="2rem">
-                          <Typography fontWeight="600" mb="1rem">
-                            ที่อยู่ออกใบกำกับภาษี
-                          </Typography>
+                  {taxInvoice && (
+                    <Card1 mb="2rem">
+                      <Typography fontWeight="600" mb="1rem">
+                        ที่อยู่ออกใบกำกับภาษี
+                      </Typography>
 
-                          <CheckBox
-                            color="secondary"
-                            name="address_bill"
-                            label="ใช้ที่อยู่เดียวกันกับจัดส่ง"
-                            mb="1rem"
-                            onChange={handleCheckboxChange(
-                              values,
-                              setFieldValue
-                            )}
-                          />
-                          <Grid item sm={12}>
-                            <Grid container spacing={3}>
-                              <Grid item sm={6} xs={12}>
-                                <TextField
-                                  fullwidth
-                                  mb="1rem"
-                                  label="ชื่อ"
-                                  name="bill_firstname"
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                  value={values.bill_firstname}
-                                  errorText={
-                                    touched.bill_firstname &&
-                                    errors.bill_firstname
-                                  }
-                                />
-                              </Grid>
-                              <Grid item sm={6} xs={12}>
-                                <TextField
-                                  fullwidth
-                                  mb="1rem"
-                                  label="นามสกุล"
-                                  name="bill_lastname"
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                  value={values.bill_lastname}
-                                  errorText={
-                                    touched.bill_lastname &&
-                                    errors.bill_lastname
-                                  }
-                                />
-                              </Grid>
-                              <Grid item sm={6} xs={12}>
-                                <TextField
-                                  fullwidth
-                                  mb="1rem"
-                                  onBlur={handleBlur}
-                                  label="ชื่อบริษัท"
-                                  name="bill_companyname"
-                                  onChange={handleChange}
-                                  value={values.bill_companyname}
-                                  errorText={
-                                    touched.bill_companyname &&
-                                    errors.bill_companyname
-                                  }
-                                />
-                              </Grid>
-                              <Grid item sm={6} xs={12}>
-                                <TextField
-                                  fullwidth
-                                  mb="1rem"
-                                  label="หมายเลขประจำตัวผู้เสียภาษี"
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                  name="bill_tax_id"
-                                  value={values.bill_tax_id}
-                                  errorText={
-                                    touched.bill_tax_id && errors.bill_tax_id
-                                  }
-                                />
-                              </Grid>
-                              <Grid item sm={12} xs={12}>
-                                <TextField
-                                  fullwidth
-                                  mb="1rem"
-                                  label="เบอร์มือถือ"
-                                  name="bill_mobile"
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                  value={values.bill_mobile}
-                                  errorText={
-                                    touched.bill_mobile && errors.bill_mobile
-                                  }
-                                  maxLength={10}
-                                />
-                              </Grid>
-                              <Grid item sm={12} xs={12}>
-                                <TextField
-                                  fullwidth
-                                  mb="1rem"
-                                  label="ที่อยู่"
-                                  name="bill_address1"
-                                  onBlur={handleBlur}
-                                  onChange={handleChange}
-                                  value={values.bill_address1}
-                                  errorText={
-                                    touched.bill_address1 &&
-                                    errors.bill_address1
-                                  }
-                                />
-                              </Grid>
-                              <Grid item sm={6} xs={12}>
-                                <label>ตำบล/แขวง</label>
-                                <InputThaiAddress
-                                  field="subdistrict"
-                                  value={
-                                    billAddress.subdistrict ||
-                                    state?.customerDetail[0].bill_subdistrict
-                                  }
-                                  onChange={onChangeBill(
-                                    "subdistrict",
-                                    setFieldValue
-                                  )}
-                                  onSelect={(addresses) =>
-                                    onSelectBill(addresses, setFieldValue)
-                                  }
+                      <CheckBox
+                        color="secondary"
+                        name="address_bill"
+                        label="ใช้ที่อยู่เดียวกันกับจัดส่ง"
+                        mb="1rem"
+                        onChange={handleCheckboxChange(values, setFieldValue)}
+                      />
+                      <Grid item sm={12}>
+                        <Grid container spacing={3}>
+                          <Grid item sm={6} xs={12}>
+                            <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="ชื่อ"
+                              name="bill_firstname"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              value={values.bill_firstname}
+                              errorText={
+                                touched.bill_firstname && errors.bill_firstname
+                              }
+                            />
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="นามสกุล"
+                              name="bill_lastname"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              value={values.bill_lastname}
+                              errorText={
+                                touched.bill_lastname && errors.bill_lastname
+                              }
+                            />
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <TextField
+                              fullwidth
+                              mb="1rem"
+                              onBlur={handleBlur}
+                              label="ชื่อบริษัท"
+                              name="bill_companyname"
+                              onChange={handleChange}
+                              value={values.bill_companyname}
+                              errorText={
+                                touched.bill_companyname &&
+                                errors.bill_companyname
+                              }
+                            />
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="หมายเลขประจำตัวผู้เสียภาษี"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              name="bill_tax_id"
+                              value={values.bill_tax_id}
+                              errorText={
+                                touched.bill_tax_id && errors.bill_tax_id
+                              }
+                            />
+                          </Grid>
+                          <Grid item sm={12} xs={12}>
+                            <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="เบอร์มือถือ"
+                              name="bill_mobile"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              value={values.bill_mobile}
+                              errorText={
+                                touched.bill_mobile && errors.bill_mobile
+                              }
+                              maxLength={10}
+                            />
+                          </Grid>
+                          <Grid item sm={12} xs={12}>
+                            <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="ที่อยู่"
+                              name="bill_address1"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              value={values.bill_address1}
+                              errorText={
+                                touched.bill_address1 && errors.bill_address1
+                              }
+                            />
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>ตำบล/แขวง</label>
+                            <InputThaiAddress
+                              field="subdistrict"
+                              value={
+                                billAddress.subdistrict ||
+                                state?.customerDetail[0].bill_subdistrict
+                              }
+                              onChange={onChangeBill(
+                                "subdistrict",
+                                setFieldValue
+                              )}
+                              onSelect={(addresses) =>
+                                onSelectBill(addresses, setFieldValue)
+                              }
+                              style={{
+                                height: "40px",
+                              }}
+                            />
+                            <input
+                              type="text"
+                              name="bill_subdistrict"
+                              value={billAddress.subdistrict}
+                              onChange={(e) =>
+                                setFieldValue(
+                                  "bill_subdistrict",
+                                  e.target.value
+                                )
+                              }
+                              style={{ display: "none" }}
+                            />
+                            {touched.bill_subdistrict &&
+                              errors.bill_subdistrict &&
+                              !billAddress.subdistrict && (
+                                <small
                                   style={{
-                                    height: "40px",
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
                                   }}
-                                />
-                                <input
-                                  type="text"
-                                  name="bill_subdistrict"
-                                  value={billAddress.subdistrict}
-                                  onChange={(e) =>
-                                    setFieldValue(
-                                      "bill_subdistrict",
-                                      e.target.value
-                                    )
-                                  }
-                                  style={{ display: "none" }}
-                                />
-                                {touched.bill_subdistrict &&
-                                  errors.bill_subdistrict &&
-                                  !billAddress.subdistrict && (
-                                    <small
-                                      style={{
-                                        color: "#e94560",
-                                        marginTop: "0.25rem",
-                                        marginLeft: "0.25rem",
-                                        display: "block",
-                                      }}
-                                    >
-                                      {Array.isArray(
-                                        errors.bill_subdistrict
-                                      ) ? (
-                                        <ul>
-                                          {errors.bill_subdistrict.map(
-                                            (error, index) => (
-                                              <li key={index}>{error}</li>
-                                            )
-                                          )}
-                                        </ul>
-                                      ) : typeof errors.bill_subdistrict ===
-                                        "string" ? (
-                                        errors.bill_subdistrict
-                                      ) : null}
-                                    </small>
-                                  )}
-                                {/* <TextField
+                                >
+                                  {Array.isArray(errors.bill_subdistrict) ? (
+                                    <ul>
+                                      {errors.bill_subdistrict.map(
+                                        (error, index) => (
+                                          <li key={index}>{error}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  ) : typeof errors.bill_subdistrict ===
+                                    "string" ? (
+                                    errors.bill_subdistrict
+                                  ) : null}
+                                </small>
+                              )}
+                            {/* <TextField
                               fullwidth
                               mb="1rem"
                               label="ตำบล/แขวง"
@@ -927,57 +916,51 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                                 errors.bill_subdistrict
                               }
                             /> */}
-                              </Grid>
-                              <Grid item sm={6} xs={12}>
-                                <label>จังหวัด</label>
-                                <InputThaiAddress
-                                  field={"province"}
-                                  value={
-                                    billAddress.province ||
-                                    state?.customerDetail[0].bill_state
-                                  }
-                                  onChange={onChangeBill(
-                                    "province",
-                                    setFieldValue
-                                  )}
-                                  onSelect={(addresses) =>
-                                    onSelectBill(addresses, setFieldValue)
-                                  }
-                                  style={{ height: "40px" }}
-                                />
-                                <input
-                                  type="text"
-                                  name="bill_state"
-                                  value={billAddress.province}
-                                  onChange={() => {}}
-                                  style={{ display: "none" }}
-                                />
-                                {touched.bill_state &&
-                                  errors.bill_state &&
-                                  !billAddress.province && (
-                                    <small
-                                      style={{
-                                        color: "#e94560",
-                                        marginTop: "0.25rem",
-                                        marginLeft: "0.25rem",
-                                        display: "block",
-                                      }}
-                                    >
-                                      {Array.isArray(errors.bill_state) ? (
-                                        <ul>
-                                          {errors.bill_state.map(
-                                            (error, index) => (
-                                              <li key={index}>{error}</li>
-                                            )
-                                          )}
-                                        </ul>
-                                      ) : typeof errors.bill_state ===
-                                        "string" ? (
-                                        errors.bill_state
-                                      ) : null}
-                                    </small>
-                                  )}
-                                {/* <TextField
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>จังหวัด</label>
+                            <InputThaiAddress
+                              field={"province"}
+                              value={
+                                billAddress.province ||
+                                state?.customerDetail[0].bill_state
+                              }
+                              onChange={onChangeBill("province", setFieldValue)}
+                              onSelect={(addresses) =>
+                                onSelectBill(addresses, setFieldValue)
+                              }
+                              style={{ height: "40px" }}
+                            />
+                            <input
+                              type="text"
+                              name="bill_state"
+                              value={billAddress.province}
+                              onChange={() => {}}
+                              style={{ display: "none" }}
+                            />
+                            {touched.bill_state &&
+                              errors.bill_state &&
+                              !billAddress.province && (
+                                <small
+                                  style={{
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
+                                  }}
+                                >
+                                  {Array.isArray(errors.bill_state) ? (
+                                    <ul>
+                                      {errors.bill_state.map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                      ))}
+                                    </ul>
+                                  ) : typeof errors.bill_state === "string" ? (
+                                    errors.bill_state
+                                  ) : null}
+                                </small>
+                              )}
+                            {/* <TextField
                               fullwidth
                               mb="1rem"
                               label="จังหวัด"
@@ -989,57 +972,51 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                                 touched.bill_state && errors.bill_state
                               }
                             /> */}
-                              </Grid>
-                              <Grid item sm={6} xs={12}>
-                                <label>อำเภอ / เขต</label>
-                                <InputThaiAddress
-                                  field={"district"}
-                                  value={
-                                    billAddress.district ||
-                                    state?.customerDetail[0].bill_city
-                                  }
-                                  onChange={onChangeBill(
-                                    "district",
-                                    setFieldValue
-                                  )}
-                                  onSelect={(addresses) =>
-                                    onSelectBill(addresses, setFieldValue)
-                                  }
-                                  style={{ height: "40px" }}
-                                />
-                                <input
-                                  type="text"
-                                  name="bill_city"
-                                  value={billAddress.district}
-                                  onChange={() => {}}
-                                  style={{ display: "none" }}
-                                />
-                                {touched.bill_city &&
-                                  errors.bill_city &&
-                                  !billAddress.district && (
-                                    <small
-                                      style={{
-                                        color: "#e94560",
-                                        marginTop: "0.25rem",
-                                        marginLeft: "0.25rem",
-                                        display: "block",
-                                      }}
-                                    >
-                                      {Array.isArray(errors.bill_city) ? (
-                                        <ul>
-                                          {errors.bill_city.map(
-                                            (error, index) => (
-                                              <li key={index}>{error}</li>
-                                            )
-                                          )}
-                                        </ul>
-                                      ) : typeof errors.bill_city ===
-                                        "string" ? (
-                                        errors.bill_city
-                                      ) : null}
-                                    </small>
-                                  )}
-                                {/* <TextField
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>อำเภอ / เขต</label>
+                            <InputThaiAddress
+                              field={"district"}
+                              value={
+                                billAddress.district ||
+                                state?.customerDetail[0].bill_city
+                              }
+                              onChange={onChangeBill("district", setFieldValue)}
+                              onSelect={(addresses) =>
+                                onSelectBill(addresses, setFieldValue)
+                              }
+                              style={{ height: "40px" }}
+                            />
+                            <input
+                              type="text"
+                              name="bill_city"
+                              value={billAddress.district}
+                              onChange={() => {}}
+                              style={{ display: "none" }}
+                            />
+                            {touched.bill_city &&
+                              errors.bill_city &&
+                              !billAddress.district && (
+                                <small
+                                  style={{
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
+                                  }}
+                                >
+                                  {Array.isArray(errors.bill_city) ? (
+                                    <ul>
+                                      {errors.bill_city.map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                      ))}
+                                    </ul>
+                                  ) : typeof errors.bill_city === "string" ? (
+                                    errors.bill_city
+                                  ) : null}
+                                </small>
+                              )}
+                            {/* <TextField
                               fullwidth
                               mb="1rem"
                               label="เขต/อำเภอ"
@@ -1049,57 +1026,54 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                               value={values.bill_city}
                               errorText={touched.bill_city && errors.bill_city}
                             /> */}
-                              </Grid>
-                              <Grid item sm={6} xs={12}>
-                                <label>รหัสไปรษณีย์</label>
-                                <InputThaiAddress
-                                  field={"zipcode"}
-                                  value={
-                                    billAddress.zipcode ||
-                                    state?.customerDetail[0].bill_postcode
-                                  }
-                                  onChange={onChangeBill(
-                                    "zipcode",
-                                    setFieldValue
-                                  )}
-                                  onSelect={(addresses) =>
-                                    onSelectBill(addresses, setFieldValue)
-                                  }
-                                  style={{ height: "40px" }}
-                                />
-                                <input
-                                  type="text"
-                                  name="bill_postcode"
-                                  value={billAddress.zipcode}
-                                  onChange={() => {}}
-                                  style={{ display: "none" }}
-                                />
-                                {touched.bill_postcode &&
-                                  errors.bill_postcode &&
-                                  !billAddress.zipcode && (
-                                    <small
-                                      style={{
-                                        color: "#e94560",
-                                        marginTop: "0.25rem",
-                                        marginLeft: "0.25rem",
-                                        display: "block",
-                                      }}
-                                    >
-                                      {Array.isArray(errors.bill_postcode) ? (
-                                        <ul>
-                                          {errors.bill_postcode.map(
-                                            (error, index) => (
-                                              <li key={index}>{error}</li>
-                                            )
-                                          )}
-                                        </ul>
-                                      ) : typeof errors.bill_postcode ===
-                                        "string" ? (
-                                        errors.bill_postcode
-                                      ) : null}
-                                    </small>
-                                  )}
-                                {/* <TextField
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>รหัสไปรษณีย์</label>
+                            <InputThaiAddress
+                              field={"zipcode"}
+                              value={
+                                billAddress.zipcode ||
+                                state?.customerDetail[0].bill_postcode
+                              }
+                              onChange={onChangeBill("zipcode", setFieldValue)}
+                              onSelect={(addresses) =>
+                                onSelectBill(addresses, setFieldValue)
+                              }
+                              style={{ height: "40px" }}
+                            />
+                            <input
+                              type="text"
+                              name="bill_postcode"
+                              value={billAddress.zipcode}
+                              onChange={() => {}}
+                              style={{ display: "none" }}
+                            />
+                            {touched.bill_postcode &&
+                              errors.bill_postcode &&
+                              !billAddress.zipcode && (
+                                <small
+                                  style={{
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
+                                  }}
+                                >
+                                  {Array.isArray(errors.bill_postcode) ? (
+                                    <ul>
+                                      {errors.bill_postcode.map(
+                                        (error, index) => (
+                                          <li key={index}>{error}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  ) : typeof errors.bill_postcode ===
+                                    "string" ? (
+                                    errors.bill_postcode
+                                  ) : null}
+                                </small>
+                              )}
+                            {/* <TextField
                               fullwidth
                               mb="1rem"
                               label="รหัสไปรษณีย์"
@@ -1111,11 +1085,11 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                                 touched.bill_postcode && errors.bill_postcode
                               }
                             /> */}
-                              </Grid>
-                            </Grid>
                           </Grid>
-                        </Card1>
-                      ))}
+                        </Grid>
+                      </Grid>
+                    </Card1>
+                  )}
 
                   <Grid container spacing={7}>
                     <Grid item sm={6} xs={12}>
