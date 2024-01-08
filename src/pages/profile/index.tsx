@@ -14,6 +14,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import DateFormat from "@component/DateFormat";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
 
 // ============================================================
 // type ProfileProps = { user: User };
@@ -32,20 +33,14 @@ const Profile = ({}) => {
     </Button>
   );
 
-  const infoList = [
-    { title: "16", subtitle: "All Orders" },
-    { title: "02", subtitle: "Awaiting Payments" },
-    { title: "00", subtitle: "Awaiting Shipment" },
-    { title: "01", subtitle: "Awaiting Delivery" },
-  ];
-
   const [profileData, setProfileData] = useState(null);
+  const [orderStatusData, setStatusData] = useState(null);
 
-  useEffect(() => {
-    if (!session) {
-      router.push("/");
-    }
-  }, [session, router]);
+  // useEffect(() => {
+  //   if (!session) {
+  //     router.push("/");
+  //   }
+  // }, [session, router]);
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -62,7 +57,29 @@ const Profile = ({}) => {
         if (response.data.res_code === "00") {
           setProfileData(response.data.res_result);
         } else {
-          // console.log(response);
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+    const fetchStatusOrder = async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_PATH}/profile/orderStatus`,
+          { lang: "th" },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${session?.user.token_expire}`,
+            },
+          }
+        );
+
+        if (response.data.res_code === "00") {
+          setStatusData(response.data.res_result);
+        } else {
+          router.push("/");
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -70,6 +87,7 @@ const Profile = ({}) => {
     };
 
     fetchProfileData();
+    fetchStatusOrder();
   }, [session]);
 
   return (
@@ -108,25 +126,32 @@ const Profile = ({}) => {
 
               <Grid item lg={6} md={6} sm={12} xs={12}>
                 <Grid container spacing={4}>
-                  {infoList.map((item) => (
-                    <Grid item lg={3} sm={6} xs={6} key={item.subtitle}>
-                      <FlexBox
-                        as={Card}
-                        height="100%"
-                        p="1rem 1.25rem"
-                        alignItems="center"
-                        flexDirection="column"
-                      >
-                        <H3 color="primary.main" my="0px" fontWeight="600">
-                          {item.title}
-                        </H3>
+                  {orderStatusData &&
+                    ["Completed", "Shipped", "Paid", "Waiting"].map(
+                      (status) => (
+                        <Grid item lg={3} sm={6} xs={6} key={status}>
+                          <FlexBox
+                            as={Card}
+                            height="100%"
+                            p="1.35rem"
+                            alignItems="center"
+                            flexDirection="column"
+                          >
+                            <H3 color="primary.main" my="0px" fontWeight="600">
+                              {orderStatusData[status].total}
+                            </H3>
 
-                        <Small color="text.muted" textAlign="center">
-                          {item.subtitle}
-                        </Small>
-                      </FlexBox>
-                    </Grid>
-                  ))}
+                            <Small
+                              style={{ whiteSpace: "nowrap" }}
+                              color="text.muted"
+                              textAlign="center"
+                            >
+                              {orderStatusData[status].class}
+                            </Small>
+                          </FlexBox>
+                        </Grid>
+                      )
+                    )}
                 </Grid>
               </Grid>
             </Grid>
@@ -152,7 +177,11 @@ const Profile = ({}) => {
               <Small color="text.muted" mb="4px" textAlign="left">
                 หมายเลขโทรศัพท์
               </Small>
-              <span>{(profileData?.phone !== "" && profileData?.phone !== null) ? profileData?.phone : "-"}</span>
+              <span>
+                {profileData?.phone !== "" && profileData?.phone !== null
+                  ? profileData?.phone
+                  : "-"}
+              </span>
             </FlexBox>
 
             <FlexBox flexDirection="column" p="0.5rem">
@@ -163,7 +192,9 @@ const Profile = ({}) => {
               <span className="pre">
                 {profileData?.birthday ? (
                   <DateFormat date={profileData.birthday} />
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </span>
             </FlexBox>
             <FlexBox flexDirection="column" p="0.5rem">
@@ -188,6 +219,23 @@ const Profile = ({}) => {
 };
 
 Profile.layout = DashboardLayout;
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
 
 // export const getStaticProps: GetStaticProps = async () => {
 //   const user = await api.getUser();

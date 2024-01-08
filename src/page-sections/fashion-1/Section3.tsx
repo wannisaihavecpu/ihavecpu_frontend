@@ -22,7 +22,11 @@ const Section3: FC<Props> = ({ products }) => {
   }, [width]);
 
   return (
-    <CategorySectionCreator iconName="light" title="Flash Deals" seeMoreLink="#">
+    <CategorySectionCreator
+      iconName="light"
+      title="Flash Deals"
+      seeMoreLink="#"
+    >
       <Box mt="-0.25rem" mb="-0.25rem">
         <Carousel totalSlides={10} visibleSlides={visibleSlides}>
           {products.map((item) => (

@@ -7,27 +7,27 @@ import FacebookProvider from "next-auth/providers/facebook";
 
 import axios from "axios";
 
-// async function checkToken(token) {
-//   try {
-//     const response = await axios.post(
-//       `${process.env.NEXT_PUBLIC_API_PATH}/auth/checkToken`,
-//       { token },
-//       {
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
+async function checkToken(token) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_PATH}/auth/checkToken`,
+      { token },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-//     if (response.data.res_code === "00") {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   } catch (error) {
-//     return false;
-//   }
-// }
+    if (response.data && response.data.res_code === "00") {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
 
 export default NextAuth({
   providers: [
@@ -70,7 +70,7 @@ export default NextAuth({
       },
     }),
   ],
-  secret: "LlKq6ZtYbr+hTC073mAmAh9/h2HwMfsFo4hrfCx5mLg=",
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === "credentials") {
@@ -145,15 +145,15 @@ export default NextAuth({
       // console.log("user2", user);
       // console.log("session2", session);
       // console.log("token2", token);
-      // if(token){
-      //   const isTokenValid = await checkToken(token.user.token_expire);
-      //   if (!isTokenValid) {
-      //     console.log("token is expired");
-      //     return null;
-      //   } else {
-      //     console.log("no valid token");
-      //   }
-      // }
+      if (token) {
+        const isTokenValid = await checkToken(token.user.token_expire);
+        if (!isTokenValid) {
+          // console.log("token is expired");
+          return null;
+        } else {
+          // console.log("no valid token");
+        }
+      }
       // session.accessToken = token.token_expire;
       session.user = token.user;
 
