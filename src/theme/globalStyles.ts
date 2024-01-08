@@ -212,9 +212,8 @@ input[type='range']::-webkit-slider-thumb:hover {
   // box-shadow: 0 0 0 2px rgb(233 87 87 / 20%);
   ;
 }
-.ant-select-focused:where(.css-dev-only-do-not-override-17sses9).ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector{
-  border-color:#d4001a;
-  -webkit-box-shadow: 0 0 0 0px;
+.ant-select-selector:focus-within {
+  border: 1px solid #d4001a !important;
   box-shadow: 0 0 0 0px;
   // box-shadow:0 0 0 2px rgb(233 87 87 / 20%);
   outline:0;

@@ -44,7 +44,7 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
     setShowCard(!showCard);
   };
 
-  console.log("session",session);
+  // console.log("session",session);
 
   const CART_HANDLE = (
     <Box ml="20px" position="relative">
@@ -64,7 +64,7 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
           position="absolute"
           justifyContent="center"
         >
-        <Tiny color="white" fontWeight="600" lineHeight={1}>
+          <Tiny color="white" fontWeight="600" lineHeight={1}>
             {state.cart.length}
           </Tiny>
         </FlexBox>

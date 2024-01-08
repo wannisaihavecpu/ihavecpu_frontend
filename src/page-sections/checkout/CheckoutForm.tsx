@@ -43,32 +43,50 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
   const [buttonClicked, setButtonClicked] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
 
-  
-
+  // for ship address
   const [address, setAddress] = useState({
     subdistrict: "",
     district: "",
     province: "",
     zipcode: "",
   });
-  const [subDistrict,setSubDistrict] = useState(null);
-  console.log("address",address);
-
-  const onChange = (targetName,setFieldValue) => (targetValue) => {
-    console.log("onChange");
-    console.log("targetName",targetName);
-    console.log({ ...address, [targetName]: targetValue });
+  // for bill address
+  const [billAddress, setBillAddress] = useState({
+    subdistrict: "",
+    district: "",
+    province: "",
+    zipcode: "",
+  });
+  // onchange for ship address
+  const onChange = (targetName, setFieldValue) => (targetValue) => {
     const addressFully = { ...address, [targetName]: targetValue };
-    console.log("addressFully",addressFully);
     setAddress({ ...address, [targetName]: targetValue });
-    setFieldValue("ship_subdistrict", addressFully.subdistrict);
-    setFieldValue("ship_state", addressFully.province);
-    setFieldValue("ship_city", addressFully.district);
-    setFieldValue("ship_postcode", addressFully.zipcode);
-    
+
+    const shipSubdistrictValue =
+      addressFully.subdistrict !== ""
+        ? addressFully.subdistrict
+        : state.customerDetail[0].ship_subdistrict;
+    const shipStateValue =
+      addressFully.province !== ""
+        ? addressFully.province
+        : state.customerDetail[0].ship_state;
+    const shipCityValue =
+      addressFully.district !== ""
+        ? addressFully.district
+        : state.customerDetail[0].ship_city;
+    const shipPostCodeValue =
+      addressFully.zipcode !== ""
+        ? addressFully.zipcode
+        : state.customerDetail[0].ship_postcode;
+
+    setFieldValue("ship_subdistrict", shipSubdistrictValue);
+    setFieldValue("ship_state", shipStateValue);
+    setFieldValue("ship_city", shipCityValue);
+    setFieldValue("ship_postcode", shipPostCodeValue);
   };
 
-  const onSelect = (addresses,setFieldValue) => {
+  // onselect for ship address
+  const onSelect = (addresses, setFieldValue) => {
     setAddress({ ...address, ...addresses });
     setFieldValue("ship_subdistrict", addresses.subdistrict);
     setFieldValue("ship_state", addresses.province);
@@ -76,9 +94,40 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
     setFieldValue("ship_postcode", addresses.zipcode);
   };
 
-  const handleSubdistrictChange = (selectedValue,setFieldValue) => {
-    console.log("shipsdsd",selectedValue);
-    setFieldValue('ship_subdistrict', selectedValue);
+  // onchange for bill
+  const onChangeBill = (targetName, setFieldValue) => (targetValue) => {
+    const addressFully = { ...billAddress, [targetName]: targetValue };
+    setBillAddress({ ...billAddress, [targetName]: targetValue });
+
+    const shipSubdistrictValue =
+      addressFully.subdistrict !== ""
+        ? addressFully.subdistrict
+        : state.customerDetail[0].bill_subdistrict;
+    const shipStateValue =
+      addressFully.province !== ""
+        ? addressFully.province
+        : state.customerDetail[0].bill_state;
+    const shipCityValue =
+      addressFully.district !== ""
+        ? addressFully.district
+        : state.customerDetail[0].bill_city;
+    const shipPostCodeValue =
+      addressFully.zipcode !== ""
+        ? addressFully.zipcode
+        : state.customerDetail[0].bill_postcode;
+
+    setFieldValue("bill_subdistrict", shipSubdistrictValue);
+    setFieldValue("bill_state", shipStateValue);
+    setFieldValue("bill_city", shipCityValue);
+    setFieldValue("bill_postcode", shipPostCodeValue);
+  };
+  // on selectbill
+  const onSelectBill = (addresses, setFieldValue) => {
+    setBillAddress({ ...billAddress, ...addresses });
+    setFieldValue("bill_subdistrict", addresses.subdistrict);
+    setFieldValue("bill_state", addresses.province);
+    setFieldValue("bill_city", addresses.district);
+    setFieldValue("bill_postcode", addresses.zipcode);
   };
 
   // const product = state.cart.map((item) => ({
@@ -94,7 +143,7 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
       }));
 
   const handleFormSubmit = async (values) => {
-    console.log("values",values);
+    console.log("values", values);
     const updatedCustomerDetail = {
       ...values,
       code_coupon:
@@ -167,13 +216,31 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
         setFieldValue("bill_state", "");
         setFieldValue("bill_city", "");
         setFieldValue("bill_postcode", "");
+        setBillAddress({
+          subdistrict: "",
+          district: "",
+          province: "",
+          zipcode: "",
+        });
       } else {
+        console.log("valuesss", values);
         // billing address fields with shipping address if checked
         setFieldValue("bill_address1", values.ship_address1);
         setFieldValue("bill_subdistrict", values.ship_subdistrict);
         setFieldValue("bill_state", values.ship_state);
         setFieldValue("bill_city", values.ship_city);
         setFieldValue("bill_postcode", values.ship_postcode);
+
+        setBillAddress({
+          subdistrict: values.ship_subdistrict,
+          district: values.ship_city,
+          province: values.ship_state,
+          zipcode: values.ship_postcode,
+        });
+
+        // const addressFully = { ...billAddress, [targetName]: targetValue };
+        // console.log("addressFully", addressFully);
+        // setBillAddress({ ...billAddress, [targetName]: targetValue });
       }
     };
 
@@ -310,7 +377,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
       point
     );
   };
-
   useEffect(() => {
     // if (state.customerDetail[0] === null) {
     calculatePayment(
@@ -319,7 +385,6 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
     );
     // }
   }, []);
-
 
   return (
     <Fragment>
@@ -337,145 +402,151 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
           handleSubmit,
           setFieldValue,
         }) => {
-          console.log("Form Values:", values);
-          console.log("Form Errors:", errors);
-          console.log("Form Touched Fields:", touched);
-      
           return (
-          <form onSubmit={handleSubmit}>
-            <Grid container flexWrap="wrap-reverse" spacing={6}>
-              {/* LEFT */}
-              <Grid item lg={8} md={8} xs={12}>
-                <Card1 mb="2rem">
-                  <Typography fontWeight="600" mb="1rem">
-                    ที่อยู่ในการจัดส่ง
-                  </Typography>
+            <form onSubmit={handleSubmit}>
+              <Grid container flexWrap="wrap-reverse" spacing={6}>
+                {/* LEFT */}
+                <Grid item lg={8} md={8} xs={12}>
+                  <Card1 mb="2rem">
+                    <Typography fontWeight="600" mb="1rem">
+                      ที่อยู่ในการจัดส่ง
+                    </Typography>
 
-                  <Grid container spacing={7}>
-                    <Grid item sm={12}>
-                      <Grid container spacing={3}>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="ชื่อ"
-                            name="ship_firstname"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.ship_firstname}
-                            errorText={
-                              touched.ship_firstname && errors.ship_firstname
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <div>
+                    <Grid container spacing={7}>
+                      <Grid item sm={12}>
+                        <Grid container spacing={3}>
+                          <Grid item sm={6} xs={12}>
                             <TextField
                               fullwidth
                               mb="1rem"
-                              label="นามสกุล"
-                              name="ship_lastname"
+                              label="ชื่อ"
+                              name="ship_firstname"
                               onBlur={handleBlur}
                               onChange={handleChange}
-                              value={values.ship_lastname}
+                              value={values.ship_firstname}
                               errorText={
-                                touched.ship_lastname && errors.ship_lastname
+                                touched.ship_firstname && errors.ship_firstname
                               }
                             />
-                          </div>
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <div>
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <div>
+                              <TextField
+                                fullwidth
+                                mb="1rem"
+                                label="นามสกุล"
+                                name="ship_lastname"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.ship_lastname}
+                                errorText={
+                                  touched.ship_lastname && errors.ship_lastname
+                                }
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <div>
+                              <TextField
+                                fullwidth
+                                mb="1rem"
+                                label="อีเมล"
+                                name="ship_email"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.ship_email}
+                                errorText={
+                                  touched.ship_email && errors.ship_email
+                                }
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <div>
+                              <TextField
+                                fullwidth
+                                mb="1rem"
+                                label="เบอร์โทรศัพท์"
+                                name="ship_mobile"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.ship_mobile}
+                                errorText={
+                                  touched.ship_mobile && errors.ship_mobile
+                                }
+                                maxLength={10}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item sm={12} xs={12}>
                             <TextField
                               fullwidth
                               mb="1rem"
-                              label="อีเมล"
-                              name="ship_email"
+                              label="ที่อยู่"
+                              name="ship_address1"
                               onBlur={handleBlur}
                               onChange={handleChange}
-                              value={values.ship_email}
+                              value={values.ship_address1}
                               errorText={
-                                touched.ship_email && errors.ship_email
+                                touched.ship_address1 && errors.ship_address1
                               }
                             />
-                          </div>
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <div>
-                            <TextField
-                              fullwidth
-                              mb="1rem"
-                              label="เบอร์โทรศัพท์"
-                              name="ship_mobile"
-                              onBlur={handleBlur}
-                              onChange={handleChange}
-                              value={values.ship_mobile}
-                              errorText={
-                                touched.ship_mobile && errors.ship_mobile
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>ตำบล/แขวง</label>
+                            <InputThaiAddress
+                              field="subdistrict"
+                              value={
+                                address.subdistrict ||
+                                state?.customerDetail[0].ship_subdistrict
                               }
-                              maxLength={10}
+                              onChange={onChange("subdistrict", setFieldValue)}
+                              onSelect={(addresses) =>
+                                onSelect(addresses, setFieldValue)
+                              }
+                              style={{
+                                height: "40px",
+                              }}
                             />
-                          </div>
-                        </Grid>
-                        <Grid item sm={12} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="ที่อยู่"
-                            name="ship_address1"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.ship_address1}
-                            errorText={
-                              touched.ship_address1 && errors.ship_address1
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <label>ตำบล/แขวง</label>
-                          <InputThaiAddress
-                            field="subdistrict"
-                            value={address.subdistrict || state?.customerDetail[0].ship_subdistrict}
-                            onChange={onChange("subdistrict", setFieldValue)}
-                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
-                            style={{
-                              height: "40px",
-                            }}
-                          />
-                          <input
-                            type="text"
-                            name="ship_subdistrict"
-                            value={subDistrict}
-                            onChange={(e) => setFieldValue("ship_subdistrict", e.target.value)}
-                            style={{ display: 'none' }}
-                          />
-                          {touched.ship_subdistrict &&
-                            errors.ship_subdistrict &&
-                            !address.subdistrict && (
-                              <small
-                                style={{
-                                  color: "#e94560",
-                                  marginTop: "0.25rem",
-                                  marginLeft: "0.25rem",
-                                  display: "block",
-                                }}
-                              >
-                                {Array.isArray(errors.ship_subdistrict) ? (
-                                  <ul>
-                                    {errors.ship_subdistrict.map(
-                                      (error, index) => (
-                                        <li key={index}>{error}</li>
-                                      )
-                                    )}
-                                  </ul>
-                                ) : typeof errors.ship_subdistrict ===
-                                  "string" ? (
-                                  errors.ship_subdistrict
-                                ) : null}
-                              </small>
-                            )}
+                            <input
+                              type="text"
+                              name="ship_subdistrict"
+                              value={address.subdistrict}
+                              onChange={(e) =>
+                                setFieldValue(
+                                  "ship_subdistrict",
+                                  e.target.value
+                                )
+                              }
+                              style={{ display: "none" }}
+                            />
+                            {touched.ship_subdistrict &&
+                              errors.ship_subdistrict &&
+                              !address.subdistrict && (
+                                <small
+                                  style={{
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
+                                  }}
+                                >
+                                  {Array.isArray(errors.ship_subdistrict) ? (
+                                    <ul>
+                                      {errors.ship_subdistrict.map(
+                                        (error, index) => (
+                                          <li key={index}>{error}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  ) : typeof errors.ship_subdistrict ===
+                                    "string" ? (
+                                    errors.ship_subdistrict
+                                  ) : null}
+                                </small>
+                              )}
 
-                          {/* <TextField
+                            {/* <TextField
                             fullwidth
                             mb="1rem"
                             // label="ตำบล/แขวง"
@@ -490,46 +561,51 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                             // readOnly
                             // hidden
                           /> */}
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <label>จังหวัด</label>
-                          <InputThaiAddress
-                            field={"province"}
-                            value={address.province || state?.customerDetail[0].ship_state}
-                            onChange={onChange("province", setFieldValue)}
-                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
-                            style={{ height: "40px" }}
-                          />
-                          <input
-                            type="text"
-                            name="ship_state"
-                            value={address.province}
-                            onChange={() => {}}
-                            style={{ display: 'none' }}
-                          />
-                          {touched.ship_state &&
-                            errors.ship_state &&
-                            !address.province && (
-                              <small
-                                style={{
-                                  color: "#e94560",
-                                  marginTop: "0.25rem",
-                                  marginLeft: "0.25rem",
-                                  display: "block",
-                                }}
-                              >
-                                {Array.isArray(errors.ship_state) ? (
-                                  <ul>
-                                    {errors.ship_state.map((error, index) => (
-                                      <li key={index}>{error}</li>
-                                    ))}
-                                  </ul>
-                                ) : typeof errors.ship_state === "string" ? (
-                                  errors.ship_state
-                                ) : null}
-                              </small>
-                            )}
-                          {/* <TextField
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>จังหวัด</label>
+                            <InputThaiAddress
+                              field={"province"}
+                              value={
+                                address.province ||
+                                state?.customerDetail[0].ship_state
+                              }
+                              onChange={onChange("province", setFieldValue)}
+                              onSelect={(addresses) =>
+                                onSelect(addresses, setFieldValue)
+                              }
+                              style={{ height: "40px" }}
+                            />
+                            <input
+                              type="text"
+                              name="ship_state"
+                              value={address.province}
+                              onChange={() => {}}
+                              style={{ display: "none" }}
+                            />
+                            {touched.ship_state &&
+                              errors.ship_state &&
+                              !address.province && (
+                                <small
+                                  style={{
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
+                                  }}
+                                >
+                                  {Array.isArray(errors.ship_state) ? (
+                                    <ul>
+                                      {errors.ship_state.map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                      ))}
+                                    </ul>
+                                  ) : typeof errors.ship_state === "string" ? (
+                                    errors.ship_state
+                                  ) : null}
+                                </small>
+                              )}
+                            {/* <TextField
                             fullwidth
                             mb="1rem"
                             label="จังหวัด"
@@ -539,46 +615,51 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                             value={values.ship_state}
                             errorText={touched.ship_state && errors.ship_state}
                           /> */}
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <label>อำเภอ / เขต</label>
-                          <InputThaiAddress
-                            field={"district"}
-                            value={address.district || state?.customerDetail[0].ship_city}
-                            onChange={onChange("district", setFieldValue)}
-                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
-                            style={{ height: "40px" }}
-                          />
-                          <input
-                            type="text"
-                            name="ship_city"
-                            value={address.district}
-                            onChange={() => {}}
-                            style={{ display: 'none' }}
-                          />
-                          {touched.ship_city &&
-                            errors.ship_city &&
-                            !address.district && (
-                              <small
-                                style={{
-                                  color: "#e94560",
-                                  marginTop: "0.25rem",
-                                  marginLeft: "0.25rem",
-                                  display: "block",
-                                }}
-                              >
-                                {Array.isArray(errors.ship_city) ? (
-                                  <ul>
-                                    {errors.ship_city.map((error, index) => (
-                                      <li key={index}>{error}</li>
-                                    ))}
-                                  </ul>
-                                ) : typeof errors.ship_city === "string" ? (
-                                  errors.ship_city
-                                ) : null}
-                              </small>
-                            )}
-                          {/* <TextField
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>อำเภอ / เขต</label>
+                            <InputThaiAddress
+                              field={"district"}
+                              value={
+                                address.district ||
+                                state?.customerDetail[0].ship_city
+                              }
+                              onChange={onChange("district", setFieldValue)}
+                              onSelect={(addresses) =>
+                                onSelect(addresses, setFieldValue)
+                              }
+                              style={{ height: "40px" }}
+                            />
+                            <input
+                              type="text"
+                              name="ship_city"
+                              value={address.district}
+                              onChange={() => {}}
+                              style={{ display: "none" }}
+                            />
+                            {touched.ship_city &&
+                              errors.ship_city &&
+                              !address.district && (
+                                <small
+                                  style={{
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
+                                  }}
+                                >
+                                  {Array.isArray(errors.ship_city) ? (
+                                    <ul>
+                                      {errors.ship_city.map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                      ))}
+                                    </ul>
+                                  ) : typeof errors.ship_city === "string" ? (
+                                    errors.ship_city
+                                  ) : null}
+                                </small>
+                              )}
+                            {/* <TextField
                             fullwidth
                             mb="1rem"
                             label="เขต/อำเภอ"
@@ -588,49 +669,54 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                             value={values.ship_city}
                             errorText={touched.ship_city && errors.ship_city}
                           /> */}
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                        <label>รหัสไปรษณีย์</label>
-                        <InputThaiAddress
-                            field={"zipcode"}
-                            value={address.zipcode || state?.customerDetail[0].ship_postcode}
-                            onChange={onChange("zipcode", setFieldValue)}
-                            onSelect={(addresses) => onSelect(addresses, setFieldValue)}
-                            style={{height:"40px"}}
-                          />
-                          <input
-                            type="text"
-                            name="ship_postcode"
-                            value={address.zipcode}
-                            onChange={() => {}}
-                            style={{ display: 'none' }}
-                          />
-                          {touched.ship_postcode &&
-                            errors.ship_postcode &&
-                            !address.zipcode && (
-                              <small
-                                style={{
-                                  color: "#e94560",
-                                  marginTop: "0.25rem",
-                                  marginLeft: "0.25rem",
-                                  display: "block",
-                                }}
-                              >
-                                {Array.isArray(errors.ship_postcode) ? (
-                                  <ul>
-                                    {errors.ship_postcode.map(
-                                      (error, index) => (
-                                        <li key={index}>{error}</li>
-                                      )
-                                    )}
-                                  </ul>
-                                ) : typeof errors.ship_postcode ===
-                                  "string" ? (
-                                  errors.ship_postcode
-                                ) : null}
-                              </small>
-                            )}
-                          {/* <TextField
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <label>รหัสไปรษณีย์</label>
+                            <InputThaiAddress
+                              field={"zipcode"}
+                              value={
+                                address.zipcode ||
+                                state?.customerDetail[0].ship_postcode
+                              }
+                              onChange={onChange("zipcode", setFieldValue)}
+                              onSelect={(addresses) =>
+                                onSelect(addresses, setFieldValue)
+                              }
+                              style={{ height: "40px" }}
+                            />
+                            <input
+                              type="text"
+                              name="ship_postcode"
+                              value={address.zipcode}
+                              onChange={() => {}}
+                              style={{ display: "none" }}
+                            />
+                            {touched.ship_postcode &&
+                              errors.ship_postcode &&
+                              !address.zipcode && (
+                                <small
+                                  style={{
+                                    color: "#e94560",
+                                    marginTop: "0.25rem",
+                                    marginLeft: "0.25rem",
+                                    display: "block",
+                                  }}
+                                >
+                                  {Array.isArray(errors.ship_postcode) ? (
+                                    <ul>
+                                      {errors.ship_postcode.map(
+                                        (error, index) => (
+                                          <li key={index}>{error}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  ) : typeof errors.ship_postcode ===
+                                    "string" ? (
+                                    errors.ship_postcode
+                                  ) : null}
+                                </small>
+                              )}
+                            {/* <TextField
                             fullwidth
                             mb="1rem"
                             label="รหัสไปรษณีย์"
@@ -642,198 +728,410 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                               touched.ship_postcode && errors.ship_postcode
                             }
                           /> */}
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <CheckBox
-                            color="secondary"
-                            name="request_tax"
-                            label="ขอใบกำกับภาษี"
-                            mb={taxInvoice ? "" : "1rem"}
-                            onChange={handleRequestTaxCheckboxChange(
-                              values,
-                              setFieldValue
-                            )}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Card1>
-                {sameAsShipping}
-                {taxInvoice && (
-                  <Card1 mb="2rem">
-                    <Typography fontWeight="600" mb="1rem">
-                      ที่อยู่ออกใบกำกับภาษี
-                    </Typography>
-
-                    <CheckBox
-                      color="secondary"
-                      name="address_bill"
-                      label="ใช้ที่อยู่เดียวกันกับจัดส่ง"
-                      mb="1rem"
-                      onChange={handleCheckboxChange(values, setFieldValue)}
-                    />
-                    <Grid item sm={12}>
-                      <Grid container spacing={3}>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="ชื่อ"
-                            name="bill_firstname"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.bill_firstname}
-                            errorText={
-                              touched.bill_firstname && errors.bill_firstname
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="นามสกุล"
-                            name="bill_lastname"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.bill_lastname}
-                            errorText={
-                              touched.bill_lastname && errors.bill_lastname
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            onBlur={handleBlur}
-                            label="ชื่อบริษัท"
-                            name="bill_companyname"
-                            onChange={handleChange}
-                            value={values.bill_companyname}
-                            errorText={
-                              touched.bill_companyname &&
-                              errors.bill_companyname
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="หมายเลขประจำตัวผู้เสียภาษี"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            name="bill_tax_id"
-                            value={values.bill_tax_id}
-                            errorText={
-                              touched.bill_tax_id && errors.bill_tax_id
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={12} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="เบอร์มือถือ"
-                            name="bill_mobile"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.bill_mobile}
-                            errorText={
-                              touched.bill_mobile && errors.bill_mobile
-                            }
-                            maxLength={10}
-                          />
-                        </Grid>
-                        <Grid item sm={12} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="ที่อยู่"
-                            name="bill_address1"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.bill_address1}
-                            errorText={
-                              touched.bill_address1 && errors.bill_address1
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="ตำบล/แขวง"
-                            name="bill_subdistrict"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.bill_subdistrict}
-                            errorText={
-                              touched.bill_subdistrict &&
-                              errors.bill_subdistrict
-                            }
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="จังหวัด"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            name="bill_state"
-                            value={values.bill_state}
-                            errorText={touched.bill_state && errors.bill_state}
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="เขต/อำเภอ"
-                            name="bill_city"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.bill_city}
-                            errorText={touched.bill_city && errors.bill_city}
-                          />
-                        </Grid>
-                        <Grid item sm={6} xs={12}>
-                          <TextField
-                            fullwidth
-                            mb="1rem"
-                            label="รหัสไปรษณีย์"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            name="bill_postcode"
-                            value={values.bill_postcode}
-                            errorText={
-                              touched.bill_postcode && errors.bill_postcode
-                            }
-                          />
+                          </Grid>
+                          <Grid item sm={6} xs={12}>
+                            <CheckBox
+                              color="secondary"
+                              name="request_tax"
+                              label="ขอใบกำกับภาษี"
+                              mb={taxInvoice ? "" : "1rem"}
+                              onChange={handleRequestTaxCheckboxChange(
+                                values,
+                                setFieldValue
+                              )}
+                              checked={values.request_tax}
+                            />
+                          </Grid>
                         </Grid>
                       </Grid>
                     </Grid>
                   </Card1>
-                )}
+                  {sameAsShipping}
+                  {taxInvoice ||
+                    (state.customerDetail[0] &&
+                      state.customerDetail[0].request_tax && (
+                        <Card1 mb="2rem">
+                          <Typography fontWeight="600" mb="1rem">
+                            ที่อยู่ออกใบกำกับภาษี
+                          </Typography>
 
-                <Grid container spacing={7}>
-                  <Grid item sm={6} xs={12}>
-                    <Link href="/cart">
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        type="button"
-                        fullwidth
-                      >
-                        กลับไปที่หน้ารถเข็น
-                      </Button>
-                    </Link>
-                  </Grid>
+                          <CheckBox
+                            color="secondary"
+                            name="address_bill"
+                            label="ใช้ที่อยู่เดียวกันกับจัดส่ง"
+                            mb="1rem"
+                            onChange={handleCheckboxChange(
+                              values,
+                              setFieldValue
+                            )}
+                          />
+                          <Grid item sm={12}>
+                            <Grid container spacing={3}>
+                              <Grid item sm={6} xs={12}>
+                                <TextField
+                                  fullwidth
+                                  mb="1rem"
+                                  label="ชื่อ"
+                                  name="bill_firstname"
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  value={values.bill_firstname}
+                                  errorText={
+                                    touched.bill_firstname &&
+                                    errors.bill_firstname
+                                  }
+                                />
+                              </Grid>
+                              <Grid item sm={6} xs={12}>
+                                <TextField
+                                  fullwidth
+                                  mb="1rem"
+                                  label="นามสกุล"
+                                  name="bill_lastname"
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  value={values.bill_lastname}
+                                  errorText={
+                                    touched.bill_lastname &&
+                                    errors.bill_lastname
+                                  }
+                                />
+                              </Grid>
+                              <Grid item sm={6} xs={12}>
+                                <TextField
+                                  fullwidth
+                                  mb="1rem"
+                                  onBlur={handleBlur}
+                                  label="ชื่อบริษัท"
+                                  name="bill_companyname"
+                                  onChange={handleChange}
+                                  value={values.bill_companyname}
+                                  errorText={
+                                    touched.bill_companyname &&
+                                    errors.bill_companyname
+                                  }
+                                />
+                              </Grid>
+                              <Grid item sm={6} xs={12}>
+                                <TextField
+                                  fullwidth
+                                  mb="1rem"
+                                  label="หมายเลขประจำตัวผู้เสียภาษี"
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  name="bill_tax_id"
+                                  value={values.bill_tax_id}
+                                  errorText={
+                                    touched.bill_tax_id && errors.bill_tax_id
+                                  }
+                                />
+                              </Grid>
+                              <Grid item sm={12} xs={12}>
+                                <TextField
+                                  fullwidth
+                                  mb="1rem"
+                                  label="เบอร์มือถือ"
+                                  name="bill_mobile"
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  value={values.bill_mobile}
+                                  errorText={
+                                    touched.bill_mobile && errors.bill_mobile
+                                  }
+                                  maxLength={10}
+                                />
+                              </Grid>
+                              <Grid item sm={12} xs={12}>
+                                <TextField
+                                  fullwidth
+                                  mb="1rem"
+                                  label="ที่อยู่"
+                                  name="bill_address1"
+                                  onBlur={handleBlur}
+                                  onChange={handleChange}
+                                  value={values.bill_address1}
+                                  errorText={
+                                    touched.bill_address1 &&
+                                    errors.bill_address1
+                                  }
+                                />
+                              </Grid>
+                              <Grid item sm={6} xs={12}>
+                                <label>ตำบล/แขวง</label>
+                                <InputThaiAddress
+                                  field="subdistrict"
+                                  value={
+                                    billAddress.subdistrict ||
+                                    state?.customerDetail[0].bill_subdistrict
+                                  }
+                                  onChange={onChangeBill(
+                                    "subdistrict",
+                                    setFieldValue
+                                  )}
+                                  onSelect={(addresses) =>
+                                    onSelectBill(addresses, setFieldValue)
+                                  }
+                                  style={{
+                                    height: "40px",
+                                  }}
+                                />
+                                <input
+                                  type="text"
+                                  name="bill_subdistrict"
+                                  value={billAddress.subdistrict}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      "bill_subdistrict",
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ display: "none" }}
+                                />
+                                {touched.bill_subdistrict &&
+                                  errors.bill_subdistrict &&
+                                  !billAddress.subdistrict && (
+                                    <small
+                                      style={{
+                                        color: "#e94560",
+                                        marginTop: "0.25rem",
+                                        marginLeft: "0.25rem",
+                                        display: "block",
+                                      }}
+                                    >
+                                      {Array.isArray(
+                                        errors.bill_subdistrict
+                                      ) ? (
+                                        <ul>
+                                          {errors.bill_subdistrict.map(
+                                            (error, index) => (
+                                              <li key={index}>{error}</li>
+                                            )
+                                          )}
+                                        </ul>
+                                      ) : typeof errors.bill_subdistrict ===
+                                        "string" ? (
+                                        errors.bill_subdistrict
+                                      ) : null}
+                                    </small>
+                                  )}
+                                {/* <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="ตำบล/แขวง"
+                              name="bill_subdistrict"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              value={values.bill_subdistrict}
+                              errorText={
+                                touched.bill_subdistrict &&
+                                errors.bill_subdistrict
+                              }
+                            /> */}
+                              </Grid>
+                              <Grid item sm={6} xs={12}>
+                                <label>จังหวัด</label>
+                                <InputThaiAddress
+                                  field={"province"}
+                                  value={
+                                    billAddress.province ||
+                                    state?.customerDetail[0].bill_state
+                                  }
+                                  onChange={onChangeBill(
+                                    "province",
+                                    setFieldValue
+                                  )}
+                                  onSelect={(addresses) =>
+                                    onSelectBill(addresses, setFieldValue)
+                                  }
+                                  style={{ height: "40px" }}
+                                />
+                                <input
+                                  type="text"
+                                  name="bill_state"
+                                  value={billAddress.province}
+                                  onChange={() => {}}
+                                  style={{ display: "none" }}
+                                />
+                                {touched.bill_state &&
+                                  errors.bill_state &&
+                                  !billAddress.province && (
+                                    <small
+                                      style={{
+                                        color: "#e94560",
+                                        marginTop: "0.25rem",
+                                        marginLeft: "0.25rem",
+                                        display: "block",
+                                      }}
+                                    >
+                                      {Array.isArray(errors.bill_state) ? (
+                                        <ul>
+                                          {errors.bill_state.map(
+                                            (error, index) => (
+                                              <li key={index}>{error}</li>
+                                            )
+                                          )}
+                                        </ul>
+                                      ) : typeof errors.bill_state ===
+                                        "string" ? (
+                                        errors.bill_state
+                                      ) : null}
+                                    </small>
+                                  )}
+                                {/* <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="จังหวัด"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              name="bill_state"
+                              value={values.bill_state}
+                              errorText={
+                                touched.bill_state && errors.bill_state
+                              }
+                            /> */}
+                              </Grid>
+                              <Grid item sm={6} xs={12}>
+                                <label>อำเภอ / เขต</label>
+                                <InputThaiAddress
+                                  field={"district"}
+                                  value={
+                                    billAddress.district ||
+                                    state?.customerDetail[0].bill_city
+                                  }
+                                  onChange={onChangeBill(
+                                    "district",
+                                    setFieldValue
+                                  )}
+                                  onSelect={(addresses) =>
+                                    onSelectBill(addresses, setFieldValue)
+                                  }
+                                  style={{ height: "40px" }}
+                                />
+                                <input
+                                  type="text"
+                                  name="bill_city"
+                                  value={billAddress.district}
+                                  onChange={() => {}}
+                                  style={{ display: "none" }}
+                                />
+                                {touched.bill_city &&
+                                  errors.bill_city &&
+                                  !billAddress.district && (
+                                    <small
+                                      style={{
+                                        color: "#e94560",
+                                        marginTop: "0.25rem",
+                                        marginLeft: "0.25rem",
+                                        display: "block",
+                                      }}
+                                    >
+                                      {Array.isArray(errors.bill_city) ? (
+                                        <ul>
+                                          {errors.bill_city.map(
+                                            (error, index) => (
+                                              <li key={index}>{error}</li>
+                                            )
+                                          )}
+                                        </ul>
+                                      ) : typeof errors.bill_city ===
+                                        "string" ? (
+                                        errors.bill_city
+                                      ) : null}
+                                    </small>
+                                  )}
+                                {/* <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="เขต/อำเภอ"
+                              name="bill_city"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              value={values.bill_city}
+                              errorText={touched.bill_city && errors.bill_city}
+                            /> */}
+                              </Grid>
+                              <Grid item sm={6} xs={12}>
+                                <label>รหัสไปรษณีย์</label>
+                                <InputThaiAddress
+                                  field={"zipcode"}
+                                  value={
+                                    billAddress.zipcode ||
+                                    state?.customerDetail[0].bill_postcode
+                                  }
+                                  onChange={onChangeBill(
+                                    "zipcode",
+                                    setFieldValue
+                                  )}
+                                  onSelect={(addresses) =>
+                                    onSelectBill(addresses, setFieldValue)
+                                  }
+                                  style={{ height: "40px" }}
+                                />
+                                <input
+                                  type="text"
+                                  name="bill_postcode"
+                                  value={billAddress.zipcode}
+                                  onChange={() => {}}
+                                  style={{ display: "none" }}
+                                />
+                                {touched.bill_postcode &&
+                                  errors.bill_postcode &&
+                                  !billAddress.zipcode && (
+                                    <small
+                                      style={{
+                                        color: "#e94560",
+                                        marginTop: "0.25rem",
+                                        marginLeft: "0.25rem",
+                                        display: "block",
+                                      }}
+                                    >
+                                      {Array.isArray(errors.bill_postcode) ? (
+                                        <ul>
+                                          {errors.bill_postcode.map(
+                                            (error, index) => (
+                                              <li key={index}>{error}</li>
+                                            )
+                                          )}
+                                        </ul>
+                                      ) : typeof errors.bill_postcode ===
+                                        "string" ? (
+                                        errors.bill_postcode
+                                      ) : null}
+                                    </small>
+                                  )}
+                                {/* <TextField
+                              fullwidth
+                              mb="1rem"
+                              label="รหัสไปรษณีย์"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              name="bill_postcode"
+                              value={values.bill_postcode}
+                              errorText={
+                                touched.bill_postcode && errors.bill_postcode
+                              }
+                            /> */}
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </Card1>
+                      ))}
 
-                  {/* <Grid item sm={6} xs={12}>
+                  <Grid container spacing={7}>
+                    <Grid item sm={6} xs={12}>
+                      <Link href="/cart">
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          type="button"
+                          fullwidth
+                        >
+                          กลับไปที่หน้ารถเข็น
+                        </Button>
+                      </Link>
+                    </Grid>
+
+                    {/* <Grid item sm={6} xs={12}>
                     <Button
                       variant="contained"
                       color="primary"
@@ -843,277 +1141,283 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                       ดำเนินการชำระเงิน
                     </Button>
                   </Grid> */}
+                  </Grid>
                 </Grid>
-              </Grid>
-              {/* RIGHT */}
-              <Grid item lg={4} md={4} xs={12}>
-                <Card1>
-                  {urlProduct && urlQty ? (
+                {/* RIGHT */}
+                <Grid item lg={4} md={4} xs={12}>
+                  <Card1>
+                    {urlProduct && urlQty ? (
+                      <FlexBox
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mb="0.5rem"
+                      >
+                        <div>
+                          <Typography
+                            fontSize="14px"
+                            color="text.hint"
+                            style={{
+                              flex: "1",
+                              width: "120px",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {apiResponse?.productDetail[0]?.name_th}
+                          </Typography>
+                        </div>
+
+                        <Typography
+                          fontSize="14px"
+                          color="text.hint"
+                          style={{ flex: "1", textAlign: "center" }}
+                        >
+                          {urlQty}
+                        </Typography>
+
+                        <div style={{ flex: "1", textAlign: "right" }}>
+                          <Typography
+                            fontSize="14px"
+                            fontWeight="600"
+                            lineHeight="1"
+                          >
+                            <PriceFormat
+                              price={
+                                apiResponse?.productDetail[0]?.discountPrice *
+                                Number(urlQty)
+                              }
+                            />
+                          </Typography>
+                        </div>
+                      </FlexBox>
+                    ) : (
+                      state.cart.map((item) => {
+                        const totalQty = item.qty;
+                        const totalPrice = item.price * totalQty;
+
+                        return (
+                          <FlexBox
+                            key={item.id}
+                            justifyContent="space-between"
+                            alignItems="center"
+                            mb="0.5rem"
+                          >
+                            <div>
+                              <Typography
+                                fontSize="14px"
+                                color="text.hint"
+                                style={{
+                                  flex: "1",
+                                  width: "120px",
+                                  overflow: "hidden",
+                                  whiteSpace: "nowrap",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {item.name}
+                              </Typography>
+                            </div>
+
+                            <Typography
+                              fontSize="14px"
+                              color="text.hint"
+                              style={{ flex: "1", textAlign: "center" }}
+                            >
+                              {item.qty}
+                            </Typography>
+
+                            <div style={{ flex: "1", textAlign: "right" }}>
+                              <Typography
+                                fontSize="14px"
+                                fontWeight="600"
+                                lineHeight="1"
+                              >
+                                <PriceFormat price={totalPrice} />
+                              </Typography>
+                            </div>
+                          </FlexBox>
+                        );
+                      })
+                    )}
+
+                    <Divider mb="1rem" />
+
                     <FlexBox
                       justifyContent="space-between"
                       alignItems="center"
                       mb="0.5rem"
                     >
-                      <div>
+                      <Typography color="text.hint">ค่าจัดส่ง:</Typography>
+
+                      <FlexBox alignItems="flex-end">
                         <Typography
                           fontSize="14px"
-                          color="text.hint"
-                          style={{
-                            flex: "1",
-                            width: "120px",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                          }}
+                          fontWeight="600"
+                          lineHeight="1"
                         >
-                          {apiResponse?.productDetail[0]?.name_th}
+                          <PriceFormat price={apiResponse?.shippingFee ?? 0} />
                         </Typography>
-                      </div>
+                      </FlexBox>
+                    </FlexBox>
 
-                      <Typography
-                        fontSize="14px"
-                        color="text.hint"
-                        style={{ flex: "1", textAlign: "center" }}
-                      >
-                        {urlQty}
-                      </Typography>
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="0.5rem"
+                    >
+                      <Typography color="text.hint">ค่าส่วนลด:</Typography>
 
-                      <div style={{ flex: "1", textAlign: "right" }}>
+                      <FlexBox alignItems="flex-end">
                         <Typography
                           fontSize="14px"
                           fontWeight="600"
                           lineHeight="1"
                         >
                           <PriceFormat
-                            price={
-                              apiResponse?.productDetail[0]?.discountPrice *
-                              Number(urlQty)
-                            }
+                            price={apiResponse?.discountCoupon ?? 0}
                           />
                         </Typography>
-                      </div>
+                      </FlexBox>
                     </FlexBox>
-                  ) : (
-                    state.cart.map((item) => {
-                      const totalQty = item.qty;
-                      const totalPrice = item.price * totalQty;
 
-                      return (
-                        <FlexBox
-                          key={item.id}
-                          justifyContent="space-between"
-                          alignItems="center"
-                          mb="0.5rem"
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="0.5rem"
+                    >
+                      <Typography color="text.hint">ราคาก่อนภาษี:</Typography>
+
+                      <FlexBox alignItems="flex-end">
+                        <Typography
+                          fontSize="14px"
+                          fontWeight="600"
+                          lineHeight="1"
                         >
-                          <div>
-                            <Typography
-                              fontSize="14px"
-                              color="text.hint"
-                              style={{
-                                flex: "1",
-                                width: "120px",
-                                overflow: "hidden",
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
+                          <PriceFormat
+                            price={apiResponse?.priceBeforeVat ?? 0}
+                          />
+                        </Typography>
+                      </FlexBox>
+                    </FlexBox>
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="0.5rem"
+                    >
+                      <Typography color="text.hint">ภาษี VAT 7%:</Typography>
+
+                      <FlexBox alignItems="flex-end">
+                        <Typography
+                          fontSize="14px"
+                          fontWeight="600"
+                          lineHeight="1"
+                        >
+                          <PriceFormat price={apiResponse?.vat ?? 0} />
+                        </Typography>
+                      </FlexBox>
+                    </FlexBox>
+
+                    <Divider mb="1rem" />
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="1rem"
+                    >
+                      <Typography color="text.hint">วิธีการจัดส่ง:</Typography>
+                      <FlexBox flexDirection="column">
+                        {shippingList &&
+                          shippingList.map((option) => (
+                            <Radio
+                              key={option.shipping_id}
+                              mb="0.5rem"
+                              color="secondary"
+                              name="shippingOption"
+                              value={option.shipping_id}
+                              width={15}
+                              height={15}
+                              checked={
+                                values.shippingOption === option.shipping_id
+                              }
+                              onChange={() => {
+                                setFieldValue(
+                                  "shippingOption",
+                                  option.shipping_id
+                                );
+                                handleRadioClick(option.shipping_id);
                               }}
-                            >
-                              {item.name}
-                            </Typography>
-                          </div>
-
-                          <Typography
-                            fontSize="14px"
-                            color="text.hint"
-                            style={{ flex: "1", textAlign: "center" }}
+                              label={
+                                <Typography
+                                  ml="6px"
+                                  fontWeight="600"
+                                  fontSize="13px"
+                                >
+                                  {option.title}
+                                </Typography>
+                              }
+                            />
+                          ))}
+                        {touched.shippingOption && errors.shippingOption && (
+                          <H6
+                            fontWeight={300}
+                            fontSize="12px"
+                            textAlign="right"
+                            color="red"
                           >
-                            {item.qty}
-                          </Typography>
-
-                          <div style={{ flex: "1", textAlign: "right" }}>
-                            <Typography
-                              fontSize="14px"
-                              fontWeight="600"
-                              lineHeight="1"
-                            >
-                              <PriceFormat price={totalPrice} />
-                            </Typography>
-                          </div>
-                        </FlexBox>
-                      );
-                    })
-                  )}
-
-                  <Divider mb="1rem" />
-
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
-                    <Typography color="text.hint">ค่าจัดส่ง:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={apiResponse?.shippingFee ?? 0} />
+                            {errors.shippingOption}
+                          </H6>
+                        )}
+                      </FlexBox>
+                    </FlexBox>
+                    <Divider mb="1rem" />
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="1rem"
+                    >
+                      <Typography color="text.hint">
+                        ข้อมูลเพิ่มเติม:
                       </Typography>
+                      <FlexBox flexDirection="column">
+                        {optionList &&
+                          optionList.map((option, index) => (
+                            <Radio
+                              key={index}
+                              mb="0.5rem"
+                              color="secondary"
+                              name="customOption"
+                              value={option.value}
+                              width={15}
+                              height={15}
+                              checked={values.customOption === option.value}
+                              onChange={() => {
+                                setFieldValue("customOption", option.value);
+                              }}
+                              label={
+                                <Typography
+                                  ml="6px"
+                                  fontWeight="600"
+                                  fontSize="13px"
+                                >
+                                  {option.label}
+                                </Typography>
+                              }
+                            />
+                          ))}
+                        {touched.customOption && errors.customOption && (
+                          <H6
+                            fontWeight={300}
+                            fontSize="12px"
+                            textAlign="right"
+                            color="red"
+                          >
+                            {errors.customOption}
+                          </H6>
+                        )}
+                      </FlexBox>
                     </FlexBox>
-                  </FlexBox>
-
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
-                    <Typography color="text.hint">ค่าส่วนลด:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={apiResponse?.discountCoupon ?? 0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
-                    <Typography color="text.hint">ราคาก่อนภาษี:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={apiResponse?.priceBeforeVat ?? 0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="0.5rem"
-                  >
-                    <Typography color="text.hint">ภาษี VAT 7%:</Typography>
-
-                    <FlexBox alignItems="flex-end">
-                      <Typography
-                        fontSize="14px"
-                        fontWeight="600"
-                        lineHeight="1"
-                      >
-                        <PriceFormat price={apiResponse?.vat ?? 0} />
-                      </Typography>
-                    </FlexBox>
-                  </FlexBox>
-
-                  <Divider mb="1rem" />
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="1rem"
-                  >
-                    <Typography color="text.hint">วิธีการจัดส่ง:</Typography>
-                    <FlexBox flexDirection="column">
-                      {shippingList &&
-                        shippingList.map((option) => (
-                          <Radio
-                            key={option.shipping_id}
-                            mb="0.5rem"
-                            color="secondary"
-                            name="shippingOption"
-                            value={option.shipping_id}
-                            width={15}
-                            height={15}
-                            checked={
-                              values.shippingOption === option.shipping_id
-                            }
-                            onChange={() => {
-                              setFieldValue(
-                                "shippingOption",
-                                option.shipping_id
-                              );
-                              handleRadioClick(option.shipping_id);
-                            }}
-                            label={
-                              <Typography
-                                ml="6px"
-                                fontWeight="600"
-                                fontSize="13px"
-                              >
-                                {option.title}
-                              </Typography>
-                            }
-                          />
-                        ))}
-                      {touched.shippingOption && errors.shippingOption && (
-                        <H6
-                          fontWeight={300}
-                          fontSize="12px"
-                          textAlign="right"
-                          color="red"
-                        >
-                          {errors.shippingOption}
-                        </H6>
-                      )}
-                    </FlexBox>
-                  </FlexBox>
-                  <Divider mb="1rem" />
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="1rem"
-                  >
-                    <Typography color="text.hint">ข้อมูลเพิ่มเติม:</Typography>
-                    <FlexBox flexDirection="column">
-                      {optionList &&
-                        optionList.map((option, index) => (
-                          <Radio
-                            key={index}
-                            mb="0.5rem"
-                            color="secondary"
-                            name="customOption"
-                            value={option.value}
-                            width={15}
-                            height={15}
-                            checked={values.customOption === option.value}
-                            onChange={() => {
-                              setFieldValue("customOption", option.value);
-                            }}
-                            label={
-                              <Typography
-                                ml="6px"
-                                fontWeight="600"
-                                fontSize="13px"
-                              >
-                                {option.label}
-                              </Typography>
-                            }
-                          />
-                        ))}
-                      {touched.customOption && errors.customOption && (
-                        <H6
-                          fontWeight={300}
-                          fontSize="12px"
-                          textAlign="right"
-                          color="red"
-                        >
-                          {errors.customOption}
-                        </H6>
-                      )}
-                    </FlexBox>
-                  </FlexBox>
-                  <FlexBox>
-                    {/* <Grid item sm={12} xs={12}>
+                    <FlexBox>
+                      {/* <Grid item sm={12} xs={12}>
                       <Select
                         label="สาขาที่ต้องการรับ"
                         options={branchList.map((branch) => ({
@@ -1123,150 +1427,155 @@ const CheckoutForm: FC<Props> = ({ shippingList, listCoupon }) => {
                         value={values.selectedBranch}
                       />
                     </Grid> */}
-                  </FlexBox>
+                    </FlexBox>
 
-                  <Divider mb="1rem" />
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="1rem"
-                  >
-                    <Typography fontWeight="600" fontSize="16px">
-                      ยอดรวมสุทธิ:
-                    </Typography>
+                    <Divider mb="1rem" />
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="1rem"
+                    >
+                      <Typography fontWeight="600" fontSize="16px">
+                        ยอดรวมสุทธิ:
+                      </Typography>
 
-                    <FlexBox alignItems="flex-end">
+                      <FlexBox alignItems="flex-end">
+                        <Typography
+                          fontSize="18px"
+                          fontWeight="600"
+                          lineHeight="1"
+                          textAlign="right"
+                        >
+                          <PriceFormat price={apiResponse?.netPrice ?? 0} />
+                        </Typography>
+                      </FlexBox>
+                    </FlexBox>
+                    <FlexBox
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb="1rem"
+                    >
                       <Typography
-                        fontSize="18px"
+                        color="#d4001a"
                         fontWeight="600"
-                        lineHeight="1"
-                        textAlign="right"
+                        fontSize="15px"
                       >
-                        <PriceFormat price={apiResponse?.netPrice ?? 0} />
+                        สมาชิก รับคะแนนสะสม{" "}
+                        {calculatePointsFromTotalPrice(getTotalPrice())} คะแนน
                       </Typography>
                     </FlexBox>
-                  </FlexBox>
-                  <FlexBox
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb="1rem"
-                  >
-                    <Typography
-                      color="#d4001a"
-                      fontWeight="600"
-                      fontSize="15px"
-                    >
-                      สมาชิก รับคะแนนสะสม{" "}
-                      {calculatePointsFromTotalPrice(getTotalPrice())} คะแนน
-                    </Typography>
-                  </FlexBox>
 
-                  <Grid item xl={12} md={12} xs={12}>
-                    <Box mb="1rem">
-                      <FlexBox alignItems="center" mb="0.5rem">
-                        <H6>ใช้คะแนนสะสม</H6>
-                      </FlexBox>
-                      <StyledSearchBox>
-                        <Icon className="search-icon" size="18px">
-                          coupon
-                        </Icon>
-                        <TextField
-                          fullwidth
-                          name="use_point"
-                          className="search-field"
-                          placeholder="กรอกคะแนนสะสม"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.use_point || ""}
-                        />
-                        <Button
-                          className="search-button"
-                          variant="contained"
-                          color="ihavecpu"
-                          type="button"
-                          onClick={() => handleUsePointClick(values.use_point)}
-                        >
-                          กดใช้
-                        </Button>
-                      </StyledSearchBox>
-                    </Box>
-                  </Grid>
-
-                  <Grid item xl={12} md={12} xs={12}>
-                    <Card1 style={{ border: "2px solid #f1f1f1" }}>
-                      {selectedCoupon ? (
-                        <>
-                          <CouponNoButton
-                            id={apiResponse?.couponDetail?.id}
-                            topic={apiResponse?.couponDetail?.title}
-                            highlight1={
-                              apiResponse?.couponDetail?.highlight?.highlight1
-                            }
-                            highlight2={
-                              apiResponse?.couponDetail?.highlight?.highlight2
-                            }
-                            description={apiResponse?.couponDetail?.description}
-                            color="white"
-                            dateExpired={apiResponse?.couponDetail?.endDate}
-                            onClear={clearSelectedCoupon}
+                    <Grid item xl={12} md={12} xs={12}>
+                      <Box mb="1rem">
+                        <FlexBox alignItems="center" mb="0.5rem">
+                          <H6>ใช้คะแนนสะสม</H6>
+                        </FlexBox>
+                        <StyledSearchBox>
+                          <Icon className="search-icon" size="18px">
+                            coupon
+                          </Icon>
+                          <TextField
+                            fullwidth
+                            name="use_point"
+                            className="search-field"
+                            placeholder="กรอกคะแนนสะสม"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.use_point || ""}
                           />
-                        </>
-                      ) : (
-                        <>
-                          <FlexBox alignItems="center">
-                            <Icon
-                              mr="1rem"
-                              size="30px"
-                              variant="medium"
-                              defaultcolor="currentColor"
-                            >
-                              coupon
-                            </Icon>
-                            <H6>ใช้รหัสคูปองส่วนลด?</H6>
-                          </FlexBox>
-                          <FlexBox>
-                            <Button
-                              onClick={toggleDialog}
-                              mt="1rem"
-                              variant="outlined"
-                              color="ihavecpu"
-                              style={{ width: "100%" }}
-                              type="button"
-                            >
-                              ใช้รหัสคูปองส่วนลด
-                            </Button>
-                          </FlexBox>
-                        </>
-                      )}
-                    </Card1>
-                  </Grid>
+                          <Button
+                            className="search-button"
+                            variant="contained"
+                            color="ihavecpu"
+                            type="button"
+                            onClick={() =>
+                              handleUsePointClick(values.use_point)
+                            }
+                          >
+                            กดใช้
+                          </Button>
+                        </StyledSearchBox>
+                      </Box>
+                    </Grid>
 
-                  <Grid item xl={12} md={12} xs={12}>
-                    <Button
-                      onClick={() => setButtonClicked("submitPayment")}
-                      mt="1rem"
-                      variant="contained"
-                      color="ihavecpu"
-                      type="submit"
-                      style={{ width: "100%" }}
-                    >
-                      ดำเนินการชำระเงิน
-                    </Button>
-                    <ModalCouponPurchase
-                      shippingOption={formik.values.shippingOption}
-                      calculatePayment={calculatePayment}
-                      open={open}
-                      onClose={toggleDialog}
-                      selectedCoupon={selectedCoupon}
-                      setSelectedCoupon={setSelectedCoupon}
-                      listCoupon={listCoupon}
-                    />
-                  </Grid>
-                </Card1>
+                    <Grid item xl={12} md={12} xs={12}>
+                      <Card1 style={{ border: "2px solid #f1f1f1" }}>
+                        {selectedCoupon ? (
+                          <>
+                            <CouponNoButton
+                              id={apiResponse?.couponDetail?.id}
+                              topic={apiResponse?.couponDetail?.title}
+                              highlight1={
+                                apiResponse?.couponDetail?.highlight?.highlight1
+                              }
+                              highlight2={
+                                apiResponse?.couponDetail?.highlight?.highlight2
+                              }
+                              description={
+                                apiResponse?.couponDetail?.description
+                              }
+                              color="white"
+                              dateExpired={apiResponse?.couponDetail?.endDate}
+                              onClear={clearSelectedCoupon}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <FlexBox alignItems="center">
+                              <Icon
+                                mr="1rem"
+                                size="30px"
+                                variant="medium"
+                                defaultcolor="currentColor"
+                              >
+                                coupon
+                              </Icon>
+                              <H6>ใช้รหัสคูปองส่วนลด?</H6>
+                            </FlexBox>
+                            <FlexBox>
+                              <Button
+                                onClick={toggleDialog}
+                                mt="1rem"
+                                variant="outlined"
+                                color="ihavecpu"
+                                style={{ width: "100%" }}
+                                type="button"
+                              >
+                                ใช้รหัสคูปองส่วนลด
+                              </Button>
+                            </FlexBox>
+                          </>
+                        )}
+                      </Card1>
+                    </Grid>
+
+                    <Grid item xl={12} md={12} xs={12}>
+                      <Button
+                        onClick={() => setButtonClicked("submitPayment")}
+                        mt="1rem"
+                        variant="contained"
+                        color="ihavecpu"
+                        type="submit"
+                        style={{ width: "100%" }}
+                      >
+                        ดำเนินการชำระเงิน
+                      </Button>
+                      <ModalCouponPurchase
+                        shippingOption={formik.values.shippingOption}
+                        calculatePayment={calculatePayment}
+                        open={open}
+                        onClose={toggleDialog}
+                        selectedCoupon={selectedCoupon}
+                        setSelectedCoupon={setSelectedCoupon}
+                        listCoupon={listCoupon}
+                      />
+                    </Grid>
+                  </Card1>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        )}}
+            </form>
+          );
+        }}
       </Formik>
     </Fragment>
   );

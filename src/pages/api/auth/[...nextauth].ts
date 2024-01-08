@@ -3,31 +3,31 @@ import NextAuth from "next-auth";
 // import Providers from "next-auth/providers";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from 'next-auth/providers/facebook';
+import FacebookProvider from "next-auth/providers/facebook";
 
 import axios from "axios";
 
-async function checkToken(token) {
-  try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_PATH}/auth/checkToken`,
-      { token },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+// async function checkToken(token) {
+//   try {
+//     const response = await axios.post(
+//       `${process.env.NEXT_PUBLIC_API_PATH}/auth/checkToken`,
+//       { token },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
 
-    if (response.data.res_code === "00") {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    return false;
-  }
-}
+//     if (response.data.res_code === "00") {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   } catch (error) {
+//     return false;
+//   }
+// }
 
 export default NextAuth({
   providers: [
@@ -37,7 +37,7 @@ export default NextAuth({
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -72,25 +72,25 @@ export default NextAuth({
   ],
   secret: "LlKq6ZtYbr+hTC073mAmAh9/h2HwMfsFo4hrfCx5mLg=",
   callbacks: {
-    async signIn({ account, profile,user }) {
-      if (account?.provider === 'credentials') {
+    async signIn({ account, profile }) {
+      if (account?.provider === "credentials") {
         // account.provider = account.provider;
         return true;
       }
-    
-      if (account?.provider === 'google') {
+
+      if (account?.provider === "google") {
         const formData = new FormData();
         formData.append("type", "3");
         formData.append("email", profile.email);
         formData.append("name", profile.name);
         formData.append("uuid", profile.sub);
-    
+
         try {
           // Checklogin for Google sign-in
           const checkLoginFormData = new FormData();
           checkLoginFormData.append("type", "3");
           checkLoginFormData.append("email", profile.sub);
-    
+
           const checkLoginResponse = await axios.post(
             `${process.env.NEXT_PUBLIC_API_PATH}/auth/checklogin`,
             checkLoginFormData,
@@ -100,9 +100,9 @@ export default NextAuth({
               },
             }
           );
-    
+
           // console.log('Checklogin API Response:', checkLoginResponse);
-    
+
           if (checkLoginResponse.data.res_code === "00") {
             // Include additional data in the JWT token
             // const token = {
@@ -116,30 +116,30 @@ export default NextAuth({
             return true;
           }
         } catch (error) {
-          console.error('Error during checklogin:', error);
+          console.error("Error during checklogin:", error);
           return Promise.resolve(null);
         }
       }
-      if (account?.provider === 'facebook') {
+      if (account?.provider === "facebook") {
         // console.log("facebook", {
         //   account, profile,user
         // })
       }
-    
+
       return false;
-    },  
+    },
     async jwt({ token, user, account }) {
-      console.log("user12", user);
-      console.log("account12", account);
-      console.log("token12", token);
-      if (account?.provider === 'google') {
+      // console.log("user12", user);
+      // console.log("account12", account);
+      // console.log("token12", token);
+      if (account?.provider === "google") {
         // token.accessToken = account.access_token;
         token.user = account.user;
-      } else if (account?.provider === 'credentials'){
+      } else if (account?.provider === "credentials") {
         token.user = user;
       }
       return token;
-    }, 
+    },
 
     async session({ session, token }: { user: any; session: any; token: any }) {
       // console.log("user2", user);

@@ -16,7 +16,7 @@ import Modal from "@component/Modal";
 import SearchBoxStyle from "@component/search-box/styled";
 import Grid from "@component/grid/Grid";
 import CheckBox from "@component/CheckBox";
-import { signIn,useSession,signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { notify } from "@component/toast";
 
 type Props = {
@@ -212,7 +212,7 @@ const Login: FC<Props> = (props) => {
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
-            onClick={() => signIn('facebook')}
+            onClick={() => signIn("facebook")}
           >
             <Icon variant="small" defaultcolor="auto" mr="0.5rem">
               facebook-filled-white
@@ -229,12 +229,12 @@ const Login: FC<Props> = (props) => {
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
-            onClick={() => signIn('google')}
+            onClick={() => signIn("google")}
           >
             <Icon variant="small" defaultcolor="auto" mr="0.5rem">
               google-1
             </Icon>
-      
+
             <Small fontWeight="600">เข้าสู่ระบบด้วย Google</Small>
           </FlexBox>
 
