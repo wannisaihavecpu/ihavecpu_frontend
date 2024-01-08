@@ -62,7 +62,7 @@ const Signup: FC = () => {
           redirect: false,
         });
         notify("success", "สมัครสมาชิกเรียบร้อย !");
-        router.push("/vendor/account-settings");
+        router.push("/profile");
       } else if (response.data.res_code === "01") {
         if (response.data.res_text === "Email already exists.") {
           setFieldError("email", "อีเมลนี้มีอยู่ในระบบแล้ว");
