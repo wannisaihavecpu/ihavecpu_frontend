@@ -113,38 +113,36 @@ const CheckoutForm2: FC<Props> = ({
               {/* shipping address*/}
               {state.customerDetail.map((item, ind) => (
                 <Grid item md={6} sm={6} xs={12} key={ind}>
-                  {item.ship_firstname && (
-                    <Card
-                      bg="gray.100"
-                      p="1rem"
-                      boxShadow="none"
-                      border="1px solid"
-                      cursor="pointer"
-                      borderColor={
-                        item.ship_firstname === values.ship_firstname
-                          ? "primary.main"
-                          : "transparent"
-                      }
-                      onClick={handleFieldValueChange(
-                        item.ship_firstname || "",
-                        "address",
-                        setFieldValue
-                      )}
-                      style={{ height: "100%" }}
-                    >
-                      <H6 mb="0.25rem">ที่อยู่ในการจัดส่งสินค้า</H6>
-                      <Paragraph color="gray.700">
-                        {item.ship_firstname} {item.ship_lastname}
-                      </Paragraph>
-                      <Paragraph color="gray.700">
-                        {item.ship_address1}
-                        {item.ship_subdistrict && ` ต.${item.ship_subdistrict}`}
-                        {item.ship_city && ` อ.${item.ship_city}`}
-                        {item.ship_state && ` จ.${item.ship_state}`}
-                        {item.ship_postcode}
-                      </Paragraph>
-                    </Card>
-                  )}
+                  <Card
+                    bg="gray.100"
+                    p="1rem"
+                    boxShadow="none"
+                    border="1px solid"
+                    cursor="pointer"
+                    borderColor={
+                      item.ship_firstname === values.ship_firstname
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      item.ship_firstname || "",
+                      "address",
+                      setFieldValue
+                    )}
+                    style={{ height: "100%" }}
+                  >
+                    <H6 mb="0.25rem">ที่อยู่ในการจัดส่งสินค้า</H6>
+                    <Paragraph color="gray.700">
+                      {item.ship_firstname} {item.ship_lastname}
+                    </Paragraph>
+                    <Paragraph color="gray.700">
+                      {item.ship_address1}
+                      {item.ship_subdistrict && ` ต.${item.ship_subdistrict}`}
+                      {item.ship_city && ` อ.${item.ship_city}`}
+                      {item.ship_state && ` จ.${item.ship_state}`}{" "}
+                      {item.ship_postcode}
+                    </Paragraph>
+                  </Card>
                 </Grid>
               ))}
               {/* tax address*/}

@@ -64,7 +64,7 @@ const App = ({ Component, pageProps: { session, ...pageProps } }) => {
           <GlobalStyles />
           <ToastContainer />
 
-          <SessionProvider session={pageProps.session}>
+          <SessionProvider session={session}>
             <Layout>
               <Component {...pageProps} />
             </Layout>
